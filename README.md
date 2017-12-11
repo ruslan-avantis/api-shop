@@ -1,1 +1,52 @@
-# api-shop
+# API Shop — e-commerce platform с открытым кодом
+
+«API Shop» — Использует REST API торговых платформ для хранения и обработки информации. Написан на PHP с использованием [Micro Framework Slim](https://github.com/slimphp) который использует [PSR-7](http://www.php-fig.org/psr/psr-7/) интерфейс HTTP-сообщений. Использует шаблонизатор [Twig](https://github.com/twigphp/Twig/) и менеджер зависимостей для PHP — [Composer](https://github.com/composer). Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
+
+«API Shop» — Использует собственный стандарт [APIS-2018](https://github.com/pllano/APIS-2018/) — это формат обмена данными сервер-сервер и клиент-сервер. `Стандарт APIS-2018 - не является общепринятым !` Стандарт является взглядом в будущее и рекомендацией для унификации построения легких движков интернет-магазинов нового поколения.
+
+«API Shop» — Может работать без базы данных, но при этом имеет свою собственную базу данных jsonDB главная задача которой обеспечить быструю отдачу контента (кэширование) и бесперебойную работу сайта при сбоях или недоступности API от которой она получает данные.
+
+«jsonDB» — система управления базами данных с открытым исходным кодом которая использует JSON документы и схему базы данных. Написана на PHP. Подключается через Composer как обычный пакет PHP, после подключения сама настраивается за несколько секунд. Имеет свой RESTful API интерфейс, что позволяет использовать ее с любым другим языком программирования. Умеет ставить в очередь на запись при блокировке файлов другими процессами и кэшировать любые запросы.
+
+## Список используемого ПО или библиотек
+
+Менеджер зависимостей: [Composer](https://getcomposer.org/) - [github](https://github.com/composer)
+
+Интерфейс для HTTP-сообщений: [PSR-7](http://www.php-fig.org/psr/psr-7/) - [github](https://github.com/php-fig/http-message) - [packagist](https://packagist.org/packages/psr/http-message)
+
+Framework: [Slim](https://www.slimframework.com/) - [github](https://github.com/slimphp) - [packagist](https://packagist.org/packages/slim/slim)
+
+Шаблонизатор: [Twig](https://twig.symfony.com/) - [github](https://github.com/twigphp/Twig/)
+
+Управление Cookies: [FIG Cookies](https://github.com/dflydev/dflydev-fig-cookies)
+
+HTTP client: [Guzzle](http://docs.guzzlephp.org/en/stable/) - [Guzzle](https://github.com/guzzle/guzzle) - [packagist](https://packagist.org/packages/guzzlehttp/guzzle)
+
+Логирование: [Monolog](https://github.com/Seldaek/monolog) - [packagist](https://packagist.org/packages/monolog/monolog)
+
+Тесты: [PHPUnit](https://phpunit.de/) - [github](https://github.com/sebastianbergmann/phpunit) - [packagist](https://packagist.org/packages/phpunit/phpunit)
+
+```json
+{
+  "require": {
+    "php": "^7.0",
+    "psr/http-message": "^1.0",
+    "slim/slim": "^3.0",
+    "slim/php-view": "^2.0",
+    "slim/twig-view": "^2.3",
+    "slim/csrf": "^0.8.",
+    "twig/twig": "~2.0",
+    "phpunit/phpunit": "6.4.2",
+    "monolog/monolog": "1.23.0",
+    "guzzlehttp/guzzle": "^6.3",
+    "dflydev/fig-cookies": "v1.0.*",
+    "spatie/image-optimizer": "^1.0.9",
+    "imagine/imagine": "~0.5.0"
+  }
+}
+```
+
+## Мы ищем единомышленников ! Присоединяйтесь.
+
+### Первую Beta версию API Shop мы выложим до конца 2017 года.
+Мы стремимся к тому чтобы установочный пакет API Shop весил не более 1 Мб.
