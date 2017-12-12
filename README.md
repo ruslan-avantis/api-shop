@@ -30,10 +30,9 @@ HTTP client: [Guzzle](http://docs.guzzlephp.org/en/stable/) - [Guzzle](https://g
 {
   "require": {
     "php": "^7.0",
+    "pllano/api-json-db": "^1.0"
     "psr/http-message": "^1.0",
     "slim/slim": "^3.0",
-    "slim/php-view": "^2.0",
-    "slim/twig-view": "^2.3",
     "slim/csrf": "^0.8.",
     "twig/twig": "~2.0",
     "phpunit/phpunit": "6.4.2",
