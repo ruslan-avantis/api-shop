@@ -30,17 +30,18 @@ HTTP client: [Guzzle](http://docs.guzzlephp.org/en/stable/) - [Guzzle](https://g
 {
   "require": {
     "php": "^7.0",
-    "pllano/api-json-db": "^1.0",
     "psr/http-message": "^1.0",
     "slim/slim": "^3.0",
     "slim/csrf": "^0.8.",
     "twig/twig": "~2.0",
-    "phpunit/phpunit": "6.4.2",
-    "monolog/monolog": "1.23.0",
+    "phpunit/phpunit": "^6.4",
+    "monolog/monolog": "^1.23",
     "guzzlehttp/guzzle": "^6.3",
+    "defuse/php-encryption": "^v2.1",
     "dflydev/fig-cookies": "v1.0.*",
     "spatie/image-optimizer": "^1.0.9",
-    "imagine/imagine": "~0.5.0"
+    "imagine/imagine": "~0.5.0",
+    "pllano/api-json-db": "^1.0"
   }
 }
 ```
