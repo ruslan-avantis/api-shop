@@ -13,7 +13,7 @@
  
 namespace Services\Payments;
  
-class LiqPay
+class Liqpay
 {
     public function request($message, array $arr = array())
     {
