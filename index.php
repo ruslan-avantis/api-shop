@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the REST API SHOP library
+ * This file is part of the API SHOP
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/api-shop
