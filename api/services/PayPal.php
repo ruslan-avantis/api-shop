@@ -13,7 +13,7 @@
  
 namespace Services\Payments;
  
-class PayPal
+class Paypal
 {
     public function request($message, array $arr = array())
     {
