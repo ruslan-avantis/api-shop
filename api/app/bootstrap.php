@@ -19,15 +19,6 @@ $classes = glob(__DIR__ . '/classes/*.php');
 foreach ($classes as $class) {
 require $class;
 }
- 
-/**
- * Automatically register routers
- * Автоматическое подключение роутеров
- */
-$routers = glob(__DIR__ . '/routers/*.php');
-foreach ($routers as $router) {
-require $router;
-}
 
 /**
  * Automatically register services
@@ -37,3 +28,13 @@ $services = glob(__DIR__ . '/../services/*.php');
 foreach ($services as $service) {
 require $service;
 }
+ 
+/**
+ * Automatically register routers
+ * Автоматическое подключение роутеров
+ */
+$routers = glob(__DIR__ . '/routers/*.php');
+foreach ($routers as $router) {
+require $router;
+}
+ 
