@@ -13,7 +13,7 @@
  
 namespace Services\Delivery;
  
-class NovaPoshta
+class Novaposhta
 {
     public function request($message, array $arr = array())
     {
