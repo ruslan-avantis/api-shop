@@ -11,10 +11,10 @@
  * file that was distributed with this source code.
  */
  
-namespace Services\Payments;
+namespace Services\Delivery;
 
 use Core\Settings;
-use Core\Payment;
+use Model\Delivery;
  
 /**
  * Пример промежуточного интерфейса для взаимодействия платежной системы и API Shop
