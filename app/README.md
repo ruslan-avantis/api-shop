@@ -1,1 +1,3 @@
-README.md
+# app
+
+Директория «app» — Ядро API Shop
