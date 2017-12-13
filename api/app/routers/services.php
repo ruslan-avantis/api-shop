@@ -11,6 +11,8 @@
  * file that was distributed with this source code.
  */
 
+use Services\Payments;
+
 $app->get("/v1/json/services/{service:[\w]+}[/{id:[\w]+}]", function (Request $request, Response $response, array $args) {
     $service = $request->getAttribute('service');
     $param = $request->getQueryParams();
