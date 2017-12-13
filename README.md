@@ -1,3 +1,5 @@
+### Внимание ! Не пробуйте устанавливать - Файлы в процессе добавления.
+
 # API Shop — e-commerce platform с открытым кодом
 
 «API Shop» — Использует REST API торговых платформ для хранения и обработки информации. Написан на PHP с использованием [Micro Framework Slim](https://github.com/slimphp) который использует [PSR-7](http://www.php-fig.org/psr/psr-7/) интерфейс HTTP-сообщений. Использует шаблонизатор [Twig](https://github.com/twigphp/Twig/) и менеджер зависимостей для PHP — [Composer](https://github.com/composer). Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
