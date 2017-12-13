@@ -44,8 +44,10 @@ $app->post("/v1/json/services/{service:[\w]+}", function (Request $request, Resp
         $resp["headers"]["message"] = "Bad Request";
         $resp["headers"]["message_id"] = $this->get("settings")["http-codes"]."".$resp["headers"]["code"].".md";
     }
-    echo json_encode($resp, JSON_PRETTY_PRINT);
-    return $response->withStatus(200)->withHeader("Content-Type","application/json");
+	if ($resp != null) {
+        echo json_encode($resp, JSON_PRETTY_PRINT);
+        return $response->withStatus(200)->withHeader("Content-Type","application/json");
+	}
 });
 
 $app->put("/v1/json/services/{service:[\w]+}[/{id:[\w]+}]", function (Request $request, Response $response, array $args) {
@@ -63,8 +65,10 @@ $app->put("/v1/json/services/{service:[\w]+}[/{id:[\w]+}]", function (Request $r
         $resp["headers"]["message"] = "Bad Request";
         $resp["headers"]["message_id"] = $this->get("settings")["http-codes"]."".$resp["headers"]["code"].".md";
     }
-    echo json_encode($resp, JSON_PRETTY_PRINT);
-    return $response->withStatus(200)->withHeader("Content-Type","application/json");
+	if ($resp != null) {
+        echo json_encode($resp, JSON_PRETTY_PRINT);
+        return $response->withStatus(200)->withHeader("Content-Type","application/json");
+	}
 });
 
 $app->patch("/v1/json/services/{service:[\w]+}[/{id:[\w]+}]", function (Request $request, Response $response, array $args) {
@@ -82,8 +86,10 @@ $app->patch("/v1/json/services/{service:[\w]+}[/{id:[\w]+}]", function (Request 
         $resp["headers"]["message"] = "Bad Request";
         $resp["headers"]["message_id"] = $this->get("settings")["http-codes"]."".$resp["headers"]["code"].".md";
     }
-    echo json_encode($resp, JSON_PRETTY_PRINT);
-    return $response->withStatus(200)->withHeader("Content-Type","application/json");
+	if ($resp != null) {
+        echo json_encode($resp, JSON_PRETTY_PRINT);
+        return $response->withStatus(200)->withHeader("Content-Type","application/json");
+	}
 });
 
 $app->delete("/v1/json/services/{service:[\w]+}[/{id:[\w]+}]", function (Request $request, Response $response, array $args) {
@@ -101,6 +107,8 @@ $app->delete("/v1/json/services/{service:[\w]+}[/{id:[\w]+}]", function (Request
         $resp["headers"]["message"] = "Bad Request";
         $resp["headers"]["message_id"] = $this->get("settings")["http-codes"]."".$resp["headers"]["code"].".md";
     }
-    echo json_encode($resp, JSON_PRETTY_PRINT);
-    return $response->withStatus(200)->withHeader("Content-Type","application/json");
+	if ($resp != null) {
+        echo json_encode($resp, JSON_PRETTY_PRINT);
+        return $response->withStatus(200)->withHeader("Content-Type","application/json");
+	}
 });
