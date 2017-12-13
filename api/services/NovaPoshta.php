@@ -15,14 +15,29 @@ namespace Services\Delivery;
  
 class Novaposhta
 {
-    public function post(array $arr = array())
+    public function get($id = null, array $arr = array())
     {
-        // тело метода
+        // тело GET
     }
 	
-    public function get(array $arr = array())
+    public function post(array $arr = array())
     {
-        // тело метода
+        // тело POST
+    }
+	
+    public function put($id = null, array $arr = array())
+    {
+        // тело PUT
+    }
+	
+    public function patch($id = null, array $arr = array())
+    {
+        // тело PATCH
+    }
+
+    public function delete($id = null, array $arr = array())
+    {
+        // тело DELETE
     }
 }
  
