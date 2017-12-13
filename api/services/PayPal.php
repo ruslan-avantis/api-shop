@@ -14,7 +14,7 @@
 namespace Services\Payments;
 
 use Core\Settings;
-use Core\Payment;
+use Model\Payment;
  
 /**
  * Пример промежуточного интерфейса для взаимодействия платежной системы и API Shop
