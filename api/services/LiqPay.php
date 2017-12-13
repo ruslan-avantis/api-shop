@@ -11,3 +11,18 @@
  * file that was distributed with this source code.
  */
  
+namespace Services\Payments;
+ 
+class LiqPay
+{
+    public function request($message, array $arr = array())
+    {
+        // тело метода
+    }
+	
+    public function response($message, array $arr = array())
+    {
+        // тело метода
+    }
+}
+
