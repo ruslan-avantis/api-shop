@@ -15,12 +15,12 @@ namespace Services\Payments;
  
 class Paypal
 {
-    public function request($message, array $arr = array())
+    public function post(array $arr = array())
     {
         // тело метода
     }
 	
-    public function response($message, array $arr = array())
+    public function get(array $arr = array())
     {
         // тело метода
     }
