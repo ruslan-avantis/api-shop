@@ -29,3 +29,11 @@ foreach ($routers as $router) {
 require $router;
 }
 
+/**
+ * Automatically register services
+ * Автоматическое подключение сервисов
+ */
+$services = glob(__DIR__ . '/../services/*.php');
+foreach ($services as $service) {
+require $service;
+}
