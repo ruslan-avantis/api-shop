@@ -19,7 +19,9 @@ $app->post("/v1/json/services/{service:[\w]+}", function (Request $request, Resp
         $key = filter_var($param["request"]["key"], FILTER_SANITIZE_STRING);
         if ($this->get("settings")["services"][$service] == $key) {
             $service = ucfirst($service);
-            $resp = new $service($param);
+            $services = new $service();
+	    $resp = $services->request($key, $param);
+		
         } else {
             // Доступ запрещен. Ключ доступа не совпадает.
             $resp["headers"]["status"] = "401 Unauthorized";
