@@ -10,26 +10,21 @@
 
 ## Список используемого ПО или библиотек
 
-Менеджер зависимостей: [Composer](https://getcomposer.org/) - [github](https://github.com/composer)
-
-Интерфейс для HTTP-сообщений: [PSR-7](http://www.php-fig.org/psr/psr-7/) - [github](https://github.com/php-fig/http-message) - [packagist](https://packagist.org/packages/psr/http-message)
-
-Framework: [Slim](https://www.slimframework.com/) - [github](https://github.com/slimphp) - [packagist](https://packagist.org/packages/slim/slim)
-
-Шаблонизатор: [Twig](https://twig.symfony.com/) - [github](https://github.com/twigphp/Twig/)
-
-Управление Cookies: [FIG Cookies](https://github.com/dflydev/dflydev-fig-cookies)
-
-HTTP client: [Guzzle](http://docs.guzzlephp.org/en/stable/) - [Guzzle](https://github.com/guzzle/guzzle) - [packagist](https://packagist.org/packages/guzzlehttp/guzzle)
-
-Логирование: [Monolog](https://github.com/Seldaek/monolog) - [packagist](https://packagist.org/packages/monolog/monolog)
-
-Тесты: [PHPUnit](https://phpunit.de/) - [github](https://github.com/sebastianbergmann/phpunit) - [packagist](https://packagist.org/packages/phpunit/phpunit)
+- Менеджер зависимостей: [Composer](https://getcomposer.org/) - [github](https://github.com/composer)
+- База данных: [API json DB](https://github.com/pllano/api-json-db) - [packagist.org](https://packagist.org/packages/pllano/api-json-db)
+- Интерфейс для HTTP-сообщений: [PSR-7](http://www.php-fig.org/psr/psr-7/) - [github](https://github.com/php-fig/http-message) - [packagist](https://packagist.org/packages/psr/http-message)
+- Framework: [Slim](https://www.slimframework.com/) - [github](https://github.com/slimphp) - [packagist](https://packagist.org/packages/slim/slim)
+- Шаблонизатор: [Twig](https://twig.symfony.com/) - [github](https://github.com/twigphp/Twig/)
+- Управление Cookies: [FIG Cookies](https://github.com/dflydev/dflydev-fig-cookies)
+- HTTP client: [Guzzle](http://docs.guzzlephp.org/en/stable/) - [Guzzle](https://github.com/guzzle/guzzle) - [packagist](https://packagist.org/packages/guzzlehttp/guzzle)
+- Логирование: [Monolog](https://github.com/Seldaek/monolog) - [packagist](https://packagist.org/packages/monolog/monolog)
+- Тесты: [PHPUnit](https://phpunit.de/) - [github](https://github.com/sebastianbergmann/phpunit) - [packagist](https://packagist.org/packages/phpunit/phpunit)
 
 ```json
 {
   "require": {
     "php": "^7.0",
+    "pllano/api-json-db": "^1.0",
     "psr/http-message": "^1.0",
     "slim/slim": "^3.0",
     "slim/csrf": "^0.8.",
@@ -40,8 +35,7 @@ HTTP client: [Guzzle](http://docs.guzzlephp.org/en/stable/) - [Guzzle](https://g
     "defuse/php-encryption": "^v2.1",
     "dflydev/fig-cookies": "v1.0.*",
     "spatie/image-optimizer": "^1.0.9",
-    "imagine/imagine": "~0.5.0",
-    "pllano/api-json-db": "^1.0"
+    "imagine/imagine": "~0.5.0"
   }
 }
 ```
