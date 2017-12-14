@@ -11,10 +11,9 @@
  * file that was distributed with this source code.
  */
  
-namespace Services\Payments;
+namespace Pllano\ApiShop\Services\Payments;
 
-use Core\Settings;
-use Model\Payment;
+use Pllano\ApiShop\Core\Settings;
  
 /**
  * Пример промежуточного интерфейса для взаимодействия платежной системы и API Shop
@@ -56,5 +55,11 @@ class Paypal
 		// $id - записи
 		// $arr - массив с параметрами
     }
+
+    public function config()
+    {
+        // тело DELETE
+    }
+
 }
  
