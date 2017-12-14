@@ -1,8 +1,21 @@
 # API Shop — имеет свою мини-API
 
-«API» — Использует RESTful интерфейс
+«API Shop» — имеет своюмини RESTful API 
 
-«API Shop» — Использует стандарт [APIS-2018](https://github.com/pllano/APIS-2018/) — это формат обмена данными сервер-сервер и клиент-сервер. `Стандарт APIS-2018 - не является общепринятым !` Стандарт является взглядом в будущее и рекомендацией для унификации построения легких движков интернет-магазинов нового поколения.
+Формат обмена данными сервер-сервер и клиент-сервер по стандарту [APIS-2018](https://github.com/pllano/APIS-2018/)
+
+### RESTful API потдерживает `POST` `GET` `PUT` `PATCH` `DELETE` запросы:
+- `POST /v1/json/services/{service_name}` Создание записи с параметрами в теле запроса
+- `POST /v1/json/services/{service_name}/{id}` Ошибка
+- `GET /v1/json/services/{service_name}` Список всех записей
+- `GET /v1/json/services/{service_name}?{param}` Список всех записей с фильтром по параметрам
+- `GET /v1/json/services/{service_name}/{id}` Данные конкретной записи
+- `PUT /v1/json/services/{service_name}` Обновить данные записей с параметрами в теле запроса
+- `PUT /v1/json/services/{service_name}/{id}` Обновить данные конкретной записи с параметрами в теле запроса
+- `PATCH /v1/json/services/{service_name}` Обновить данные записей с параметрами в теле запроса
+- `PATCH /v1/json/services/{service_name}/{id}` Обновить данные конкретной записи с параметрами в теле запроса
+- `DELETE /v1/json/services/{service_name}` Удалить все записи с параметрами в теле запроса
+- `DELETE /v1/json/services/{service_name}/{id}` Удалить конкретную запись
 
 <a name="feedback"></a>
 ## Поддержка, обратная связь, новости
