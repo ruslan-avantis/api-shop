@@ -40,7 +40,6 @@ $loader = new \Psr4\Autoloader;
 $loader->register();
 // register the base directories for the namespace prefix
 $loader->addNamespace('Pllano\ApiShop', __DIR__ . '/../app/classes');
-$loader->addNamespace('Pllano\ApiShop', __DIR__ . '/classes');
 $loader->addNamespace('Pllano\ApiShop', __DIR__ . '/services');
 
 // Подключаем Composer
