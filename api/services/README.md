@@ -6,17 +6,17 @@ RESTful API — Предназначен для обмена данными с �
 Формат обмена данными сервер-сервер и клиент-сервер по стандарту [APIS-2018](https://github.com/pllano/APIS-2018/)
 
 ### RESTful API потдерживает `POST` `GET` `PUT` `PATCH` `DELETE` запросы:
-- `POST /api/v1/json/{service_name}/{request}` Создание записи
-- `POST /api/v1/json/{service_name}/{request}/{id}` Ошибка
-- `GET /api/v1/json/{service_name}/{request}` Список всех записей
-- `GET /api/v1/json/{service_name}/{request}?{param}` Список всех записей
-- `GET /api/v1/json/{service_name}/{request}/{id}` Данные конкретной записи
-- `PUT /api/v1/json/{service_name}/{request}` Обновить данные записей
-- `PUT /api/v1/json/{service_name}/{request}/{id}` Обновить данные конкретной записи
-- `PATCH /api/v1/json/{service_name}/{request}` Обновить данные записей
-- `PATCH /api/v1/json/{service_name}/{request}/{id}` Обновить данные конкретной записи
-- `DELETE /api/v1/json/{service_name}/{request}` Удалить все записи
-- `DELETE /api/v1/json/{service_name}/{request}/{id}` Удалить конкретную запись
+- `POST /api/v1/json/{service_name}/{resource}` Создание записи
+- `POST /api/v1/json/{service_name}/{resource}/{id}` Ошибка
+- `GET /api/v1/json/{service_name}/{resource}` Список всех записей
+- `GET /api/v1/json/{service_name}/{resource}?{param}` Список всех записей
+- `GET /api/v1/json/{service_name}/{resource}/{id}` Данные конкретной записи
+- `PUT /api/v1/json/{service_name}/{resource}` Обновить данные записей
+- `PUT /api/v1/json/{service_name}/{resource}/{id}` Обновить данные конкретной записи
+- `PATCH /api/v1/json/{service_name}/{resource}` Обновить данные записей
+- `PATCH /api/v1/json/{service_name}/{resource}/{id}` Обновить данные конкретной записи
+- `DELETE /api/v1/json/{service_name}/{resource}` Удалить все записи
+- `DELETE /api/v1/json/{service_name}/{resource}/{id}` Удалить конкретную запись
 
 <a name="feedback"></a>
 ## Поддержка, обратная связь, новости
