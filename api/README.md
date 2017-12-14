@@ -19,6 +19,9 @@ RESTful API — Предназначен для обмена данными с �
 - `DELETE /api/v1/json/{service_name}/{resource}` Удалить все записи
 - `DELETE /api/v1/json/{service_name}/{resource}/{id}` Удалить конкретную запись
 
+### Пример ответа от LiqPay в виде GET запроса
+`https://example.com/api/v1/json/liqpay/pay/12345678?payment_id=568015786&status=success&order_id=1234`
+
 <a name="feedback"></a>
 ## Поддержка, обратная связь, новости
 
