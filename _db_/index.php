@@ -1,7 +1,7 @@
 <?php 
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+//ini_set('error_reporting', E_ALL);
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
 
 if (PHP_SAPI == 'cli-server') {
 $url  = parse_url($_SERVER['REQUEST_URI']);
@@ -15,7 +15,7 @@ spl_autoload_register(function($c){
 }); */
 
 // !!! Указываем директорию где будет храниться json db !!!
-$_db = __DIR__ . '/../../_db_json/';
+$_db = __DIR__ . '/../../_db_/';
 
 // Composer
 require __DIR__ . '/../../vendor/autoload.php';
@@ -53,7 +53,7 @@ $config['settings']['db']['dir'] = $_db;
 $config['settings']['db']['key_cryp'] = Key::loadFromAsciiSafeString(file_get_contents($_db . 'core/key_db.txt', true));
 $config['settings']['db']['key'] = file_get_contents($_db . 'core/key_db.txt', true);
 $config['settings']['db']['access_key'] = false;
-$config['settings']['displayErrorDetails'] = true;
+$config['settings']['displayErrorDetails'] = false;
 $config['settings']['addContentLengthHeader'] = false;
 $config['settings']['determineRouteBeforeAppMiddleware'] = true;
 $config['settings']['debug'] = true;
@@ -107,39 +107,6 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 
 	return $response->withStatus(200)->withHeader('Content-Type','application/json');
 
-});
-
-$app->get('/test', function (Request $request, Response $response, array $args) {
-
-	/*
-	$res->with('property');
-	$res->with('product_view');
-	*/
-
-	$res = jsonDb::table("product")->where("id", ">=", 61456)->orderBy('id')->limit(15)->findAll()->asArray();
-
-	/*
-	foreach($res AS $key => $unit){
-		if (isset($key) && isset($unit)) {
-			$item[$key] = $unit;
-			$items["item"] = $item;
-		}
-	}
-	*/
-
-	$resp = array();
-	$resp["headers"]["status"] = "200 OK";
-	$resp["headers"]["code"] = 200;
-	$resp["headers"]["message"] = 'Access is denied';
-
-	$resp["body"]["items"] = $res;
-
-	print_r($resp);
-
-	echo json_encode($resp, JSON_PRETTY_PRINT);
-	
-	return $response->withStatus(200)->withHeader('Content-Type','application/json');
-	
 });
 
 $app->get('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
