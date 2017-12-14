@@ -11,16 +11,19 @@
  * file that was distributed with this source code.
  */
 
-use Services\Payments;
+namespace Pllano\ApiShop\Services\Marketplace;
+namespace Pllano\ApiShop\Services\Payments;
+namespace Pllano\ApiShop\Services\Delivery;
 
-$app->get("/v1/json/services/{service:[\w]+}[/{id:[\w]+}]", function (Request $request, Response $response, array $args) {
+$app->get("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (Request $request, Response $response, array $args) {
     $service = $request->getAttribute('service');
     $param = $request->getQueryParams();
+	$resource = (isset($request->getAttribute('resource'))) ? $request->getAttribute('resource') : null;
 	$id = (isset($request->getAttribute('id'))) ? $request->getAttribute('id') : null;
     if (isset($service)) {
             $service = ucfirst($service);
             $services = new $service();
-	        $resp = $services->get($id, $param);
+	        $resp = $services->get($resource, $id, $param);
     } else {
         // Сервис не определен. Возвращаем ошибку 400
         $resp["headers"]["status"] = "404 Not Found";
@@ -34,13 +37,14 @@ $app->get("/v1/json/services/{service:[\w]+}[/{id:[\w]+}]", function (Request $r
 	}
 });
 
-$app->post("/v1/json/services/{service:[\w]+}", function (Request $request, Response $response, array $args) {
+$app->post("/v1/json/{service:[\w]+}[/{resource:[\w]+}]", function (Request $request, Response $response, array $args) {
     $service = $request->getAttribute('service');
+	$resource = (isset($request->getAttribute('resource'))) ? $request->getAttribute('resource') : null;
     $param = $request->getParsedBody();
 	if (isset($service)) {
             $service = ucfirst($service);
             $services = new $service();
-	        $resp = $services->post($param);
+	        $resp = $services->post($resource, $param);
     } else {
         // Сервис не определен. Возвращаем ошибку 400
         $resp["headers"]["status"] = "404 Not Found";
@@ -54,56 +58,58 @@ $app->post("/v1/json/services/{service:[\w]+}", function (Request $request, Resp
 	}
 });
 
-$app->put("/v1/json/services/{service:[\w]+}[/{id:[\w]+}]", function (Request $request, Response $response, array $args) {
+$app->put("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (Request $request, Response $response, array $args) {
+    $service = $request->getAttribute('service');
+	$resource = (isset($request->getAttribute('resource'))) ? $request->getAttribute('resource') : null;
+    $param = $request->getParsedBody();
+	$id = (isset($request->getAttribute('id'))) ? $request->getAttribute('id') : null;
+	if (isset($service)) {
+            $service = ucfirst($service);
+            $services = new $service();
+	        $resp = $services->put($resource, $id, $param);
+    } else {
+        // Сервис не определен. Возвращаем ошибку 400
+        $resp["headers"]["status"] = "404 Not Found";
+        $resp["headers"]["code"] = 404;
+        $resp["headers"]["message"] = "Bad Request";
+        $resp["headers"]["message_id"] = $this->get("settings")["http-codes"]."".$resp["headers"]["code"].".md";
+    }
+	if ($resp != null) {
+        echo json_encode($resp, JSON_PRETTY_PRINT);
+        return $response->withStatus(200)->withHeader("Content-Type","application/json");
+	}
+});
+
+$app->patch("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (Request $request, Response $response, array $args) {
+    $service = $request->getAttribute('service');
+	$resource = (isset($request->getAttribute('resource'))) ? $request->getAttribute('resource') : null;
+    $param = $request->getParsedBody();
+	$id = (isset($request->getAttribute('id'))) ? $request->getAttribute('id') : null;
+	if (isset($service)) {
+            $service = ucfirst($service);
+            $services = new $service();
+	        $resp = $services->patch($resource, $id, $param);
+    } else {
+        // Сервис не определен. Возвращаем ошибку 400
+        $resp["headers"]["status"] = "404 Not Found";
+        $resp["headers"]["code"] = 404;
+        $resp["headers"]["message"] = "Bad Request";
+        $resp["headers"]["message_id"] = $this->get("settings")["http-codes"]."".$resp["headers"]["code"].".md";
+    }
+	if ($resp != null) {
+        echo json_encode($resp, JSON_PRETTY_PRINT);
+        return $response->withStatus(200)->withHeader("Content-Type","application/json");
+	}
+});
+
+$app->delete("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (Request $request, Response $response, array $args) {
     $service = $request->getAttribute('service');
     $param = $request->getParsedBody();
 	$id = (isset($request->getAttribute('id'))) ? $request->getAttribute('id') : null;
 	if (isset($service)) {
             $service = ucfirst($service);
             $services = new $service();
-	        $resp = $services->put($id, $param);
-    } else {
-        // Сервис не определен. Возвращаем ошибку 400
-        $resp["headers"]["status"] = "404 Not Found";
-        $resp["headers"]["code"] = 404;
-        $resp["headers"]["message"] = "Bad Request";
-        $resp["headers"]["message_id"] = $this->get("settings")["http-codes"]."".$resp["headers"]["code"].".md";
-    }
-	if ($resp != null) {
-        echo json_encode($resp, JSON_PRETTY_PRINT);
-        return $response->withStatus(200)->withHeader("Content-Type","application/json");
-	}
-});
-
-$app->patch("/v1/json/services/{service:[\w]+}[/{id:[\w]+}]", function (Request $request, Response $response, array $args) {
-    $service = $request->getAttribute('service');
-    $param = $request->getParsedBody();
-	$id = (isset($request->getAttribute('id'))) ? $request->getAttribute('id') : null;
-	if (isset($service)) {
-            $service = ucfirst($service);
-            $services = new $service();
-	        $resp = $services->patch($id, $param);
-    } else {
-        // Сервис не определен. Возвращаем ошибку 400
-        $resp["headers"]["status"] = "404 Not Found";
-        $resp["headers"]["code"] = 404;
-        $resp["headers"]["message"] = "Bad Request";
-        $resp["headers"]["message_id"] = $this->get("settings")["http-codes"]."".$resp["headers"]["code"].".md";
-    }
-	if ($resp != null) {
-        echo json_encode($resp, JSON_PRETTY_PRINT);
-        return $response->withStatus(200)->withHeader("Content-Type","application/json");
-	}
-});
-
-$app->delete("/v1/json/services/{service:[\w]+}[/{id:[\w]+}]", function (Request $request, Response $response, array $args) {
-    $service = $request->getAttribute('service');
-    $param = $request->getParsedBody();
-	$id = (isset($request->getAttribute('id'))) ? $request->getAttribute('id') : null;
-	if (isset($service)) {
-            $service = ucfirst($service);
-            $services = new $service();
-	        $resp = $services->delete($id, $param);
+	        $resp = $services->delete($resource, $id, $param);
     } else {
         // Сервис не определен. Возвращаем ошибку 400
         $resp["headers"]["status"] = "404 Not Found";
