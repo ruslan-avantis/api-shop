@@ -21,7 +21,7 @@ RESTful API — Предназначен для обмена данными с �
 
 ### Пример ответа от LiqPay в виде GET запроса
 - `https://example.com/api/v1/json/liqpay?action=pay&payment_id=568015786&status=success&order_id=1234`
-или
+- или тоже самое но гораздо проще
 - `https://example.com/api/v1/json/liqpay/pay/1234?status=success`
 
 <a name="feedback"></a>
