@@ -11,9 +11,7 @@
  * file that was distributed with this source code.
  */
 
-/**
- * Вывод ошибок. Что бы выключить закоментируйте эти строки
- */
+// Вывод ошибок. Что бы выключить закоментируйте эти строки
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -23,52 +21,72 @@ if (PHP_SAPI == 'cli-server') {
     // something which should probably be served as a static file
     $url  = parse_url($_SERVER['REQUEST_URI']);
     $file = __DIR__ . $url['path'];
+	
     if (is_file($file)) {
         return false;
     }
 }
 
-/**
- * Подключаем пакеты
- */
+// Проверяем наличие файлов API Shop
+if (!file_exists(__DIR__ . '/app/test.php';)){
+
+}
+
+// Подключаем autoloader
+require __DIR__ . '/app/autoloader.php';
+// instantiate the loader
+$loader = new \Psr4\Autoloader;
+// register the autoloader
+$loader->register();
+// register the base directories for the namespace prefix
+$loader->addNamespace('Pllano\ApiShop', __DIR__ . '/app/classes');
+
+// Подключаем Composer
 if (file_exists(__DIR__ . '/../vendor/autoload.php';)){
     require __DIR__ . '/../vendor/autoload.php';
 } elseif (file_exists(__DIR__ . '/vendor/autoload.php';)){
     require __DIR__ . '/vendor/autoload.php';
 } else {
-    // Подключаем загрузчик пакетов
+    // Если autoload.php не найден - подключаем загрузчик пакетов
     require __DIR__ . '/app/installer.php';
-    $loader = new Installer\Loader();
-    // Запускаем загрузку пакетов
-    $load = $loader->run();
+    $loaders = new \Pllano\ApiShop\Loader();
+    // Запускаем загрузку пакетов и указываем директорию
+    $load = $loaders->run(__DIR__ . '/../vendor');
+	
     if ($load == true){
-	    require_once __DIR__ . '/vendor/autoload.php';
+	    require __DIR__ . '/vendor/autoload.php';
 	} else {
-	require_once __DIR__ . '/app/error.php';
-	$error = new Core\Error();
+	$error = new \Pllano\ApiShop\Error();
 	$error->permission();
 	}
 }
 
-/**
- * Подключаем файл конфигурации системы
- */
-require_once __DIR__ . '/app/conf/settings.php';
-
-/**
- * Подключаем Slim и отдаем ему Конфиг
- */
-$settings = new Core\Settings();
+require __DIR__ . '/app/config/settings.php';
+// Подключаем файл конфигурации системы
+$settings = new \Pllano\ApiShop\Core\Settings();
 $config = $settings->get();
-$app = new Slim\App($config);
 
-/**
- * Подключаем bootstrap
- */
-require __DIR__ . '/app/bootstrap.php';
+// Подключаем Slim и отдаем ему Конфиг
+$app = new \Slim\App($config);
 
-/**
- * Запускаем Slim
- */
+// Запускаем сессию PHP
+session_start();
+// Run User Session
+// Запускаем сессию пользователя
+(new \Pllano\ApiShop\Model\User())->run();
+
+$cores = glob(__DIR__ . '/app/core/*.php');
+foreach ($cores as $core) {
+require $core;
+}
+ 
+// Automatically register routers
+// Автоматическое подключение роутеров
+$routers = glob(__DIR__ . '/app/routers/*.php');
+foreach ($routers as $router) {
+require $router;
+}
+
+// Slim Run
 $app->run();
-
+ 
