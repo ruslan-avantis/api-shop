@@ -11,17 +11,19 @@
  * file that was distributed with this source code.
  */
  
-namespace Pllano\ApiShop\Services\Payments;
+namespace Pllano\ApiShop\Services\Marketplace;
 
 use Pllano\ApiShop\Core\Settings;
 use Pllano\ApiShop\Model\Payments;
+use Pllano\ApiShop\Model\Delivery;
+use Pllano\ApiShop\Model\Marketplace;
  
 /**
  * Пример промежуточного интерфейса для взаимодействия платежной системы и API Shop
  * Название класса должно начинаться с заглавной буквы, 
  * все остальные буквы должны быть в нижнем регистре.
 */
-class Paypal
+class Pllano
 {
     public function get($resource = null, $id = null, array $arr = array())
     {

@@ -14,6 +14,7 @@
 namespace Pllano\ApiShop\Services\Delivery;
 
 use Pllano\ApiShop\Core\Settings;
+use Pllano\ApiShop\Model\Delivery;
  
 /**
  * Пример промежуточного интерфейса для взаимодействия платежной системы и API Shop
@@ -22,36 +23,41 @@ use Pllano\ApiShop\Core\Settings;
 */
 class Novaposhta
 {
-    public function get($id = null, array $arr = array())
+    public function get($resource = null, $id = null, array $arr = array())
     {
         // тело GET
+		// $resource - ресурс (модель)
 		// $id - записи
 		// $arr - массив с параметрами
     }
 	
-    public function post(array $arr = array())
+    public function post($resource = null, array $arr = array())
     {
         // тело POST
+		// $resource - ресурс (модель)
 		// $arr - массив с параметрами
     }
 	
-    public function put($id = null, array $arr = array())
+    public function put($resource = null, $id = null, array $arr = array())
     {
         // тело PUT
+		// $resource - ресурс (модель)
 		// $id - записи
 		// $arr - массив с параметрами
     }
 	
-    public function patch($id = null, array $arr = array())
+    public function patch($resource = null, $id = null, array $arr = array())
     {
         // тело PATCH
+		// $resource - ресурс (модель)
 		// $id - записи
 		// $arr - массив с параметрами
     }
 
-    public function delete($id = null, array $arr = array())
+    public function delete($resource = null, $id = null, array $arr = array())
     {
         // тело DELETE
+		// $resource - ресурс (модель)
 		// $id - записи
 		// $arr - массив с параметрами
     }
