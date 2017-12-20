@@ -25,7 +25,7 @@ use Pllano\ApiShop\Model\Marketplace;
 */
 class Priceua
 {
-    public function get($resource = null, $id = null, array $arr = array())
+    public function get($resource = null, array $arr = array(), $id = null)
     {
         // тело GET
 		// $resource - ресурс (модель)
@@ -40,7 +40,7 @@ class Priceua
 		// $arr - массив с параметрами
     }
 	
-    public function put($resource = null, $id = null, array $arr = array())
+    public function put($resource = null, array $arr = array(), $id = null)
     {
         // тело PUT
 		// $resource - ресурс (модель)
@@ -48,7 +48,7 @@ class Priceua
 		// $arr - массив с параметрами
     }
 	
-    public function patch($resource = null, $id = null, array $arr = array())
+    public function patch($resource = null, array $arr = array(), $id = null)
     {
         // тело PATCH
 		// $resource - ресурс (модель)
@@ -56,7 +56,7 @@ class Priceua
 		// $arr - массив с параметрами
     }
 
-    public function delete($resource = null, $id = null, array $arr = array())
+    public function delete($resource = null, array $arr = array(), $id = null)
     {
         // тело DELETE
 		// $resource - ресурс (модель)
