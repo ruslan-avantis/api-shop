@@ -16,9 +16,9 @@ namespace Pllano\ApiShop\Db;
 use Pllano\ApiShop\Core\Settings;
  
 /**
- * jsonDB
+ * jsonDb
 */
-class jsonDB
+class jsonDb
 {
 	
     public function __construct()
