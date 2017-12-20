@@ -21,8 +21,8 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 
 Поддерживаются следующие системы управления базами данных:
 - [API json DB](https://github.com/pllano/api-json-db)
-- MySQL
-- Elasticsearch
+- MySQL с использованием [slim/pdo](https://packagist.org/packages/slim/pdo) через класс [MysqlDb](https://github.com/pllano/api-shop/blob/master/app/classes/Db/MysqlDb.php)
+- Elasticsearch с использованием [Elasticsearch-PHP](https://github.com/elastic/elasticsearch-php) через класс [ElasticsearchDb](https://github.com/pllano/api-shop/blob/master/app/classes/Db/ElasticsearchDb.php)
 
 ## Собственный стандарт обмена данными
 API Shop — Использует собственный стандарт обмена данными сервер-сервер [APIS-2018](https://github.com/pllano/APIS-2018/) дающий возможность не писать своей документации по работе с вашим API. Вы можете писать свою API зная что другим API использующим стандарт APIS-2018 не придется тратиться на дополнительную доработку и интеграцию с вашим API. Для подключения к вашему API будет необходимо только получить данные аутентификации для доступа к учетной записи.
