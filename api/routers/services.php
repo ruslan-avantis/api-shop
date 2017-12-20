@@ -23,7 +23,7 @@ $app->get("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (
     if (isset($service)) {
             $service = ucfirst($service);
             $services = new $service();
-	        $resp = $services->get($resource, $id, $param);
+	        $resp = $services->get($resource, $param, $id);
     } else {
         // Сервис не определен. Возвращаем ошибку 400
         $resp["headers"]["status"] = "404 Not Found";
@@ -66,7 +66,7 @@ $app->put("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (
 	if (isset($service)) {
             $service = ucfirst($service);
             $services = new $service();
-	        $resp = $services->put($resource, $id, $param);
+	        $resp = $services->put($resource, $param, $id);
     } else {
         // Сервис не определен. Возвращаем ошибку 400
         $resp["headers"]["status"] = "404 Not Found";
@@ -88,7 +88,7 @@ $app->patch("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function
 	if (isset($service)) {
             $service = ucfirst($service);
             $services = new $service();
-	        $resp = $services->patch($resource, $id, $param);
+	        $resp = $services->patch($resource, $param, $id);
     } else {
         // Сервис не определен. Возвращаем ошибку 400
         $resp["headers"]["status"] = "404 Not Found";
@@ -109,7 +109,7 @@ $app->delete("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", functio
 	if (isset($service)) {
             $service = ucfirst($service);
             $services = new $service();
-	        $resp = $services->delete($resource, $id, $param);
+	        $resp = $services->delete($resource, $param, $id);
     } else {
         // Сервис не определен. Возвращаем ошибку 400
         $resp["headers"]["status"] = "404 Not Found";
