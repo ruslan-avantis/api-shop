@@ -37,7 +37,7 @@ class Bridge
     {
         if ($this->db !== null && $resource !== null) {
             
-            $class = ucfirst($this->db."Db");
+            $class = ucfirst($this->db)."Db";
             $db = new $class();
             return $db->get($resource, $arr, $id);
         } else {
@@ -49,7 +49,7 @@ class Bridge
     {
         if ($this->db !== null && $resource !== null) {
             
-            $class = ucfirst($this->db."Db");
+            $class = ucfirst($this->db)."Db";
             $db = new $class();
             return $db->post($resource, $arr, $id);
         } else {
@@ -61,7 +61,7 @@ class Bridge
     {
         if ($this->db !== null && $resource !== null) {
             
-            $class = ucfirst($this->db."Db");
+            $class = ucfirst($this->db)."Db";
             $db = new $class();
             return $db->put($resource, $arr, $id);
         } else {
@@ -73,7 +73,7 @@ class Bridge
     {
         if ($this->db !== null && $resource !== null) {
             
-            $class = ucfirst($this->db."Db");
+            $class = ucfirst($this->db)."Db";
             $db = new $class();
             return $db->patch($resource, $arr, $id);
         } else {
@@ -85,7 +85,7 @@ class Bridge
     {
         if ($this->db !== null && $resource !== null) {
             
-            $class = ucfirst($this->db."Db");
+            $class = ucfirst($this->db)."Db";
             $db = new $class();
             return $db->delete($resource, $arr, $id);
         } else {
