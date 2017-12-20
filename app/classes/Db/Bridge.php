@@ -33,61 +33,61 @@ class Bridge
         }
     }
     
-    public function get($resource = null, $id = null, array $arr = array())
+    public function get($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
             
             $class = ucfirst($this->db."Db");
             $db = new $class();
-            return $db->get($resource, $id, $arr);
+            return $db->get($resource, $arr, $id);
         } else {
             return false;
         }
     }
     
-    public function post($resource = null, $id = null, array $arr = array())
+    public function post($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
             
             $class = ucfirst($this->db."Db");
             $db = new $class();
-            return $db->post($resource, $id, $arr);
+            return $db->post($resource, $arr, $id);
         } else {
             return false;
         }
     }
     
-    public function put($resource = null, $id = null, array $arr = array())
+    public function put($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
             
             $class = ucfirst($this->db."Db");
             $db = new $class();
-            return $db->put($resource, $id, $arr);
+            return $db->put($resource, $arr, $id);
         } else {
             return false;
         }
     }
 	
-    public function patch($resource = null, $id = null, array $arr = array())
+    public function patch($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
             
             $class = ucfirst($this->db."Db");
             $db = new $class();
-            return $db->patch($resource, $id, $arr);
+            return $db->patch($resource, $arr, $id);
         } else {
             return false;
         }
     }
     
-    public function delete($resource = null, $id = null, array $arr = array())
+    public function delete($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
             
             $class = ucfirst($this->db."Db");
             $db = new $class();
-            return $db->delete($resource, $id, $arr);
+            return $db->delete($resource, $arr, $id);
         } else {
             return false;
         }
