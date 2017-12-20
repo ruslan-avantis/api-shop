@@ -16,9 +16,9 @@ namespace Pllano\ApiShop\Db;
 use Pllano\ApiShop\Core\Settings;
  
 /**
- * Pdo
+ * MysqlDb
 */
-class Pdo
+class MysqlDb
 {
 	
     public function __construct()
