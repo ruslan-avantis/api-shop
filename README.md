@@ -20,9 +20,9 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 «API Shop» может работать без базы данных и все данные получать через API платформы на которой он создан. Также может иметь свое собственное хранилище данных, главная задача которого обеспечить быструю отдачу контента (кэширование) и бесперебойную работу сайта при сбоях или недоступности API от которой она получает данные.
 
 Поддерживаются следующие системы управления базами данных:
-- [API json DB](https://github.com/pllano/api-json-db) транзитом через [Bridge](https://github.com/pllano/api-shop/blob/master/app/classes/Db/Bridge.php) и [JsonDb](https://github.com/pllano/api-shop/blob/master/app/classes/Db/JsonDb.php)
-- MySQL с использованием [slim/pdo](https://packagist.org/packages/slim/pdo) транзитом через [Bridge](https://github.com/pllano/api-shop/blob/master/app/classes/Db/Bridge.php) и [MysqlDb](https://github.com/pllano/api-shop/blob/master/app/classes/Db/MysqlDb.php)
-- Elasticsearch с использованием [Elasticsearch-PHP](https://github.com/elastic/elasticsearch-php) транзитом через [Bridge](https://github.com/pllano/api-shop/blob/master/app/classes/Db/Bridge.php) и [ElasticsearchDb](https://github.com/pllano/api-shop/blob/master/app/classes/Db/ElasticsearchDb.php)
+- [API json DB](https://github.com/pllano/api-json-db) транзитом через классы [Bridge](https://github.com/pllano/api-shop/blob/master/app/classes/Db/Bridge.php) и [JsonDb](https://github.com/pllano/api-shop/blob/master/app/classes/Db/JsonDb.php)
+- MySQL с использованием [slim/pdo](https://packagist.org/packages/slim/pdo) транзитом через классы [Bridge](https://github.com/pllano/api-shop/blob/master/app/classes/Db/Bridge.php) и [MysqlDb](https://github.com/pllano/api-shop/blob/master/app/classes/Db/MysqlDb.php)
+- Elasticsearch с использованием [Elasticsearch-PHP](https://github.com/elastic/elasticsearch-php) транзитом через классы [Bridge](https://github.com/pllano/api-shop/blob/master/app/classes/Db/Bridge.php) и [ElasticsearchDb](https://github.com/pllano/api-shop/blob/master/app/classes/Db/ElasticsearchDb.php)
 
 ## Собственный стандарт обмена данными
 API Shop — Использует собственный стандарт обмена данными сервер-сервер [APIS-2018](https://github.com/pllano/APIS-2018/) дающий возможность не писать своей документации по работе с вашим API. Вы можете писать свою API зная что другим API использующим стандарт APIS-2018 не придется тратиться на дополнительную доработку и интеграцию с вашим API. Для подключения к вашему API будет необходимо только получить данные аутентификации для доступа к учетной записи.
