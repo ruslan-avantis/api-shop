@@ -28,7 +28,7 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 ```php
 // Используем Bridge
 use Pllano\ApiShop\Db\Bridge;
-$db_name = $this->get('settings')['db']['name'];
+$db_name = $this->get('settings')['db']['name']; // name = elasticsearch
 $db = new Bridge($db_name);
 $db->get($resource, $arr, $id);
 
