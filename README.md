@@ -29,12 +29,12 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 // Используем мост
 use Pllano\ApiShop\Db\Bridge;
 $db = new Bridge("elasticsearch");
-$db->post($id, $arr);
+$db->get($resource, $id, $arr);
 
 // Аналогично коду
 use Pllano\ApiShop\Db\ElasticsearchDb as Elasticsearch;
 $db = new Elasticsearch();
-$db->post($id, $arr);
+$db->get($resource, $id, $arr);
 ```
 
 ## Собственный стандарт обмена данными
