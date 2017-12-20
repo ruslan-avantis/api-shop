@@ -21,7 +21,7 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 - Elasticsearch
 
 ## Собственный стандарт обмена данными
-— Использует собственный стандарт обмена данными сервер-сервер [APIS-2018](https://github.com/pllano/APIS-2018/).
+API Shop — Использует собственный стандарт обмена данными сервер-сервер [APIS-2018](https://github.com/pllano/APIS-2018/).
 
 ## Demo
 [life24.com.ua](https://life24.com.ua/)
