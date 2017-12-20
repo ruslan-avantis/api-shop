@@ -1,8 +1,6 @@
 ### Внимание ! Файлы в процессе добавления. Не пробуйте устанавливать API Shop !
 # E-Commerce Platform API Shop
-API Shop — E-Commerce Platform (движок интернет-магазина) с открытым исходным кодом
-
-— Использует RESTful API сторонних платформ для хранения и обработки информации. Написан на PHP с использованием [Micro Framework Slim](https://github.com/slimphp) который использует [PSR-7](http://www.php-fig.org/psr/psr-7/) интерфейс HTTP-сообщений. Использует шаблонизатор [Twig](https://github.com/twigphp/Twig/) и менеджер зависимостей для PHP — [Composer](https://github.com/composer). Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
+API Shop — E-Commerce Platform (движок интернет-магазина) с открытым исходным кодом, использует RESTful API сторонних платформ для хранения и обработки информации. Написан на PHP с использованием [Micro Framework Slim](https://github.com/slimphp) который использует [PSR-7](http://www.php-fig.org/psr/psr-7/) интерфейс HTTP-сообщений. Использует шаблонизатор [Twig](https://github.com/twigphp/Twig/) и менеджер зависимостей для PHP — [Composer](https://github.com/composer). Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
 ## Создавать интернет-магазины на вашей платформе
 Предоставьте своим пользователям возможность создавать интернет-магазины на своей платформе с максимальной интеграцией своих сервисов в эти интернет-магазины.
 ### Банки
