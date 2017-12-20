@@ -27,15 +27,17 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 `Bridge` работает роутером подключения к классам баз данных и дает возможность писать один код для всех баз данных а интеграцию вывести в отдельный класс для каждой базы данных.
 ```php
 // Используем Bridge
-use Pllano\ApiShop\Db\Bridge;
+use Pllano\ApiShop\Db\Bridge as Db;
+// Берем название базы из конфигурации
 $db_name = $this->get('settings')['db']['name']; // name = elasticsearch
-$db = new Bridge($db_name);
+$db = new Db($db_name);
 $db->get($resource, $arr, $id);
 
 // Аналогично коду
 use Pllano\ApiShop\Db\ElasticsearchDb as Elasticsearch;
 $db = new Elasticsearch();
 $db->get($resource, $arr, $id);
+// P.S. В этом случае при изменении базы данных необходимо переписать весь код обращения к базе.
 ```
 
 ## Собственный стандарт обмена данными
