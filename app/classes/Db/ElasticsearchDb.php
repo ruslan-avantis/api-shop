@@ -16,9 +16,9 @@ namespace Pllano\ApiShop\Db;
 use Pllano\ApiShop\Core\Settings;
  
 /**
- * Elasticsearch
+ * ElasticsearchDb
 */
-class Elasticsearch
+class ElasticsearchDb
 {
 	
     public function __construct()
