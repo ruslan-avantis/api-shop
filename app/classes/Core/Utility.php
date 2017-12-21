@@ -19,9 +19,8 @@ use Imagine\Image\Point;
 // Здесь собраны основные полезные функции
 class Utility {
 
-
     // Функция для проверки длинны строки
-    function check_length($value = "", $min, $max) {
+    public function check_length($value = "", $min, $max) {
         $result = (mb_strlen($value) < $min || mb_strlen($value) > $max);
         return !$result;
     }
