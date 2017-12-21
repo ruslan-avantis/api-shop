@@ -74,7 +74,7 @@ class Settings {
     $key_password = __DIR__ . '/key/password.txt';
     $key_user = __DIR__ . '/key/user.txt';
     $key_card = __DIR__ . '/key/card.txt';
-	$key_db = __DIR__ . '/key/db.txt';
+    $key_db = __DIR__ . '/key/db.txt';
  
     // Устанавливаем ключи шифрования
     if (!file_exists($key_session)) {
@@ -105,11 +105,73 @@ class Settings {
     $config['key']['password'] = Key::loadFromAsciiSafeString(file_get_contents($key_password, true));
     $config['key']['user'] = Key::loadFromAsciiSafeString(file_get_contents($key_user, true));
     $config['key']['card'] = Key::loadFromAsciiSafeString(file_get_contents($key_card, true));
-    // Ключ шифрования базы данных. Отдаем в чистом виде.
-    $config['key']['db'] = file_get_contents($key_db, true);
     // Динамический ключ шифрования для ajax
     $config['key']['ajax'] = (Key::createNewRandomKey())->saveToAsciiSafeString();
-	
+
+    // API Shop позволяет одновременно работать с любым колличеством баз данных
+    // Название базы данных для каждого ресурса. По умолчанию json
+    $config['resource']['site']['db'] = "json";
+    $config['resource']['localization']['db'] = "json";
+    $config['resource']['language']['db'] = "json";
+    $config['resource']['price']['db'] = "json";
+    $config['resource']['category']['db'] = "json";
+    $config['resource']['product']['db'] = "json";
+    $config['resource']['type']['db'] = "json";
+    $config['resource']['brand']['db'] = "json";
+    $config['resource']['serie']['db'] = "json";
+    $config['resource']['images']['db'] = "json";
+    $config['resource']['seo']['db'] = "json";
+    $config['resource']['description']['db'] = "json";
+    $config['resource']['params']['db'] = "json";
+    $config['resource']['role']['db'] = "json";
+    $config['resource']['user']['db'] = "json";
+    $config['resource']['contact']['db'] = "json";
+    $config['resource']['address']['db'] = "json";
+    $config['resource']['currency']['db'] = "json";
+    $config['resource']['cart']['db'] = "json";
+    $config['resource']['order']['db'] = "json";
+    $config['resource']['pay']['db'] = "json";
+    $config['resource']['article']['db'] = "json";
+    $config['resource']['article_category']['db'] = "json";
+ 
+    $config['resource']['menu']['db'] = "json";
+    $config['resource']['account']['db'] = "json";
+    $config['resource']['corporation']['db'] = "json";
+    $config['resource']['seller']['db'] = "json";
+    $config['resource']['price_rule']['db'] = "json";
+    $config['resource']['price_list']['db'] = "json";
+    $config['resource']['price_list_rule']['db'] = "json";
+    $config['resource']['supplier']['db'] = "json";
+    $config['resource']['supplier_currency']['db'] = "json";
+    $config['resource']['supplier_account']['db'] = "json";
+    $config['resource']['params']['db'] = "json";
+    $config['resource']['property']['db'] = "json";
+    $config['resource']['property_set']['db'] = "json";
+    $config['resource']['property_list']['db'] = "json";
+    $config['resource']['property_value']['db'] = "json";
+ 
+    // Название глобальной базы данных. По умолчанию json
+    $config['db']['name'] = "json";
+    // Ключ шифрования в базах данных. Отдаем в чистом виде.
+    $config['db']['key'] = file_get_contents($key_db, true);
+    
+    // Директория для хранения файлов json базы данных.
+    $config['db']['json']['dir'] = __DIR__ . '/_db_/';
+
+    // Настройки подключения к базе MySQL
+    $config['db']['mysql']['host'] = '';
+    $config['db']['mysql']['basename'] = '';
+    $config['db']['mysql']['port'] = '';
+    $config['db']['mysql']['charset'] = 'utf8';
+    $config['db']['mysql']['connect_timeout'] = '15';
+    $config['db']['mysql']['user'] = '';
+    $config['db']['mysql']['password'] = '';
+    
+    // Настройки подключения к Elasticsearch
+    // По умолчанию http://localhost:9200/
+    // Учитывая то что в следующих версиях Elasticsearch не будет type
+    $config['db']['elasticsearch']['index'] = 'api_shop';
+    
     return $config;
  
     }
