@@ -54,7 +54,7 @@ $config["resource"]["pay"]["db"] = "oracle";
 ### Встроенный роутер переключения между базами
 `Database\Router` работает роутером подключения к классам баз данных и дает возможность писать один код для всех баз данных, а интеграцию вывести в отдельный класс для каждой базы данных.
 
-Описание параметра [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md)
+Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 ```php
 use Pllano\ApiShop\Database\Router as Db;
 use Pllano\ApiShop\Database\Ping;
