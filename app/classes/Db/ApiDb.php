@@ -13,7 +13,7 @@
  
 namespace Pllano\ApiShop\Db;
 
-class JsonDb
+class ApiDb
 {
     
     public function __construct()
