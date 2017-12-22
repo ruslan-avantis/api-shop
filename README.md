@@ -1,4 +1,6 @@
-### Внимание ! API Shop в активной разработке. Первая BETA планируется в феврале 2018 г.
+### Внимание ! API Shop в активной разработке.
+- Выпуск `1.0.1-BETA-1` планируется в январе 2018 г.
+- Первая стабильная версия `1.0.1` планируется в феврале-марте 2018 г.
 # E-Commerce Platform API Shop
 API Shop — E-Commerce Platform (движок интернет-магазина), использует RESTful API сторонних платформ для хранения и обработки информации. Написан на PHP с использованием [Micro Framework Slim](https://github.com/slimphp) который использует [PSR-7](http://www.php-fig.org/psr/psr-7/) интерфейс HTTP-сообщений. Использует шаблонизатор [Twig](https://github.com/twigphp/Twig/) и менеджер зависимостей для PHP — [Composer](https://github.com/composer). Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
 
