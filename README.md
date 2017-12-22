@@ -56,9 +56,19 @@ $config["resource"]["pay"]["db"] = "oracle";
 ```php
 // Используем Database\Router
 use Pllano\ApiShop\Database\Router as Db;
-// Берем название базы из конфигурации
-$db_name = $this->get('settings')['db']['master']; // master = elasticsearch или json или mysql
+use Pllano\ApiShop\Database\Ping;
+
+$resource = ""; // Ресурс к которому обращаемся
+$arr = ""; // Массив с данными
+$id = ""; // id записи. По умолчанию = null
+
+// Database\Ping контролирует состояние подключения master и slave, а также resource
+// Если resource недоступен, подключит slave базу
+$db_name = new Ping($resource);
+
+// Подключаемся к базе
 $db = new Db($db_name);
+// Отправляем запрос
 $db->get($resource, $arr, $id);
 ```
 ## Собственный стандарт обмена данными
