@@ -2,6 +2,9 @@
 # E-Commerce Platform API Shop
 API Shop — E-Commerce Platform (движок интернет-магазина), использует RESTful API сторонних платформ для хранения и обработки информации. Написан на PHP с использованием [Micro Framework Slim](https://github.com/slimphp) который использует [PSR-7](http://www.php-fig.org/psr/psr-7/) интерфейс HTTP-сообщений. Использует шаблонизатор [Twig](https://github.com/twigphp/Twig/) и менеджер зависимостей для PHP — [Composer](https://github.com/composer). Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
 
+## Demo
+Интернет-магазин [life24.com.ua](https://life24.com.ua/) работает через API платформы [PLLANO Marketplace](https://pllano.com/) документация [PLLANO API](https://github.com/pllano/pllano-api)
+
 ## Интернет-магазин как один из ваших сервисов
 Предоставьте своим пользователям возможность создавать интернет-магазины на своей платформе (сайте) с максимальной интеграцией своих сервисов в эти интернет-магазины.
 ### Банки
@@ -43,9 +46,6 @@ $db->get($resource, $arr, $id);
 
 ## Собственный стандарт обмена данными
 API Shop — Использует собственный стандарт обмена данными сервер-сервер [APIS-2018](https://github.com/pllano/APIS-2018/) дающий возможность не писать своей документации по работе с вашим API. Вы можете писать свою API зная что другим API использующим стандарт APIS-2018 не придется тратиться на дополнительную доработку и интеграцию с вашим API. Для подключения к вашему API будет необходимо только получить данные аутентификации для доступа к учетной записи.
-
-## Demo
-Интернет-магазин [life24.com.ua](https://life24.com.ua/) работает через API платформы [PLLANO Marketplace](https://pllano.com/) документация [PLLANO API](https://github.com/pllano/pllano-api)
 
 ## Зависимости
 
