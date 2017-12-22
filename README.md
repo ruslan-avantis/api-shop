@@ -29,6 +29,7 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 - MySQL с использованием [slim/pdo](https://packagist.org/packages/slim/pdo) транзитом через классы [Database\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php) и [MysqlDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/MysqlDb.php)
 - Elasticsearch с использованием [Elasticsearch-PHP](https://github.com/elastic/elasticsearch-php) транзитом через классы [Database\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php) и [ElasticsearchDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ElasticsearchDb.php)
 
+### Резервная база данных
 API Shop может переключатся между базами данных на лету, если основная база данных недоступна. Для этого необходимо в конфигурации указать названия обоих баз.
 ```php
 // Название основной базы данных. По умолчанию api
@@ -36,7 +37,15 @@ $config["db"]["master"] = "api";
 // Название резервной базы данных. По умолчанию json
 $config["db"]["slave"] = "json";
 ```
-
+### Использовать несколько баз данных
+API Shop позволяет одновременно работать с любым количеством баз данных. Название базы данных можно задать для каждого ресурса индивидуально. По умолчанию api
+```php
+$config["resource"]["user"]["db"] = "api";
+$config["resource"]["price"]["db"] = "mysql";
+$config["resource"]["params"]["db"] = "elasticsearch";
+$config["resource"]["article"]["db"] = "json";
+```
+### Встроенный роутер переключения между базами
 `Database\Router` работает роутером подключения к классам баз данных и дает возможность писать один код для всех баз данных, а интеграцию вывести в отдельный класс для каждой базы данных.
 ```php
 // Используем Database\Router
@@ -45,14 +54,7 @@ use Pllano\ApiShop\Database\Router as Db;
 $db_name = $this->get('settings')['db']['master']; // master = elasticsearch или json или mysql
 $db = new Db($db_name);
 $db->get($resource, $arr, $id);
-
-// Если бы вы подключались напрямую
-// P.S. В этом случае при изменении базы данных необходимо переписать весь код где есть обращение к базе.
-use Pllano\ApiShop\Db\ElasticsearchDb as Db;
-$db = new Db();
-$db->get($resource, $arr, $id);
 ```
-
 ## Собственный стандарт обмена данными
 API Shop — Использует собственный стандарт обмена данными сервер-сервер [APIS-2018](https://github.com/pllano/APIS-2018/) дающий возможность не писать своей документации по работе с вашим API. Вы можете писать свою API зная что другим API использующим стандарт APIS-2018 не придется тратиться на дополнительную доработку и интеграцию с вашим API. Для подключения к вашему API будет необходимо только получить данные аутентификации для доступа к учетной записи.
 
