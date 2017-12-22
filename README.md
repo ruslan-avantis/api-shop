@@ -48,6 +48,8 @@ $config["resource"]["user"]["db"] = "mysql";
 $config["resource"]["params"]["db"] = "elasticsearch";
 // Локализацию хранить в jsonDB
 $config["resource"]["language"]["db"] = "json";
+// Платежи хранить в Oracle
+$config["resource"]["pay"]["db"] = "oracle";
 ```
 ### Встроенный роутер переключения между базами
 `Database\Router` работает роутером подключения к классам баз данных и дает возможность писать один код для всех баз данных, а интеграцию вывести в отдельный класс для каждой базы данных.
