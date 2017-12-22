@@ -75,10 +75,10 @@ $arr = [
     "relations" => "'product'.'user'.'address'"
 ];
  
-// Database\Ping контролирует состояние подключения master и slave, а также resource
-// Если resource недоступен, подключит slave базу
-$db_name = new Ping($resource);
-
+// Database\Ping контролирует состояние master и slave
+// Если база указанная в конфигурации resource недоступна, подключит master или slave
+$db_name = new Ping($resource); // return api
+ 
 // Подключаемся к базе
 $db = new Db($db_name);
 // Отправляем запрос
