@@ -30,6 +30,8 @@ class Settings {
  
     // Папка куда будет кешироваться Slim\Views\Twig
     $config["settings"]["cache"] =  __DIR__ . "/../_cache/";
+
+	$config["settings"]['http-codes'] = "https://github.com/pllano/APIS-2018/tree/master/http-codes/";
  
     // Конфигурация Slim
     $config["settings"]["dir"] = "config";
