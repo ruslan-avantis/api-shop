@@ -23,7 +23,7 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 ## «API Shop» — Работает без своей базы данных
 «API Shop» может работать без базы данных и все данные получать и отдавать через API платформы на которой он создан. Также может иметь свое собственное хранилище данных, главная задача которого обеспечить быструю отдачу контента (кэширование) и бесперебойную работу сайта при сбоях или недоступности API от которой она получает данные.
 
-Поддерживаются следующие системы управления базами данных:
+Поддерживаются следующие системы хранения и управления данными:
 - работа через API (без своей базы данных) транзитом через классы [Database\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php) и [ApiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ApiDb.php)
 - [jsonDB](https://github.com/pllano/json-db) транзитом через классы [Database\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php) и [JsonDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/JsonDb.php)
 - MySQL с использованием [slim/pdo](https://packagist.org/packages/slim/pdo) транзитом через классы [Database\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php) и [MysqlDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/MysqlDb.php)
