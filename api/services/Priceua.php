@@ -11,12 +11,12 @@
  * file that was distributed with this source code.
  */
  
-namespace Pllano\ApiShop\Services\Marketplace;
+namespace ApiShop\Services\Marketplace;
 
-use Pllano\ApiShop\Core\Settings;
-use Pllano\ApiShop\Model\Payments;
-use Pllano\ApiShop\Model\Delivery;
-use Pllano\ApiShop\Model\Marketplace;
+use ApiShop\Config\Settings;
+use ApiShop\Model\Payments;
+use ApiShop\Model\Delivery;
+use ApiShop\Model\Marketplace;
  
 /**
  * Пример промежуточного интерфейса для взаимодействия платежной системы и API Shop

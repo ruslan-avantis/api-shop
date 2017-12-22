@@ -39,8 +39,8 @@ $loader = new \Psr4\Autoloader;
 // register the autoloader
 $loader->register();
 // register the base directories for the namespace prefix
-$loader->addNamespace('Pllano\ApiShop', __DIR__ . '/../app/classes');
-$loader->addNamespace('Pllano\ApiShop', __DIR__ . '/services');
+$loader->addNamespace('ApiShop', __DIR__ . '/../app/classes');
+$loader->addNamespace('ApiShop', __DIR__ . '/services');
 
 // Подключаем Composer
 if (file_exists(__DIR__ . '/../../vendor/autoload.php';)){
@@ -48,13 +48,13 @@ if (file_exists(__DIR__ . '/../../vendor/autoload.php';)){
 } elseif (file_exists(__DIR__ . '/../vendor/autoload.php';)){
     require __DIR__ . '/../vendor/autoload.php';
 } else {
-	$error = new \Pllano\ApiShop\Error();
+	$error = new \ApiShop\Error();
 	$error->permission();
 }
 
 require __DIR__ . '/../app/config/settings.php';
 // Подключаем файл конфигурации системы
-$settings = new \Pllano\ApiShop\Core\Settings();
+$settings = new \ApiShop\Config\Settings();
 $config = $settings->get();
 
 // Подключаем Slim и отдаем ему Конфиг

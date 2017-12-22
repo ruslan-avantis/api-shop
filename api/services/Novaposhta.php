@@ -11,10 +11,10 @@
  * file that was distributed with this source code.
  */
  
-namespace Pllano\ApiShop\Services\Delivery;
+namespace ApiShop\Services\Delivery;
 
-use Pllano\ApiShop\Core\Settings;
-use Pllano\ApiShop\Model\Delivery;
+use ApiShop\Config\Settings;
+use ApiShop\Model\Delivery;
  
 /**
  * Пример промежуточного интерфейса для взаимодействия платежной системы и API Shop

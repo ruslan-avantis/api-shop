@@ -11,9 +11,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Pllano\ApiShop\Services\Marketplace;
-namespace Pllano\ApiShop\Services\Payments;
-namespace Pllano\ApiShop\Services\Delivery;
+use Slim\Http\Request;
+use Slim\Http\Response;
+use ApiShop\Services\Marketplace;
+use ApiShop\Services\Payments;
+use ApiShop\Services\Delivery;
 
 $app->get("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (Request $request, Response $response, array $args) {
     $service = $request->getAttribute('service');
@@ -25,7 +27,7 @@ $app->get("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (
             $services = new $service();
 	        $resp = $services->get($resource, $param, $id);
     } else {
-        // Сервис не определен. Возвращаем ошибку 400
+        // Сервис не определен. Возвращаем ошибку 404
         $resp["headers"]["status"] = "404 Not Found";
         $resp["headers"]["code"] = 404;
         $resp["headers"]["message"] = "Bad Request";
@@ -46,7 +48,7 @@ $app->post("/v1/json/{service:[\w]+}[/{resource:[\w]+}]", function (Request $req
             $services = new $service();
 	        $resp = $services->post($resource, $param);
     } else {
-        // Сервис не определен. Возвращаем ошибку 400
+        // Сервис не определен. Возвращаем ошибку 404
         $resp["headers"]["status"] = "404 Not Found";
         $resp["headers"]["code"] = 404;
         $resp["headers"]["message"] = "Bad Request";
@@ -68,7 +70,7 @@ $app->put("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (
             $services = new $service();
 	        $resp = $services->put($resource, $param, $id);
     } else {
-        // Сервис не определен. Возвращаем ошибку 400
+        // Сервис не определен. Возвращаем ошибку 404
         $resp["headers"]["status"] = "404 Not Found";
         $resp["headers"]["code"] = 404;
         $resp["headers"]["message"] = "Bad Request";
@@ -90,7 +92,7 @@ $app->patch("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function
             $services = new $service();
 	        $resp = $services->patch($resource, $param, $id);
     } else {
-        // Сервис не определен. Возвращаем ошибку 400
+        // Сервис не определен. Возвращаем ошибку 404
         $resp["headers"]["status"] = "404 Not Found";
         $resp["headers"]["code"] = 404;
         $resp["headers"]["message"] = "Bad Request";
@@ -111,7 +113,7 @@ $app->delete("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", functio
             $services = new $service();
 	        $resp = $services->delete($resource, $param, $id);
     } else {
-        // Сервис не определен. Возвращаем ошибку 400
+        // Сервис не определен. Возвращаем ошибку 404
         $resp["headers"]["status"] = "404 Not Found";
         $resp["headers"]["code"] = 404;
         $resp["headers"]["message"] = "Bad Request";
