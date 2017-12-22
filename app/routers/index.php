@@ -14,38 +14,15 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-use Pllano\ApiShop\Core\Utility;
-use Pllano\ApiShop\Core\Settings;
-
 $app->get('/', function (Request $request, Response $response, array $args) {
-
-    $param = $request->getQueryParams();
-    $utility = new Utility();
-    // Подключаем конфиг \Pllano\ApiShop\Core\Settings
-    $configs = new Settings();
-    $conf = $configs->get();
     
-    $param_key = (isset($param['key'])) ? $utility->clean($param['key']) : null;
-
-    if ($param_key == $conf['db']["key"]) {
         $resp["headers"]["status"] = "200 OK";
         $resp["headers"]["code"] = 200;
         $resp["headers"]["message"] = "API Shop works!";
         $resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
-        
         echo json_encode($resp, JSON_PRETTY_PRINT);
-    } else {
-        $resp["headers"]["status"] = "200 OK";
-        $resp["headers"]["code"] = 200;
-        $resp["headers"]["message"] = "API Shop works! -------";
-        $resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
-        echo json_encode($resp, JSON_PRETTY_PRINT);
-    }
-
-    //$response->withStatus(200);
-    //$response->withHeader('Content-type', 'application/json');
-    //return $response;
         
     return $response->withStatus(200)->withHeader('Content-Type','application/json');
 
 });
+ 
