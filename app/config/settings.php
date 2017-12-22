@@ -110,56 +110,60 @@ class Settings {
     // Динамический ключ шифрования для ajax
     $config["key"]["ajax"] = (Key::createNewRandomKey())->saveToAsciiSafeString();
 
-    // API Shop позволяет одновременно работать с любым колличеством баз данных
-    // Название базы данных для каждого ресурса. По умолчанию json
-    $config["resource"]["site"]["db"] = "json";
-    $config["resource"]["localization"]["db"] = "json";
-    $config["resource"]["language"]["db"] = "json";
-    $config["resource"]["price"]["db"] = "json";
-    $config["resource"]["category"]["db"] = "json";
-    $config["resource"]["product"]["db"] = "json";
-    $config["resource"]["type"]["db"] = "json";
-    $config["resource"]["brand"]["db"] = "json";
-    $config["resource"]["serie"]["db"] = "json";
-    $config["resource"]["images"]["db"] = "json";
-    $config["resource"]["seo"]["db"] = "json";
-    $config["resource"]["description"]["db"] = "json";
-    $config["resource"]["params"]["db"] = "json";
-    $config["resource"]["role"]["db"] = "json";
-    $config["resource"]["user"]["db"] = "json";
-    $config["resource"]["contact"]["db"] = "json";
-    $config["resource"]["address"]["db"] = "json";
-    $config["resource"]["currency"]["db"] = "json";
-    $config["resource"]["cart"]["db"] = "json";
-    $config["resource"]["order"]["db"] = "json";
-    $config["resource"]["pay"]["db"] = "json";
-    $config["resource"]["article"]["db"] = "json";
-    $config["resource"]["article_category"]["db"] = "json";
+    // Название основной базы данных. По умолчанию api
+    $config["db"]["master"] = "api";
+    // Название резервной базы данных. По умолчанию json
+    $config["db"]["slave"] = "json";
+	
+    // API Shop позволяет одновременно работать с любым количеством баз данных
+    // Название базы данных для каждого ресурса. По умолчанию api
+    $config["resource"]["site"]["db"] = "api";
+    $config["resource"]["localization"]["db"] = "api";
+    $config["resource"]["language"]["db"] = "api";
+    $config["resource"]["price"]["db"] = "api";
+    $config["resource"]["category"]["db"] = "api";
+    $config["resource"]["product"]["db"] = "api";
+    $config["resource"]["type"]["db"] = "api";
+    $config["resource"]["brand"]["db"] = "api";
+    $config["resource"]["serie"]["db"] = "api";
+    $config["resource"]["images"]["db"] = "api";
+    $config["resource"]["seo"]["db"] = "api";
+    $config["resource"]["description"]["db"] = "api";
+    $config["resource"]["params"]["db"] = "api";
+    $config["resource"]["role"]["db"] = "api";
+    $config["resource"]["user"]["db"] = "api";
+    $config["resource"]["contact"]["db"] = "api";
+    $config["resource"]["address"]["db"] = "api";
+    $config["resource"]["currency"]["db"] = "api";
+    $config["resource"]["cart"]["db"] = "api";
+    $config["resource"]["order"]["db"] = "api";
+    $config["resource"]["pay"]["db"] = "api";
+    $config["resource"]["article"]["db"] = "api";
+    $config["resource"]["article_category"]["db"] = "api";
  
-    $config["resource"]["menu"]["db"] = "json";
-    $config["resource"]["account"]["db"] = "json";
-    $config["resource"]["corporation"]["db"] = "json";
-    $config["resource"]["seller"]["db"] = "json";
-    $config["resource"]["price_rule"]["db"] = "json";
-    $config["resource"]["price_list"]["db"] = "json";
-    $config["resource"]["price_list_rule"]["db"] = "json";
-    $config["resource"]["supplier"]["db"] = "json";
-    $config["resource"]["supplier_currency"]["db"] = "json";
-    $config["resource"]["supplier_account"]["db"] = "json";
-    $config["resource"]["params"]["db"] = "json";
-    $config["resource"]["property"]["db"] = "json";
-    $config["resource"]["property_set"]["db"] = "json";
-    $config["resource"]["property_list"]["db"] = "json";
-    $config["resource"]["property_value"]["db"] = "json";
+    // Дополнительные ресурсы. Сейчас в разработке.
+    $config["resource"]["menu"]["db"] = "api";
+    $config["resource"]["account"]["db"] = "api";
+    $config["resource"]["corporation"]["db"] = "api";
+    $config["resource"]["seller"]["db"] = "api";
+    $config["resource"]["price_rule"]["db"] = "api";
+    $config["resource"]["price_list"]["db"] = "api";
+    $config["resource"]["price_list_rule"]["db"] = "api";
+    $config["resource"]["supplier"]["db"] = "api";
+    $config["resource"]["supplier_currency"]["db"] = "api";
+    $config["resource"]["supplier_account"]["db"] = "api";
+    $config["resource"]["params"]["db"] = "api";
+    $config["resource"]["property"]["db"] = "api";
+    $config["resource"]["property_set"]["db"] = "api";
+    $config["resource"]["property_list"]["db"] = "api";
+    $config["resource"]["property_value"]["db"] = "api";
  
-    // Название глобальной базы данных. По умолчанию json
-    $config["db"]["name"] = "json";
     // Ключ шифрования в базах данных. Отдаем в чистом виде.
     $config["db"]["key"] = file_get_contents($key_db, true);
-    
+ 
     // Директория для хранения файлов json базы данных.
     $config["db"]["json"]["dir"] = __DIR__ . "/_db_/";
-
+ 
     // Настройки подключения к базе MySQL
     $config["db"]["mysql"]["host"] = "";
     $config["db"]["mysql"]["basename"] = "";
@@ -168,12 +172,21 @@ class Settings {
     $config["db"]["mysql"]["connect_timeout"] = 15;
     $config["db"]["mysql"]["user"] = "";
     $config["db"]["mysql"]["password"] = "";
-    
+ 
     // Настройки подключения к Elasticsearch
     // По умолчанию http://localhost:9200/
+	$config["db"]["elasticsearch"]["host"] = "localhost";
+	$config["db"]["elasticsearch"]["port"] = 9200;
     // Учитывая то что в следующих версиях Elasticsearch не будет type
-    $config["db"]["elasticsearch"]["index"] = "api_shop";
-    
+    // вы можете отключить type поставив false
+    // в этом случае index будет формироватся так index_type
+	$config["db"]["elasticsearch"]["type"] = true; // true|false
+    $config["db"]["elasticsearch"]["index"] = "apishop";
+    // Если подключение к elasticsearch требует логин и пароль установите auth=true
+	$config["db"]["elasticsearch"]["auth"] = false; // true|false
+	$config["db"]["elasticsearch"]["user"] = "elastic";
+	$config["db"]["elasticsearch"]["password"] = "elastic_password";
+ 
     return $config;
  
     }
