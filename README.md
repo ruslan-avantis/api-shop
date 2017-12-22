@@ -76,7 +76,11 @@ $arr = [
     "order" => "DESC",
     "sort" => "created",
     "state" => 1,
-    "relations" => "'product'.'user'.'address'"
+    "relations" => '{
+        "product": ["type_id","brand_id","serie_id","articul"],
+        "user": true,
+        "address": true
+    }'
 ];
  
 // Database\Ping контролирует состояние master и slave
