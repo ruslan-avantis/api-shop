@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Pllano\ApiShop\Core;
+namespace ApiShop\Config;
 
 use Defuse\Crypto\Key;
 
