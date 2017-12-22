@@ -11,9 +11,9 @@
  * file that was distributed with this source code.
  */
 
-namespace ApiShop\Model;
+namespace ApiShop\Resources;
 
-class Menu {
+class Language {
 	
     function __construct()
     {

@@ -13,7 +13,7 @@
 
 namespace ApiShop\Model;
 
-class Menu {
+class Pagination {
 	
     function __construct()
     {

@@ -11,11 +11,11 @@
  * file that was distributed with this source code.
  */
  
-namespace Pllano\ApiShop\Services;
+namespace ApiShop\Services;
 
-use Pllano\ApiShop\Core\Settings;
-use Pllano\ApiShop\Services\Payment;
-use Pllano\ApiShop\Services\Delivery;
+use ApiShop\Core\Settings;
+use ApiShop\Services\Payment;
+use ApiShop\Services\Delivery;
  
 /**
  * Оплаты

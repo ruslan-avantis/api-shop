@@ -13,7 +13,7 @@
 
 namespace ApiShop\Model;
 
-class Menu {
+class Filter {
 	
     function __construct()
     {

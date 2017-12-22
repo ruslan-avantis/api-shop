@@ -10,15 +10,26 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+ 
+namespace ApiShop\Database;
 
-namespace ApiShop\Model;
-
-class Menu {
-	
-    function __construct()
+class ApiDb
+{
+    
+    public function __construct()
     {
-
+ 
     }
-	
+    
+    public function getOne($resource = null, $field = null, $value = null)
+    {
+ 
+    }
+    
+    public function post($id = null, array $arr = array())
+    {
+ 
+    }
+    
 }
  
