@@ -24,9 +24,9 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 «API Shop» может работать без базы данных и все данные получать и отдавать через API платформы на которой он создан. Также может иметь свое собственное хранилище данных, главная задача которого обеспечить быструю отдачу контента (кэширование) и бесперебойную работу сайта при сбоях или недоступности API от которой она получает данные.
 
 Поддерживаются следующие системы управления базами данных:
-- [jsonDB](https://github.com/pllano/json-db) транзитом через классы [Database\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database\Router.php) и [JsonDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/JsonDb.php)
-- MySQL с использованием [slim/pdo](https://packagist.org/packages/slim/pdo) транзитом через классы [Database\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database\Router.php) и [MysqlDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/MysqlDb.php)
-- Elasticsearch с использованием [Elasticsearch-PHP](https://github.com/elastic/elasticsearch-php) транзитом через классы [Database\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database\Router.php) и [ElasticsearchDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ElasticsearchDb.php)
+- [jsonDB](https://github.com/pllano/json-db) транзитом через классы [Database\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php) и [JsonDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/JsonDb.php)
+- MySQL с использованием [slim/pdo](https://packagist.org/packages/slim/pdo) транзитом через классы [Database\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php) и [MysqlDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/MysqlDb.php)
+- Elasticsearch с использованием [Elasticsearch-PHP](https://github.com/elastic/elasticsearch-php) транзитом через классы [Database\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php) и [ElasticsearchDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ElasticsearchDb.php)
 
 `Database\Router` работает роутером подключения к классам баз данных и дает возможность писать один код для всех баз данных, а интеграцию вывести в отдельный класс для каждой базы данных. Также можно переключатся между базами данных на лету, внеся изменение только в файл конфигурации.
 ```php
