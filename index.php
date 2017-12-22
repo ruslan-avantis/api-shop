@@ -39,7 +39,7 @@ $loader = new \Psr4\Autoloader;
 // register the autoloader
 $loader->register();
 // register the base directories for the namespace prefix
-$loader->addNamespace('Pllano\ApiShop', __DIR__ . '/app/classes');
+$loader->addNamespace('ApiShop', __DIR__ . '/app/classes');
 
 // Подключаем Composer
 if (file_exists(__DIR__ . '/../vendor/autoload.php')){
@@ -50,21 +50,21 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')){
     // Если autoload.php не найден - подключаем загрузчик пакетов
     require __DIR__ . '/app/installer.php';
     
-    $loaders = new \Pllano\ApiShop\Loader();
+    $loaders = new \ApiShop\Loader();
     // Запускаем загрузку пакетов и указываем директорию
     $load = $loaders->run(__DIR__ . '/../vendor');
     
     if ($load == true){
         require __DIR__ . '/vendor/autoload.php';
     } else {
-        $error = new \Pllano\ApiShop\Error();
+        $error = new \ApiShop\Error();
         $error->permission();
     }
 }
 
 require __DIR__ . '/app/config/settings.php';
 // Подключаем файл конфигурации системы
-$settings = new \Pllano\ApiShop\Core\Settings();
+$settings = new \ApiShop\Config\Settings();
 $config = $settings->get();
 
 // Подключаем Slim и отдаем ему Конфиг
@@ -74,7 +74,7 @@ $app = new \Slim\App($config);
 session_start();
 // Run User Session
 // Запускаем сессию пользователя
-(new \Pllano\ApiShop\Model\User())->run();
+(new \ApiShop\Model\User())->run();
 
 $cores = glob(__DIR__ . '/app/core/*.php');
 foreach ($cores as $core) {
