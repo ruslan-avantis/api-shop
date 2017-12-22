@@ -28,10 +28,10 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 - MySQL с использованием [slim/pdo](https://packagist.org/packages/slim/pdo) транзитом через классы [Bridge](https://github.com/pllano/api-shop/blob/master/app/classes/Db/Bridge.php) и [MysqlDb](https://github.com/pllano/api-shop/blob/master/app/classes/Db/MysqlDb.php)
 - Elasticsearch с использованием [Elasticsearch-PHP](https://github.com/elastic/elasticsearch-php) транзитом через классы [Bridge](https://github.com/pllano/api-shop/blob/master/app/classes/Db/Bridge.php) и [ElasticsearchDb](https://github.com/pllano/api-shop/blob/master/app/classes/Db/ElasticsearchDb.php)
 
-`Database` работает роутером подключения к классам баз данных и дает возможность писать один код для всех баз данных, а интеграцию вывести в отдельный класс для каждой базы данных. Также можно переключатся между базами данных на лету, внеся изменение только в файл конфигурации.
+`Database\Router` работает роутером подключения к классам баз данных и дает возможность писать один код для всех баз данных, а интеграцию вывести в отдельный класс для каждой базы данных. Также можно переключатся между базами данных на лету, внеся изменение только в файл конфигурации.
 ```php
-// Используем Database
-use Pllano\ApiShop\Db\Database as Db;
+// Используем Database\Router
+use Pllano\ApiShop\Database\Router as Db;
 // Берем название базы из конфигурации
 $db_name = $this->get('settings')['db']['name']; // name = elasticsearch или json или mysql
 $db = new Db($db_name);
