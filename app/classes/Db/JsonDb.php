@@ -14,23 +14,24 @@
 namespace Pllano\ApiShop\Db;
 
 use Pllano\ApiShop\Core\Settings;
- 
-/**
- * JsonDb
-*/
+
 class JsonDb
 {
 	
     public function __construct()
     {
-
+ 
+    }
+	
+    public function getOne($resource = null, $field = null, $value = null)
+    {
+ 
     }
 	
     public function post($id = null, array $arr = array())
     {
-        // тело GET
-		// $id - записи
-		// $arr - массив с параметрами
+ 
     }
+	
 }
  
