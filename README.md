@@ -76,11 +76,11 @@ $arr = [
     "order" => "DESC",
     "sort" => "created",
     "state" => 1,
-    "relations" => '{
+    "relations" => base64_encode('{
         "product": ["type_id","brand_id","serie_id","articul"],
         "user": true,
         "address": true
-    }'
+    }')
 ];
  
 // Database\Ping контролирует состояние master и slave
