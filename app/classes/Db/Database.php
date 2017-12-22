@@ -39,12 +39,12 @@ class Database
             return false;
         }
     }
-	
+    
     public function getOne($resource = null, $field = null, $value = null)
     {
         if ($this->db !== null && $resource !== null) {
  
-			$class = '\Pllano\ApiShop\Db\\'.ucfirst($this->db)."Db";
+            $class = '\Pllano\ApiShop\Db\\'.ucfirst($this->db)."Db";
             $db = new $class();
             return $db->getOne($resource, $field, $value);
         } else {
@@ -75,7 +75,7 @@ class Database
             return false;
         }
     }
-	
+    
     public function patch($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
