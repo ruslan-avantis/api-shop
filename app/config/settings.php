@@ -31,7 +31,7 @@ class Settings {
     // Папка куда будет кешироваться Slim\Views\Twig
     $config["settings"]["cache"] =  __DIR__ . "/../_cache/";
 
-	$config["settings"]['http-codes'] = "https://github.com/pllano/APIS-2018/tree/master/http-codes/";
+    $config["settings"]['http-codes'] = "https://github.com/pllano/APIS-2018/tree/master/http-codes/";
  
     // Конфигурация Slim
     $config["settings"]["dir"] = "config";
@@ -114,7 +114,7 @@ class Settings {
     $config["db"]["master"] = "api";
     // Название резервной базы данных. По умолчанию json
     $config["db"]["slave"] = "json";
-	
+    
     // API Shop позволяет одновременно работать с любым количеством баз данных
     // Название базы данных для каждого ресурса. По умолчанию api
     $config["resource"]["site"]["db"] = "api";
@@ -175,17 +175,17 @@ class Settings {
  
     // Настройки подключения к Elasticsearch
     // По умолчанию http://localhost:9200/
-	$config["db"]["elasticsearch"]["host"] = "localhost";
-	$config["db"]["elasticsearch"]["port"] = 9200;
+    $config["db"]["elasticsearch"]["host"] = "localhost";
+    $config["db"]["elasticsearch"]["port"] = 9200;
     // Учитывая то что в следующих версиях Elasticsearch не будет type
     // вы можете отключить type поставив false
     // в этом случае index будет формироватся так index_type
-	$config["db"]["elasticsearch"]["type"] = true; // true|false
+    $config["db"]["elasticsearch"]["type"] = true; // true|false
     $config["db"]["elasticsearch"]["index"] = "apishop";
     // Если подключение к elasticsearch требует логин и пароль установите auth=true
-	$config["db"]["elasticsearch"]["auth"] = false; // true|false
-	$config["db"]["elasticsearch"]["user"] = "elastic";
-	$config["db"]["elasticsearch"]["password"] = "elastic_password";
+    $config["db"]["elasticsearch"]["auth"] = false; // true|false
+    $config["db"]["elasticsearch"]["user"] = "elastic";
+    $config["db"]["elasticsearch"]["password"] = "elastic_password";
  
     return $config;
  
