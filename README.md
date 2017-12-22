@@ -62,8 +62,8 @@ $config["resource"]["pay"]["db"] = "oracle";
 
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 ```php
-use Pllano\ApiShop\Database\Router as Db;
-use Pllano\ApiShop\Database\Ping;
+use ApiShop\Database\Router as Db;
+use ApiShop\Database\Ping;
 
 // Ресурс к которому обращаемся
 $resource = "price";
