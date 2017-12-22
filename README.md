@@ -78,8 +78,8 @@ $arr = [
     "state" => 1,
     "relations" => base64_encode('{
         "product": ["type_id","brand_id","serie_id","articul"],
-        "user": true,
-        "address": true
+        "user": "all",
+        "address": "all"
     }')
 ];
  
