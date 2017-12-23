@@ -34,7 +34,7 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 - jsonapiDb - Вы можете хранить данные в [jsonDB](https://github.com/pllano/json-db) в любом месте (даже на удаленном сервере) и работать с ней через API интерфейс, транзитом через клас [jsonapiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/jsonapiDb.php)
 - MySQL с использованием [slim/pdo](https://packagist.org/packages/slim/pdo) транзитом через клас [MysqlDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/MysqlDb.php)
 - Elasticsearch с использованием [Elasticsearch-PHP](https://github.com/elastic/elasticsearch-php) транзитом через клас [ElasticsearchDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ElasticsearchDb.php)
-- Без особых сложностей возможно дописать интерфейс для работы с любой другой базой данных.
+- Без особых сложностей возможно написать клас для работы с любой другой базой данных.
 
 ### Резервная база данных
 API Shop может переключатся между базами данных на лету, если основная база данных недоступна. Для этого необходимо в конфигурации указать названия обоих баз.
