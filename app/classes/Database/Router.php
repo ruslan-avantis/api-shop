@@ -20,7 +20,7 @@ class Router
      * @var string
     */
     private $db = null;
-    
+ 
     public function __construct($db = null)
     {
         if ($db !== null) {
@@ -30,8 +30,7 @@ class Router
     
     public function get($resource = null, array $arr = array(), $id = null)
     {
-        if ($this->db !== null && $resource !== null) {
-            
+        if ($this->db !== null && $resource !== null) { 
             $class = '\ApiShop\Database\\'.ucfirst($this->db)."Db";
             $db = new $class();
             return $db->get($resource, $arr, $id);
@@ -43,7 +42,6 @@ class Router
     public function getOne($resource = null, $field = null, $value = null)
     {
         if ($this->db !== null && $resource !== null) {
- 
             $class = '\ApiShop\Database\\'.ucfirst($this->db)."Db";
             $db = new $class();
             return $db->getOne($resource, $field, $value);
@@ -55,7 +53,6 @@ class Router
     public function post($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
-            
             $class = '\ApiShop\Database\\'.ucfirst($this->db)."Db";
             $db = new $class();
             return $db->post($resource, $arr, $id);
@@ -67,7 +64,6 @@ class Router
     public function put($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
-            
             $class = '\ApiShop\Database\\'.ucfirst($this->db)."Db";
             $db = new $class();
             return $db->put($resource, $arr, $id);
@@ -79,7 +75,6 @@ class Router
     public function patch($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
-            
             $class = '\ApiShop\Database\\'.ucfirst($this->db)."Db";
             $db = new $class();
             return $db->patch($resource, $arr, $id);
@@ -91,7 +86,6 @@ class Router
     public function delete($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
-            
             $class = '\ApiShop\Database\\'.ucfirst($this->db)."Db";
             $db = new $class();
             return $db->delete($resource, $arr, $id);

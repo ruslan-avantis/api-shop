@@ -20,16 +20,16 @@ class JsonDb
     {
  
     }
-    
+ 
+    public function get($resource = null, array $arr = array(), $id = null)
+    {
+ 
+    }
+ 
     public function getOne($resource = null, $field = null, $value = null)
     {
  
     }
-    
-    public function post($id = null, array $arr = array())
-    {
  
-    }
-    
 }
  
