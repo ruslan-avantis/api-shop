@@ -115,7 +115,7 @@ API Shop — Использует собственный стандарт обм
 {
   "require": {
     "php": "^7.0",
-    "pllano/api-json-db": "^1.0",
+    "pllano/json-db": "^1.0.5",
     "psr/http-message": "^1.0",
     "slim/slim": "^3.0",
     "slim/csrf": "^0.8.",
