@@ -25,7 +25,8 @@ class Settings {
     $config["settings"]["themes"]["dir"] = __DIR__ . "/../../themes";
     // Название папки с шаблонами
     $config["settings"]["themes"]["templates"] = "templates";
-    // Название шаблона
+    // Название шаблона. По умолчанию mini-mo
+    // Если работает через api будет брать название шаблона с конфигурации api
     $config["settings"]["themes"]["template"] = "mini-mo";
  
     // Папка куда будет кешироваться Slim\Views\Twig
@@ -35,7 +36,7 @@ class Settings {
  
     // Конфигурация Slim
     $config["settings"]["dir"] = "config";
-    $config["settings"]["displayErrorDetails"] = false;
+    $config["settings"]["displayErrorDetails"] = true;
     $config["settings"]["addContentLengthHeader"] = false;
     $config["settings"]["determineRouteBeforeAppMiddleware"] = true;
     $config["settings"]["cookies.httponly"] = true;
@@ -63,6 +64,10 @@ class Settings {
     $config["settings"]["session"]["encryption_key"] = null;
     // Session namespace
     $config["settings"]["session"]["namespace"] = "_user";
+ 
+    $copyYear = 2017; // Set your website start date
+    $curYear = date('Y'); // Keeps the second year updated
+    $config['settings']['config']['copyright'] = $copyYear . (($copyYear != $curYear) ? '-' . $curYear : '');
  
     // Папка куда будут писатся логи Monolog
     $config["settings"]["logger"]["path"]   = isset($_ENV["docker"]) ? "php://stdout" : __DIR__ . "/../_logs/app.log";
@@ -109,60 +114,38 @@ class Settings {
     $config["key"]["card"] = Key::loadFromAsciiSafeString(file_get_contents($key_card, true));
     // Динамический ключ шифрования для ajax
     $config["key"]["ajax"] = (Key::createNewRandomKey())->saveToAsciiSafeString();
-
+ 
     // Название основной базы данных. По умолчанию api
     $config["db"]["master"] = "api";
     // Название резервной базы данных. По умолчанию json
     $config["db"]["slave"] = "json";
-    
-    // API Shop позволяет одновременно работать с любым количеством баз данных
-    // Название базы данных для каждого ресурса. По умолчанию api
-    $config["resource"]["site"]["db"] = "api";
-    $config["resource"]["localization"]["db"] = "api";
-    $config["resource"]["language"]["db"] = "api";
-    $config["resource"]["price"]["db"] = "api";
-    $config["resource"]["category"]["db"] = "api";
-    $config["resource"]["product"]["db"] = "api";
-    $config["resource"]["type"]["db"] = "api";
-    $config["resource"]["brand"]["db"] = "api";
-    $config["resource"]["serie"]["db"] = "api";
-    $config["resource"]["images"]["db"] = "api";
-    $config["resource"]["seo"]["db"] = "api";
-    $config["resource"]["description"]["db"] = "api";
-    $config["resource"]["params"]["db"] = "api";
-    $config["resource"]["role"]["db"] = "api";
-    $config["resource"]["user"]["db"] = "api";
-    $config["resource"]["contact"]["db"] = "api";
-    $config["resource"]["address"]["db"] = "api";
-    $config["resource"]["currency"]["db"] = "api";
-    $config["resource"]["cart"]["db"] = "api";
-    $config["resource"]["order"]["db"] = "api";
-    $config["resource"]["pay"]["db"] = "api";
-    $config["resource"]["article"]["db"] = "api";
-    $config["resource"]["article_category"]["db"] = "api";
- 
-    // Дополнительные ресурсы. Сейчас в разработке.
-    $config["resource"]["menu"]["db"] = "api";
-    $config["resource"]["account"]["db"] = "api";
-    $config["resource"]["corporation"]["db"] = "api";
-    $config["resource"]["seller"]["db"] = "api";
-    $config["resource"]["price_rule"]["db"] = "api";
-    $config["resource"]["price_list"]["db"] = "api";
-    $config["resource"]["price_list_rule"]["db"] = "api";
-    $config["resource"]["supplier"]["db"] = "api";
-    $config["resource"]["supplier_currency"]["db"] = "api";
-    $config["resource"]["supplier_account"]["db"] = "api";
-    $config["resource"]["params"]["db"] = "api";
-    $config["resource"]["property"]["db"] = "api";
-    $config["resource"]["property_set"]["db"] = "api";
-    $config["resource"]["property_list"]["db"] = "api";
-    $config["resource"]["property_value"]["db"] = "api";
  
     // Ключ шифрования в базах данных. Отдаем в чистом виде.
     $config["db"]["key"] = file_get_contents($key_db, true);
  
     // Директория для хранения файлов json базы данных.
-    $config["db"]["json"]["dir"] = __DIR__ . "/_db_/";
+    $config["db"]["json"]["dir"] = __DIR__ . "/../../json-db/_db_/";
+    // Кеширование запросов
+    $config["db"]["json"]["cached"] = false; // true|false
+    // Время жизни кеша
+    $config["db"]["json"]["cache_lifetime"] = 60;
+    // Очередь на запись
+    $config["db"]["json"]["temp"] = false;
+    // Работает через API
+    $config["db"]["json"]["api"] = false;
+    // Шифруем базу
+    $config["db"]["json"]["crypt"] = false;
+
+    // Если работает через API будет брать часть конфигурации из api
+    $config["db"]["api"]["config"] = true; // true|false
+    // URL API
+    $config["db"]["api"]["url"] = "https://ua.pllano.com/api/v1/json/";
+    // Доступные методы аутентификации: CryptoAuth, QueryKeyAuth, HttpTokenAuth, LoginPasswordAuth
+    $config["db"]["api"]["auth"] = "QueryKeyAuth";
+    // Публичный ключ аутентификации
+    $config["db"]["api"]["public_key"] = "3903f7b3fb82c2e609b3f07ccfa119352f1d26c55723c3f7f8fb36a0d0e31dae";
+    // Приватный ключ шифрования
+    $config["db"]["api"]["private_key"] = "";
  
     // Настройки подключения к базе MySQL
     $config["db"]["mysql"]["host"] = "";
@@ -186,6 +169,32 @@ class Settings {
     $config["db"]["elasticsearch"]["auth"] = false; // true|false
     $config["db"]["elasticsearch"]["user"] = "elastic";
     $config["db"]["elasticsearch"]["password"] = "elastic_password";
+ 
+    // API Shop позволяет одновременно работать с любым количеством баз данных
+    // Название базы данных для каждого ресурса. По умолчанию api
+    $config["resource"]["site"]["db"] = "json";
+    $config["resource"]["localization"]["db"] = "api";
+    $config["resource"]["language"]["db"] = "api";
+    $config["resource"]["price"]["db"] = "api";
+    $config["resource"]["category"]["db"] = "api";
+    $config["resource"]["product"]["db"] = "api";
+    $config["resource"]["type"]["db"] = "api";
+    $config["resource"]["brand"]["db"] = "api";
+    $config["resource"]["serie"]["db"] = "api";
+    $config["resource"]["images"]["db"] = "api";
+    $config["resource"]["seo"]["db"] = "api";
+    $config["resource"]["description"]["db"] = "api";
+    $config["resource"]["params"]["db"] = "api";
+    $config["resource"]["role"]["db"] = "api";
+    $config["resource"]["user"]["db"] = "api";
+    $config["resource"]["contact"]["db"] = "api";
+    $config["resource"]["address"]["db"] = "api";
+    $config["resource"]["currency"]["db"] = "api";
+    $config["resource"]["cart"]["db"] = "api";
+    $config["resource"]["order"]["db"] = "api";
+    $config["resource"]["pay"]["db"] = "api";
+    $config["resource"]["article"]["db"] = "api";
+    $config["resource"]["article_category"]["db"] = "api";
  
     return $config;
  
