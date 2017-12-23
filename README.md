@@ -1,5 +1,5 @@
 
-![](https://github.com/pllano/api-shop/blob/master/themes/templates/mini-mo/img/logo.svg)
+![](https://github.com/pllano/api-shop/blob/master/themes/templates/mini-mo/img/logo.png)
 # E-Commerce Platform API Shop
 API Shop — E-Commerce Platform (движок интернет-магазина), использует RESTful API сторонних платформ для хранения и обработки информации. Написан на PHP с использованием [Micro Framework Slim](https://github.com/slimphp) который использует [PSR-7](http://www.php-fig.org/psr/psr-7/) интерфейс HTTP-сообщений. Использует шаблонизатор [Twig](https://github.com/twigphp/Twig/) и менеджер зависимостей для PHP — [Composer](https://github.com/composer). Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
 
