@@ -26,18 +26,18 @@ $container['logger'] = function ($logger) {
 
 // Register Original Twig View
 $container['twig'] = function ($themes) {
-	$config = $themes->get('settings')['themes'];
-	// Получаем название шаблона
-	$template = $config["template"]; // По умолчанию mini-mo
-	$site = new Site();
+    $config = $themes->get('settings')['themes'];
+    // Получаем название шаблона
+    $template = $config["template"]; // По умолчанию mini-mo
+    $site = new Site();
     if ($site->template()) {
         $template = $site->template();
     }
     $loader = new \Twig_Loader_Filesystem($config['dir']."/".$config['templates']."/".$template."/layouts");
-    $load = new \Twig_Environment($loader, array(
+    $twig = new \Twig_Environment($loader, array(
         'cache' => false,
         'strict_variables' => false
     ));
-    return $load;
+    return $twig;
 };
  
