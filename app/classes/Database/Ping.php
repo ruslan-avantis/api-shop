@@ -74,6 +74,35 @@ class Ping
                 $db = $this->settings["db"]["slave"];
             }
 
+        } elseif ($db == "jsonapi") {
+            try {
+                $url = $this->settings["db"]["json_api"]["url"];
+                $public_key = $this->settings["db"]["json_api"]["public_key"];
+
+                if (isset($this->resource)) {
+                    $resource = $this->resource;
+                }
+ 
+                $guzzle = new Guzzle();
+                $response = $guzzle->request("GET", $url."".$resource."?public_key=".$public_key."&limit=1&offset=0");
+                $output = $response->getBody();
+ 
+                $output = (new Utility())->clean_json($output);
+ 
+                $records = json_decode($output, true);
+ 
+                if (isset($records["header"]["code"])) {
+                    if ($records["header"]["code"] == 200 || $records["header"]["code"] == "200") {
+                        if (count($records["body"]["items"]) >= 1) {
+                            $this->db = "jsonapi";
+                        }
+                    }
+                }
+            
+            } catch (dbException $e) {
+                $db = $this->settings["db"]["slave"];
+            }
+
         } elseif ($db == "json") {
             try {Validate::table($this->resource)->exists();
 				$this->db = "json";
