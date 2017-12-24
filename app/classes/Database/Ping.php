@@ -30,14 +30,14 @@ class Ping
     public function __construct($resource = null)
     {
         $this->resource = $resource;
-        $this->resourceTest();
+        $this->set();
     }
  
-    public function resourceTest()
+    public function set()
     {
         $this->settings = (new Settings())->get();
         $db = null;
-		$resource = "site";
+        $resource = "site";
  
         if (isset($this->settings["resource"][$this->resource]["db"])) {
             $db = $this->settings["resource"][$this->resource]["db"];
@@ -76,23 +76,27 @@ class Ping
 
         } elseif ($db == "jsonapi") {
             try {
-                $url = $this->settings["db"]["json_api"]["url"];
-                $public_key = $this->settings["db"]["json_api"]["public_key"];
-
+                $url = $this->settings["db"]["jsonapi"]["url"];
+                $public_key = "?";
+                if ($this->settings["db"]["jsonapi"]["auth"] == "QueryKeyAuth") {
+                    $public_key = "?public_key=".$this->settings["db"]["jsonapi"]["public_key"];
+                }
+ 
                 if (isset($this->resource)) {
                     $resource = $this->resource;
                 }
  
                 $guzzle = new Guzzle();
-                $response = $guzzle->request("GET", $url."".$resource."?public_key=".$public_key."&limit=1&offset=0");
+                $response = $guzzle->request("GET", $url."".$resource."".$public_key."&limit=1&offset=0");
                 $output = $response->getBody();
  
                 $output = (new Utility())->clean_json($output);
  
                 $records = json_decode($output, true);
+                
  
-                if (isset($records["header"]["code"])) {
-                    if ($records["header"]["code"] == 200 || $records["header"]["code"] == "200") {
+                if (isset($records["headers"]["code"])) {
+                    if ($records["headers"]["code"] == 200 || $records["headers"]["code"] == "200") {
                         if (count($records["body"]["items"]) >= 1) {
                             $this->db = "jsonapi";
                         }
@@ -105,11 +109,11 @@ class Ping
 
         } elseif ($db == "json") {
             try {Validate::table($this->resource)->exists();
-				$this->db = "json";
-			} catch(dbException $e){
-			    $this->db = $this->settings["db"]["slave"];
-			}
-			
+                $this->db = "json";
+            } catch(dbException $e){
+                $this->db = $this->settings["db"]["slave"];
+            }
+            
         } elseif ($db == "mysql") {
             $this->db = "mysql";
         } elseif ($db == "elasticsearch") {
@@ -118,7 +122,7 @@ class Ping
             $this->db = $this->settings["db"]["slave"];
         }
         
-        print_r($this->db);
+        //print_r($this->db);
     }
     
     public function get()

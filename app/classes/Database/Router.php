@@ -38,18 +38,7 @@ class Router
             return false;
         }
     }
-    
-    public function getOne($resource = null, $field = null, $value = null)
-    {
-        if ($this->db !== null && $resource !== null) {
-            $class = '\ApiShop\Database\\'.ucfirst($this->db)."Db";
-            $db = new $class();
-            return $db->getOne($resource, $field, $value);
-        } else {
-            return false;
-        }
-    }
-    
+ 
     public function post($resource = null, array $arr = array(), $id = null)
     {
         if ($this->db !== null && $resource !== null) {
