@@ -15,7 +15,7 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 - [Guzzle](https://github.com/guzzle/guzzle) – HTTP client
 - [Monolog](https://github.com/Seldaek/monolog) – Логирование
 - [PHPUnit](https://github.com/sebastianbergmann/phpunit) – Тесты
-- [jsonDB](https://github.com/pllano/json-db) – База данных на json файлах
+- [jsonDB](https://github.com/pllano/json-db) – Кеширование и резервная база данных
 
 ### Внимание ! API Shop в активной разработке.
 - Выпуск `1.0.1-BETA-1` планируется в январе 2018 г.
