@@ -64,7 +64,9 @@ $config["db"]["master"] = "api";
 $config["db"]["slave"] = "json"; // Рекомендуется оставить json
 ```
 ### Использовать несколько баз данных
-API Shop позволяет одновременно работать с любым количеством баз данных. Название базы данных можно задать для каждого ресурса индивидуально. По умолчанию api
+API Shop позволяет одновременно работать с любым количеством баз данных. Название базы данных можно задать для каждого ресурса индивидуально. По умолчанию api.
+
+`Database\Ping` контролирует состояние баз данных `master` и `slave`. Если база указанная в конфигурации `$resource` недоступна, подключит `master` или `slave` базу.
 ```php
 // Цены получать через API
 $config["resource"]["price"]["db"] = "api";
@@ -79,10 +81,8 @@ $config["resource"]["pay"]["db"] = "oracle";
 ```
 ### Встроенный роутер переключения между базами
 `Database\Router` — роутер подключения к базам данных, дает возможность писать один код для всех баз данных а интеграцию вывести в отдельный класс для каждой базы данных.
-
-Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 ```php
-use ApiShop\Database\Router as Db;
+use ApiShop\Database\Router as Database;
 use ApiShop\Database\Ping;
 
 // Ресурс к которому обращаемся
@@ -103,15 +103,15 @@ $arr = [
     }')
 ];
  
-// Database\Ping контролирует состояние master и slave
-// Если база указанная в конфигурации resource недоступна, подключит master или slave
-$db_name = new Ping($resource); // return api
- 
+// Получаем название базы данных
+$db_name = new Ping($resource);
 // Подключаемся к базе
-$db = new Db($db_name);
+$db = new Database($db_name);
 // Отправляем запрос
 $db->get($resource, $arr, $id);
 ```
+Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
+
 ## Конфигурация API Shop
 Файлы и документация по конфигурации API Shop — [config](https://github.com/pllano/api-shop/tree/master/app/config)
 
