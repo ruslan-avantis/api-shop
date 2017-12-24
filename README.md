@@ -9,14 +9,14 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 - [Composer](https://github.com/composer) - Менеджер зависимостей
 - [PSR-2](http://www.php-fig.org/psr/psr-2/) – Рекомендации по оформлению кода
 - [PSR-3](http://www.php-fig.org/psr/psr-3/) – Интерфейс протоколирования
-- [PSR-4](http://www.php-fig.org/psr/psr-4/) - Улучшенная автозагрузка
-- [PSR-7](http://www.php-fig.org/psr/psr-7/) интерфейс HTTP-сообщений
-- [Slim](https://github.com/slimphp) - [slimframework](https://www.slimframework.com/)
-- [Twig](https://github.com/twigphp/Twig/) - Шаблонизатор
-- [jsonDB](https://github.com/pllano/api-json-db) - База данных на json файлах
-- [Guzzle](https://github.com/guzzle/guzzle) - HTTP client
-- [Monolog](https://github.com/Seldaek/monolog) - Логирование
-- [PHPUnit](https://github.com/sebastianbergmann/phpunit) - Тесты
+- [PSR-4](http://www.php-fig.org/psr/psr-4/) – Улучшенная автозагрузка
+- [PSR-7](http://www.php-fig.org/psr/psr-7/) – Интерфейс HTTP-сообщений
+- [Slim](https://github.com/slimphp) – [slimframework](https://www.slimframework.com/)
+- [Twig](https://github.com/twigphp/Twig/) – Шаблонизатор
+- [jsonDB](https://github.com/pllano/api-json-db) – База данных на json файлах
+- [Guzzle](https://github.com/guzzle/guzzle) – HTTP client
+- [Monolog](https://github.com/Seldaek/monolog) – Логирование
+- [PHPUnit](https://github.com/sebastianbergmann/phpunit) – Тесты
 
 ### Внимание ! API Shop в активной разработке.
 - Выпуск `1.0.1-BETA-1` планируется в январе 2018 г.
