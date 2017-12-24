@@ -38,7 +38,7 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 Поддерживаются следующие системы хранения и управления данными через роутер [Database\Router](https://github.com/pllano/api-shop/blob/master/app/classes/Database/Router.php):
 - работа через API (без своей базы данных) транзитом через клас [ApiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ApiDb.php)
 - [jsonDB](https://github.com/pllano/json-db) позволяет работать напрямую, транзитом через клас [JsonDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/JsonDb.php)
-- jsonapiDb - Вы можете хранить данные в [jsonDB](https://github.com/pllano/json-db) в любом месте (даже на удаленном сервере) и работать с ней через API интерфейс, транзитом через клас [jsonapiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/jsonapiDb.php)
+- jsonapiDb - Вы можете хранить данные в [jsonDB](https://github.com/pllano/json-db) в любом месте (даже на удаленном сервере) и работать с ней через API интерфейс, транзитом через клас [JsonapiDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/JsonapiDb.php)
 - MySQL с использованием [slim/pdo](https://packagist.org/packages/slim/pdo) транзитом через клас [MysqlDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/MysqlDb.php)
 - Elasticsearch с использованием [Elasticsearch-PHP](https://github.com/elastic/elasticsearch-php) транзитом через клас [ElasticsearchDb](https://github.com/pllano/api-shop/blob/master/app/classes/Database/ElasticsearchDb.php)
 - Без особых сложностей возможно написать клас для работы с любой другой базой данных.
