@@ -3,7 +3,20 @@
 
 ![](https://github.com/pllano/api-shop/blob/master/themes/templates/mini-mo/img/logo.png)
 
-API Shop — E-Commerce Platform (движок интернет-магазина), использует RESTful API сторонних платформ для хранения и обработки информации. Написан на PHP с использованием [Micro Framework Slim](https://github.com/slimphp) который использует [PSR-7](http://www.php-fig.org/psr/psr-7/) интерфейс HTTP-сообщений. Использует шаблонизатор [Twig](https://github.com/twigphp/Twig/) и менеджер зависимостей для PHP — [Composer](https://github.com/composer). Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
+API Shop — E-Commerce Platform (движок интернет-магазина), использует RESTful API сторонних платформ для хранения и обработки информации. Написан на PHP. Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
+
+### Использует
+- [Composer](https://github.com/composer) - Менеджер зависимостей
+- [PSR-2](http://www.php-fig.org/psr/psr-2/) – Рекомендации по оформлению кода
+- [PSR-3](http://www.php-fig.org/psr/psr-3/) – Интерфейс протоколирования
+- [PSR-4](http://www.php-fig.org/psr/psr-4/) - Улучшенная автозагрузка
+- [PSR-7](http://www.php-fig.org/psr/psr-7/) интерфейс HTTP-сообщений
+- [Slim](https://github.com/slimphp) - [slimframework](https://www.slimframework.com/)
+- [Twig](https://github.com/twigphp/Twig/) - Шаблонизатор
+- [jsonDB](https://github.com/pllano/api-json-db) - База данных на json файлах
+- [Guzzle](https://github.com/guzzle/guzzle) - HTTP client
+- [Monolog](https://github.com/Seldaek/monolog) - Логирование
+- [PHPUnit](https://github.com/sebastianbergmann/phpunit) - Тесты
 
 ### Внимание ! API Shop в активной разработке.
 - Выпуск `1.0.1-BETA-1` планируется в январе 2018 г.
@@ -107,17 +120,6 @@ $db->get($resource, $arr, $id);
 API Shop — Использует собственный стандарт обмена данными сервер-сервер [APIS-2018](https://github.com/pllano/APIS-2018/) дающий возможность не писать своей документации по работе с вашим API. Вы можете писать свою API зная что другим API использующим стандарт APIS-2018 не придется тратиться на дополнительную доработку и интеграцию с вашим API. Для подключения к вашему API будет необходимо только получить данные аутентификации для доступа к учетной записи.
 
 ## Зависимости
-
-- Менеджер зависимостей: [Composer](https://getcomposer.org/) - [github](https://github.com/composer)
-- База данных: [API json DB](https://github.com/pllano/api-json-db) - [packagist.org](https://packagist.org/packages/pllano/api-json-db)
-- Интерфейс для HTTP-сообщений: [PSR-7](http://www.php-fig.org/psr/psr-7/) - [github](https://github.com/php-fig/http-message) - [packagist](https://packagist.org/packages/psr/http-message)
-- Framework: [Slim](https://www.slimframework.com/) - [github](https://github.com/slimphp) - [packagist](https://packagist.org/packages/slim/slim)
-- Шаблонизатор: [Twig](https://twig.symfony.com/) - [github](https://github.com/twigphp/Twig/)
-- Управление Session & Cookies: [Slim Secure Session Middleware](https://github.com/adbario/slim-secure-session-middleware)
-- HTTP client: [Guzzle](http://docs.guzzlephp.org/en/stable/) - [Guzzle](https://github.com/guzzle/guzzle) - [packagist](https://packagist.org/packages/guzzlehttp/guzzle)
-- Логирование: [Monolog](https://github.com/Seldaek/monolog) - [packagist](https://packagist.org/packages/monolog/monolog)
-- Тесты: [PHPUnit](https://phpunit.de/) - [github](https://github.com/sebastianbergmann/phpunit) - [packagist](https://packagist.org/packages/phpunit/phpunit)
-
 ```json
 {
   "require": {
