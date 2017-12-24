@@ -19,15 +19,16 @@ use Defuse\Crypto\Crypto;
  
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
+use ApiShop\Model\SessionUser;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Menu;
-use ApiShop\Model\SessionUser;
-
 use ApiShop\Resources\Site;
 
 $app->get('/', function (Request $request, Response $response, array $args) {
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
+    $site = new Site();
+    $site_config = $site->get();
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
     // Подключаем временное хранилище
@@ -35,10 +36,14 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     // Читаем ключи
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
-    // Подключаем мультиязычность
-    $language = new Language();
     // Получаем массив данных из таблицы language на языке из $session->language
-    $languages = $language->get();
+    if ($session->language) {
+        $lang = $session->language;
+    } else {
+        $lang = $site_config["language"];
+    }
+    // Подключаем мультиязычность
+	$language = (new Language())->get($lang);
     // Подключаем плагины
     $utility = new Utility();
     // Генерируем токен
@@ -52,34 +57,27 @@ $app->get('/', function (Request $request, Response $response, array $args) {
         $session->authorize = Crypto::encrypt('0', $session_key);
         $authorize = 0;
     }
-    // Что бы не давало ошибку присваиваем пустое значение
-    $content = '';
     // Отдаем информацию о станице для правильной работы шаблонов
     $page = ["page" => 'home'];
-    // Получаем данные сессии пользователя которые отдадим шаблонизатору Twig
-    $session_user = (new SessionUser())->get();
     // Получаем данные Menu пользователя которые отдадим шаблонизатору Twig
     $menu = (new Menu())->get();
-    
-    /*
-    $site = new Site();
-    $site->get();
-    $site->template();
-    print_r($site->template());
-    */
-    // print_r($content);
  
+    // Что бы не давало ошибку присваиваем пустое значение
+    $content = '';
+    // print_r($content);
+
     // Запись в лог
-    $this->logger->info("home - Авторизованный юзер");
+    $this->logger->info("home");
  
     return $this->twig->render('index.html', [
+        "template" => $site->template(),
         "pages" => $page,
-        "menu" => $menu,
-        "config" => $config,
-        "language" => $languages,
+        "site" => $site_config,
+        "config" => $config['settings']['site'],
+        "language" => $language,
         "token" => $session->token,
-        "session" => $session_user,
         "session_temp" => $session_temp,
+        "menu" => $menu,
         "content" => $content
     ]);
  
