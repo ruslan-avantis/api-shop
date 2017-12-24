@@ -21,6 +21,13 @@ class Settings {
  
     $config = array();
  
+    $config['settings']['site']['title'] = "API Shop";
+    $config['settings']['site']['description'] = "Работает через RESTful API";
+    $copyYear = 2016; // Set your website start date
+    $curYear = date('Y'); // Keeps the second year updated
+    $config['settings']['site']['copyright']['date'] = $copyYear . (($copyYear != $curYear) ? '-' . $curYear : '');
+    $config['settings']['site']['copyright']['text'] = "API Shop";
+ 
     // Путь к папке шаблонов
     $config["settings"]["themes"]["dir"] = __DIR__ . "/../../themes";
     // Название папки с шаблонами
@@ -64,10 +71,6 @@ class Settings {
     $config["settings"]["session"]["encryption_key"] = null;
     // Session namespace
     $config["settings"]["session"]["namespace"] = "_user";
- 
-    $copyYear = 2017; // Set your website start date
-    $curYear = date('Y'); // Keeps the second year updated
-    $config['settings']['config']['copyright'] = $copyYear . (($copyYear != $curYear) ? '-' . $curYear : '');
  
     // Папка куда будут писатся логи Monolog
     $config["settings"]["logger"]["path"]   = isset($_ENV["docker"]) ? "php://stdout" : __DIR__ . "/../_logs/app.log";
@@ -114,7 +117,9 @@ class Settings {
     $config["key"]["card"] = Key::loadFromAsciiSafeString(file_get_contents($key_card, true));
     // Динамический ключ шифрования для ajax
     $config["key"]["ajax"] = (Key::createNewRandomKey())->saveToAsciiSafeString();
- 
+
+    // Глобальные установки баз данных
+    // Доступные значения: api, json, jsonapi, mysql, elasticsearch
     // Название основной базы данных. По умолчанию api
     $config["db"]["master"] = "api";
     // Название резервной базы данных. По умолчанию json
@@ -122,9 +127,10 @@ class Settings {
  
     // Ключ шифрования в базах данных. Отдаем в чистом виде.
     $config["db"]["key"] = file_get_contents($key_db, true);
- 
+
+    // Настройки подключения к jsonDb напрямую
     // Директория для хранения файлов json базы данных.
-    $config["db"]["json"]["dir"] = __DIR__ . "/../../json-db/_db_/";
+    $config["db"]["json"]["dir"] = __DIR__ . "/../../json-db/db/";
     // Кеширование запросов
     $config["db"]["json"]["cached"] = false; // true|false
     // Время жизни кеша
@@ -136,6 +142,16 @@ class Settings {
     // Шифруем базу
     $config["db"]["json"]["crypt"] = false;
 
+    // Настройки подключения к jsonDb через API
+    // URL API jsonDb
+    $config["db"]["jsonapi"]["url"] = "https://pllano.eu/json-db/";
+    // Доступные методы аутентификации: null, CryptoAuth, QueryKeyAuth, HttpTokenAuth, LoginPasswordAuth
+    $config["db"]["jsonapi"]["auth"] = null;
+    // Публичный ключ аутентификации
+    $config["db"]["jsonapi"]["public_key"] = "def000002b1bffbb59275f13091aa3fe3b477f57ebc75629aa26010ab27e85a8a89d7c7396fdbfd7e837994849f4f268ef8a0783c5114fd568cb548fe9e1ab42e22d03d6";
+    // Приватный ключ шифрования
+    $config["db"]["jsonapi"]["private_key"] = "";
+ 
     // Если работает через API будет брать часть конфигурации из api
     $config["db"]["api"]["config"] = true; // true|false
     // URL API
@@ -172,9 +188,10 @@ class Settings {
  
     // API Shop позволяет одновременно работать с любым количеством баз данных
     // Название базы данных для каждого ресурса. По умолчанию api
-    $config["resource"]["site"]["db"] = "json";
-    $config["resource"]["localization"]["db"] = "api";
-    $config["resource"]["language"]["db"] = "api";
+    $config["resource"]["site"]["db"] = "api";
+    $config["resource"]["language"]["db"] = "jsonapi";
+    $config["resource"]["user"]["db"] = "json";
+    
     $config["resource"]["price"]["db"] = "api";
     $config["resource"]["category"]["db"] = "api";
     $config["resource"]["product"]["db"] = "api";
@@ -186,7 +203,6 @@ class Settings {
     $config["resource"]["description"]["db"] = "api";
     $config["resource"]["params"]["db"] = "api";
     $config["resource"]["role"]["db"] = "api";
-    $config["resource"]["user"]["db"] = "api";
     $config["resource"]["contact"]["db"] = "api";
     $config["resource"]["address"]["db"] = "api";
     $config["resource"]["currency"]["db"] = "api";
