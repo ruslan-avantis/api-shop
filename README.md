@@ -16,6 +16,10 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 - [Monolog](https://github.com/Seldaek/monolog) – Логирование
 - [PHPUnit](https://github.com/sebastianbergmann/phpunit) – Тесты
 - [jsonDB](https://github.com/pllano/json-db) – Кеширование и резервная база данных
+- [php-encryption](https://github.com/defuse/php-encryption) – Шифрование
+- [Slim Secure Session Middleware](https://github.com/adbario/slim-secure-session-middleware) – Сессия
+- [image-optimizer](https://github.com/spatie/image-optimizer) – Оптимизация изображений
+- [Imagine](https://github.com/avalanche123/Imagine) – Обработка изображений
 
 ### Внимание ! API Shop в активной разработке.
 - Выпуск `1.0.1-BETA-1` планируется в январе 2018 г.
