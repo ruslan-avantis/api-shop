@@ -1,4 +1,5 @@
 <?php
+// {API}$hop
 /**
  * This file is part of the API SHOP
  *
@@ -10,11 +11,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 // Вывод ошибок. Что бы выключить закоментируйте эти строки
-// ini_set('error_reporting', E_ALL);
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
@@ -70,6 +70,8 @@ $config = $settings->get();
 // Подключаем Slim и отдаем ему Конфиг
 $app = new \Slim\App($config);
 
+require __DIR__ . '/app/config/container.php';
+
 // Запускаем сессию PHP
 session_start();
 // Run User Session
@@ -86,6 +88,19 @@ foreach ($cores as $core) {
 $routers = glob(__DIR__ . '/app/routers/*.php');
 foreach ($routers as $router) {
     require $router;
+}
+
+// Если одина из баз json запускаем jsonDB
+if ($config["db"]["master"] == "json" || $config["db"]["slave"] == "json") {
+// Запускаем jsonDB\Db
+    $jsonDb = new \jsonDB\Db($config['db']['json']['dir']);
+    $jsonDb->setCached($config['db']['json']['cached']);
+    $jsonDb->setCacheLifetime($config['db']['json']['cache_lifetime']);
+    $jsonDb->setTemp($config['db']['json']['temp']);
+    $jsonDb->setApi($config['db']['json']['api']);
+    $jsonDb->setCrypt($config['db']['json']['crypt']);
+    $jsonDb->setKey($config["db"]["key"]);
+    $jsonDb->run();
 }
 
 // Slim Run
