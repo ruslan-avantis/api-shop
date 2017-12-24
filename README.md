@@ -84,11 +84,7 @@ $config["resource"]["pay"]["db"] = "oracle";
 ```php
 use ApiShop\Database\Router as Database;
 use ApiShop\Database\Ping;
-
-// Ресурс к которому обращаемся
-$resource = "price";
-// id записи. (Не обязательное поле) По умолчанию = null
-$id = null;
+ 
 // Массив с данными
 $arr = [
     "limit" => 10,
@@ -103,12 +99,14 @@ $arr = [
     }')
 ];
  
+// Ресурс к которому обращаемся
+$resource = "price";
 // Получаем название базы для указанного ресурса
 $db_name = new Ping($resource);
 // Подключаемся к базе
 $db = new Database($db_name);
 // Отправляем запрос
-$db->get($resource, $arr, $id);
+$db->get($resource, $arr);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 
