@@ -8,7 +8,6 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 ### Использует
 - [Composer](https://github.com/composer) - Менеджер зависимостей
 - [PSR-2](http://www.php-fig.org/psr/psr-2/) – Рекомендации по оформлению кода
-- [PSR-3](http://www.php-fig.org/psr/psr-3/) – Интерфейс протоколирования
 - [PSR-4](http://www.php-fig.org/psr/psr-4/) – Улучшенная автозагрузка
 - [PSR-7](http://www.php-fig.org/psr/psr-7/) – Интерфейс HTTP-сообщений
 - [Slim](https://github.com/slimphp) – [slimframework](https://www.slimframework.com/)
