@@ -11,10 +11,8 @@
  * file that was distributed with this source code.
  */
  
-namespace  ApiShop\Database;
+namespace ApiShop\Database;
  
-use ApiShop\Config\Settings;
-use ApiShop\Utilities\Utility;
 use ApiShop\Database\PdoDb;
 use PDO;
  
