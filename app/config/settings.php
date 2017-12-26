@@ -148,7 +148,7 @@ class Settings {
     // Доступные методы аутентификации: null, CryptoAuth, QueryKeyAuth, HttpTokenAuth, LoginPasswordAuth
     $config["db"]["jsonapi"]["auth"] = null;
     // Публичный ключ аутентификации
-    $config["db"]["jsonapi"]["public_key"] = "def000002b1bffbb59275f13091aa3fe3b477f57ebc75629aa26010ab27e85a8a89d7c7396fdbfd7e837994849f4f268ef8a0783c5114fd568cb548fe9e1ab42e22d03d6";
+    $config["db"]["jsonapi"]["public_key"] = "";
     // Приватный ключ шифрования
     $config["db"]["jsonapi"]["private_key"] = "";
  
