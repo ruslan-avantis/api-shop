@@ -18,17 +18,30 @@ class JsonDb
     
     public function __construct()
     {
- 
+
     }
- 
+    
     public function get($resource = null, array $arr = array(), $id = null)
     {
- 
+
     }
- 
-    public function getOne($resource = null, $field = null, $value = null)
+
+    // Создаем одну запись
+    public function post($resource = null, array $arr = array())
     {
- 
+        
+    }
+    
+    // Обновляем
+    public function put($resource = null, array $arr = array(), $id = null)
+    {
+        
+    }
+    
+    // Удаляем
+    public function delete($resource = null, array $arr = array(), $id = null)
+    {
+        
     }
  
 }

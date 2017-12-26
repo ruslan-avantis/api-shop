@@ -36,6 +36,7 @@ class JsonapiDb
  
     public function get($resource = null, array $arr = array(), $id = null)
     {
+        $array = http_build_query($arr);
         $public_key = "?";
         if ($this->auth == "QueryKeyAuth") {
             $public_key = "?public_key=".$this->public_key;
@@ -44,7 +45,7 @@ class JsonapiDb
         $resource_id = "";
         if ($id >= 1) {$resource_id = "/".$id;}
  
-        $response = (new Guzzle())->request("GET", $this->url."".$resource."".$resource_id."".$public_key);
+        $response = (new Guzzle())->request("GET", $this->url."".$resource."".$resource_id."".$public_key."&".$array);
         $resp = $response->getBody();
         $output = (new Utility())->clean_json($resp);
         $records = json_decode($output, true);
@@ -54,7 +55,24 @@ class JsonapiDb
                 return $records["body"];
             }
         }
-
+    }
+ 
+    // Создаем одну запись
+    public function post($resource = null, array $arr = array())
+    {
+        
+    }
+ 
+    // Обновляем
+    public function put($resource = null, array $arr = array(), $id = null)
+    {
+        
+    }
+ 
+    // Удаляем
+    public function delete($resource = null, array $arr = array(), $id = null)
+    {
+        
     }
  
 }

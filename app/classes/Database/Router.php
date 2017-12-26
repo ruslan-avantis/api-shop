@@ -30,7 +30,7 @@ class Router
     
     public function get($resource = null, array $arr = array(), $id = null)
     {
-        if ($this->db !== null && $resource !== null) { 
+        if ($this->db !== null && $resource !== null) {
             $class = '\ApiShop\Database\\'.ucfirst($this->db)."Db";
             $db = new $class();
             return $db->get($resource, $arr, $id);
@@ -39,12 +39,12 @@ class Router
         }
     }
  
-    public function post($resource = null, array $arr = array(), $id = null)
+    public function post($resource = null, array $arr = array())
     {
         if ($this->db !== null && $resource !== null) {
             $class = '\ApiShop\Database\\'.ucfirst($this->db)."Db";
             $db = new $class();
-            return $db->post($resource, $arr, $id);
+            return $db->post($resource, $arr);
         } else {
             return false;
         }

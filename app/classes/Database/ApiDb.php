@@ -40,26 +40,67 @@ class ApiDb
  
     public function get($resource = null, array $arr = array(), $id = null)
     {
-        if ($this->api == true) {
-            $public_key = "?";
-            if ($this->auth == "QueryKeyAuth") {
-                $public_key = "?public_key=".$this->public_key;
-            }
+        $guzzle = new Guzzle();
+        $resource_id = "";
+        $public_key = "";
+        $array = "";
+        if ($resource != null) {
             $this->resource = $resource;
-            $resource_id = "";
-            if ($id >= 1) {$resource_id = "/".$id;}
- 
-            $response = (new Guzzle())->request("GET", $this->url."".$resource."".$resource_id."".$public_key);
-            $resp = $response->getBody();
-            $output = (new Utility())->clean_json($resp);
-            $records = json_decode($output, true);
- 
-            if (isset($records["header"]["code"])) {
-                if ($records["header"]["code"] == 200 || $records["header"]["code"] == "200") {
-                    return $records["body"];
+        }
+        if (count($arr) >= 1){
+            $array = "&".http_build_query($arr);
+        }
+        if ($id >= 1) {
+            $resource_id = "/".$id;
+        }
+        if ($this->api == true) {
+            if ($this->auth == "QueryKeyAuth") {
+                if ($this->public_key != null) {
+                    $public_key = "?public_key=".$this->public_key;
+                }
+                $response = $guzzle->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key."".$array);
+            } elseif ($this->auth == "CryptoAuth") {
+            
+            } elseif ($this->auth == "HttpTokenAuth") {
+            
+            } elseif ($this->auth == "LoginPasswordAuth") {
+            
+            } else {
+               $response = null;
+               return null;
+            }
+            
+            if ($response != null) {
+                $get_body = $response->getBody();
+                $output = (new Utility())->clean_json($get_body);
+                $records = json_decode($output, true);
+                if (isset($records["header"]["code"])) {
+                    if ($records["header"]["code"] == 200 || $records["header"]["code"] == "200") {
+                        return $records["body"];
+                    }
                 }
             }
+        } else {
+            return null;
         }
+    }
+
+    // Создаем одну запись
+    public function post($resource = null, array $arr = array())
+    {
+        
+    }
+    
+    // Обновляем
+    public function put($resource = null, array $arr = array(), $id = null)
+    {
+        
+    }
+    
+    // Удаляем
+    public function delete($resource = null, array $arr = array(), $id = null)
+    {
+        
     }
  
 }

@@ -26,11 +26,28 @@ class ElasticsearchDb
 
     }
 	
-    public function post($id = null, array $arr = array())
+    public function get($resource = null, array $arr = array(), $id = null)
     {
-        // тело GET
-		// $id - записи
-		// $arr - массив с параметрами
+
     }
+
+    // Создаем одну запись
+    public function post($resource = null, array $arr = array())
+    {
+		
+    }
+	
+    // Обновляем
+    public function put($resource = null, array $arr = array(), $id = null)
+    {
+		
+    }
+	
+    // Удаляем
+    public function delete($resource = null, array $arr = array(), $id = null)
+    {
+		
+    }
+ 
 }
  

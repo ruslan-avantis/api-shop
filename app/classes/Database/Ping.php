@@ -115,6 +115,7 @@ class Ping
             }
             
         } elseif ($db == "mysql") {
+            
             $this->db = "mysql";
         } elseif ($db == "elasticsearch") {
             $this->db = "elasticsearch";
