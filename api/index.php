@@ -27,11 +27,6 @@ if (PHP_SAPI == 'cli-server') {
     }
 }
 
-// Проверяем наличие файлов API Shop
-if (!file_exists(__DIR__ . '/../app/test.php';)){
-
-}
-
 // Подключаем autoloader
 require __DIR__ . '/../app/autoloader.php';
 // instantiate the loader
