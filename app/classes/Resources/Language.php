@@ -24,8 +24,8 @@ class Language {
  
     function __construct()
     {
-        // Database\Ping контролирует состояние master и slave
-        // Если база указанная в конфигурации resource недоступна, подключит master или slave
+        // Ping get отдает название базы для указанного ресурса
+        // Если указанная в конфигурации для resource недоступна, подключит master или slave
         $ping = new Ping($this->resource); // return jsonapi
         $this->db_name = $ping->get();
     }
@@ -38,10 +38,15 @@ class Language {
         $db = new Database($this->db_name);
         // Отправляем запрос и отдаем результат
         $response = $db->get($this->resource);
-        foreach ($response["items"]["item"] as $value) {
-            $arr[$value["id"]] = $value[$this->language];
+        //print_r($response);
+        if ($response != null) {
+        foreach ($response["items"] as $value) {
+            $arr[$value["item"]["id"]] = $value["item"][$this->language];
         }
         return $arr;
+        } else {
+            return null;
+        }
     }
  
 }

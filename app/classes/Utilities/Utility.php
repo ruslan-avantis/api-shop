@@ -19,6 +19,18 @@ use Imagine\Image\Point;
 // Здесь собраны основные полезные функции
 class Utility {
 
+    public function clean_json($json) {
+        for ($i = 0; $i <= 31; ++$i) {
+            $json = str_replace(chr($i), "", $json);
+        }
+        $json = str_replace(chr(127), "", $json);
+        if (0 === strpos(bin2hex($json), "efbbbf")) {
+            $json = substr($json, 3);
+        }
+        
+        return $json;
+    }
+ 
     // Функция для проверки длинны строки
     public function check_length($value = "", $min, $max) {
         $result = (mb_strlen($value) < $min || mb_strlen($value) > $max);
@@ -44,7 +56,7 @@ class Utility {
         $value = htmlspecialchars($value, ENT_QUOTES);
 
         return $value;
-
+        
     }
 
     public function phone_clean($value = "") {
@@ -125,12 +137,12 @@ class Utility {
 
                                 if (file_exists('images/temp/'.$basename)) {
 
-                                    $optimizerChain = Spatie\ImageOptimizer\OptimizerChainFactory::create();
+                                    $optimizerChain = \Spatie\ImageOptimizer\OptimizerChainFactory::create();
                                     $optimizerChain->optimize('images/temp/'.$basename, 'images/temp/'.$basename);
 
-                                    $imagine = new Imagine\Gd\Imagine();
-                                    $size = new Imagine\Image\Box($width, $height);
-                                    $mode = Imagine\Image\ImageInterface::THUMBNAIL_INSET;
+                                    $imagine = new \Imagine\Gd\Imagine();
+                                    $size = new \Imagine\Image\Box($width, $height);
+                                    $mode = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
 
                                     $imagine->open('images/temp/'.$basename)
                                         ->thumbnail($size, $mode)

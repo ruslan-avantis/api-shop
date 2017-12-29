@@ -31,44 +31,67 @@ class JsonapiDb
         $this->settings = (new Settings())->get();
         $this->auth = $this->settings["db"]["jsonapi"]["auth"];
         $this->url = $this->settings["db"]["jsonapi"]["url"];
-        $this->public_key = $this->settings["db"]["jsonapi"]["public_key"];
+        if ($this->settings["db"]["jsonapi"]["public_key"] != null) {
+            $this->public_key = $this->settings["db"]["jsonapi"]["public_key"];
+        }
     }
  
     public function get($resource = null, array $arr = array(), $id = null)
     {
-        $array = http_build_query($arr);
-        $public_key = "?";
-        if ($this->auth == "QueryKeyAuth") {
-            $public_key = "?public_key=".$this->public_key;
-        }
-        $this->resource = $resource;
+        $guzzle = new Guzzle();
         $resource_id = "";
-        if ($id >= 1) {$resource_id = "/".$id;}
- 
-        $response = (new Guzzle())->request("GET", $this->url."".$resource."".$resource_id."".$public_key."&".$array);
-        $resp = $response->getBody();
-        $output = (new Utility())->clean_json($resp);
-        $records = json_decode($output, true);
- 
-        if (isset($records["headers"]["code"])) {
-            if ($records["headers"]["code"] == 200 || $records["headers"]["code"] == "200") {
-                return $records["body"];
+        $public_key = "";
+        $array = "";
+        if ($resource != null) {
+            $this->resource = $resource;
+        }
+        if ($id >= 1) {
+            $resource_id = "/".$id;
+        }
+        if ($this->auth == "QueryKeyAuth") {
+            if ($this->auth != null) {
+                $public_key = "?public_key=".$this->public_key;
+            }
+            if (count($arr) >= 1){
+                $array = "&".http_build_query($arr);
+            }
+            $response = $guzzle->request("GET", $this->url."".$this->resource."".$resource_id."".$public_key."".$array);
+        } elseif ($this->auth == "CryptoAuth") {
+            
+        } elseif ($this->auth == "HttpTokenAuth") {
+            
+        } elseif ($this->auth == "LoginPasswordAuth") {
+            
+        } else {
+            if (count($arr) >= 1){
+                $array = "?".http_build_query($arr);
+            }
+            $response = $guzzle->request("GET", $this->url."".$this->resource."".$resource_id."".$array);
+        }
+        if ($response != null) {
+            $get_body = $response->getBody();
+            $output = (new Utility())->clean_json($get_body);
+            $records = json_decode($output, true);
+            if (isset($records["headers"]["code"])) {
+                if ($records["headers"]["code"] == 200 || $records["headers"]["code"] == "200") {
+                    return $records["body"];
+                }
             }
         }
     }
- 
+
     // Создаем одну запись
     public function post($resource = null, array $arr = array())
     {
         
     }
- 
+    
     // Обновляем
     public function put($resource = null, array $arr = array(), $id = null)
     {
         
     }
- 
+    
     // Удаляем
     public function delete($resource = null, array $arr = array(), $id = null)
     {

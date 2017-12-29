@@ -13,7 +13,7 @@
  
 namespace ApiShop\Services;
 
-use ApiShop\Core\Settings;
+use ApiShop\Config\Settings;
 use ApiShop\Services\Payment;
 use ApiShop\Services\Marketplace;
  

@@ -66,8 +66,8 @@ class ApiDb
             } elseif ($this->auth == "LoginPasswordAuth") {
             
             } else {
-               $response = null;
-               return null;
+                $response = null;
+                return null;
             }
             
             if ($response != null) {

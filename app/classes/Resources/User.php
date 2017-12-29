@@ -15,7 +15,7 @@ namespace ApiShop\Resources;
 
 use Adbar\Session;
 use Defuse\Crypto\Crypto;
-use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException as CryptoException;
+use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException as CryptoEx;
 
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
@@ -51,7 +51,7 @@ class User {
             try {
                 $cookie = Crypto::decrypt($_COOKIE[$config['settings']['session']['name']], $cookie_key);
                 $identificator = $_COOKIE[$config['settings']['session']['name']];
-            } catch (CryptoException $ex) {
+            } catch (CryptoEx $ex) {
                 $identificator = null;
             }
         } else {
@@ -74,19 +74,20 @@ class User {
             $session->code = $identificator;
             // cookie в расшифрованном виде для записи в базу
             $cookie = Crypto::decrypt($identificator, $cookie_key);
+            //print_r($cookie);
             // Подключаем ApiShop\Database\Router - Универсальный класс работы с базами данных
             $database = new Router((new Ping("user"))->get());
             // Запрашиваем в базе данные пользователя по cookie
             $response = $database->get("user", ["cookie" => $cookie]);
-            //print_r($response['items']['item']['0']['user_id']);
             // Если нашли пользователя в базе и получили его id
-            if ($response != null && isset($response['items']['item']['0']['user_id'])) {
+            if ($response != null && isset($response['items']['0']['item']['user_id'])) {
+                //print_r($response['items']['0']['item']['user_id']);
                 // Пишем данные из базы в сессию
-                $session->id = Crypto::encrypt($response['items']['item']['0']['user_id'], $session_key);
+                $session->id = Crypto::encrypt($response['items']['0']['item']['user_id'], $session_key);
                 //$session->cart_id = Crypto::encrypt($response['items']['item']['0']['cart_id'], $session_key);
-                $authorize = ($response['items']['item']['0']['authorized'] == '0000-00-00 00:00:00') ? 0 : 1;
+                $authorize = ($response['items']['0']['item']['authorized'] == '0000-00-00 00:00:00') ? 0 : 1;
                 // Записываем authorize в сессию
-                $session->authorize = Crypto::encrypt($authorize, $session_key);
+                $session->authorize = $authorize;
                 // Если пользователь есть мы на всякий случай обновим данные в его сессии
                 $sessionUser = new SessionUser();
                 $sessionUser->checking();
@@ -98,8 +99,8 @@ class User {
             }
         }
     }
- 
-    // Получить данные пользователя по печеньке
+
+    // Получить данные пользователя по cookie
     public function getUserCode()
     {
         // Получаем конфигурацию \ApiShop\Config\Settings
@@ -113,7 +114,7 @@ class User {
         if ($session_code) {
             try {
                 $cookie = Crypto::decrypt($session_code, $cookie_key);
-            } catch (CryptoException $ex) {
+            } catch (CryptoEx $ex) {
                 $cookie = null;
             }
             if ($cookie != null) {
@@ -144,9 +145,9 @@ class User {
         $response = $database->get("user", ["phone" => $phone, "email" => $email]);
         if ($response != null) {
             // Если все ок читаем пароль
-            if (password_verify($password, $response['items']['item']["0"]["password"])) {
+            if (password_verify($password, $response['items']["0"]['item']["password"])) {
                 // Если все ок - отдаем user_id
-                return $response['items']['item']["0"]["user_id"];
+                return $response['items']["0"]['item']["user_id"];
             } else {
                 return null;
             }
