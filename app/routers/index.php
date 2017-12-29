@@ -18,7 +18,6 @@ use Defuse\Crypto\Crypto;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Language;
-use ApiShop\Resources\Menu;
 use ApiShop\Resources\Site;
 use ApiShop\Database\Router;
 use ApiShop\Database\Ping;
@@ -37,13 +36,14 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
     // Получаем массив данных из таблицы language на языке из $session->language
-    if ($session->language) {
+    if (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $site_config["language"];
     }
     // Подключаем мультиязычность
     $language = (new Language())->get($lang);
+    //print_r($language);
     // Подключаем плагины
     $utility = new Utility();
     // Генерируем токен
@@ -52,9 +52,9 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     $session->token = Crypto::encrypt($token, $token_key);
     // Если запись об авторизации есть расшифровываем
     if ($session->authorize) {
-        $authorize = Crypto::decrypt($session->authorize, $session_key);
+        $authorize = $session->authorize;
     } else {
-        $session->authorize = Crypto::encrypt('0', $session_key);
+        $session->authorize = 0;
         $authorize = 0;
     }
     // Отдаем информацию для шаблонизатора
