@@ -1,0 +1,28 @@
+{{ include ('helper/header.html') }}
+{{ include ('helper/nav.html') }}
+{{ include ('helper/carousel.html') }}
+{{ include ('helper/title.html') }}
+{% if products %}
+<section id="product-list" class="product-list">
+<div class="control-background bg-white">
+<div class="control-text-3 text-black">
+<br>
+<div class="control-background bg-white">
+<div class="control-text-3 text-black">
+<div class="album">
+<div class="container">
+<div class="row text-center cards">
+{% for product in products.product %}
+{{ include ('helper/products.html') }}
+{% endfor %}
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+{% endif %}
+{{ include ('helper/newsletter.html') }}
+{{ include ('helper/footer.html') }}

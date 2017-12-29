@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="/favicon.ico">
 <link rel="icon" href="/themes/templates/{{ template }}/ico/favicon.ico">
-<title>Login | {{ config.copyright.text }}</title>
-<meta name="description" content="Login | {{ config.copyright.text }}">
-<meta name="keyword" content="Login | {{ config.copyright.text }}">
+<title>Sign Up {{ config.copyright.text }}</title>
+<meta name="description" content="Sign Up {{ config.copyright.text }}">
+<meta name="keyword" content="Sign Up {{ config.copyright.text }}">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 <link href="https://cdn.joomimart.com/joomi-css/1.0.1/css/joomi-css.css" rel="stylesheet">
@@ -133,8 +133,8 @@ display: none;
 </div>
 <div class="col-md-6 login-sec">
 <ul id="tabsJustified" class="nav nav-tabs">
-<li class="nav-item"><a href="/sign-in" class="nav-link active">{{ language.203 }}</a></li>
-<li class="nav-item"><a href="/sign-up" class="nav-link">{{ language.283 }}</a></li>
+<li class="nav-item"><a href="/sign-in" class="nav-link">{{ language.203 }}</a></li>
+<li class="nav-item"><a href="/sign-up" class="nav-link active">{{ language.283 }}</a></li>
 <li class="nav-item"> 
 <div class="btn-group btn-white">
 <button type="button" class="btn btn-md btn-hover-effects text-dark-gunmetal dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -163,15 +163,31 @@ display: none;
 <div class="tab-content">
 <div class="tab-pane fade active show">
 
+<div class="row">
+<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 <div class="form-group">
-<label class="text-uppercase">{{ language.200 }}</label>
+<label class="text-uppercase">{{ language.58 }} *</label>
+<input type="iname" name="iname" id="iname" class="form-control" placeholder="">
+<div class="text-left-xl-lg-md text-red-md" id="iname-status"></div>
+</div>
+</div>
+<div class='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
+<div class='form-group'>
+<label class="text-uppercase">{{ language.57 }} *</label>
+<input type="fname" name="fname" id="fname" class="form-control" placeholder="">
+<div class="text-left-xl-lg-md text-red-md" id="fname-status"></div>
+</div>
+</div>
+</div>
+<div class="form-group">
+<label class="text-uppercase">{{ language.200 }} *</label>
 <input type="tel" name="phone" id="phone" class="form-control" placeholder="">
 <div class="text-success-800"><span id="valid-msg" class="hide">✓ {{ language.71 }}</span></div>
 <div class="text-danger"><span id="error-msg" class="hide">{{ language.72 }}</span></div>
 <div class="text-danger" id="phone-status"></div>
 </div>
 <div class="form-group">
-<label class="text-uppercase">{{ language.161 }}</label>
+<label class="text-uppercase">{{ language.161 }} *</label>
 <input type="email" name="email" id="email" class="form-control" placeholder="{{ language.161 }}">
 <div class="text-left-xl-lg-md text-red-md" id="email-status"></div>
 </div>
@@ -184,18 +200,16 @@ display: none;
 <div class="form-check">
 <label class="form-check-label">
 <input type="checkbox" class="form-check-input">
-<small>{{ language.693 }}</small>
+<small>{{ language.159 }}</small>
 </label>
-<button type="submit" onClick="login();" class="btn btn-lg bg-vivid-raspberry btn-hover-effects text-white float-right">{{ language.203 }}</button>
+<button type="submit" onClick="checkIn();" class="btn btn-lg bg-vivid-raspberry btn-hover-effects text-white float-right">{{ language.283 }}</button>
 </div>
 
 </div>
-
 </div>
 <div class="copy-text">Copyright © {{ config.copyright.date }} by <a href="{{ site.http_protocol }}://{{ site.uri }}">{{ config.copyright.text }}</a></div>
 
 </div>
-
 </div>
 </div>
 </section>
@@ -211,10 +225,12 @@ display: none;
 <script src="/themes/lib/pnotify/3.0.0/js/pnotify.min.js"></script>
 <script>
 $(document).ready(function() {
-$('#phone').focus();
+$('#iname').focus();
+$('#iname').keyup(function(event) {if(event.keyCode==13) { $('#fname').focus(); }});
+$('#fname').keyup(function(event) {if(event.keyCode==13) { $('#phone').focus(); }});
 $('#phone').keyup(function(event) {if(event.keyCode==13) { $('#email').focus(); }});
 $('#email').keyup(function(event) {if(event.keyCode==13) { $('#password').focus(); }});
-$('#password').keyup(function(event) {if(event.keyCode==13) {login();}});
+$('#password').keyup(function(event) {if(event.keyCode==13) {checkIn();}});
 });
 
 var countryData = $.fn.intlTelInput.getCountryData();

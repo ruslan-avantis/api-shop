@@ -1,0 +1,9 @@
+{{ include ('helper/header.html') }}
+{{ include ('helper/nav.html') }}
+{{ include ('helper/carousel.html') }}
+{{ include ('helper/home-h1.html') }}
+{% autoescape false %}
+{{ content }}{# content won't be escaped #}
+{% endautoescape %}
+{{ include ('helper/newsletter.html') }}
+{{ include ('helper/footer.html') }}
