@@ -27,11 +27,6 @@ if (PHP_SAPI == 'cli-server') {
     }
 }
 
-// Проверяем наличие файлов API Shop
-if (!file_exists(__DIR__ . '/app/test.php')) {
-
-}
-
 // Подключаем autoloader
 require __DIR__ . '/app/autoloader.php';
 // instantiate the loader
@@ -52,7 +47,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')){
     
     $loaders = new \ApiShop\Loader();
     // Запускаем загрузку пакетов и указываем директорию
-    $load = $loaders->run(__DIR__ . '/../vendor');
+    $load = $loaders->run(__DIR__ . '/vendor');
     
     if ($load == true){
         require __DIR__ . '/vendor/autoload.php';
@@ -76,7 +71,7 @@ require __DIR__ . '/app/config/container.php';
 session_start();
 // Run User Session
 // Запускаем сессию пользователя
-(new \ApiShop\Model\User())->run();
+(new \ApiShop\Resources\User())->run();
 
 $cores = glob(__DIR__ . '/app/core/*.php');
 foreach ($cores as $core) {
