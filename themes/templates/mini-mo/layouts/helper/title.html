@@ -1,0 +1,39 @@
+<section id="h1-description">
+<div class="control-background-2 bg-black">
+<div class="h1-description text-center">
+<div class="container padding_21">
+<div class="text-red-md">
+
+{% if pages.page == "category" %}
+<h1 class="h1-description-heading">{% if page.title %}{{ page.title }}{% endif %}</h1>
+{% endif %}
+
+{% if pages.page != "category" %}
+<div class="font_22 text_bold"><div class="control-text-3 text-white">Почему нужно купить у нас ?</div></div>
+<h1 class="h1-description-heading">{% if config.site_slogan %}{{ config.site_slogan }}{% endif %}</h1>
+<div class="font_22 text_bold"><div class="control-text-3 text-white">Доставка от 3 до 7 дней !</div></div>
+<div class="font_22 text_bold"><div class="control-text-3 text-white">Оплата при получении !</div></div>
+{% endif %}
+
+</div>
+
+{% if pages.page != "category" %}
+<div class="padding_10">
+<span class="control-link-a a-white a-hover-black">
+<span class="control-button-3 btn-red">
+<a href="/category" class="btn btn-lg btn-hover-effects"><i class="fa fa-download" aria-hidden="true"></i> Каталог товаров</a>
+</span>
+</span>
+<span class="control-link-a-3 a-white a-hover-red">
+<span class="control-button btn-black">
+<a href="/faq.html" class="btn btn-lg btn-hover-effects"><i class="fa fa-github" aria-hidden="true"></i> Вопросы-Ответы</a>
+</span>
+</span>
+</div>
+{% endif %}
+
+</div>
+</div>
+</div>
+</section>
+<link href="/themes/templates/{{ template }}/css/h1-description.css" rel="stylesheet">
