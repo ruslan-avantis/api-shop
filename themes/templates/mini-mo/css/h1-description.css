@@ -1,0 +1,40 @@
+/*
+Theme Name: joomi-Mini-Mo
+Theme URI: https://templates.joomimart.com/demo/free/joomi-mini-mo/demo.html
+Copyright 2014-2017 joomiMart
+Author: joomiTemplates
+Author URI: https://templates.joomimart.com/
+Description: Responsive Multipurpose One Page Bootstrap HTML Template
+Version: 1.0.1
+Licensed under MIT https://github.com/joomimart-com/joomi-mini-mo/blob/master/LICENSE
+Text Domain: joomi-Mini-Mo
+*/
+.h1-description-block .h1-description {display: block;}
+.h1-description-none .h1-description {display: none;}
+/* h1-description class */
+.h1-description {border-radius: 0; border-radius:0; padding-top:4rem; padding-bottom:3rem; margin-bottom:0;}
+.h1-description p:last-child {margin-bottom:0;}
+.h1-description-heading {font-weight:300;}
+/* RESPONSIVE CSS */
+/* Extra small devices (portrait phones,less than 576px)*/
+@media (max-width:575px) {
+
+}
+/* Small devices (landscape phones,576px and up)*/
+@media (min-width:576px) {
+
+}
+/* Medium devices (tablets,768px and up)*/
+@media (min-width:768px) {
+
+}
+/* Large devices (desktops,992px and up)*/
+@media (min-width:992px) {
+
+}
+/* Extra large devices (large desktops,1200px and up)*/
+@media (min-width:1200px) {
+
+}
+
+

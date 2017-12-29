@@ -1,0 +1,93 @@
+/*
+Theme Name: joomi-Mini-Mo
+Theme URI: https://templates.joomimart.com/demo/free/joomi-mini-mo/demo.html
+Copyright 2014-2017 joomiMart
+Author: joomiTemplates
+Author URI: https://templates.joomimart.com/
+Description: Responsive Multipurpose One Page Bootstrap HTML Template
+Version: 1.0.1
+Licensed under MIT https://github.com/joomimart-com/joomi-mini-mo/blob/master/LICENSE
+Text Domain: joomi-Mini-Mo
+*/
+/* Carousel configuration */
+.contact-block #contact {display: block;}
+.contact-none #contact {display: none;}
+/* contact */
+#contact .contact-us {
+color: #fff;
+}
+#contact .contact-us {
+padding-top: 50px;
+padding-bottom: 10px;
+}
+#google-map {
+height: 350px;
+}
+#contact-us {
+padding-bottom: 40px;
+}
+#contact-us .heading {
+padding-top: 30px;
+padding-bottom: 40px;
+}
+#contact .form-control {
+background-color: transparent;
+border-color: rgba(255,255,255,.85);
+height: 50px;
+border-radius: 4px;
+box-shadow: none;
+}
+#contact textarea.form-control {
+min-height: 180px;
+resize:none;
+}
+#contact .form-group {
+margin-bottom: 30px;
+}
+#contact .contact-info {
+padding-left:70px;
+font-weight: 300;
+}
+#contact ul.address {
+margin-top: 30px;
+list-style: none;
+padding: 0;
+margin: 0;
+}
+#contact .contact-info ul li {
+margin-bottom: 8px;
+}
+#contact .contact-info ul li a {
+color: #fff;
+}
+#contact .btn-submit {
+display: block;
+padding: 12px;
+width: 100%;
+color: #fff;
+border:0;
+margin-top: 40px;
+}
+/* RESPONSIVE CSS */
+/* Extra small devices (portrait phones,less than 576px)*/
+@media (max-width:575px) {
+
+}
+/* Small devices (landscape phones,576px and up)*/
+@media (min-width:576px) {
+
+}
+/* Medium devices (tablets,768px and up)*/
+@media (min-width:768px) {
+
+}
+/* Large devices (desktops,992px and up)*/
+@media (min-width:992px) {
+
+}
+/* Extra large devices (large desktops,1200px and up)*/
+@media (min-width:1200px) {
+
+}
+
+

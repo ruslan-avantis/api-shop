@@ -1,0 +1,45 @@
+/*
+Theme Name: joomi-Mini-Mo
+Theme URI: https://templates.joomimart.com/demo/free/joomi-mini-mo/demo.html
+Copyright 2014-2017 joomiMart
+Author: joomiTemplates
+Author URI: https://templates.joomimart.com/
+Description: Responsive Multipurpose One Page Bootstrap HTML Template
+Version: 1.0.1
+Licensed under MIT https://github.com/joomimart-com/joomi-mini-mo/blob/master/LICENSE
+Text Domain: joomi-Mini-Mo
+*/
+/* MARKETING CONTENT */
+.marketing-block .marketing {display: block;}
+.marketing-none .marketing {display: none;}
+/* Center align the text within the three columns below the carousel */
+.marketing .col-lg-4 {margin-bottom:1.5rem;text-align:center;}
+.marketing h2 {font-weight:normal;}
+.marketing .col-lg-4 p {margin-right:.75rem;margin-left:.75rem;}
+/* Rules for using icons as black on a light background. */
+.material-icons.font-dark {color:rgba(0,0,0,0.54);}
+.material-icons.font-dark.font-inactive {color:rgba(0,0,0,0.26);}
+/* Rules for using icons as white on a dark background. */
+.material-icons.font-light {color:rgba(255,255,255,1);}
+.material-icons.font-light.font-inactive {color:rgba(255,255,255,0.3);}
+/* RESPONSIVE CSS */
+/* Extra small devices (portrait phones,less than 576px)*/
+@media (max-width:575px) {
+
+}
+/* Small devices (landscape phones,576px and up)*/
+@media (min-width:576px) {
+.featurette-heading {font-size:3.5rem;}
+}
+/* Medium devices (tablets,768px and up)*/
+@media (min-width:768px) {
+.featurette-heading {margin-top:7rem;}
+}
+/* Large devices (desktops,992px and up)*/
+@media (min-width:992px) {
+	
+}
+/* Extra large devices (large desktops,1200px and up)*/
+@media (min-width:1200px) {
+
+}

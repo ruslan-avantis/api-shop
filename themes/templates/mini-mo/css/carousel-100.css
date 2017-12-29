@@ -1,0 +1,56 @@
+/*
+Theme Name: joomi-Mini-Mo
+Theme URI: https://templates.joomimart.com/demo/free/joomi-mini-mo/demo.html
+Copyright 2014-2017 joomiMart
+Author: joomiTemplates
+Author URI: https://templates.joomimart.com/
+Description: Responsive Multipurpose One Page Bootstrap HTML Template
+Version: 1.0.1
+Licensed under MIT https://github.com/joomimart-com/joomi-mini-mo/blob/master/LICENSE
+Text Domain: joomi-Mini-Mo
+*/
+/* Carousel configuration */
+.carousel-block-100 .carousel-100 {display: block;}
+.carousel-none-100 .carousel-100 {display: none;}
+/* CUSTOMIZE THE CAROUSEL */
+/* Carousel base class */
+.carousel {margin-bottom:0;border:0;}
+.carousel-100 {margin-bottom:0;border:0;}
+.carousel-indicators li {cursor:pointer;-webkit-transition:0.3s;-moz-transition:0.3s;-o-transition:0.3s;-ms-transition:0.3s;transition:0.3s;float:left;-webkit-border-radius:50%;border-radius:50%;width:.8rem;max-width:.8rem;height:.8rem;max-height:.8rem;margin:0 .33rem;border:.1rem solid rgba(0,0,0,0.3);-webkit-box-shadow:0 0 .2rem rgba(0,0,0,0.3);box-shadow:0 0 .2rem rgba(0,0,0,0.3);}
+/* Since positioning the image,we need to help out the caption */
+.carousel-caption {z-index:10;top:30%;}
+/* Declare heights because of positioning of img element */
+.carousel-item {height:25rem;padding-top:.5rem;}
+.carousel-item > img {position:absolute;top:0;left:0;max-width:100%;height:auto;}
+.carousel-item-height-30 {height:30rem;}
+.carousel-item-height-30 > img {position:absolute;top:0;left:0;max-width:100%;height:auto;}
+.carousel-item-height-40 {height:40rem;}
+.carousel-item-height-40 > img {position:absolute;top:0;left:0;max-width:100%;height:auto;}
+.carousel-item-height-50 {height:50rem;}
+.carousel-item-height-50 > img {position:absolute;top:0;left:0;max-width:100%;height:auto;}
+.carousel-item-height-100 {height:50rem; max-height:60rem;}
+.carousel-item-height-100 > img {position:absolute;top:0;left:0;max-width:100%;height:auto;}
+.carousel-indicators {right:0;bottom:.3rem;left:0;padding-left:0;margin-right:15%;margin-left:15%;}
+/* RESPONSIVE CSS */
+/* Extra small devices (portrait phones,less than 576px)*/
+@media (max-width:575px) {
+.carousel-item {height:48rem;padding-top:2rem;}
+}
+/* Small devices (landscape phones,576px and up)*/
+@media (min-width:576px) {
+.carousel-caption p {margin-bottom:1.25rem;font-size:1.25rem;line-height:1.4;}
+}
+/* Medium devices (tablets,768px and up)*/
+@media (min-width:768px) {
+
+}
+/* Large devices (desktops,992px and up)*/
+@media (min-width:992px) {
+
+}
+/* Extra large devices (large desktops,1200px and up)*/
+@media (min-width:1200px) {
+
+}
+
+
