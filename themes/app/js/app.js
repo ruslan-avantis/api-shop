@@ -8,7 +8,6 @@ var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedD
 // Также могут отличаться и window.IDB* objects: Transaction, KeyRange и тд
 var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction
 var IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
-
 // Открываем базу данных MyTestDatabase
 var db
 var request = indexedDB.open("apiShop", 1)
@@ -18,23 +17,21 @@ request.onupgradeneeded = function(event) {
     db.createObjectStore("user", {keyPath: "id"})
 }
 
+// localStorage
 var localDb = window.localStorage
 // Примеры использования
 // localDb.setItem('key', 'value');
-// var cat = localDb.getItem("key");
-// localDb.removeItem("key");
+// var data = localDb.getItem('key');
+// localDb.removeItem('key');
 // localDb.clear();
 
+// sessionStorage
 var sessionDb = window.sessionStorage
 // Примеры использования
 // sessionDb.setItem('key', 'value');
 // var data = sessionDb.getItem('key');
 // sessionDb.removeItem('key');
 // sessionDb.clear();
-
-// Получаем локализацию в js
-var languages = new Object()
-languages = getLanguages()
 
 // Функция проверки доступности localStorage и sessionStorage
 function storageAvailable(type) {
@@ -127,6 +124,10 @@ function clearDb() {
     }
 }
 
+// Получаем локализацию в js
+var languages = new Object()
+languages = getLanguages()
+
 function createCookie(name, value, days) {
     if (days) {
         var date = new Date()
@@ -159,8 +160,8 @@ function isValidJSON(src) {
     return (/^[\],:{}\s]*$/.test(filtered))
 };
 
-function OneNotify(title, text, addclass) {
-    new PNotify({title: title, text: text, addclass: addclass})
+function OneNotify(title, text, type, icon, addclass) {
+    new PNotify({title: title, text: text, type: type, icon: icon, addclass: addclass})
 }
 
 function jsonNotify(json) {
@@ -203,6 +204,7 @@ function setLanguage(id) {
 }
 
 function checkIn() {
+    $('.error_message').remove();
     checkPhone('phone', lang(200), false)
     checkPassword('password', lang(201), password_expression)
     checkEmail('email', lang(161), email_expression)
@@ -227,6 +229,7 @@ function checkIn() {
     }
 
 function login() {
+    $('.error_message').remove();
     checkPhone('phone', lang(200), false)
     checkPassword('password', lang(201), password_expression)
     checkEmail('email', lang(161), email_expression)
