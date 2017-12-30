@@ -137,6 +137,7 @@ $app->post('/logout', function (Request $request, Response $response, array $arg
     $session = new Session($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
+    
     try {
         // Получаем токен из сессии
         $token = Crypto::decrypt($session->token, $token_key);
@@ -160,20 +161,19 @@ $app->post('/logout', function (Request $request, Response $response, array $arg
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         $session->authorize = null;
-        $session->code = '';
+        $session->cookie = '';
         unset($session->authorize); // удаляем сесию
         unset($session->id); // удаляем сесию
-        unset($session->code); // удаляем сесию
+        unset($session->cookie); // удаляем сесию
         list($x1,$x2) = explode('.',strrev($_SERVER['HTTP_HOST']));
         $xdomain = $x1.'.'.$x2;
         $domain =  strrev($xdomain);
-        setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', '.'.$domain, 1, true);
+        setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain, 1, true);
         $session->destroy();
         $callback = array(
             'status' => "OK",
             'title' => "Информация",
-            'text' => "Вы вышли из системы",
-            'color' => "bg-danger"
+            'text' => "Вы вышли из системы"
         );
         // Выводим заголовки
         $response->withStatus(200);
@@ -184,8 +184,7 @@ $app->post('/logout', function (Request $request, Response $response, array $arg
         $callback = array(
             'status' => "OK",
             'title' => "Ошибка",
-            'text' => "Что то не так",
-            'color' => "bg-danger"
+            'text' => "Что то не так"
         );
         // Выводим заголовки
         $response->withStatus(200);
@@ -197,6 +196,7 @@ $app->post('/logout', function (Request $request, Response $response, array $arg
   
 // Авторизация
 $app->post('/login', function (Request $request, Response $response, array $args) {
+    $today = date("Y-m-d H:i:s");
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Читаем ключи
@@ -214,8 +214,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
         $callback = array(
             'status' => "NO",
             'title' => "Сообщение системы",
-            'text' => "Вы не прошли проверку системы безопасности !<br>У вас осталась одна попытка :)",
-            'color' => "bg-danger"
+            'text' => "Вы не прошли проверку системы безопасности !<br>У вас осталась одна попытка :)"
         );
         // Выводим заголовки
         $response->withStatus(200);
@@ -251,8 +250,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
             $callback = array(
                 'status' => "NO",
                 'title' => "Сообщение системы",
-                'text' => "Номер телефона не валиден",
-                'color' => "bg-danger"
+                'text' => "Номер телефона не валиден"
             );
             // Выводим заголовки
             $response->withStatus(200);
@@ -269,8 +267,8 @@ $app->post('/login', function (Request $request, Response $response, array $args
                 //check for correct email and password
                 $user_id = $user->checkLogin($email, $phone, $password);
                 if ($user_id != 0) {
-					$database = new Router((new Ping("user"))->get());
-					$user_data = $database->get("user", ["user_id" => $user_id]);
+                    $database = new Router((new Ping("user"))->get());
+                    $user_data = $database->get("user", ["user_id" => $user_id]);
                     $session->language = $user_data['items']['0']['item']["language"];
                     $session->user_id = Crypto::encrypt($user_id, $session_key);
                     $session->phone = Crypto::encrypt($user_data['items']['0']['item']["phone"], $session_key);
@@ -280,13 +278,12 @@ $app->post('/login', function (Request $request, Response $response, array $args
                     $authorize = 1;
                     // Записываем authorize в сессию
                     $session->authorize = Crypto::encrypt($authorize, $session_key);
-                    $code = Crypto::decrypt($session->code, $cookie_key);
-                    $user->putUserCode($user_id, $code);
+                    $cookie = Crypto::decrypt($session->cookie, $cookie_key);
+                    $user->putUserCode($user_id, $cookie);
                     $callback = array(
                         'status' => "OK",
                         'title' => "Сообщение системы",
-                        'text' => "Урааааааа",
-                        'color' => "bg-danger"
+                        'text' => "Урааааааа"
                     );
                     // Выводим заголовки
                     $response->withStatus(200);
@@ -297,8 +294,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
                     $callback = array(
                         'status' => "NO",
                         'title' => "Сообщение системы",
-                        'text' => "Login failed. Incorrect credentials",
-                        'color' => "bg-danger"
+                        'text' => "Login failed. Incorrect credentials"
                     );
                     // Выводим заголовки
                     $response->withStatus(200);
@@ -310,8 +306,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
                 $callback = array(
                     'status' => "NO",
                     'title' => "Сообщение системы",
-                    'text' => "Введите правильные данные !",
-                    'color' => "bg-danger"
+                    'text' => "Введите правильные данные !"
                 );
                 // Выводим заголовки
                 $response->withStatus(200);
@@ -323,8 +318,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
             $callback = array(
                 'status' => "NO",
                 'title' => "Сообщение системы",
-                'text' => "Заполните пустые поля",
-                'color' => "bg-danger"
+                'text' => "Заполните пустые поля"
             );
             // Выводим заголовки
             $response->withStatus(200);
@@ -337,8 +331,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
         $callback = array(
             'status' => "NO",
             'title' => "Сообщение системы безопасности",
-            'text' => "Перегрузите страницу",
-            'color' => "bg-danger"
+            'text' => "Перегрузите страницу"
         );
         // Выводим заголовки
         $response->withStatus(200);
@@ -350,6 +343,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
  
 // Регистрация
 $app->post('/check-in', function (Request $request, Response $response, array $args) {
+    $today = date("Y-m-d H:i:s");
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Читаем ключи
@@ -367,20 +361,21 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
         $callback = array(
             'status' => "NO",
             'title' => "Сообщение системы",
-            'text' => "Вы не прошли проверку системы безопасности !<br>У вас осталась одна попытка :)",
-            'color' => "bg-danger"
+            'text' => "Вы не прошли проверку системы безопасности !<br>У вас осталась одна попытка :)"
         );
         // Выводим заголовки
         $response->withStatus(200);
         $response->withHeader('Content-type', 'application/json');
         // Выводим json
         echo json_encode($callback);
-    } 
+    }
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
     $post_email = filter_var($post['email'], FILTER_SANITIZE_STRING);
     $post_phone = filter_var($post['phone'], FILTER_SANITIZE_STRING);
     $post_password = filter_var($post['password'], FILTER_SANITIZE_STRING);
+    $post_iname = filter_var($post['iname'], FILTER_SANITIZE_STRING);
+    $post_fname = filter_var($post['fname'], FILTER_SANITIZE_STRING);
     try {
         // Получаем токен из POST
         $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
@@ -392,11 +387,14 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
     $utility = new Utility();
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = $utility->clean($post_csrf);
-    $email = $utility->clean($post_email);
-    $new_phone = $utility->phone_clean($post_phone);
-    $password = $utility->clean($post_password);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
+        $email = $utility->clean($post_email);
+        $new_phone = $utility->phone_clean($post_phone);
+        $password = $utility->clean($post_password);
+        $iname = $utility->clean($post_iname);
+        $fname = $utility->clean($post_fname);
+ 
         $pattern = "/^[\+0-9\-\(\)\s]*$/";
         if(preg_match($pattern, $new_phone)) {
             $phone = $new_phone;
@@ -404,8 +402,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
             $callback = array(
                 'status' => "NO",
                 'title' => "Сообщение системы",
-                'text' => "Номер телефона не валиден",
-                'color' => "bg-danger"
+                'text' => "Номер телефона не валиден"
             );
             // Выводим заголовки
             $response->withStatus(200);
@@ -413,45 +410,81 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
             // Выводим json
             echo json_encode($callback);
         }
-        if(!empty($phone) && !empty($email)) {
+        
+        if(!empty($phone) && !empty($email) && !empty($iname) && !empty($fname)) {
             $email_validate = filter_var($email, FILTER_VALIDATE_EMAIL);
             if($utility->check_length($phone, 8, 25) && $email_validate) {
-                $session->phone = Crypto::encrypt($phone, $session_key);
-                $session->email = Crypto::encrypt($email, $session_key);
-                $user = new User();
-                //check for correct email and password
-                $user_id = $user->checkLogin($email, $phone, $password);
-                if ($user_id != 0) {
-					$database = new Router((new Ping("user"))->get());
-					$user_data = $database->get("user", ["user_id" => $user_id]);
-                    $session->language = $user_data['items']['0']['item']["language"];
-                    $session->user_id = Crypto::encrypt($user_id, $session_key);
-                    $session->phone = Crypto::encrypt($user_data['items']['0']['item']["phone"], $session_key);
-                    $session->email = Crypto::encrypt($user_data['items']['0']['item']["email"], $session_key);
-                    $session->iname = Crypto::encrypt($user_data['items']['0']['item']["iname"], $session_key);
-                    $session->fname = Crypto::encrypt($user_data['items']['0']['item']["fname"], $session_key);
-                    $authorize = 1;
-                    // Записываем authorize в сессию
-                    $session->authorize = Crypto::encrypt($authorize, $session_key);
-                    $code = Crypto::decrypt($session->code, $cookie_key);
-                    $user->putUserCode($user_id, $code);
-                    $callback = array(
-                        'status' => "OK",
-                        'title' => "Сообщение системы",
-                        'text' => "Урааааааа",
-                        'color' => "bg-danger"
-                    );
-                    // Выводим заголовки
-                    $response->withStatus(200);
-                    $response->withHeader('Content-type', 'application/json');
-                    // Выводим json
-                    echo json_encode($callback);
+                // Проверяем наличие пользователя
+                $user_search = (new User())->getEmailPhone($email, $phone);
+                if ($user_search == null) {
+                    // Чистим сессию на всякий случай
+                    $session->clear();
+                    // Создаем новую cookie
+                    $cookie = $utility->random_token();
+                    // Генерируем identificator
+                    $identificator = Crypto::encrypt($cookie, $cookie_key);
+                    // Записываем пользователю новый cookie
+                    list($x1,$x2) = explode('.',strrev($_SERVER['HTTP_HOST']));
+                    $xdomain = $x1.'.'.$x2;
+                    $domain =  strrev($xdomain);
+                    setcookie($config['settings']['session']['name'], $identificator, time() + 3600 * 24 * 31, '/', $domain, 1, true);
+                    // Пишем в сессию identificator cookie
+ 
+                    $database = new Router((new Ping("user"))->get());
+                    $arr["role_id"] = 1;
+                    $arr["password"] = password_hash($password, PASSWORD_DEFAULT);
+                    $arr["phone"] = $phone;
+                    $arr["email"] = $email;
+                    $arr["language"] = $session->language;
+                    $arr["ticketed"] = 1;
+                    $arr["admin_access"] = 0;
+                    $arr["iname"] = $iname;
+                    $arr["fname"] = $fname;
+                    $arr["cookie"] = $cookie;
+                    $arr["created"] = $today;
+                    $arr["authorized"] = $today;
+                    $arr["alias"] = $utility->random_alias_id();
+                    $arr["state"] = 1;
+                    $arr["score"] = 1;
+                    $user_id = $database->post("user", $arr);
+ 
+                    if ($user_id >= 1) {
+                        // Обновляем данные в сессии
+                        $session->authorize = 1;
+                        $session->cookie = $identificator;
+                        $session->user_id = Crypto::encrypt($user_id, $session_key);
+                        $session->phone = Crypto::encrypt($phone, $session_key);
+                        $session->email = Crypto::encrypt($email, $session_key);
+                        $session->iname = Crypto::encrypt($iname, $session_key);
+                        $session->fname = Crypto::encrypt($fname, $session_key);
+
+                        $callback = array(
+                            'status' => "OK",
+                            'title' => "Сообщение системы",
+                            'text' => "Урааааааа"
+                        );
+                        // Выводим заголовки
+                        $response->withStatus(200);
+                        $response->withHeader('Content-type', 'application/json');
+                        // Выводим json
+                        echo json_encode($callback);
+                    } else {
+                        $callback = array(
+                            'status' => "NO",
+                            'title' => "Сообщение системы",
+                            'text' => "Что то не так"
+                        );
+                        // Выводим заголовки
+                        $response->withStatus(200);
+                        $response->withHeader('Content-type', 'application/json');
+                        // Выводим json
+                        echo json_encode($callback);
+                    }
                 } else {
                     $callback = array(
                         'status' => "NO",
                         'title' => "Сообщение системы",
-                        'text' => "Login failed. Incorrect credentials",
-                        'color' => "bg-danger"
+                        'text' => "Пользователь уже существует"
                     );
                     // Выводим заголовки
                     $response->withStatus(200);
@@ -463,8 +496,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
                 $callback = array(
                     'status' => "NO",
                     'title' => "Сообщение системы",
-                    'text' => "Введите правильные данные !",
-                    'color' => "bg-danger"
+                    'text' => "Введите правильные данные !"
                 );
                 // Выводим заголовки
                 $response->withStatus(200);
@@ -476,8 +508,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
             $callback = array(
                 'status' => "NO",
                 'title' => "Сообщение системы",
-                'text' => "Заполните пустые поля",
-                'color' => "bg-danger"
+                'text' => "Заполните пустые поля"
             );
             // Выводим заголовки
             $response->withStatus(200);
@@ -490,8 +521,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
         $callback = array(
             'status' => "NO",
             'title' => "Сообщение системы безопасности",
-            'text' => "Перегрузите страницу",
-            'color' => "bg-danger"
+            'text' => "Перегрузите страницу"
         );
         // Выводим заголовки
         $response->withStatus(200);
@@ -501,3 +531,4 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
     } 
 });
  
+    

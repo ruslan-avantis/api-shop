@@ -38,12 +38,11 @@ class Language {
         $db = new Database($this->db_name);
         // Отправляем запрос и отдаем результат
         $response = $db->get($this->resource);
-        //print_r($response);
         if ($response != null) {
         foreach ($response["items"] as $value) {
             $arr[$value["item"]["id"]] = $value["item"][$this->language];
         }
-        return $arr;
+		return $arr;
         } else {
             return null;
         }

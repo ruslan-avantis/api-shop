@@ -37,18 +37,18 @@ $app->post('/language', function (Request $request, Response $response, array $a
         if ($lang == 3) {$session->language = "en";}
         if ($lang == 4) {$session->language = "de";}
     }
-	$language = (new Language())->get($session->language);
-	foreach($language as $key => $value)
+    $language = (new Language())->get($session->language);
+    foreach($language as $key => $value)
     {
-		$arr["id"] = $key;
-		$arr["name"] = $value;
-		$languages[] = $arr;
-	}
+        $arr["id"] = $key;
+        $arr["name"] = $value;
+        $languages[] = $arr;
+    }
     // callback - Даем ответ в виде json о результате
     $callback = array(
         'language' => $session->language,
-		'languages' => $languages,
-		'status' => "OK"
+        'languages' => $languages,
+        'status' => "OK"
     );
     // Выводим заголовки
     $response->withStatus(200);

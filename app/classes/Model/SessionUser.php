@@ -36,12 +36,11 @@ class SessionUser {
         $config = (new Settings())->get();
         // Подключаем сессию
         $session = new Session($config['settings']['session']['name']);
-        if ($session->language) {
+        if ($session->authorize == 1) {
 			// Читаем ключи
         	$session_key = $config['key']['session'];
             // Формируем массив данных сессии который отдаем шаблонизатору
             $response = array();
-            if ($session->authorize) {$response['authorize'] = $session->authorize;}
 			if ($session->language) {$response['language'] = $session->language;}
             if ($session->iname) {$response["iname"] = Crypto::decrypt($session->iname, $session_key);}
             if ($session->fname) {$response["fname"] = Crypto::decrypt($session->fname, $session_key);}
