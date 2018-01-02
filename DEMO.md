@@ -1,7 +1,7 @@
 # Демонстрация работы API Shop
 
 ## Демо сайт
-[pllano.eu](https://pllano.eu/) — Работает на текущих на файлах API Shop. Здесь вы можете видеть реальный статус разработки.
+[xti.com.ua](https://xti.com.ua/) — Работает на текущих на файлах API Shop. Здесь вы можете видеть реальный статус разработки.
 
 ### Конфигурация демо сайта
 - [Конфигурация](https://github.com/pllano/api-shop/blob/master/app/config/settings.php)
