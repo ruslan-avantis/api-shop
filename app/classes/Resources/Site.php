@@ -14,8 +14,8 @@
 namespace ApiShop\Resources;
 
 use ApiShop\Config\Settings;
-use ApiShop\Database\Router as Database;
-use ApiShop\Database\Ping;
+use RouterDb\Db;
+use RouterDb\Router;
 
 class Site {
  
@@ -24,39 +24,47 @@ class Site {
     private $themes = null;
     private $resource;
     private $db_name;
+    private $site_template;
+    private $config;
  
     function __construct()
     {
+ 
+        // Подключаем конфиг Settings\Config
+        $config = (new Settings())->get();
+        $this->config = $config;
+ 
+        // Получаем название шаблона
+        $this->themes = $this->config["settings"]["themes"];
+ 
         // Ресурс к которому обращаемся
         $this->resource = "site";
-        // Получаем конфигурацию
-        $this->settings = (new Settings())->get();
-        // Получаем название шаблона
-        $this->themes = $this->settings["settings"]["themes"];
-        // Database\Ping контролирует состояние master и slave
-        // Если база указанная в конфигурации resource недоступна, подключит master или slave
-        $ping = new Ping($this->resource); // return api
-        $this->db_name = $ping->get();
+        // Отдаем роутеру RouterDb конфигурацию.
+        $router = new Router($this->config);
+        // Получаем название базы для указанного ресурса
+        $this->db_name = $router->get($this->resource);
+ 
     }
 
     public function get()
     {
         // Подключаемся к базе
-        $db = new Database($this->db_name);
-        // Отправляем запрос
+        $db = new Db($this->db_name, $this->config);
+        // Отправляем запрос и получаем данные
         $response = $db->get($this->resource);
-        $this->site = $response["items"]["item"];
+ 
+        $this->site = $response["body"]["items"]["item"];
+		if ($this->config["db"]["api"]["config"] == true) {
+            $this->site_template = $response["body"]["items"]["item"]["template"];
+        } else {
+            $this->site_template = $this->themes["template"];
+        }
         return $this->site;
     }
     
     public function template()
     {
-        $this->get();
-        if ($this->settings["db"]["api"]["config"] == true) {
-            return $this->site["template"];
-        } else {
-            return $this->themes["template"];
-        }
+        return $this->site_template;
     }
  
 }

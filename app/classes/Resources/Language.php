@@ -13,36 +13,45 @@
 
 namespace ApiShop\Resources;
 
-use ApiShop\Database\Router as Database;
-use ApiShop\Database\Ping;
+use RouterDb\Db;
+use RouterDb\Router;
+use ApiShop\Config\Settings;
 
 class Language {
 
     private $db_name;
     private $language = "en";
     private $resource = "language";
+	private $config;
  
     function __construct()
     {
-        // Ping get отдает название базы для указанного ресурса
-        // Если указанная в конфигурации для resource недоступна, подключит master или slave
-        $ping = new Ping($this->resource); // return jsonapi
-        $this->db_name = $ping->get();
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
+	$this->config = $config;
+
+    // Отдаем роутеру RouterDb конфигурацию.
+    $router = new Router($this->config);
+    // Получаем название базы для указанного ресурса
+    $this->db_name = $router->get($this->resource);
+ 
     }
 
     // Ресурс language доступен только на чтение
     public function get($language = null)
     {
         if (isset($language)){$this->language = $language;}
+ 
         // Подключаемся к базе
-        $db = new Database($this->db_name);
-        // Отправляем запрос и отдаем результат
+        $db = new Db($this->db_name, $this->config);
+        // Отправляем запрос и получаем данные
         $response = $db->get($this->resource);
+ 
         if ($response != null) {
-        foreach ($response["items"] as $value) {
+        foreach ($response["body"]["items"] as $value) {
             $arr[$value["item"]["id"]] = $value["item"][$this->language];
         }
-		return $arr;
+        return $arr;
         } else {
             return null;
         }
