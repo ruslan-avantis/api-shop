@@ -122,13 +122,14 @@ API Shop — Использует собственный стандарт обм
 {
   "require": {
     "php": "^7.0",
+    "pllano/json-db": "^1.0.5",
+    "pllano/router-db": "^1.0.1",
     "psr/http-message": "^1.0",
     "slim/slim": "^3.0",
     "twig/twig": "~2.0",
     "phpunit/phpunit": "^6.4",
     "monolog/monolog": "^1.23",
     "guzzlehttp/guzzle": "^6.3",
-    "pllano/json-db": "^1.0.5",
     "defuse/php-encryption": "^v2.1",
     "adbario/slim-secure-session-middleware": "^1.3.4",
     "spatie/image-optimizer": "^1.0.9",
