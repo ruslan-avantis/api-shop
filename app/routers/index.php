@@ -15,29 +15,37 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Adbar\Session;
 use Defuse\Crypto\Crypto;
+use Sinergi\BrowserDetector\Language as Langs;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
-use ApiShop\Database\Router;
-use ApiShop\Database\Ping;
 use ApiShop\Model\SessionUser;
+use RouterDb\Db;
+use RouterDb\Router;
+
+//use ApiShop\Database\Router;
+//use ApiShop\Database\Ping;
 
 $app->get('/', function (Request $request, Response $response, array $args) {
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
     $site = new Site();
     $site_config = $site->get();
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
-    // Подключаем временное хранилище
-    $session_temp = new Session("_temp");
     // Читаем ключи
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
     // Получаем массив данных из таблицы language на языке из $session->language
+    $langs = new Langs();
+    // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($session->language)) {
         $lang = $session->language;
+    } elseif ($langs->getLanguage()) {
+        $lang = $langs->getLanguage();
     } else {
         $lang = $site_config["language"];
     }
@@ -57,28 +65,33 @@ $app->get('/', function (Request $request, Response $response, array $args) {
         $session->authorize = 0;
         $authorize = 0;
     }
-    // Отдаем информацию для шаблонизатора
-    // Информацию о странице
-    $page = ["page" => 'home'];
     // Данные пользователя из сессии
-    $session_user_data =(new SessionUser())->get();
+    $sessionUser =(new SessionUser())->get();
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // print_r($content);
  
-    // Формируем параметры запроса
+    // Эти параметры должны браться из конфигурации сайта получаемого через API
     $arr = array(
-        "limit"            => 9,
-        "brand_id"        => '66',
-        "articul"        => '80x190'
+        "limit" => 9,
+        "sort" => 'price',
+        "order" => 'ASC'
     );
-    // Подключаем ApiShop\Database\Router
-    $database = new Router((new Ping("price"))->get());
+
+    // Ресурс (таблица) к которому обращаемся
+    $resource = "price";
+    // Отдаем роутеру RouterDb конфигурацию.
+    $router = new Router($config);
+    // Получаем название базы для указанного ресурса
+    $name_db = $router->get($resource);
+    // Подключаемся к базе
+    $db = new Db($name_db, $config);
     // Отправляем запрос и получаем данные
-    $response = $database->get("price", $arr);
+    $response = $db->get($resource, $arr);
+ 
     // Если ответ не пустой
-    if (count($response['items']) >= 1) {
-        foreach($response['items'] as $item)
+    if (count($response["body"]['items']) >= 1) {
+        foreach($response["body"]['items'] as $item)
         {
             // Обрабатываем картинки
             $product['image']['no_image'] = $utility->get_image(null, 'https://life24.com.ua/images/no_image.png', 360, 360);
@@ -103,6 +116,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
             $product['oldprice'] = (isset($item['item']['oldprice'])) ? $utility->clean($item['item']['oldprice']) : '';
             $product['price'] = (isset($item['item']['price'])) ? $utility->clean($item['item']['price']) : '';
             $product['available'] = (isset($item['item']['available'])) ? $utility->clean($item['item']['available']) : '';
+            $product['product_id'] = (isset($item['item']['product_id'])) ? $utility->clean($item['item']['product_id']) : '';
 
             $rand = rand(1000, 5000);
             $date = date("Y-m-d H:i:s",strtotime(date("Y-m-d H:i:s")." +".$rand." minutes"));
@@ -122,18 +136,244 @@ $app->get('/', function (Request $request, Response $response, array $args) {
  
     // Запись в лог
     $this->logger->info("home");
+    
+    $head = [
+            "page" => 'home',
+            "title" => "",
+            "keywords" => "",
+            "description" => "",
+            "og_title" => "",
+            "og_description" => "",
+            "host" => $host,
+            "path" => $path
+    ];
  
     return $this->twig->render('index.html', [
         "template" => $site->template(),
-        "pages" => $page,
+        "head" => $head,
         "site" => $site_config,
         "config" => $config['settings']['site'],
         "language" => $language,
         "token" => $session->token,
-        "session" => $session_user_data,
-        "session_temp" => $session_temp,
+        "session" => $sessionUser,
         "content" => $content,
         "products" => $products
+    ]);
+ 
+});
+ 
+$app->get('/about-us.html', function (Request $request, Response $response, array $args) {
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию \ApiShop\Config\Settings
+    $config = (new Settings())->get();
+    $site = new Site();
+    $site_config = $site->get();
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $session_key = $config['key']['session'];
+    $token_key = $config['key']['token'];
+    // Получаем массив данных из таблицы language на языке из $session->language
+    $langs = new Langs();
+    // Получаем массив данных из таблицы language на языке из $session->language
+    if (isset($session->language)) {
+        $lang = $session->language;
+    } elseif ($langs->getLanguage()) {
+        $lang = $langs->getLanguage();
+    } else {
+        $lang = $site_config["language"];
+    }
+    // Подключаем мультиязычность
+    $language = (new Language())->get($lang);
+    //print_r($language);
+    // Подключаем плагины
+    $utility = new Utility();
+    // Генерируем токен
+    $token = $utility->random_token();
+    // Записываем токен в сессию
+    $session->token = Crypto::encrypt($token, $token_key);
+    // Если запись об авторизации есть расшифровываем
+    if ($session->authorize) {
+        $authorize = $session->authorize;
+    } else {
+        $session->authorize = 0;
+        $authorize = 0;
+    }
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
+    // Что бы не давало ошибку присваиваем пустое значение
+    $content = '';
+    // print_r($content);
+ 
+    // Запись в лог
+    $this->logger->info("about-us");
+    
+    $head = [
+        "page" => 'about-us',
+        "title" => $language['45'].' | '.$host,
+        "keywords" => $language['45'],
+        "description" => $language['45'].' | '.$host,
+        "og_url" => $site_config["http_protocol"].'://'.$host.''.$path,
+        "og_title" => $language['45'].' | '.$host,
+        "og_description" => $language['45'].' | '.$host,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
+    return $this->twig->render('about-us.html', [
+        "template" => $site->template(),
+        "head" => $head,
+        "site" => $site_config,
+        "config" => $config['settings']['site'],
+        "language" => $language,
+        "token" => $session->token,
+        "session" => $sessionUser,
+        "content" => $content
+    ]);
+ 
+});
+ 
+$app->get('/contact.html', function (Request $request, Response $response, array $args) {
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию \ApiShop\Config\Settings
+    $config = (new Settings())->get();
+    $site = new Site();
+    $site_config = $site->get();
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $session_key = $config['key']['session'];
+    $token_key = $config['key']['token'];
+    // Получаем массив данных из таблицы language на языке из $session->language
+    $langs = new Langs();
+    // Получаем массив данных из таблицы language на языке из $session->language
+    if (isset($session->language)) {
+        $lang = $session->language;
+    } elseif ($langs->getLanguage()) {
+        $lang = $langs->getLanguage();
+    } else {
+        $lang = $site_config["language"];
+    }
+    // Подключаем мультиязычность
+    $language = (new Language())->get($lang);
+    //print_r($language);
+    // Подключаем плагины
+    $utility = new Utility();
+    // Генерируем токен
+    $token = $utility->random_token();
+    // Записываем токен в сессию
+    $session->token = Crypto::encrypt($token, $token_key);
+    // Если запись об авторизации есть расшифровываем
+    if ($session->authorize) {
+        $authorize = $session->authorize;
+    } else {
+        $session->authorize = 0;
+        $authorize = 0;
+    }
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
+    // Что бы не давало ошибку присваиваем пустое значение
+    $content = '';
+    // print_r($content);
+ 
+    // Запись в лог
+    $this->logger->info("contact");
+    
+    $head = [
+        "page" => 'contact',
+        "title" => $language['105'].' | '.$host,
+        "keywords" => $language['105'],
+        "description" => $language['105'].' | '.$host,
+        "og_url" => $site_config["http_protocol"].'://'.$host.''.$path,
+        "og_title" => $language['105'].' | '.$host,
+        "og_description" => $language['105'].' | '.$host,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
+    return $this->twig->render('contact.html', [
+        "template" => $site->template(),
+        "head" => $head,
+        "site" => $site_config,
+        "config" => $config['settings']['site'],
+        "language" => $language,
+        "token" => $session->token,
+        "session" => $sessionUser,
+        "content" => $content
+    ]);
+ 
+});
+ 
+$app->get('/faq.html', function (Request $request, Response $response, array $args) {
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию \ApiShop\Config\Settings
+    $config = (new Settings())->get();
+    $site = new Site();
+    $site_config = $site->get();
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $session_key = $config['key']['session'];
+    $token_key = $config['key']['token'];
+    // Получаем массив данных из таблицы language на языке из $session->language
+    $langs = new Langs();
+    // Получаем массив данных из таблицы language на языке из $session->language
+    if (isset($session->language)) {
+        $lang = $session->language;
+    } elseif ($langs->getLanguage()) {
+        $lang = $langs->getLanguage();
+    } else {
+        $lang = $site_config["language"];
+    }
+    // Подключаем мультиязычность
+    $language = (new Language())->get($lang);
+    //print_r($language);
+    // Подключаем плагины
+    $utility = new Utility();
+    // Генерируем токен
+    $token = $utility->random_token();
+    // Записываем токен в сессию
+    $session->token = Crypto::encrypt($token, $token_key);
+    // Если запись об авторизации есть расшифровываем
+    if ($session->authorize) {
+        $authorize = $session->authorize;
+    } else {
+        $session->authorize = 0;
+        $authorize = 0;
+    }
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
+    // Что бы не давало ошибку присваиваем пустое значение
+    $content = '';
+    // print_r($content);
+ 
+    // Запись в лог
+    $this->logger->info("faq");
+    
+    $head = [
+        "page" => 'faq',
+        "title" => $language['311'].' | '.$host,
+        "keywords" => $language['311'],
+        "description" => $language['311'].' | '.$host,
+        "og_url" => $site_config["http_protocol"].'://'.$host.''.$path,
+        "og_title" => $language['311'].' | '.$host,
+        "og_description" => $language['311'].' | '.$host,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
+    return $this->twig->render('faq.html', [
+        "template" => $site->template(),
+        "head" => $head,
+        "site" => $site_config,
+        "config" => $config['settings']['site'],
+        "language" => $language,
+        "token" => $session->token,
+        "session" => $sessionUser,
+        "content" => $content
     ]);
  
 });

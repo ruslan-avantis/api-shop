@@ -1,10 +1,13 @@
 <?php 
-    
+ 
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Adbar\Session;
 use Defuse\Crypto\Crypto;
 use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException as CryptoEx;
+use Sinergi\BrowserDetector\Language as Langs;
+use RouterDb\Db;
+use RouterDb\Router;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Model\Security;
@@ -12,8 +15,7 @@ use ApiShop\Model\SessionUser;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
 use ApiShop\Resources\User;
-use ApiShop\Database\Router;
-use ApiShop\Database\Ping;
+
  
 // Страница авторизации
 $app->get('/sign-in', function (Request $request, Response $response, array $args) {
@@ -29,8 +31,12 @@ $app->get('/sign-in', function (Request $request, Response $response, array $arg
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
     // Получаем массив данных из таблицы language на языке из $session->language
+    $langs = new Langs();
+    // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($session->language)) {
         $lang = $session->language;
+    } elseif ($langs->getLanguage()) {
+        $lang = $langs->getLanguage();
     } else {
         $lang = $site_config["language"];
     }
@@ -86,8 +92,12 @@ $app->get('/sign-up', function (Request $request, Response $response, array $arg
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
     // Получаем массив данных из таблицы language на языке из $session->language
+    $langs = new Langs();
+    // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($session->language)) {
         $lang = $session->language;
+    } elseif ($langs->getLanguage()) {
+        $lang = $langs->getLanguage();
     } else {
         $lang = $site_config["language"];
     }
@@ -112,6 +122,7 @@ $app->get('/sign-up', function (Request $request, Response $response, array $arg
     $page = ["page" => 'sign-up'];
     // Данные пользователя из сессии
     $session_user_data =(new SessionUser())->get();
+    print_r($session_user_data);
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // print_r($content);
@@ -165,13 +176,11 @@ $app->post('/logout', function (Request $request, Response $response, array $arg
         unset($session->authorize); // удаляем сесию
         unset($session->id); // удаляем сесию
         unset($session->cookie); // удаляем сесию
-        list($x1,$x2) = explode('.',strrev($_SERVER['HTTP_HOST']));
-        $xdomain = $x1.'.'.$x2;
-        $domain =  strrev($xdomain);
+        $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
         setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain, 1, true);
         $session->destroy();
         $callback = array(
-            'status' => "OK",
+            'status' => 200,
             'title' => "Информация",
             'text' => "Вы вышли из системы"
         );
@@ -182,7 +191,7 @@ $app->post('/logout', function (Request $request, Response $response, array $arg
         echo json_encode($callback);
     } else {
         $callback = array(
-            'status' => "OK",
+            'status' => 200,
             'title' => "Ошибка",
             'text' => "Что то не так"
         );
@@ -212,7 +221,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
         (new Security())->token();
         // Сообщение об Атаке или подмене сессии
         $callback = array(
-            'status' => "NO",
+            'status' => 400,
             'title' => "Сообщение системы",
             'text' => "Вы не прошли проверку системы безопасности !<br>У вас осталась одна попытка :)"
         );
@@ -248,7 +257,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
             $phone = $new_phone;
         } else {
             $callback = array(
-                'status' => "NO",
+                'status' => 400,
                 'title' => "Сообщение системы",
                 'text' => "Номер телефона не валиден"
             );
@@ -267,21 +276,31 @@ $app->post('/login', function (Request $request, Response $response, array $args
                 //check for correct email and password
                 $user_id = $user->checkLogin($email, $phone, $password);
                 if ($user_id != 0) {
-                    $database = new Router((new Ping("user"))->get());
-                    $user_data = $database->get("user", ["user_id" => $user_id]);
-                    $session->language = $user_data['items']['0']['item']["language"];
+
+                    // Ресурс (таблица) к которому обращаемся
+                    $resource = "user";
+                    // Отдаем роутеру RouterDb конфигурацию.
+                    $router = new Router($config);
+                    // Получаем название базы для указанного ресурса
+                    $name_db = $router->get($resource);
+                    // Подключаемся к базе
+                    $db = new Db($name_db, $config);
+                    // Отправляем запрос и получаем данные
+                    $user_data = $db->get($resource, ["user_id" => $user_id]);
+					
+                    $session->language = $user_data["body"]['items']['0']['item']["language"];
                     $session->user_id = Crypto::encrypt($user_id, $session_key);
-                    $session->phone = Crypto::encrypt($user_data['items']['0']['item']["phone"], $session_key);
-                    $session->email = Crypto::encrypt($user_data['items']['0']['item']["email"], $session_key);
-                    $session->iname = Crypto::encrypt($user_data['items']['0']['item']["iname"], $session_key);
-                    $session->fname = Crypto::encrypt($user_data['items']['0']['item']["fname"], $session_key);
+                    $session->phone = Crypto::encrypt($user_data["body"]['items']['0']['item']["phone"], $session_key);
+                    $session->email = Crypto::encrypt($user_data["body"]['items']['0']['item']["email"], $session_key);
+                    $session->iname = Crypto::encrypt($user_data["body"]['items']['0']['item']["iname"], $session_key);
+                    $session->fname = Crypto::encrypt($user_data["body"]['items']['0']['item']["fname"], $session_key);
                     $authorize = 1;
                     // Записываем authorize в сессию
                     $session->authorize = Crypto::encrypt($authorize, $session_key);
                     $cookie = Crypto::decrypt($session->cookie, $cookie_key);
                     $user->putUserCode($user_id, $cookie);
                     $callback = array(
-                        'status' => "OK",
+                        'status' => 200,
                         'title' => "Сообщение системы",
                         'text' => "Урааааааа"
                     );
@@ -292,7 +311,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
                     echo json_encode($callback);
                 } else {
                     $callback = array(
-                        'status' => "NO",
+                        'status' => 400,
                         'title' => "Сообщение системы",
                         'text' => "Login failed. Incorrect credentials"
                     );
@@ -304,7 +323,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
                 }
             } else {
                 $callback = array(
-                    'status' => "NO",
+                    'status' => 400,
                     'title' => "Сообщение системы",
                     'text' => "Введите правильные данные !"
                 );
@@ -316,7 +335,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
             }
         } else {
             $callback = array(
-                'status' => "NO",
+                'status' => 400,
                 'title' => "Сообщение системы",
                 'text' => "Заполните пустые поля"
             );
@@ -329,7 +348,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
         //print_r($callback);
     } else {
         $callback = array(
-            'status' => "NO",
+            'status' => 400,
             'title' => "Сообщение системы безопасности",
             'text' => "Перегрузите страницу"
         );
@@ -338,7 +357,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
         $response->withHeader('Content-type', 'application/json');
         // Выводим json
         echo json_encode($callback);
-    } 
+    }
 });
  
 // Регистрация
@@ -359,7 +378,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
         (new Security())->token();
         // Сообщение об Атаке или подмене сессии
         $callback = array(
-            'status' => "NO",
+            'status' => 400,
             'title' => "Сообщение системы",
             'text' => "Вы не прошли проверку системы безопасности !<br>У вас осталась одна попытка :)"
         );
@@ -400,7 +419,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
             $phone = $new_phone;
         } else {
             $callback = array(
-                'status' => "NO",
+                'status' => 400,
                 'title' => "Сообщение системы",
                 'text' => "Номер телефона не валиден"
             );
@@ -424,13 +443,12 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
                     // Генерируем identificator
                     $identificator = Crypto::encrypt($cookie, $cookie_key);
                     // Записываем пользователю новый cookie
-                    list($x1,$x2) = explode('.',strrev($_SERVER['HTTP_HOST']));
-                    $xdomain = $x1.'.'.$x2;
-                    $domain =  strrev($xdomain);
-                    setcookie($config['settings']['session']['name'], $identificator, time() + 3600 * 24 * 31, '/', $domain, 1, true);
+                    $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+                    setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain, 1, true);
                     // Пишем в сессию identificator cookie
  
-                    $database = new Router((new Ping("user"))->get());
+                    
+					
                     $arr["role_id"] = 1;
                     $arr["password"] = password_hash($password, PASSWORD_DEFAULT);
                     $arr["phone"] = $phone;
@@ -446,7 +464,17 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
                     $arr["alias"] = $utility->random_alias_id();
                     $arr["state"] = 1;
                     $arr["score"] = 1;
-                    $user_id = $database->post("user", $arr);
+ 
+                    // Ресурс (таблица) к которому обращаемся
+                    $resource = "user";
+                    // Отдаем роутеру RouterDb конфигурацию.
+                    $router = new Router($config);
+                    // Получаем название базы для указанного ресурса
+                    $name_db = $router->get($resource);
+                    // Подключаемся к базе
+                    $db = new Db($name_db, $config);
+                    // Отправляем запрос и получаем данные
+                    $user_id = $db->post($resource, $arr);
  
                     if ($user_id >= 1) {
                         // Обновляем данные в сессии
@@ -459,7 +487,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
                         $session->fname = Crypto::encrypt($fname, $session_key);
 
                         $callback = array(
-                            'status' => "OK",
+                            'status' => 200,
                             'title' => "Сообщение системы",
                             'text' => "Урааааааа"
                         );
@@ -470,7 +498,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
                         echo json_encode($callback);
                     } else {
                         $callback = array(
-                            'status' => "NO",
+                            'status' => 400,
                             'title' => "Сообщение системы",
                             'text' => "Что то не так"
                         );
@@ -482,7 +510,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
                     }
                 } else {
                     $callback = array(
-                        'status' => "NO",
+                        'status' => 400,
                         'title' => "Сообщение системы",
                         'text' => "Пользователь уже существует"
                     );
@@ -494,7 +522,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
                 }
             } else {
                 $callback = array(
-                    'status' => "NO",
+                    'status' => 400,
                     'title' => "Сообщение системы",
                     'text' => "Введите правильные данные !"
                 );
@@ -506,7 +534,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
             }
         } else {
             $callback = array(
-                'status' => "NO",
+                'status' => 400,
                 'title' => "Сообщение системы",
                 'text' => "Заполните пустые поля"
             );
@@ -519,7 +547,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
         //print_r($callback);
     } else {
         $callback = array(
-            'status' => "NO",
+            'status' => 400,
             'title' => "Сообщение системы безопасности",
             'text' => "Перегрузите страницу"
         );
@@ -531,4 +559,3 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
     } 
 });
  
-    
