@@ -112,6 +112,7 @@ API Shop — Использует собственный стандарт обм
 - [Monolog](https://github.com/Seldaek/monolog) – Логирование
 - [PHPUnit](https://github.com/sebastianbergmann/phpunit) – Тесты
 - [jsonDB](https://github.com/pllano/json-db) – Кеширование и резервная база данных
+- [routerDb](https://github.com/pllano/router-db) – Один интерфейс для работы с базами данных
 - [php-encryption](https://github.com/defuse/php-encryption) – Шифрование
 - [Slim Secure Session Middleware](https://github.com/adbario/slim-secure-session-middleware) – Сессия
 - [image-optimizer](https://github.com/spatie/image-optimizer) – Оптимизация изображений
