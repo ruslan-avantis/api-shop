@@ -64,11 +64,11 @@ $config["resource"]["language"]["db"] = "json";
 // Платежи хранить в Oracle
 $config["resource"]["pay"]["db"] = "oracle";
 ```
-### Встроенный роутер переключения между базами
-`Database\Router` — роутер подключения к базам данных, дает возможность писать один код для всех баз данных а интеграцию вывести в отдельный класс для каждой базы данных.
+### Роутер переключения между базами [`RouterDb`](https://github.com/pllano/router-db)
+[`RouterDb`](https://github.com/pllano/router-db) — роутер подключения к базам данных, дает возможность писать один код для всех баз данных а интеграцию вывести в отдельный класс для каждой базы данных.
 ```php
-use ApiShop\Database\Router as Database;
-use ApiShop\Database\Ping;
+use RouterDb\Db;
+use RouterDb\Router;
  
 // Массив с данными
 $arr = [
@@ -83,15 +83,18 @@ $arr = [
         "address": "all"
     }')
 ];
- 
-// Ресурс к которому обращаемся
-$resource = "price";
+
+// Ресурс (таблица) к которой обращаемся
+$resource = "order";
+// Отдаем роутеру RouterDb конфигурацию.
+$router = new Router($config);
 // Получаем название базы для указанного ресурса
-$db_name = new Ping($resource);
+$name_db = $router->get($resource);
 // Подключаемся к базе
-$db = new Database($db_name);
-// Отправляем запрос
-$db->get($resource, $arr);
+$db = new Db($name_db, $config);
+// Отправляем запрос для получения списка
+// Вернет массив с данными
+$response = $db->get($resource, $arr);
 ```
 Обратите внимание на очень важный параметр запроса [`relations`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md) позволяющий получать в ответе необходимые данные из других связанных ресурсов.
 
