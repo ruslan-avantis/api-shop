@@ -124,6 +124,8 @@ class Settings {
     $config["db"]["master"] = "api";
     // Название резервной базы данных. По умолчанию json
     $config["db"]["slave"] = "json";
+ 	// Лимит выполнения запросов из очереди queue за один раз. По умолчанию 5
+	$config["db"]["queue"]["limit"] = 5;
  
     // Ключ шифрования в базах данных. Отдаем в чистом виде.
     $config["db"]["key"] = file_get_contents($key_db, true);
