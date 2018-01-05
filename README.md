@@ -120,6 +120,7 @@ API Shop — Использует собственный стандарт обм
 - [Slim Secure Session Middleware](https://github.com/adbario/slim-secure-session-middleware) – Сессия
 - [image-optimizer](https://github.com/spatie/image-optimizer) – Оптимизация изображений
 - [Imagine](https://github.com/avalanche123/Imagine) – Обработка изображений
+- [Browser Detector](https://github.com/sinergi/php-browser-detector) – Информация о пользователе
 
 ## Зависимости
 ```json
@@ -137,7 +138,9 @@ API Shop — Использует собственный стандарт обм
     "defuse/php-encryption": "^v2.1",
     "adbario/slim-secure-session-middleware": "^1.3.4",
     "spatie/image-optimizer": "^1.0.9",
-    "imagine/imagine": "~0.5.0"
+    "imagine/imagine": "~0.5.0",
+    "sinergi/browser-detector": "^6.1.2"
+    
   }
 }
 ```
