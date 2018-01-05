@@ -126,11 +126,14 @@ class Settings {
     $config["db"]["slave"] = "json";
     // Лимит выполнения запросов из очереди queue за один раз. По умолчанию 5
     $config["db"]["queue"]["limit"] = 5;
+    // Синхронизировать ресурсы или нет. По умолчанию нет false
+    $config["db"]["synchronize"] = false;
+    
  
     // Ключ шифрования в базах данных. Отдаем в чистом виде.
     $config["db"]["key"] = file_get_contents($key_db, true);
 
-    // Настройки подключения к jsonDb напрямую
+    // Настройки подключения к jsondb напрямую
     // Директория для хранения файлов json базы данных.
     $config["db"]["json"]["dir"] = __DIR__ . "/../../json-db/db/";
     // Кеширование запросов
@@ -144,9 +147,9 @@ class Settings {
     // Шифруем базу
     $config["db"]["json"]["crypt"] = false;
 
-    // Настройки подключения к jsonDb через API
-    // URL API jsonDb
-    $config["db"]["jsonapi"]["url"] = "https://pllano.eu/json-db/";
+    // Настройки подключения к jsondb через API
+    // URL API jsondb
+    $config["db"]["jsonapi"]["url"] = "https://xti.com.ua/json-db/";
     // Доступные методы аутентификации: null, CryptoAuth, QueryKeyAuth, HttpTokenAuth, LoginPasswordAuth
     $config["db"]["jsonapi"]["auth"] = null;
     // Публичный ключ аутентификации
@@ -157,17 +160,17 @@ class Settings {
     // Если работает через API будет брать часть конфигурации из api
     $config["db"]["api"]["config"] = true; // true|false
     // URL API
-    $config["db"]["api"]["url"] = "https://ua.pllano.com/api/v1/json/";
+    $config["db"]["api"]["url"] = "";
     // Доступные методы аутентификации: CryptoAuth, QueryKeyAuth, HttpTokenAuth, LoginPasswordAuth
     $config["db"]["api"]["auth"] = "QueryKeyAuth";
     // Публичный ключ аутентификации
-    $config["db"]["api"]["public_key"] = "3903f7b3fb82c2e609b3f07ccfa119352f1d26c55723c3f7f8fb36a0d0e31dae";
+    $config["db"]["api"]["public_key"] = "";
     // Приватный ключ шифрования
     $config["db"]["api"]["private_key"] = "";
  
     // Настройки подключения к базе MySQL
-    $config["db"]["mysql"]["host"] = "";
-    $config["db"]["mysql"]["basename"] = "";
+    $config["db"]["mysql"]["host"] = "localhost";
+    $config["db"]["mysql"]["dbname"] = "";
     $config["db"]["mysql"]["port"] = "";
     $config["db"]["mysql"]["charset"] = "utf8";
     $config["db"]["mysql"]["connect_timeout"] = 15;
@@ -190,30 +193,116 @@ class Settings {
  
     // API Shop позволяет одновременно работать с любым количеством баз данных
     // Название базы данных для каждого ресурса. По умолчанию api
-     
-    $config["resource"]["site"]["db"] = "api";
-    $config["resource"]["language"]["db"] = "jsonapi";
-    $config["resource"]["user"]["db"] = "json";
-    
+ 
+    // Хранилище для ресурса site
+    $config["resource"]["site"]["db"] = "api"; // +
+    // Синхронизировать ресурс site или нет. По умолчанию false
+    $config["resource"]["site"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса price
     $config["resource"]["price"]["db"] = "api";
-    $config["resource"]["category"]["db"] = "api";
-    $config["resource"]["product"]["db"] = "api";
-    $config["resource"]["type"]["db"] = "api";
-    $config["resource"]["brand"]["db"] = "api";
-    $config["resource"]["serie"]["db"] = "api";
-    $config["resource"]["images"]["db"] = "api";
-    $config["resource"]["seo"]["db"] = "api";
-    $config["resource"]["description"]["db"] = "api";
-    $config["resource"]["params"]["db"] = "api";
-    $config["resource"]["role"]["db"] = "api";
-    $config["resource"]["contact"]["db"] = "api";
-    $config["resource"]["address"]["db"] = "api";
-    $config["resource"]["currency"]["db"] = "api";
-    $config["resource"]["cart"]["db"] = "api";
-    $config["resource"]["order"]["db"] = "api";
-    $config["resource"]["pay"]["db"] = "api";
-    $config["resource"]["article"]["db"] = "api";
-    $config["resource"]["article_category"]["db"] = "api";
+    // Синхронизировать ресурс price или нет. По умолчанию false
+    $config["resource"]["price"]["synchronize"] = false;
+
+    // Хранилище для ресурса language
+    $config["resource"]["language"]["db"] = "json";
+    // Синхронизировать ресурс language или нет. По умолчанию false
+    $config["resource"]["language"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса user
+    $config["resource"]["user"]["db"] = "jsonapi";
+    // Синхронизировать ресурс user или нет. По умолчанию false
+    $config["resource"]["user"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса cart
+    $config["resource"]["cart"]["db"] = "jsonapi";
+    // Синхронизировать ресурс cart или нет. По умолчанию false
+    $config["resource"]["cart"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса order
+    $config["resource"]["order"]["db"] = "jsonapi";
+    // Синхронизировать ресурс order или нет. По умолчанию false
+    $config["resource"]["order"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса address
+    $config["resource"]["address"]["db"] = "jsonapi";
+    // Синхронизировать ресурс address или нет. По умолчанию false
+    $config["resource"]["address"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса pay
+    $config["resource"]["pay"]["db"] = "jsonapi";
+    // Синхронизировать ресурс pay или нет. По умолчанию false
+    $config["resource"]["pay"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса product
+    $config["resource"]["product"]["db"] = "jsonapi";
+    // Синхронизировать ресурс product или нет. По умолчанию false
+    $config["resource"]["product"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса type
+    $config["resource"]["type"]["db"] = "jsonapi";
+    // Синхронизировать ресурс type или нет. По умолчанию false
+    $config["resource"]["type"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса brand
+    $config["resource"]["brand"]["db"] = "jsonapi";
+    // Синхронизировать ресурс brand или нет. По умолчанию false
+    $config["resource"]["brand"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса serie
+    $config["resource"]["serie"]["db"] = "jsonapi";
+    // Синхронизировать ресурс serie или нет. По умолчанию false
+    $config["resource"]["serie"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса images
+    $config["resource"]["images"]["db"] = "jsonapi";
+    // Синхронизировать ресурс images или нет. По умолчанию false
+    $config["resource"]["images"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса seo
+    $config["resource"]["seo"]["db"] = "jsonapi";
+    // Синхронизировать ресурс seo или нет. По умолчанию false
+    $config["resource"]["seo"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса description
+    $config["resource"]["description"]["db"] = "jsonapi";
+    // Синхронизировать ресурс description или нет. По умолчанию false
+    $config["resource"]["description"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса params
+    $config["resource"]["params"]["db"] = "jsonapi";
+    // Синхронизировать ресурс params или нет. По умолчанию false
+    $config["resource"]["params"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса contact
+    $config["resource"]["contact"]["db"] = "jsonapi";
+    // Синхронизировать ресурс contact или нет. По умолчанию false
+    $config["resource"]["contact"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса category
+    $config["resource"]["category"]["db"] = "jsonapi";
+    // Синхронизировать ресурс category или нет. По умолчанию false
+    $config["resource"]["category"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса role
+    $config["resource"]["role"]["db"] = "jsonapi";
+    // Синхронизировать ресурс role или нет. По умолчанию false
+    $config["resource"]["role"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса currency
+    $config["resource"]["currency"]["db"] = "jsonapi";
+    // Синхронизировать ресурс currency или нет. По умолчанию false
+    $config["resource"]["currency"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса article
+    $config["resource"]["article"]["db"] = "mysql";
+    // Синхронизировать ресурс article или нет. По умолчанию false
+    $config["resource"]["article"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса article_category
+    $config["resource"]["article_category"]["db"] = "mysql";
+    // Синхронизировать ресурс article_category или нет. По умолчанию false
+    $config["resource"]["article_category"]["synchronize"] = false;
  
     return $config;
  
