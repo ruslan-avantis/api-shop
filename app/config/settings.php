@@ -124,8 +124,8 @@ class Settings {
     $config["db"]["master"] = "api";
     // Название резервной базы данных. По умолчанию json
     $config["db"]["slave"] = "json";
- 	// Лимит выполнения запросов из очереди queue за один раз. По умолчанию 5
-	$config["db"]["queue"]["limit"] = 5;
+    // Лимит выполнения запросов из очереди queue за один раз. По умолчанию 5
+    $config["db"]["queue"]["limit"] = 5;
  
     // Ключ шифрования в базах данных. Отдаем в чистом виде.
     $config["db"]["key"] = file_get_contents($key_db, true);
@@ -190,6 +190,7 @@ class Settings {
  
     // API Shop позволяет одновременно работать с любым количеством баз данных
     // Название базы данных для каждого ресурса. По умолчанию api
+     
     $config["resource"]["site"]["db"] = "api";
     $config["resource"]["language"]["db"] = "jsonapi";
     $config["resource"]["user"]["db"] = "json";
