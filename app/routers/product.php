@@ -82,7 +82,7 @@ $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request,
         // Отдаем роутеру RouterDb конфигурацию.
         $router = new Router($config);
         // Получаем название базы для указанного ресурса
-        $name_db = $router->get($resource);
+        $name_db = $router->ping($resource);
         // Подключаемся к базе
         $db = new Db($name_db, $config);
         // Отправляем запрос и получаем данные

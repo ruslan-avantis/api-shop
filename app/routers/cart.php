@@ -80,7 +80,7 @@ $app->post('/cart/new-order', function (Request $request, Response $response, ar
         // Отдаем роутеру RouterDb конфигурацию.
         $router = new Router($config);
         // Получаем название базы для указанного ресурса
-        $name_db = $router->get($resource);
+        $name_db = $router->ping($resource);
         // Подключаемся к базе
         $db = new Db($name_db, $config);
         // Отправляем запрос и получаем данные
@@ -108,7 +108,7 @@ $app->post('/cart/new-order', function (Request $request, Response $response, ar
         // Отдаем роутеру RouterDb конфигурацию.
         $router = new Router($config);
         // Получаем название базы для указанного ресурса
-        $name_db = $router->get($resource);
+        $name_db = $router->ping($resource);
         // Подключаемся к базе
         $db = new Db($name_db, $config);
         // Отправляем запрос и получаем данные
@@ -125,13 +125,13 @@ $app->post('/cart/new-order', function (Request $request, Response $response, ar
                 "address_id" => $address,
                 "note" => $description
             ];
-			
+            
             // Ресурс (таблица) к которому обращаемся
             $resource = "order";
             // Отдаем роутеру RouterDb конфигурацию.
             $router = new Router($config);
             // Получаем название базы для указанного ресурса
-            $name_db = $router->get($resource);
+            $name_db = $router->ping($resource);
             // Подключаемся к базе
             $db = new Db($name_db, $config);
             // Отправляем запрос и получаем данные
@@ -156,7 +156,7 @@ $app->post('/cart/new-order', function (Request $request, Response $response, ar
                 // Отдаем роутеру RouterDb конфигурацию.
                 $router = new Router($config);
                 // Получаем название базы для указанного ресурса
-                $name_db = $router->get($resource);
+                $name_db = $router->ping($resource);
                 // Подключаемся к базе
                 $db = new Db($name_db, $config);
                 // Отправляем запрос и получаем данные
@@ -265,7 +265,7 @@ $app->post('/cart/add-to-cart', function (Request $request, Response $response, 
     // Отдаем роутеру RouterDb конфигурацию.
     $router = new Router($config);
     // Получаем название базы для указанного ресурса
-    $name_db = $router->get($resource);
+    $name_db = $router->ping($resource);
     // Подключаемся к базе
     $db = new Db($name_db, $config);
     // Отправляем запрос и получаем данные

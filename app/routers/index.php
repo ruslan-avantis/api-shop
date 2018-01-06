@@ -24,9 +24,6 @@ use ApiShop\Model\SessionUser;
 use RouterDb\Db;
 use RouterDb\Router;
 
-//use ApiShop\Database\Router;
-//use ApiShop\Database\Ping;
-
 $app->get('/', function (Request $request, Response $response, array $args) {
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
@@ -83,15 +80,15 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     // Отдаем роутеру RouterDb конфигурацию.
     $router = new Router($config);
     // Получаем название базы для указанного ресурса
-    $name_db = $router->get($resource);
+    $name_db = $router->ping($resource);
     // Подключаемся к базе
     $db = new Db($name_db, $config);
     // Отправляем запрос и получаем данные
     $response = $db->get($resource, $arr);
  
     // Если ответ не пустой
-    if (count($response["body"]['items']) >= 1) {
-        foreach($response["body"]['items'] as $item)
+    if (count($response['body']['items']) >= 1) {
+        foreach($response['body']['items'] as $item)
         {
             // Обрабатываем картинки
             $product['image']['no_image'] = $utility->get_image(null, 'https://life24.com.ua/images/no_image.png', 360, 360);
@@ -202,9 +199,24 @@ $app->get('/about-us.html', function (Request $request, Response $response, arra
     }
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
+    
+    // Ресурс (таблица) к которому обращаемся
+    $resource = "article";
+    // Отдаем роутеру RouterDb конфигурацию.
+    $router = new Router($config);
+    // Получаем название базы для указанного ресурса
+    $name_db = $router->ping($resource);
+    // Подключаемся к базе
+    $db = new Db($name_db, $config);
+    // Отправляем запрос и получаем данные
+    $response = $db->get($resource, ["state" => 1]);
+    
+    //print_r($response);
+    
     // Что бы не давало ошибку присваиваем пустое значение
-    $content = '';
-    // print_r($content);
+    $content = "";
+ 
+    //print_r($db->last_id($resource));
  
     // Запись в лог
     $this->logger->info("about-us");
@@ -366,6 +378,77 @@ $app->get('/faq.html', function (Request $request, Response $response, array $ar
     ];
  
     return $this->twig->render('faq.html', [
+        "template" => $site->template(),
+        "head" => $head,
+        "site" => $site_config,
+        "config" => $config['settings']['site'],
+        "language" => $language,
+        "token" => $session->token,
+        "session" => $sessionUser,
+        "content" => $content
+    ]);
+ 
+});
+
+$app->get('/imprint.html', function (Request $request, Response $response, array $args) {
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию \ApiShop\Config\Settings
+    $config = (new Settings())->get();
+    $site = new Site();
+    $site_config = $site->get();
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $session_key = $config['key']['session'];
+    $token_key = $config['key']['token'];
+    // Получаем массив данных из таблицы language на языке из $session->language
+    $langs = new Langs();
+    // Получаем массив данных из таблицы language на языке из $session->language
+    if (isset($session->language)) {
+        $lang = $session->language;
+    } elseif ($langs->getLanguage()) {
+        $lang = $langs->getLanguage();
+    } else {
+        $lang = $site_config["language"];
+    }
+    // Подключаем мультиязычность
+    $language = (new Language())->get($lang);
+    //print_r($language);
+    // Подключаем плагины
+    $utility = new Utility();
+    // Генерируем токен
+    $token = $utility->random_token();
+    // Записываем токен в сессию
+    $session->token = Crypto::encrypt($token, $token_key);
+    // Если запись об авторизации есть расшифровываем
+    if ($session->authorize) {
+        $authorize = $session->authorize;
+    } else {
+        $session->authorize = 0;
+        $authorize = 0;
+    }
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
+    // Что бы не давало ошибку присваиваем пустое значение
+    $content = '';
+ 
+    // Запись в лог
+    $this->logger->info("imprint");
+    
+    $head = [
+        "page" => 'imprint',
+        "title" => $language['311'].' | '.$host,
+        "keywords" => $language['311'],
+        "description" => $language['311'].' | '.$host,
+        "og_url" => $site_config["http_protocol"].'://'.$host.''.$path,
+        "og_title" => $language['311'].' | '.$host,
+        "og_description" => $language['311'].' | '.$host,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
+    return $this->twig->render('imprint.html', [
         "template" => $site->template(),
         "head" => $head,
         "site" => $site_config,
