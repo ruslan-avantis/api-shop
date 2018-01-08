@@ -11,11 +11,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-// Вывод ошибок. Что бы выключить закоментируйте эти строки
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-
+ 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
     // something which should probably be served as a static file
@@ -27,34 +23,28 @@ if (PHP_SAPI == 'cli-server') {
     }
 }
 
-// Подключаем autoloader
-require __DIR__ . '/app/autoloader.php';
+// Подключаем \AutoRequire\Autoloader
+require __DIR__ . '/app/AutoRequire.php';
 // instantiate the loader
-$loader = new \Psr4\Autoloader;
+$require = new \AutoRequire\Autoloader;
 // register the autoloader
-$loader->register();
+$require->register();
 // register the base directories for the namespace prefix
-$loader->addNamespace('ApiShop', __DIR__ . '/app/classes');
-
+$require->addNamespace('ApiShop', __DIR__ . '/app/classes');
+ 
 // Подключаем Composer
 if (file_exists(__DIR__ . '/../vendor/autoload.php')){
     require __DIR__ . '/../vendor/autoload.php';
-} elseif (file_exists(__DIR__ . '/vendor/autoload.php')){
-    require __DIR__ . '/vendor/autoload.php';
 } else {
-    // Если autoload.php не найден - подключаем загрузчик пакетов
-    require __DIR__ . '/app/installer.php';
-    
-    $loaders = new \ApiShop\Loader();
-    // Запускаем загрузку пакетов и указываем директорию
-    $load = $loaders->run(__DIR__ . '/vendor');
-    
-    if ($load == true){
-        require __DIR__ . '/vendor/autoload.php';
-    } else {
-        $error = new \ApiShop\Error();
-        $error->permission();
-    }
+ 
+    // Подключаем загрузчик пакетов если autoload.php не найден
+    $load = $require->run(__DIR__ . '/vendor', __DIR__ . '/vendor/require.json');
+	if (count($load) >= 1) {
+		foreach($load as $value)
+        {
+			$require->addNamespace($value["class"], __DIR__ . '/vendor'.$value["dir"]);
+		}
+	}
 }
 
 require __DIR__ . '/app/config/settings.php';
