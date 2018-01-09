@@ -5,8 +5,13 @@
 
 API Shop — E-Commerce Platform (движок интернет-магазина), использует RESTful API сторонних платформ для хранения и обработки информации. Написан на PHP. Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
 ## Демо версия API Shop — [DEMO](https://github.com/pllano/api-shop/blob/master/DEMO.md)
-## Установка API Shop — [install](https://github.com/pllano/api-shop/blob/master/INSTALL.md)
-### Внимание ! API Shop в активной разработке.
+## Простая установка
+- Скачайте [install.php](https://github.com/pllano/api-shop/blob/master/install.php)
+- Скопируйте `install.php` в корень вашего сайта `http://example.com/`
+- Перейдите по ссылке `http://example.com/install.php`
+- API Shop уже работает !
+### Документация по установке API Shop — [install](https://github.com/pllano/api-shop/blob/master/INSTALL.md)
+#### Внимание ! API Shop в активной разработке.
 - Выпуск `1.0.1-BETA-1` планируется в начале февраля 2018 г.
 - Первая стабильная версия `1.0.1` планируется в феврале-марте 2018 г.
 ## «API Shop» — не имеет своей админ панели
