@@ -12,6 +12,11 @@
  * file that was distributed with this source code.
  */
  
+// Вывод ошибок. Что бы выключить закоментируйте эти строки
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+ 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
     // something which should probably be served as a static file
@@ -22,47 +27,42 @@ if (PHP_SAPI == 'cli-server') {
         return false;
     }
 }
-
-// Подключаем \AutoRequire\Autoloader
-require __DIR__ . '/app/AutoRequire.php';
+ 
+// Connect \AutoRequire\Autoloader
+require __DIR__ . '/vendor/AutoRequire.php';
+ 
 // instantiate the loader
 $require = new \AutoRequire\Autoloader;
-// register the autoloader
-$require->register();
-// register the base directories for the namespace prefix
-$require->addNamespace('ApiShop', __DIR__ . '/app/classes');
  
-// Подключаем Composer
-if (file_exists(__DIR__ . '/../vendor/autoload.php')){
+// Указываем путь к папке vendor
+$vendor_dir = __DIR__ . '/vendor';
+ 
+// Указываем путь к auto_require.json
+$json_uri = __DIR__ . '/vendor/auto_require_master.json';
+ 
+// Запускаем проверку или загрузку пакетов
+$require->run($vendor_dir, $json_uri);
+ 
+if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     require __DIR__ . '/../vendor/autoload.php';
-} else {
- 
-    // Подключаем загрузчик пакетов если autoload.php не найден
-    $load = $require->run(__DIR__ . '/vendor', __DIR__ . '/vendor/require.json');
-	if (count($load) >= 1) {
-		foreach($load as $value)
-        {
-			$require->addNamespace($value["class"], __DIR__ . '/vendor'.$value["dir"]);
-		}
-	}
 }
-
-require __DIR__ . '/app/config/settings.php';
+ 
 // Подключаем файл конфигурации системы
+require __DIR__ . '/app/config/settings.php';
 $settings = new \ApiShop\Config\Settings();
 $config = $settings->get();
-
+ 
 // Подключаем Slim и отдаем ему Конфиг
 $app = new \Slim\App($config);
-
+// Подключаем Slim Container
 require __DIR__ . '/app/config/container.php';
-
+ 
 // Запускаем сессию PHP
 session_start();
 // Run User Session
 // Запускаем сессию пользователя
 (new \ApiShop\Resources\User())->run();
-
+ 
 $cores = glob(__DIR__ . '/app/core/*.php');
 foreach ($cores as $core) {
     require $core;
@@ -74,7 +74,7 @@ $routers = glob(__DIR__ . '/app/routers/*.php');
 foreach ($routers as $router) {
     require $router;
 }
-
+ 
 // Если одина из баз json запускаем jsonDB
 if ($config["db"]["master"] == "json" || $config["db"]["slave"] == "json") {
 // Запускаем jsonDB\Db
@@ -87,7 +87,7 @@ if ($config["db"]["master"] == "json" || $config["db"]["slave"] == "json") {
     $jsonDb->setKey($config["db"]["key"]);
     $jsonDb->run();
 }
-
+ 
 // Slim Run
 $app->run();
  
