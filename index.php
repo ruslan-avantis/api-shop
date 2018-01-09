@@ -12,11 +12,6 @@
  * file that was distributed with this source code.
  */
  
-// Вывод ошибок. Что бы выключить закоментируйте эти строки
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
- 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
     // something which should probably be served as a static file
@@ -63,14 +58,16 @@ session_start();
 (new \ApiShop\Resources\User())->run();
  
 $cores = glob(__DIR__ . '/app/core/*.php');
-foreach ($cores as $core) {
+foreach ($cores as $core)
+{
     require $core;
 }
  
 // Automatically register routers
 // Автоматическое подключение роутеров
 $routers = glob(__DIR__ . '/app/routers/*.php');
-foreach ($routers as $router) {
+foreach ($routers as $router)
+{
     require $router;
 }
  
