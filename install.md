@@ -1,12 +1,12 @@
 # Установка API Shop
 ## Простая установка
-- Скачайте дистрибутив [master.zip](https://github.com/pllano/api-shop/archive/master.zip)
+- Скачайте дистрибутив [/api-shop/archive/master.zip](https://github.com/pllano/api-shop/archive/master.zip)
 - Скопируйте файлы в корень сайта
 - API Shop работает ! Обновите главную страницу сайта.
 
 ## Пошаговая инструкция по установке API Shop
 ### 1. Скачать дистрибутив
-Рекомендуем скачивать последнюю версию дистрибутива по ссылке: [master.zip](https://github.com/pllano/api-shop/archive/master.zip)
+Рекомендуем скачивать последнюю версию дистрибутива по ссылке: [/api-shop/archive/master.zip](https://github.com/pllano/api-shop/archive/master.zip)
 ### 2. Переместить файлы в корень сайта
 Переместите необходимы следующие директории и файлы в корень вашего сайта:
 - /api/
