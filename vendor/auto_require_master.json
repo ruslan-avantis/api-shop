@@ -72,16 +72,16 @@
         }, {
             "namespace": "Adbar",
             "dir": "/adbario/php-dot-notation/src",
-            "link": "https://github.com/adbario/php-dot-notation/archive/2.x.zip",
+            "link": "https://github.com/adbario/php-dot-notation/archive/2.0.0.zip",
             "name": "php-dot-notation",
-            "version": "2.x",
+            "version": "2.0.0",
             "vendor": "adbario"
         }, {
             "namespace": "Adbar",
             "dir": "/adbario/slim-secure-session-middleware/src",
-            "link": "https://github.com/adbario/slim-secure-session-middleware/archive/master.zip",
+            "link": "https://github.com/adbario/slim-secure-session-middleware/archive/1.3.4.zip",
             "name": "slim-secure-session-middleware",
-            "version": "master",
+            "version": "1.3.4",
             "vendor": "adbario"
         }, {
             "namespace": "Interop\\Container",
