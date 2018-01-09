@@ -69,7 +69,11 @@ class User {
             $identificator = Crypto::encrypt($utility->random_token(), $cookie_key);
             // Записываем пользователю новый cookie
             $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
-            setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain, 1, true);
+            if ($config['settings']['site']['cookie_httponly'] == true){
+                setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain, 1, true);
+            } else {
+                setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain);
+            }
             // Пишем в сессию identificator cookie
             $session->cookie = $identificator;
         }
@@ -204,8 +208,11 @@ class User {
         $new_cookie = Crypto::encrypt($cookie, $cookie_key);
         // Перезаписываем cookie у пользователя
         $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
-        setcookie($config['settings']['session']['name'], $new_cookie, time()+60*60*24*365, '/', $domain, 1, true);
- 
+        if ($config['settings']['site']['cookie_httponly'] == true){
+            setcookie($config['settings']['session']['name'], $new_cookie, time()+60*60*24*365, '/', $domain, 1, true);
+        } else {
+            setcookie($config['settings']['session']['name'], $new_cookie, time()+60*60*24*365, '/', $domain);
+        }
         // Ресурс (таблица) к которому обращаемся
         $resource = "user";
         // Отдаем роутеру RouterDb конфигурацию.
