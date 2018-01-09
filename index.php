@@ -12,6 +12,10 @@
  * file that was distributed with this source code.
  */
  
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+ 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
     // something which should probably be served as a static file
@@ -35,6 +39,7 @@ $vendor_dir = __DIR__ . '/vendor';
 // Указываем путь к auto_require.json
 $auto_require_min = __DIR__ . '/vendor/auto_require_min.json';
 $auto_require_master = __DIR__ . '/vendor/auto_require_master.json';
+$auto_require = __DIR__ . '/vendor/auto_require.json';
  
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
  
@@ -47,7 +52,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 } else {
  
     // Запускаем Автозагрузку без Composer
-    $require->run($vendor_dir, $auto_require_master);
+    $require->run($vendor_dir, $auto_require);
  
 }
  
