@@ -33,14 +33,13 @@ require __DIR__ . '/vendor/AutoRequire.php';
  
 // instantiate the loader
 $require = new \AutoRequire\Autoloader;
- 
 // Указываем путь к папке vendor
 $vendor_dir = __DIR__ . '/vendor';
  
 // Указываем путь к auto_require.json
-$json_uri = __DIR__ . '/vendor/auto_require_master.json';
+$json_uri = __DIR__ . '/vendor/auto_require_min.json';
  
-// Запускаем проверку или загрузку пакетов
+// Запускаем Автозагрузку
 $require->run($vendor_dir, $json_uri);
  
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
