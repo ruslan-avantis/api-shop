@@ -293,9 +293,9 @@
         }, {
             "namespace": "Adbar",
             "dir": "/adbario/slim-secure-session-middleware/src",
-            "link": "https://github.com/adbario/slim-secure-session-middleware/archive/1.3.4.zip",
+			"link": "https://github.com/adbario/slim-secure-session-middleware/archive/1.3.2.zip",
             "name": "slim-secure-session-middleware",
-            "version": "1.3.4",
+            "version": "1.3.2",
             "vendor": "adbario"
         }, {
             "namespace": "Adbar",
