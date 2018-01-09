@@ -94,7 +94,6 @@ API Shop — Использует собственный стандарт обм
 - [AutoRequire](https://github.com/pllano/auto-require) - Автозагрузка по стандартам PSR-0 и PSR-4 с или без Composer
 - [routerDb](https://github.com/pllano/router-db) – Один интерфейс для работы с базами данных
 - [jsonDb](https://github.com/pllano/json-db) – Кеширование и резервная база данных
- 
 - [Composer](https://github.com/composer) - Менеджер зависимостей
 - [PSR-1](http://www.php-fig.org/psr/psr-1/) + [PSR-2](http://www.php-fig.org/psr/psr-2/) – Рекомендации по оформлению кода
 - [PSR-0](http://www.php-fig.org/psr/psr-0/) + [PSR-4](http://www.php-fig.org/psr/psr-4/) – Улучшенная автозагрузка
