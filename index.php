@@ -12,6 +12,7 @@
  * file that was distributed with this source code.
  */
  
+// Вывод ошибок. Что бы выключить закоментируйте эти строки
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -39,7 +40,6 @@ $vendor_dir = __DIR__ . '/vendor';
 // Указываем путь к auto_require.json
 $auto_require_min = __DIR__ . '/vendor/auto_require_min.json';
 $auto_require_master = __DIR__ . '/vendor/auto_require_master.json';
-$auto_require = __DIR__ . '/vendor/auto_require.json';
  
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
  
@@ -51,18 +51,20 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
  
 } else {
  
-    // Запускаем Автозагрузку без Composer
-    $require->run($vendor_dir, $auto_require);
+    // Запускаем Автозагрузку
+    $require->run($vendor_dir, $auto_require_master);
  
 }
  
 // Подключаем файл конфигурации системы
 require __DIR__ . '/app/config/settings.php';
+// Получаем конфигурацию
 $settings = new \ApiShop\Config\Settings();
 $config = $settings->get();
  
-// Подключаем Slim и отдаем ему Конфиг
+// Подключаем Slim и отдаем ему конфигурацию
 $app = new \Slim\App($config);
+ 
 // Подключаем Slim Container
 require __DIR__ . '/app/config/container.php';
  
@@ -72,17 +74,10 @@ session_start();
 // Запускаем сессию пользователя
 (new \ApiShop\Resources\User())->run();
  
-$cores = glob(__DIR__ . '/app/core/*.php');
-foreach ($cores as $core)
-{
-    require $core;
-}
- 
 // Automatically register routers
 // Автоматическое подключение роутеров
 $routers = glob(__DIR__ . '/app/routers/*.php');
-foreach ($routers as $router)
-{
+foreach ($routers as $router) {
     require $router;
 }
  
