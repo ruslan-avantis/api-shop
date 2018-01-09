@@ -20,18 +20,18 @@ request.onupgradeneeded = function(event) {
 // localStorage
 var localDb = window.localStorage
 // Примеры использования
-// localDb.setItem('key', 'value');
-// var data = localDb.getItem('key');
-// localDb.removeItem('key');
-// localDb.clear();
+// localDb.setItem('key', 'value')
+// var data = localDb.getItem('key')
+// localDb.removeItem('key')
+// localDb.clear()
 
 // sessionStorage
 var sessionDb = window.sessionStorage
 // Примеры использования
-// sessionDb.setItem('key', 'value');
-// var data = sessionDb.getItem('key');
-// sessionDb.removeItem('key');
-// sessionDb.clear();
+// sessionDb.setItem('key', 'value')
+// var data = sessionDb.getItem('key')
+// sessionDb.removeItem('key')
+// sessionDb.clear()
 
 // Функция проверки доступности localStorage и sessionStorage
 function storageAvailable(type) {
@@ -65,25 +65,6 @@ function setDb(key, data) {
     }
     if (storageAvailable('sessionStorage')) {
         sessionDb.setItem(key, data)
-    }
-    // Сейчас мы только пишем в indexedDB
-    // Разбираюсь как удобно получать данные
-    request.onerror = function(event) {
-        //alert("Почему Вы не позволяете моему веб-приложению использовать IndexedDB?!")
-        return null
-    }
-    request.onsuccess = function(event) {
-        db = event.target.result
-        var tx = db.transaction(key, "readwrite")
-        var store = tx.objectStore(key)
-        for (var i in data) {
-            try {
-                //console.log(i, cData[i])
-                store.put(data[i])
-            } catch(e){
-                //alert(e.name)
-            }
-        }
     }
 }
 
@@ -124,10 +105,6 @@ function clearDb() {
     }
 }
 
-// Получаем локализацию в js
-var languages = new Object()
-languages = getLanguages()
-
 function createCookie(name, value, days) {
     if (days) {
         var date = new Date()
@@ -167,27 +144,83 @@ function OneNotify(title, text, type, icon, addclass) {
 function jsonNotify(json) {
     new PNotify(json)
 }
-    
-function getLanguages() {
-    if(getDb('languages') != null) {
-        var json = getDb('languages')
-        var obj = JSON && JSON.parse(json) || $.parseJSON(json)
-        return obj
-    } else {
-        setLanguage(2)
-    }
+   
+// Получаем локализацию в js
+var languages = new Object()
+languages = getLanguages()
+
+if(languages != null) {
+    $(document).ready(function(){
+        dataСountdown()
+    })
 }
 
+function dataСountdown() {
+    $('[data-countdown]')
+    .each(function(){var $this=$(this),
+        finalDate=$(this).data('countdown')
+        $this.countdown(finalDate,function(event){
+            var fomat='<span>%H</span><b></b><span>%M</span><b></b><span>%S</span>';
+            $this.html(event.strftime(fomat))
+        })
+    })
+    if($('.countdown-lastest').length > 0){
+        var labels = ['Years','Months','Weeks','Days','Hrs','Mins','Secs']
+        var layout = '<span class="count"><span class="num">{dnn}</span><span class="text">' + lang(803) + '</span></span><span class="dot">:</span><span class="count"><span class="num">{hnn}</span><span class="text">' + lang(804) + '</span></span><span class="dot">:</span><span class="count"><span class="num">{mnn}</span><span class="text">' + lang(805) + '</span></span><span class="dot">:</span><span class="count"><span class="num">{snn}</span><span class="text">' + lang(806) + '</span></span>'
+        $('.countdown-lastest').each(function(){
+            var austDay = new Date(
+                $(this).data('y'),
+                $(this).data('m')-1,
+                $(this).data('d'),
+                $(this).data('h'),
+                $(this).data('i'),
+                $(this).data('s')
+            )
+            $(this).countdown({until: austDay, labels: labels, layout: layout})
+        });
+    }
+}
+ 
 function lang(id) {
     var getLang = $.grep(languages, function(e){ return e.id == id })
     return getLang[0].name
 }
+ 
+function getLanguages() {
+    try {
+        if(getDb('languages') != null) {
+            var json = getDb('languages')
+            var obj = JSON && JSON.parse(json) || $.parseJSON(json)
+            return obj
+        } else {
+            setDb('lang', 2)
+            $.post("/language", {id: 2}, function (response) {
+                var data = JSON && JSON.parse(response) || $.parseJSON(response)
+                if(data.status == 200)
+                {
+                    setDb('languages', JSON.stringify(data.languages))
+                    var json = getDb('languages')
+                    var obj = JSON && JSON.parse(json) || $.parseJSON(json)
+                    return obj
+                }
+            }),"json"
+        }
+    } catch(e){
+        $.get("/language", {}, function (response) {
+            var data = JSON && JSON.parse(response) || $.parseJSON(response)
+            if(data.status == 200)
+            {
+                return data.languages
+            }
+        }),"json"
+    }
+}
 
 function setLanguage(id) {
-    var csrf = $("#csrf").val()
-    $.post("/language", {csrf: csrf, id: id}, function (response) {
+    setDb('lang', id)
+    $.post("/language", {id: id}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
-        if(data.status == "OK")
+        if(data.status == 200)
         {
             // Сохраняем массив с локализацией у юзера
             try {
@@ -197,14 +230,14 @@ function setLanguage(id) {
                 //testDb('languages')
                 window.location.reload()
             }
-        } else if(data.status == "NO") {
+        } else if(data.status == 400) {
             OneNotify(data.title, data.text, data.color)
         }
     }),"json"
 }
-
+ 
 function checkIn() {
-    $('.error_message').remove();
+    $('.error_message').remove()
     checkPhone('phone', lang(200), false)
     checkPassword('password', lang(201), password_expression)
     checkEmail('email', lang(161), email_expression)
@@ -216,12 +249,16 @@ function checkIn() {
     var iname = $("#iname").val()
     var fname = $("#fname").val()
     var csrf = $("#csrf").val()
+    setDb('phone', phone)
+    setDb('email', email)
+    setDb('iname', iname)
+    setDb('fname', fname)
     $.post("/check-in", {email: email, phone: phone, password: password, iname: iname, fname: fname, csrf: csrf}, function (response) {
         var data = $.parseJSON(response)
-        if(data.status == "OK") {
+        if(data.status == 200) {
             window.location = '/'
         }
-        else if(data.status == "NO") {
+        else if(data.status == 400) {
             OneNotify(data.title, data.text, data.color)
         }
     }
@@ -229,7 +266,7 @@ function checkIn() {
     }
 
 function login() {
-    $('.error_message').remove();
+    $('.error_message').remove()
     checkPhone('phone', lang(200), false)
     checkPassword('password', lang(201), password_expression)
     checkEmail('email', lang(161), email_expression)
@@ -237,12 +274,14 @@ function login() {
     var email = $("#email").val()
     var password = $("#password").val()
     var csrf = $("#csrf").val()
+    setDb('phone', phone)
+    setDb('email', email)
     $.post("/login", {email: email, phone: phone, password: password, csrf: csrf}, function (response) {
         var data = $.parseJSON(response)
-        if(data.status == "OK") {
+        if(data.status == 200) {
             window.location = '/'
         }
-        else if(data.status == "NO") {
+        else if(data.status == 400) {
             OneNotify(data.title, data.text, data.color)
         }
     }
@@ -253,14 +292,54 @@ function logout() {
     var csrf = $("#csrf").val()
     $.post("/logout", {csrf: csrf}, function (response) {
         var data = $.parseJSON(response)
-        if(data.status == "OK")
+        if(data.status == 200)
         {
             window.location = '/'
         }
-        else if(data.status == "NO") {
+        else if(data.status == 400) {
             OneNotify(data.title, data.text, data.color)
         }
     }
     ),"json"
 }
  
+function newOrder(id) {
+    var product_id = $("#product_id-" + id).val()
+    var num = $("#num-" + id).val()
+    var price = $("#price-" + id).val()
+    var iname = $("#iname-" + id).val()
+    var fname = $("#fname-" + id).val()
+    var phone = $("#phone-" + id).val()
+    var email = $("#email-" + id).val()
+    var city_name = $("#city_name-" + id).val()
+    var street = $("#street-" + id).val()
+    var build = $("#build-" + id).val()
+    var apart = $("#apart-" + id).val()
+    var description = $("#description-" + id).val()
+    var csrf = $("#csrf").val()
+    $.post("/cart/new-order", {csrf: csrf, id: id, product_id: product_id, num: num, price: price, iname: iname, fname: fname, phone: phone, email: email, city_name: city_name, street: street, build: build, apart: apart, description: description}, function (response) {
+        var data = $.parseJSON(response)
+        if(data.status == 200) {
+            $("#ok-" + id).html(data.title)
+        }
+        else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }),"json"
+}
+
+function addToCart(id) {
+    var product_id = $("#product_id-" + id).val()
+    var num = $("#num-" + id).val()
+    var price = $("#price-" + id).val()
+    var csrf = $("#csrf").val()
+    $.post("/cart/add-to-cart", {csrf: csrf, id: id, product_id: product_id, num: num, price: price}, function (response) {
+        var data = $.parseJSON(response)
+        if(data.status == 200) {
+            OneNotify(data.title, data.text, data.color)
+        }
+        else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }),"json"
+}
