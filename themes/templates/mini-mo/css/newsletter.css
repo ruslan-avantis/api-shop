@@ -13,7 +13,7 @@ Text Domain: joomi-Mini-Mo
 .newsletter-block .newsletter {display: block;}
 .newsletter-none .newsletter {display: none;}
 /* newsletter CSS */
-.newsletter-block {position:relative;z-index:5;text-align:center;padding:0;}
+.newsletter-block {position:relative;padding:0;}
 .newsletter-blocks {position:relative;}
 .newsletter-input {-webkit-transition:0.3s;-moz-transition:0.3s;-o-transition:0.3s;-ms-transition:0.3s;transition:0.3s;font-size:18px;width:100%;display:block;border-width:.0714rem;border-style:solid;-webkit-box-shadow:none;box-shadow:none;padding:.75rem 1rem;height:2.5rem;}
 .newsletter-input:focus {outline:none;}
