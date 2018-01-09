@@ -125,7 +125,6 @@ API Shop — Использует собственный стандарт обм
     "guzzlehttp/guzzle": "^6.3",
     "defuse/php-encryption": "^v2.1",
     "adbario/slim-secure-session-middleware": "^1.3.4",
-    "spatie/image-optimizer": "^1.0.9",
     "imagine/imagine": "~0.5.0",
     "sinergi/browser-detector": "^6.1.2"
     
