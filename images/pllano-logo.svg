@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Creator: CorelDRAW X7 -->
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="50.7998mm" height="10.1598mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+viewBox="0 0 5080 1016"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <style type="text/css">
+   <![CDATA[
+    .fil5 {fill:#0033AB}
+    .fil4 {fill:#660087}
+    .fil1 {fill:#6DA031}
+    .fil0 {fill:#E31E24}
+    .fil2 {fill:#F24F00}
+    .fil3 {fill:#FCC917}
+    .fil6 {fill:#FEFEFE;fill-rule:nonzero}
+   ]]>
+  </style>
+ </defs>
+ <g id="Слой_x0020_1">
+  <metadata id="CorelCorpID_0Corel-Layer"/>
+  <g id="_476409840">
+   <rect class="fil0" x="1738" y="24" width="780" height="965"/>
+   <rect class="fil1" x="50" y="24" width="780" height="965"/>
+   <rect class="fil2" x="893" y="24" width="780" height="965"/>
+   <rect class="fil3" x="2574" y="24" width="780" height="965"/>
+   <rect class="fil4" x="3414" y="24" width="780" height="965"/>
+   <rect class="fil5" x="4253" y="24" width="780" height="965"/>
+   <g>
+    <path class="fil6" d="M398 329l-19 0 0 162 26 0c37,0 64,-7 84,-21 19,-14 28,-35 28,-61 0,-28 -9,-48 -28,-61 -19,-13 -49,-19 -91,-19zm-164 496l0 -608 156 0c48,0 86,3 114,10 28,8 53,19 75,36 23,16 40,37 53,62 12,24 18,51 18,78 0,62 -22,110 -65,146 -44,37 -103,55 -178,55 -8,0 -13,0 -17,-1 -4,0 -8,0 -11,0l0 222 -145 0z"/>
+   </g>
+   <g>
+    <polygon class="fil6" points="1097,838 1097,230 1242,230 1242,707 1478,707 1478,838 "/>
+   </g>
+   <g>
+    <polygon class="fil6" points="1969,812 1969,204 2114,204 2114,682 2350,682 2350,812 "/>
+   </g>
+   <g>
+    <path class="fil6" d="M2890 610l159 0 -78 -190 -81 190zm-227 193l309 -627 10 0 302 627 -151 0 -39 -88 -246 0 -39 88 -146 0z"/>
+   </g>
+   <g>
+    <polygon class="fil6" points="3575,831 3575,203 3589,203 3966,558 3966,223 4100,223 4100,854 4087,854 3709,499 3709,831 "/>
+   </g>
+   <g>
+    <path class="fil6" d="M4489 531c0,53 16,98 46,133 31,36 69,54 114,54 46,0 84,-18 115,-53 30,-36 45,-81 45,-134 0,-53 -15,-98 -45,-133 -31,-36 -69,-54 -115,-54 -45,0 -83,18 -114,54 -30,35 -46,80 -46,133zm-149 0c0,-45 8,-87 23,-126 16,-39 39,-74 69,-106 28,-29 61,-52 99,-68 38,-16 77,-23 118,-23 42,0 81,8 119,23 38,16 71,39 101,69 29,30 52,65 67,104 15,39 22,82 22,127 0,38 -5,74 -15,108 -11,33 -27,64 -48,92 -29,39 -66,70 -109,91 -43,22 -88,33 -137,33 -41,0 -80,-8 -117,-24 -38,-16 -71,-39 -100,-69 -30,-30 -53,-66 -69,-105 -15,-39 -23,-81 -23,-126z"/>
+   </g>
+  </g>
+ </g>
+</svg>
