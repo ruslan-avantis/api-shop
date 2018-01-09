@@ -106,7 +106,6 @@ API Shop — Использует собственный стандарт обм
 - [PHPUnit](https://github.com/sebastianbergmann/phpunit) – Тесты
 - [php-encryption](https://github.com/defuse/php-encryption) – Шифрование
 - [Slim Secure Session Middleware](https://github.com/adbario/slim-secure-session-middleware) – Сессия
-- [image-optimizer](https://github.com/spatie/image-optimizer) – Оптимизация изображений
 - [Imagine](https://github.com/avalanche123/Imagine) – Обработка изображений
 - [Browser Detector](https://github.com/sinergi/php-browser-detector) – Информация о пользователе
 - [Composer](https://github.com/composer) - Менеджер зависимостей
