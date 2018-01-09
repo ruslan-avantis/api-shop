@@ -28,17 +28,27 @@ require __DIR__ . '/vendor/AutoRequire.php';
  
 // instantiate the loader
 $require = new \AutoRequire\Autoloader;
-// Указываем путь к папке vendor
+ 
+// Указываем путь к папке vendor для AutoRequire
 $vendor_dir = __DIR__ . '/vendor';
  
 // Указываем путь к auto_require.json
-$json_uri = __DIR__ . '/vendor/auto_require_min.json';
- 
-// Запускаем Автозагрузку
-$require->run($vendor_dir, $json_uri);
+$auto_require_min = __DIR__ . '/vendor/auto_require_min.json';
+$auto_require_master = __DIR__ . '/vendor/auto_require_master.json';
  
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+ 
+    // Запускаем Автозагрузку
+    $require->run($vendor_dir, $auto_require_min);
+ 
+    // Подключаем Composer
     require __DIR__ . '/../vendor/autoload.php';
+ 
+} else {
+ 
+    // Запускаем Автозагрузку без Composer
+    $require->run($vendor_dir, $auto_require_master);
+ 
 }
  
 // Подключаем файл конфигурации системы
