@@ -1,0 +1,60 @@
+<div class="product-blocks" itemscope="" itemtype="https://schema.org/Product">
+<div class="bg-white">
+<div class="control-text-3 text-black">
+<div class="product-block">
+<div class="product-img">
+<a itemprop="url" href="{% if product.url %}{{ product.url }}{% endif %}" class="link-product-img">
+{% if product.image.1 %}
+<img itemprop="image" class="product-img-primary" src="{{ product.image.1 }}" alt="{{ product.name }}">
+<img itemprop="image" content="{{ product.image.1 }}">
+{% else %}
+<img itemprop="image" class="product-img-primary" src="{{ product.image.no_image }}" alt="{{ product.name }}">
+{% endif %}
+{% if product.image.2 %}
+<img itemprop="image" class="product-img-alt" src="{{ product.image.2 }}" alt="{{ product.name }}">
+{% else %}
+<img itemprop="image" class="product-img-alt" src="{{ product.image.no_image }}" alt="{{ product.name }}">
+{% endif %}
+</a>
+</div>
+<div class="product-name padding_top_28" style="z-index: 10; position: relative; display: block;">
+{% if product.name %}
+<a itemprop="url" href="{{ product.url }}" titel="{{ product.name }}" class="link-product-name"><span class="control-text-3 text-black font_18" itemprop="name">{{ product.name }}</span></a>
+<meta itemprop="name" content="{{ product.name }}" />
+{% endif %}
+<span class="control-countdown countdown-red-md">
+<div class="count-down">
+<span class="countdown-lastest" data-y="{{ product.y }}" data-m="{{ product.m }}" data-d="{{ product.d }}" data-h="{{ product.h }}" data-i="{{ product.i }}" data-s="{{ product.s }}">
+</span>
+</div>
+</span>
+<div class="product-price" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
+{% if product.oldprice %}
+<span class="control-text text-grey-md"><span class="product-price-old font_18 text_normal">{{ product.oldprice }} {{ product.shortname }}</span></span>
+{% endif %}
+{% if product.price %}
+<input type="hidden" value="{{ product.product_id }}" name="product_id" id="product_id-{{ product.product_id }}">
+<input type="hidden" value="{{ product.price }}" name="price" id="price-{{ product.product_id }}">
+<input type="hidden" value="1" name="num" id="num-{{ product.product_id }}">
+<span class="control-text-5 text-black"><span class="product-price-new font_20 text_bold" itemprop="price">{{ product.price }} <span itemprop="priceCurrency" content="{{ product.currency }}" class="">{{ product.shortname }}</span></span></span>
+<meta itemprop="price" content="{{ product.price }}">
+{% endif %}
+</div>
+<div class="product-link">
+<span class="control-button-3 btn-red">
+<span class="control-link-a a-white a-hover-light-grey-md">
+<a class="fancybox btn btn-md btn-hover-effects btn-red" href="#block_order_{{ product.product_id }}"><i class="fa fa-cart-plus" aria-hidden="true"></i> {{ language.1 }}</a>
+{{ include ('helper/order.html') }}
+</span>
+</span>
+<span class="control-button-2 btn-black">
+<span class="control-link-a a-white a-hover-light-grey-md">
+<a href="#" onClick="addToCart({{ product.product_id }});" class="btn btn-md btn-hover-effects"><i class="fa fa-balance-scale" aria-hidden="true"></i> {{ language.3 }}</a>
+</span>
+</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

@@ -1,0 +1,73 @@
+{{ include ('helper/header.html') }}
+{{ include ('helper/nav.html') }}
+{{ include ('helper/title.html') }}
+
+{% if products %}
+<section id="product-list" class="product-list">
+<div class="control-background bg-white">
+<div class="control-text-3 text-black">
+<br>
+<div class="control-background bg-white">
+<div class="control-text-3 text-black">
+<div class="album">
+<div class="container">
+<div class="row">
+<div class="col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 padding_21 text-right">
+    
+
+
+<div class="dropdown">
+<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<i class="icon-sort-amount-desc" aria-hidden="true"></i>
+</button>
+<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+{% for orders in order %}    
+<a class="dropdown-item" href="{{ orders.url }}"><i class="{{ orders.name }}" aria-hidden="true"></i></a>
+{% endfor %}    
+</div>
+</div>
+
+<div class="dropdown">
+<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+{{ language.792 }}
+</button>
+<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+{% for sorts in sort %}    
+<a class="dropdown-item" href="{{ sorts.url }}">{{ sorts.name }}</a>
+{% endfor %}    
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="container">
+<div class="row text-center cards">
+{% for product in products.product %}
+{{ include ('helper/products.html') }}
+{% endfor %}
+</div>
+</div>
+{% if paginator %}
+<div class="container">
+<div class="row">
+<div class="col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 padding_21">
+<nav aria-label="">
+<ul class="pagination justify-content-center">
+{% autoescape false %}
+{{ paginator }}{# paginator won't be escaped #}
+{% endautoescape %}
+</ul>
+</nav>
+</div>
+</div>
+</div>
+{% endif %}
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+{% endif %}
+{{ include ('helper/newsletter.html') }}
+{{ include ('helper/footer.html') }}

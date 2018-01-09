@@ -33,7 +33,7 @@
 <div class="row">
 <div class="col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
 <div class="copyright-text padding_10 font_12">
-Copyright © {{ config.copyright.date }} <a class="control-link link-white" href="{{ site.http_protocol }}://{{ site.uri }}">{{ config.copyright.text }}</a>
+Copyright © {{ config.copyright.date }} <a class="control-link link-white" href="{{ site.http_protocol }}://{{ head.host }}">{{ config.copyright.text }}</a>
 </div>
 </div>
 </div>
@@ -59,6 +59,8 @@ Copyright © {{ config.copyright.date }} <a class="control-link link-white" href
 <link rel="stylesheet" href="/themes/lib/fancybox/source/helpers/jquery.fancybox-buttons.min.css">
 <link rel="stylesheet" href="/themes/lib/fancybox/source/helpers/jquery.fancybox-thumbs.min.css">
 
+<script src="/themes/lib/pnotify/3.2.0/js/pnotify.min.js"></script>
+
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
 <script type="text/javascript" src="/themes/lib/fancybox/fancybox_product.min.js"></script>
 <script type="text/javascript" src="/themes/lib/fancybox/source/helpers/jquery.fancybox-buttons.min.js"></script>
@@ -74,12 +76,6 @@ Holder.addTheme("thumb", { background: "#55595c", foreground: "#eceeef", text: "
 <link href="/themes/lib/fancybox/3.0.47/css/jquery.fancybox.min.css" rel="stylesheet">
 <script src="/themes/lib/fancybox/3.0.47/js/jquery.fancybox.min.js"></script>
 <script src="/themes/lib/scrollpos-styler/scrollPosStyler.js"></script>
-
-<script src="/themes/templates/{{ template }}/js/joomi-mini-mo.js"></script>
-
-<script src="/themes/app/js/cart-index.js"></script>
-
-
 
 </body>
 

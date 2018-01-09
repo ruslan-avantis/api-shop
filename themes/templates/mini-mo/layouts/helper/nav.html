@@ -56,10 +56,8 @@
 <li class="nav-item"> 
 {% if session.iname and session.fname %}
 <div class="btn-group btn-red">
-<a href="#" class="btn btn-md btn-hover-effects text-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ language.281 }}</a>
+<a href="#" class="btn btn-md btn-hover-effects text-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ session.iname }} {{ session.fname }}</a>
 <div class="dropdown-menu a-dark-gunmetal a-hover-blue-violet">
-<div class="dropdown-item">{{ session.iname }} {{ session.fname }}</div>
-<a class="dropdown-item" href="#" onClick="#">{{ language.203 }}</a>
 <a class="dropdown-item" href="#" onClick="logout();">{{ language.318 }}</a>
 </div>
 </div>
