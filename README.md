@@ -10,7 +10,7 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 - Скопируйте `install.php` в корень вашего сайта `http://example.com/`
 - Перейдите по ссылке `http://example.com/install.php`
 - API Shop уже работает !
-### Документация по установке API Shop — [install](https://github.com/pllano/api-shop/blob/master/INSTALL.md)
+### [Документация по установке](https://github.com/pllano/api-shop/blob/master/INSTALL.md) — API Shop
 #### Внимание ! API Shop в активной разработке.
 - Выпуск `1.0.1-BETA-1` планируется в начале февраля 2018 г.
 - Первая стабильная версия `1.0.1` планируется в феврале-марте 2018 г.
