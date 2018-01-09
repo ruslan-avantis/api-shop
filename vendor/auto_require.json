@@ -71,17 +71,17 @@
             "vendor": "guzzlehttp"
         }, {
             "namespace": "Adbar",
-            "dir": "/adbario/php-dot-notation/src",
-            "link": "https://github.com/adbario/php-dot-notation/archive/2.0.0.zip",
-            "name": "php-dot-notation",
-            "version": "2.0.0",
-            "vendor": "adbario"
-        }, {
-            "namespace": "Adbar",
             "dir": "/adbario/slim-secure-session-middleware/src",
 			"link": "https://github.com/adbario/slim-secure-session-middleware/archive/1.3.4.zip",
             "name": "slim-secure-session-middleware",
             "version": "1.3.4",
+            "vendor": "adbario"
+        }, {
+            "namespace": "Adbar",
+            "dir": "/adbario/php-dot-notation/src",
+            "link": "https://github.com/adbario/php-dot-notation/archive/2.0.0.zip",
+            "name": "php-dot-notation",
+            "version": "2.0.0",
             "vendor": "adbario"
         }, {
             "namespace": "Interop\\Container",
@@ -99,7 +99,7 @@
             "vendor": "doctrine"
         }, {
             "namespace": "Imagine",
-            "dir": "/imagine/Imagine/lib",
+            "dir": "/imagine/Imagine/lib/Imagine",
             "link": "https://github.com/avalanche123/Imagine/archive/v0.7.1.zip",
             "name": "Imagine",
             "version": "0.7.1",
@@ -130,9 +130,9 @@
         }, {
             "files": "random.php",
             "dir": "/paragonie/random_compat/lib",
-            "link": "https://github.com/paragonie/random_compat/archive/v2.0.11.zip",
+            "link": "https://github.com/paragonie/random_compat/archive/master.zip",
             "name": "random_compat",
-            "version": "2.0.11",
+            "version": "master",
             "vendor": "paragonie"
         }, {
             "namespace": "phpDocumentor\\Reflection",
@@ -277,9 +277,9 @@
         }, {
             "namespace": "Symfony\\Component\\Process",
             "dir": "/symfony/process",
-            "link": "https://github.com/symfony/process/archive/v4.0.3.zip",
+            "link": "https://github.com/symfony/process/archive/v3.4.3.zip",
             "name": "process",
-            "version": "4.0.3",
+            "version": "3.4.3",
             "vendor": "symfony"
         }, {
             "namespace": "TheSeer\\Tokenizer",

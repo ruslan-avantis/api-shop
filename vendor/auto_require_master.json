@@ -99,7 +99,7 @@
             "vendor": "doctrine"
         }, {
             "namespace": "Imagine",
-            "dir": "/imagine/Imagine/lib",
+            "dir": "/imagine/Imagine/lib/Imagine",
             "link": "https://github.com/avalanche123/Imagine/archive/master.zip",
             "name": "Imagine",
             "version": "master",
