@@ -39,7 +39,7 @@ $vendor_dir = __DIR__ . '/vendor';
  
 // Указываем путь к auto_require.json
 $auto_require_min = __DIR__ . '/vendor/auto_require_min.json';
-$auto_require_master = __DIR__ . '/vendor/auto_require_master.json';
+$auto_require = __DIR__ . '/vendor/auto_require.json';
  
 if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
  
@@ -52,7 +52,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 } else {
  
     // Запускаем Автозагрузку
-    $require->run($vendor_dir, $auto_require_master);
+    $require->run($vendor_dir, $auto_require);
  
 }
  
