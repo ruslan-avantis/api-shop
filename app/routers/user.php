@@ -50,7 +50,7 @@ $app->get('/sign-in', function (Request $request, Response $response, array $arg
     // Записываем токен в сессию
     $session->token = Crypto::encrypt($token, $token_key);
     // Если запись об авторизации есть расшифровываем
-    if ($session->authorize) {
+    if (isset($session->authorize)) {
         $authorize = $session->authorize;
     } else {
         $session->authorize = 0;
@@ -111,7 +111,7 @@ $app->get('/sign-up', function (Request $request, Response $response, array $arg
     // Записываем токен в сессию
     $session->token = Crypto::encrypt($token, $token_key);
     // Если запись об авторизации есть расшифровываем
-    if ($session->authorize) {
+    if (isset($session->authorize)) {
         $authorize = $session->authorize;
     } else {
         $session->authorize = 0;
@@ -177,7 +177,11 @@ $app->post('/logout', function (Request $request, Response $response, array $arg
         unset($session->id); // удаляем сесию
         unset($session->cookie); // удаляем сесию
         $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
-        setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain, 1, true);
+        if ($config['settings']['site']['cookie_httponly'] == true){
+            setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain, 1, true);
+        } else {
+            setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain);
+        }
         $session->destroy();
         $callback = array(
             'status' => 200,
@@ -287,7 +291,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
                     $db = new Db($name_db, $config);
                     // Отправляем запрос и получаем данные
                     $user_data = $db->get($resource, ["user_id" => $user_id]);
-					
+                    
                     $session->language = $user_data["body"]['items']['0']['item']["language"];
                     $session->user_id = Crypto::encrypt($user_id, $session_key);
                     $session->phone = Crypto::encrypt($user_data["body"]['items']['0']['item']["phone"], $session_key);
@@ -444,11 +448,13 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
                     $identificator = Crypto::encrypt($cookie, $cookie_key);
                     // Записываем пользователю новый cookie
                     $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
-                    setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain, 1, true);
+                    if ($config['settings']['site']['cookie_httponly'] == true){
+                        setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain, 1, true);
+                    } else {
+                        setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain);
+                    }
                     // Пишем в сессию identificator cookie
  
-                    
-					
                     $arr["role_id"] = 1;
                     $arr["password"] = password_hash($password, PASSWORD_DEFAULT);
                     $arr["phone"] = $phone;
