@@ -1,8 +1,9 @@
 # Установка API Shop
 ## Простая установка
-- Скачайте дистрибутив [api-shop-master.zip](https://github.com/pllano/api-shop/archive/master.zip)
-- Распакуйте файлы в корень сайта
-- Обновите главную страницу сайта. API Shop уже работает !
+- Скачайте [install.php](https://github.com/pllano/api-shop/blob/master/install.php)
+- Скопируйте `install.php` в корень вашего сайта `http://example.com/`
+- Перейдите по ссылке `http://example.com/install.php`
+- API Shop уже работает !
 
 `P.S.` Во время первого запуска, загрузка страницы может длится до 60 секунд, в связи с тем что [AutoRequire](https://github.com/pllano/auto-require) скачивает необходимые компоненты (зависимости).
 
