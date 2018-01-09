@@ -106,8 +106,8 @@ API Shop — Использует собственный стандарт обм
 
 ### Использует
 - [Composer](https://github.com/composer) - Менеджер зависимостей
-- [PSR-1](http://www.php-fig.org/psr/psr-1/) и [PSR-2](http://www.php-fig.org/psr/psr-2/) – Рекомендации по оформлению кода
-- [PSR-4](http://www.php-fig.org/psr/psr-4/) – Улучшенная автозагрузка
+- [PSR-1](http://www.php-fig.org/psr/psr-1/) + [PSR-2](http://www.php-fig.org/psr/psr-2/) – Рекомендации по оформлению кода
+- [PSR-0](http://www.php-fig.org/psr/psr-0/) + [PSR-4](http://www.php-fig.org/psr/psr-4/) – Улучшенная автозагрузка
 - [PSR-7](http://www.php-fig.org/psr/psr-7/) – Интерфейс HTTP-сообщений
 - [Slim](https://github.com/slimphp) – [Slim Micro Framework](https://www.slimframework.com/)
 - [Twig](https://github.com/twigphp/Twig/) – Шаблонизатор
