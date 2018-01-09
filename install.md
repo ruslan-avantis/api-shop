@@ -15,7 +15,7 @@
 - `/themes/`
 - `/vendor/`
 - `/.htaccess`
-- `index.php`
+- `/index.php`
 ### 3. Установка зависимостей
 #### С помощью [Composer](https://getcomposer.org/)
 ```php
