@@ -9,13 +9,13 @@
 Рекомендуем скачивать последнюю версию дистрибутива по ссылке: [api-shop-master.zip](https://github.com/pllano/api-shop/archive/master.zip)
 ### 2. Переместить файлы в корень сайта
 Переместите необходимы следующие директории и файлы в корень вашего сайта:
-- /api/
-- /app/
-- /images/
-- /themes/
-- /vendor/
-- .htaccess
-- index.php
+- `/api/`
+- `/app/`
+- `/images/`
+- `/themes/`
+- `/vendor/`
+- `/.htaccess`
+- `index.php`
 ### 3. Установка зависимостей
 #### С помощью [Composer](https://getcomposer.org/)
 ```php
