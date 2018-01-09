@@ -18,6 +18,20 @@
             "version": "master",
             "vendor": "pllano"
         }, {
+            "namespace": "Adbar",
+            "dir": "/adbario/slim-secure-session-middleware/src",
+			"link": "https://github.com/adbario/slim-secure-session-middleware/archive/master.zip",
+            "name": "slim-secure-session-middleware",
+            "version": "master",
+            "vendor": "adbario"
+        }, {
+            "namespace": "Adbar",
+            "dir": "/adbario/php-dot-notation/src",
+            "link": "https://github.com/adbario/php-dot-notation/archive/1.2.0.zip",
+            "name": "php-dot-notation",
+            "version": "1.2.0",
+            "vendor": "adbario"
+        }, {
             "namespace": "Psr\\Http\\Message",
             "dir": "/psr/http-message/src",
             "link": "https://github.com/php-fig/http-message/archive/1.0.zip",
@@ -69,20 +83,6 @@
             "name": "psr7",
             "version": "1.4.0",
             "vendor": "guzzlehttp"
-        }, {
-            "namespace": "Adbar",
-            "dir": "/adbario/slim-secure-session-middleware/src",
-			"link": "https://github.com/adbario/slim-secure-session-middleware/archive/1.3.4.zip",
-            "name": "slim-secure-session-middleware",
-            "version": "1.3.4",
-            "vendor": "adbario"
-        }, {
-            "namespace": "Adbar",
-            "dir": "/adbario/php-dot-notation/src",
-            "link": "https://github.com/adbario/php-dot-notation/archive/2.0.0.zip",
-            "name": "php-dot-notation",
-            "version": "2.0.0",
-            "vendor": "adbario"
         }, {
             "namespace": "Interop\\Container",
             "dir": "/container-interop/container-interop/src/Interop/Container",
