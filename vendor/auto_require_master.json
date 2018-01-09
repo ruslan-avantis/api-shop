@@ -261,27 +261,6 @@
             "version": "3.x",
             "vendor": "slim"
         }, {
-            "namespace": "Spatie\\ImageOptimizer",
-            "dir": "/spatie/image-optimizer/src",
-            "link": "https://github.com/spatie/image-optimizer/archive/master.zip",
-            "name": "image-optimizer",
-            "version": "master",
-            "vendor": "spatie"
-        }, {
-            "namespace": "Symfony\\Polyfill\\Mbstring",
-            "dir": "/symfony/polyfill-mbstring/src",
-            "link": "https://github.com/symfony/polyfill-mbstring/archive/master.zip",
-            "name": "polyfill-mbstring",
-            "version": "master",
-            "vendor": "symfony"
-        }, {
-            "namespace": "Symfony\\Component\\Process",
-            "dir": "/symfony/process",
-            "link": "https://github.com/symfony/process/archive/master.zip",
-            "name": "process",
-            "version": "master",
-            "vendor": "symfony"
-        }, {
             "namespace": "TheSeer\\Tokenizer",
             "dir": "/theseer/tokenizer/src",
             "link": "https://github.com/theseer/tokenizer/archive/master.zip",

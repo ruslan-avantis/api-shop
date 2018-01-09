@@ -247,27 +247,6 @@
             "version": "3.9.2",
             "vendor": "slim"
         }, {
-            "namespace": "Spatie\\ImageOptimizer",
-            "dir": "/spatie/image-optimizer/src",
-            "link": "https://github.com/spatie/image-optimizer/archive/1.0.9.zip",
-            "name": "image-optimizer",
-            "version": "1.0.9",
-            "vendor": "spatie"
-        }, {
-            "namespace": "Symfony\\Polyfill\\Mbstring",
-            "dir": "/symfony/polyfill-mbstring/src",
-            "link": "https://github.com/symfony/polyfill-mbstring/archive/v1.6.0.zip",
-            "name": "polyfill-mbstring",
-            "version": "1.6.0",
-            "vendor": "symfony"
-        }, {
-            "namespace": "Symfony\\Component\\Process",
-            "dir": "/symfony/process",
-            "link": "https://github.com/symfony/process/archive/v4.0.3.zip",
-            "name": "process",
-            "version": "4.0.3",
-            "vendor": "symfony"
-        }, {
             "namespace": "TheSeer\\Tokenizer",
             "dir": "/theseer/tokenizer/src",
             "link": "https://github.com/theseer/tokenizer/archive/1.1.0.zip",
@@ -293,9 +272,9 @@
         }, {
             "namespace": "Adbar",
             "dir": "/adbario/slim-secure-session-middleware/src",
-            "link": "https://github.com/adbario/slim-secure-session-middleware/archive/1.3.4.zip",
+			"link": "https://github.com/adbario/slim-secure-session-middleware/archive/1.3.2.zip",
             "name": "slim-secure-session-middleware",
-            "version": "1.3.4",
+            "version": "1.3.2",
             "vendor": "adbario"
         }, {
             "namespace": "Adbar",
