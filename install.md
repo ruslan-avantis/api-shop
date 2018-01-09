@@ -43,9 +43,7 @@ require __DIR__ . '/../vendor/autoload.php';
 }
 ```
 #### С помощью [AutoRequire](https://github.com/pllano/auto-require)
-`AutoRequire` идет в комплекте с API Shop и является его компонентом. Он полностью настроен и вы можете ничего не менять.
-
-`AutoRequire` - проверит подключен ли Composer, если нет, загрузит все необходимые пакеты самостоятельно в папку `/vendor`
+`AutoRequire` идет в комплекте с API Shop и является его компонентом. Он полностью настроен и вы можете ничего не менять. `AutoRequire` - проверит подключен ли Composer, если нет, загрузит все необходимые пакеты самостоятельно в папку `/vendor`
 ``` php
 // Connect \AutoRequire\Autoloader
 require __DIR__ . '/vendor/AutoRequire.php';
