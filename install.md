@@ -82,7 +82,7 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 ```
 Если вы хотите сконфигурировать под себя необходимо подключить или отредактировать один из файлов [auto_require.json](https://github.com/pllano/auto-require/blob/master/auto_require.json) или [auto_require_master.json](https://github.com/pllano/auto-require/blob/master/auto_require_master.json).
 
-В файле [`index.php`](https://github.com/pllano/api-shop/blob/master/index.php) необходимо прописать пути ко всем необходимым файлам.
+В файле [`/index.php`](https://github.com/pllano/api-shop/blob/master/index.php) необходимо прописать пути ко всем необходимым файлам.
 
 ### 4. Конфигурация
 За конфигурацию API Shop отвечает файл [`/app/config/settings.php`](https://github.com/pllano/api-shop/blob/master/app/config/settings.php)
