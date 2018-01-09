@@ -28,7 +28,7 @@ require __DIR__ . '/../vendor/autoload.php';
 ```json
 {
   "require": {
-    "php": ">=5.5.0",
+    "php": "^7.0",
     "pllano/router-db": "^1.0.4",
     "pllano/json-db": "^1.0.7",
     "psr/http-message": "^1.0",
@@ -40,7 +40,6 @@ require __DIR__ . '/../vendor/autoload.php';
     "defuse/php-encryption": "^v2.1",
     "adbario/slim-secure-session-middleware": "^1.3.4",
     "sinergi/browser-detector": "^6.1.2",
-    "spatie/image-optimizer": "^1.0.9",
     "imagine/imagine": "~0.5.0"
     
   }
