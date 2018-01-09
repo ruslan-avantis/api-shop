@@ -27,6 +27,7 @@ class Settings {
     $curYear = date('Y'); // Keeps the second year updated
     $config['settings']['site']['copyright']['date'] = $copyYear . (($copyYear != $curYear) ? '-' . $curYear : '');
     $config['settings']['site']['copyright']['text'] = "API Shop";
+    $config['settings']['site']['cookie_httponly'] = true;
  
     // Путь к папке шаблонов
     $config["settings"]["themes"]["dir"] = __DIR__ . "/../../themes";
