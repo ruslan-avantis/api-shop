@@ -1,0 +1,9 @@
+{
+    "require": [
+        {
+            "namespace": "ApiShop",
+            "dir": "/pllano/api-shop"
+        }
+    ]
+    
+}
