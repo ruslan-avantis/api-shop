@@ -9,9 +9,9 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 - Выпуск `1.0.1-BETA-1` планируется в январе 2018 г.
 - Первая стабильная версия `1.0.1` планируется в феврале-марте 2018 г.
 
-## Демо версия API Shop - [DEMO](https://github.com/pllano/api-shop/blob/master/DEMO.md)
+## Демо версия API Shop — [DEMO](https://github.com/pllano/api-shop/blob/master/DEMO.md)
 
-## Установка API Shop
+## Установка API Shop — [install](https://github.com/pllano/api-shop/blob/master/install.md)
 Документация по установке [install](https://github.com/pllano/api-shop/blob/master/install.md) еще в разработке.
 
 ## Интернет-магазин как один из ваших сервисов
