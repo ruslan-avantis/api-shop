@@ -91,13 +91,12 @@ $response = $db->get($resource, $arr);
 API Shop — Использует собственный стандарт обмена данными сервер-сервер [APIS-2018](https://github.com/pllano/APIS-2018/) дающий возможность не писать своей документации по работе с вашим API. Вы можете писать свою API зная что другим API использующим стандарт APIS-2018 не придется тратиться на дополнительную доработку и интеграцию с вашим API. Для подключения к вашему API будет необходимо только получить данные аутентификации для доступа к учетной записи.
 
 ### Использует
-- [AutoRequire](https://github.com/pllano/auto-require) - Автозагрузка по стандартам PSR-0 и PSR-4 с или без Composer
-- [routerDb](https://github.com/pllano/router-db) – Один интерфейс для работы с базами данных
-- [jsonDb](https://github.com/pllano/json-db) – Кеширование и резервная база данных
-- [Composer](https://github.com/composer) - Менеджер зависимостей
 - [PSR-1](http://www.php-fig.org/psr/psr-1/) + [PSR-2](http://www.php-fig.org/psr/psr-2/) – Рекомендации по оформлению кода
 - [PSR-0](http://www.php-fig.org/psr/psr-0/) + [PSR-4](http://www.php-fig.org/psr/psr-4/) – Улучшенная автозагрузка
 - [PSR-7](http://www.php-fig.org/psr/psr-7/) – Интерфейс HTTP-сообщений
+- [AutoRequire](https://github.com/pllano/auto-require) - Автозагрузка по стандартам PSR-0 и PSR-4 с или без Composer
+- [routerDb](https://github.com/pllano/router-db) – Один интерфейс для работы с базами данных
+- [jsonDb](https://github.com/pllano/json-db) – Кеширование и резервная база данных
 - [Slim](https://github.com/slimphp) – [Slim Micro Framework](https://www.slimframework.com/)
 - [Twig](https://github.com/twigphp/Twig/) – Шаблонизатор
 - [Guzzle](https://github.com/guzzle/guzzle) – HTTP client
@@ -108,6 +107,7 @@ API Shop — Использует собственный стандарт обм
 - [image-optimizer](https://github.com/spatie/image-optimizer) – Оптимизация изображений
 - [Imagine](https://github.com/avalanche123/Imagine) – Обработка изображений
 - [Browser Detector](https://github.com/sinergi/php-browser-detector) – Информация о пользователе
+- [Composer](https://github.com/composer) - Менеджер зависимостей
 
 ## Зависимости
 ```json
