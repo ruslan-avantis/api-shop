@@ -100,26 +100,3 @@ class ZipArchiveExtended extends ZipArchive
   }
 }
  
-/*
-if (!file_exists(__DIR__ . "/index.php")) {
- 
-    file_put_contents(__DIR__ . "/api-shop.zip", file_get_contents("https://github.com/pllano/api-shop/releases/download/1.0.1/api-shop.zip"));
- 
-    $zip = new \ZipArchive;
-    $res = $zip->open(__DIR__ . "/api-shop.zip");
- 
-    if ($res === TRUE) {
- 
-        $zip->extractTo(__DIR__ . "/");
-        $zip->close();
- 
-        echo 'Все ок ! <a href="/">Перейти на главную</a>';
- 
-    } else {
-        echo 'failed';
-    }
- 
-	unlink(__DIR__ . '/api-shop.zip');
- 
-}
-*/
