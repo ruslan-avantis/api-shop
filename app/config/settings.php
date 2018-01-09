@@ -148,7 +148,7 @@ class Settings {
 
     // Настройки подключения к jsondb напрямую
     // Директория для хранения файлов json базы данных.
-    $config["db"]["json"]["dir"] = __DIR__ . "/../../_json_db_/";
+    $config["db"]["json"]["dir"] = __DIR__ . "/_json_db_/";
     // Если директории нет создать.
     if (!file_exists($config["db"]["json"]["dir"])) {
         mkdir($config["db"]["json"]["dir"], 0777, true);
