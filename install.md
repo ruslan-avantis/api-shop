@@ -84,4 +84,8 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 
 ### 4. Конфигурация
 За конфигурацию API Shop отвечает файл [`/app/config/settings.php`](https://github.com/pllano/api-shop/blob/master/app/config/settings.php)
+#### Конфигурация `jsonDB` и `routerDb`
+Большую часть в файле [`/app/config/settings.php`](https://github.com/pllano/api-shop/blob/master/app/config/settings.php) занимают настройки для:
+- [jsonDB](https://github.com/pllano/router-db)
+- [routerDb](https://github.com/pllano/json-db)
  
