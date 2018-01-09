@@ -27,7 +27,10 @@ class Settings {
     $curYear = date('Y'); // Keeps the second year updated
     $config['settings']['site']['copyright']['date'] = $copyYear . (($copyYear != $curYear) ? '-' . $curYear : '');
     $config['settings']['site']['copyright']['text'] = "API Shop";
-    $config['settings']['site']['cookie_httponly'] = true;
+    $config['settings']['site']['currency_id'] = 1;
+
+    // Если сайт работает через https должно быть true
+    $config['settings']['site']['cookie_httponly'] = false;
  
     // Путь к папке шаблонов
     $config["settings"]["themes"]["dir"] = __DIR__ . "/../../themes";
@@ -36,6 +39,7 @@ class Settings {
     // Название шаблона. По умолчанию mini-mo
     // Если работает через api будет брать название шаблона с конфигурации api
     $config["settings"]["themes"]["template"] = "mini-mo";
+ 
     // Папка куда будет кешироваться Slim\Views\Twig
     $config["settings"]["cache"] =  __DIR__ . "/../_cache/";
     // Коды ответов и ошибок
@@ -66,11 +70,11 @@ class Settings {
     // Session cache limiter
     $config["settings"]["session"]["cache_limiter"] = "nocache";
     // Extend session lifetime after each user activity
-    $config["settings"]["session"]["autorefresh"] = false;
+    $config["settings"]["session"]["autorefresh"] = true;
     // Encrypt session data if string is set
     $config["settings"]["session"]["encryption_key"] = null;
     // Session namespace
-    $config["settings"]["session"]["namespace"] = "_user";
+    $config["settings"]["session"]["namespace"] = "_session";
  
     // Папка куда будут писатся логи Monolog
     $config["settings"]["logger"]["path"]   = isset($_ENV["docker"]) ? "php://stdout" : __DIR__ . "/../_logs/app.log";
@@ -78,11 +82,11 @@ class Settings {
     $config["settings"]["logger"]["level"] = \Monolog\Logger::DEBUG;
  
     // Путь к ключам шифрования
-	$key = __DIR__ . "/key";
-	if (!file_exists($key)) {
-		mkdir($key, 0777, true);
-	}
-	
+    $key = __DIR__ . "/key";
+    if (!file_exists($key)) {
+        mkdir($key, 0777, true);
+    }
+    
     $key_session = $key."/session.txt";
     $key_cookie = $key."/cookie.txt";
     $key_token = $key."/token.txt";
@@ -146,20 +150,20 @@ class Settings {
     // Директория для хранения файлов json базы данных.
     $config["db"]["json"]["dir"] = __DIR__ . "/../../_json_db_/";
     // Если директории нет создать.
-	if (!file_exists($config["db"]["json"]["dir"])) {
-		mkdir($config["db"]["json"]["dir"], 0777, true);
-	}
+    if (!file_exists($config["db"]["json"]["dir"])) {
+        mkdir($config["db"]["json"]["dir"], 0777, true);
+    }
     // Кеширование запросов
     $config["db"]["json"]["cached"] = false; // true|false
     // Время жизни кеша
     $config["db"]["json"]["cache_lifetime"] = 60;
     // Очередь на запись
-    $config["db"]["json"]["temp"] = false;
+    $config["db"]["json"]["temp"] = false; // false|true
     // Работает через API
-    $config["db"]["json"]["api"] = false;
+    $config["db"]["json"]["api"] = false; // false|true
     // Шифруем базу
-    $config["db"]["json"]["crypt"] = false;
- 
+    $config["db"]["json"]["crypt"] = false; // false|true
+
     // Настройки подключения к jsondb через API
     // URL API jsondb
     $config["db"]["jsonapi"]["url"] = "https://xti.com.ua/json-db/";
