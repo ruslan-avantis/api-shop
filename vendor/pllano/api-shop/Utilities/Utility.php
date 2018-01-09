@@ -137,8 +137,8 @@ class Utility {
 
                                 if (file_exists('images/temp/'.$basename)) {
 
-                                    $optimizerChain = \Spatie\ImageOptimizer\OptimizerChainFactory::create();
-                                    $optimizerChain->optimize('images/temp/'.$basename, 'images/temp/'.$basename);
+                                    //$optimizerChain = \Spatie\ImageOptimizer\OptimizerChainFactory::create();
+                                    //$optimizerChain->optimize('images/temp/'.$basename, 'images/temp/'.$basename);
 
                                     $imagine = new \Imagine\Gd\Imagine();
                                     $size = new \Imagine\Image\Box($width, $height);
