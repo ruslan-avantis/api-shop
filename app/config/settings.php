@@ -47,13 +47,13 @@ class Settings {
  
     // Конфигурация Slim
     $config["settings"]["dir"] = "config";
-    $config["settings"]["displayErrorDetails"] = true;
+    $config["settings"]["displayErrorDetails"] = false;
     $config["settings"]["addContentLengthHeader"] = false;
     $config["settings"]["determineRouteBeforeAppMiddleware"] = true;
     $config["settings"]["cookies.httponly"] = true;
     $config["settings"]["phpSettings.session.cookie_httponly"] = true;
     $config["settings"]["rebodys.session.cookie_httponly"] = true;
-    $config["settings"]["debug"] = true;
+    $config["settings"]["debug"] = false;
  
     // Конфигурация session
     $config["settings"]["session"]["name"] = "_session";
