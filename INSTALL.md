@@ -1,6 +1,6 @@
 # Установка API Shop
 ## Простая установка
-- Скачайте [install.php](https://raw.githubusercontent.com/pllano/api-shop/master/install.php)
+- Скачайте [`/install.php`](https://raw.githubusercontent.com/pllano/api-shop/master/install.php)
 - Скопируйте `install.php` в корень вашего сайта `http://example.com/`
 - Перейдите по ссылке `http://example.com/install.php`
 - API Shop уже работает !
