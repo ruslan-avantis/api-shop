@@ -10,10 +10,10 @@ font-size: 12px;
 .hide {
 display: none !important;
 }
-.login-box {
-background: #484848;
-background: -webkit-linear-gradient(to bottom, #212529, #484848);
-background: linear-gradient(to bottom, #212529, #484848);
+.box {
+background: #999;
+background: -webkit-linear-gradient(to bottom, #212529, #999);
+background: linear-gradient(to bottom, #212529, #999);
 float: left;
 width: 100%;
 padding: 100% 0px;
@@ -22,7 +22,7 @@ padding: 100% 0px;
 padding-bottom: 4rem;
 }
 .banner-sec {
-background: url(/themes/templates/mini-mo/img/slide-image-1.jpg) no-repeat left bottom;
+background: url(https://cdn.pllano.com/images/glob/slide-image-1.jpg) no-repeat left bottom;
 background-size: cover;
 min-height: 500px;
 padding: 0;
@@ -45,28 +45,25 @@ text-align: center;
 left: 5%;
 right: 5%;
 }
-.login-sec {
+.sec {
 padding: 30px 30px;
 position: relative;
 }
-.login-sec ul li a {
+.sec ul li a {
 text-transform: uppercase;
 font-size: 14px;
 font-weight: 500;
 }
-.login-sec .copy-text {
-position: absolute;
-width: 80%;
-bottom: 20px;
-font-size: 12px;
+.copy-text {
+font-size: 1rem;
 text-align: center;
 font-weight: 500;
 }
-.login-sec .copy-text i {
-color: #FEB58A;
+.copy-text {
+color: #fff;
 }
-.login-sec .copy-text a {
-color: #E36262;
+.copy-text a {
+color: #fff;
 }
 
 .banner {
@@ -114,24 +111,35 @@ display: none;
     background-size: cover;
 }
 </style>
-<section class="login-box centered">
-<div class="text-center text-white "><h1>Ваш магазин установлен ! Осталось три шага к старту.</h1></div>
-<div class="text-center text-white font_20">Необходимо создать акаунт продавца, выбрать набор товаров, выбрать дизайн.</div>
+<section class="box centered">
+<div class="text-center text-white "><h1>{{ language.766 }}</h1></div>
+<div class="text-center text-white font_20">{{ language.738 }}. {{ language.740 }}</div>
 <br>
 <div class="container">
 <div class="row">
-<div class="col-md-6 banner-sec">
-<div class="carousel-caption d-none d-md-block">
-<div class="banner text-center">
-<a href="/"><img class="img-responsive" src="/images/pllano-logo.svg" alt=""></a>
-<h3>E-Commerce Platform API Shop</h3>
+ 
+<div class="col-md-6 sec br-0px br-right-3px br-right-primary-lg br-solid">
+<div class="text-center"><h3>{{ language.741 }}</h3></div>
+<br>
+<div class="tab-content">
+<div class="tab-pane fade active show">
+	
+<div class="form-group">
+<label class="text-uppercase">public_key *</label>
+<input type="public_key" name="public_key" id="public_key" class="form-control" placeholder="public_key">
+<div class="text-left-xl-lg-md text-red-md" id="public_key-status"></div>
 </div>
-</div>
-</div>
-<div class="col-md-6 login-sec">
 
-<div class="text-center"><h3>Создать учетную запись продавца</h3></div>
+<div class="text-center">
+<button type="submit" onClick="checkApiKey();" class="btn btn-lg bg-green-xxxl btn-hover-effects text-white">{{ language.759 }}</button>
+</div>
+</div>
+</div>
+</div>
 
+
+<div class="col-md-6 sec br-0px br-left-3px br-left-light-pink-xl br-solid">
+<div class="text-center"><h3>{{ language.763 }}</h3></div>
 <br>
 <div class="tab-content">
 <div class="tab-pane fade active show">
@@ -175,14 +183,20 @@ display: none;
 <input type="checkbox" class="form-check-input">
 <small>{{ language.159 }}</small>
 </label>
-<button type="submit" onClick="checkInSeller();" class="btn btn-lg bg-vivid-raspberry btn-hover-effects text-white float-right">{{ language.283 }}</button>
+<button type="submit" onClick="checkInSeller();" class="btn btn-lg bg-warning-xxl btn-hover-effects text-white float-right">{{ language.283 }}</button>
 </div>
 
 </div>
 </div>
+</div>
 
-<div class="copy-text">Copyright © {{ config.copyright.date }} by <a href="https://pllano.com/">pllano.com</a>
-<div class="btn-group btn-white">
+
+
+</div>
+</div>
+
+<div class="text-center padding_height_10">
+<div class="btn-group btn-white padding_height_4">
 <button type="button" class="btn btn-md btn-hover-effects text-dark-gunmetal dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 {% if session.language == "ua" %}
 <img src="/themes/lib/phone/flags/ua.png" class="position-left" alt=""> Українська
@@ -203,11 +217,9 @@ display: none;
 <a class="dropdown-item" href="#" onClick="setLanguage(4);"><img src="/themes/lib/phone/flags/de.png" alt=""> Deutsch</a>
 </div>
 </div> 
+<div class="copy-text">Copyright © {{ config.copyright.date }} by <a href="https://pllano.com/">pllano.com</a></div>
 </div>
 
-</div>
-</div>
-</div>
 </section>
 <script>
 $(document).ready(function() {

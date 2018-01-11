@@ -1,11 +1,11 @@
-function Load(){
+function Load() {
     $("#loader-div").html("<div class=\'loader-fon\'><div class=\'loader-wrapper\'><div class=\'loader\'></div></div></div>");
-	$("#loader-link").html("<div class=\'load\'>Загружаю файлы ...</div>");
+    $("#loader-link").html("<div class=\'load\'>Загружаю файлы ...</div>");
 }
-function checkStore(id){
-	var csrf = $("#csrf").val()
+function checkStore(id) {
+    var csrf = $("#csrf").val()
     $("#loader-div").html("<div class=\'loader-fon\'><div class=\'loader-wrapper\'><div class=\'loader\'></div></div></div>");
-    $.post("/check_store", {id: id, csrf: csrf}, function (response) {
+    $.post("/check-store", {id: id, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -20,10 +20,10 @@ function checkStore(id){
         }
     }),"json"
 }
-function checkTemplate(id){
-	var csrf = $("#csrf").val()
+function checkTemplate(id) {
+    var csrf = $("#csrf").val()
     $("#loader-div").html("<div class=\'loader-fon\'><div class=\'loader-wrapper\'><div class=\'loader\'></div></div></div>");
-    $.post("/check_template", {id: id, csrf: csrf}, function (response) {
+    $.post("/check-template", {id: id, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -57,6 +57,21 @@ function checkInSeller() {
     setDb('iname', iname)
     setDb('fname', fname)
     $.post("/check-in-seller", {email: email, phone: phone, password: password, iname: iname, fname: fname, csrf: csrf}, function (response) {
+        var data = $.parseJSON(response)
+        if(data.status == 200) {
+            window.location.reload()
+        }
+        else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }
+    ),"json"
+}
+ 
+function checkApiKey() {
+    var public_key = $("#public_key").val()
+    var csrf = $("#csrf").val()
+    $.post("/check-api-key", {public_key: public_key, csrf: csrf}, function (response) {
         var data = $.parseJSON(response)
         if(data.status == 200) {
             window.location.reload()

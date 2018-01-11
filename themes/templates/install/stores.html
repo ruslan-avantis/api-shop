@@ -15,8 +15,8 @@ background: linear-gradient(to bottom, #212529, #484848);
 </style>
 <section class="login-box background">
 <br>
-<div class="text-center text-white "><h1>Выберите тип магазина с набором товаров.</h1></div>
-<div class="text-center text-white font_20">Выбор дизайна на следующем шаге.</div>
+<div class="text-center text-white "><h1>{{ language.748 }}</h1></div>
+<div class="text-center text-white font_20">{{ language.745 }}</div>
 <br>
 <div class="container">
 <div class="row">
@@ -25,19 +25,41 @@ background: linear-gradient(to bottom, #212529, #484848);
 <input type="hidden" name="host" id="host-{{ items.item.id }}" value="{{ host }}">
 <input type="hidden" name="id" id="id-{{ items.item.id }}" value="{{ items.item.id }}">
 
-	<div class="card h-100">
-		<a href="#" onClick="checkStore({{ items.item.id }});"><img class="card-img-top" src="{{ items.item.image }}" alt=""></a>
-		<div class="card-body">
-			<h4 class="card-title">
-				<a href="#" onClick="checkStore({{ items.item.id }});">{{ items.item.title }}</a>
-			</h4>
-			<p class="card-text">{{ items.item.description }}</p>
-		</div>
-	</div>
+    <div class="card h-100">
+        <a href="#" onClick="checkStore({{ items.item.id }});"><img class="card-img-top" src="{{ items.item.image }}" alt=""></a>
+        <div class="card-body">
+            <h4 class="card-title">
+                <a href="#" onClick="checkStore({{ items.item.id }});">{{ items.item.title }}</a>
+            </h4>
+            <p class="card-text">{{ items.item.description }}</p>
+        </div>
+    </div>
 </div>
 {% endfor %}
 </div>
 </div>
-<div class="text-center text-white font_20">Выбор дизайна на следующем шаге.</div>
+<div class="text-center">
+<div class="btn-group btn-white">
+<button type="button" class="btn btn-md btn-hover-effects text-dark-gunmetal dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+{% if session.language == "ua" %}
+<img src="/themes/lib/phone/flags/ua.png" class="position-left" alt=""> Українська
+{% elseif session.language == "en" %}
+<img src="/themes/lib/phone/flags/gb.png" class="position-left" alt=""> English
+{% elseif session.language == "ru" %}
+<img src="/themes/lib/phone/flags/ru.png" class="position-left" alt=""> Русский
+{% elseif session.language == "de" %}
+<img src="/themes/lib/phone/flags/de.png" class="position-left" alt=""> Deutsch
+{% else %}
+<img src="/themes/lib/phone/flags/ru.png" class="position-left" alt=""> Русский
+{% endif %}
+</button>
+<div class="dropdown-menu a-dark-gunmetal a-hover-blue-violet">
+<a class="dropdown-item" href="#" onClick="setLanguage(2);"><img src="/themes/lib/phone/flags/ua.png" alt=""> Українська</a>
+<a class="dropdown-item" href="#" onClick="setLanguage(1);"><img src="/themes/lib/phone/flags/ru.png" alt=""> Русский</a>
+<a class="dropdown-item" href="#" onClick="setLanguage(3);"><img src="/themes/lib/phone/flags/gb.png" alt=""> English</a>
+<a class="dropdown-item" href="#" onClick="setLanguage(4);"><img src="/themes/lib/phone/flags/de.png" alt=""> Deutsch</a>
+</div>
+</div>
+</div>
 <br>
 </section>
