@@ -26,8 +26,8 @@ $app->get("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (
     } else {
         $resource = null;
     }
-    if ($id->getAttribute('id') !== null) {
-        $resource = $request->getAttribute('id');
+    if ($request->getAttribute('id') !== null) {
+        $id = $request->getAttribute('id');
     } else {
         $id = null;
     }
@@ -85,8 +85,8 @@ $app->put("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (
     } else {
         $resource = null;
     }
-    if ($id->getAttribute('id') !== null) {
-        $resource = $request->getAttribute('id');
+    if ($request->getAttribute('id') !== null) {
+        $id = $request->getAttribute('id');
     } else {
         $id = null;
     }
@@ -117,8 +117,8 @@ $app->patch("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function
     } else {
         $resource = null;
     }
-    if ($id->getAttribute('id') !== null) {
-        $resource = $request->getAttribute('id');
+    if ($request->getAttribute('id') !== null) {
+        $id = $request->getAttribute('id');
     } else {
         $id = null;
     }
@@ -149,8 +149,8 @@ $app->delete("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", functio
     } else {
         $resource = null;
     }
-    if ($id->getAttribute('id') !== null) {
-        $resource = $request->getAttribute('id');
+    if ($request->getAttribute('id') !== null) {
+        $id = $request->getAttribute('id');
     } else {
         $id = null;
     }
