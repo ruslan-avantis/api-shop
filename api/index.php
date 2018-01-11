@@ -52,7 +52,11 @@ if (file_exists(__DIR__ . '/../../vendor/_autoload.php')) {
     // Запускаем Автозагрузку
     $require->run($vendor_dir, $auto_require);
 }
-
+ 
+$loader = new \AutoRequire\Autoloader;
+$loader->register();
+$loader->addNamespace('ApiShop', __DIR__ . '/services');
+ 
 require __DIR__ . '/../app/config/settings.php';
 // Подключаем файл конфигурации системы
 $settings = new \ApiShop\Config\Settings();
