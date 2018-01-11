@@ -12,6 +12,9 @@
  */
  
 use ApiShop\Resources\Site;
+
+//use Twig_Loader_Filesystem;
+//use Twig_Environment;
  
 $container = $app->getContainer();
 
@@ -26,18 +29,32 @@ $container['logger'] = function ($logger) {
 
 // Register Original Twig View
 $container['twig'] = function ($themes) {
+ 
     $config = $themes->get('settings')['themes'];
-    // Получаем название шаблона
-    $template = $config["template"]; // По умолчанию mini-mo
-    $site = new Site();
-    if ($site->template()) {
-        $template = $site->template();
-    }
-    $loader = new \Twig_Loader_Filesystem($config['dir']."/".$config['templates']."/".$template."/layouts");
-    $twig = new \Twig_Environment($loader, array(
-        'cache' => false,
-        'strict_variables' => false
-    ));
+ 
+    if ($themes->get('settings')["install"]["public_key"] != null) {
+        // Получаем название шаблона
+        $template = $config["template"]; // По умолчанию mini-mo
+        $site = new Site();
+        if ($site->template()) {
+            $template = $site->template();
+        }
+ 
+        $loader = new \Twig_Loader_Filesystem($config['dir']."/".$config['templates']."/".$template."/layouts");
+        $twig = new \Twig_Environment($loader, array(
+            'cache' => false,
+            'strict_variables' => false
+        ));
+ 
+	} else {
+        $loader = new \Twig_Loader_Filesystem($config['dir']."/".$config['templates']."/install");
+        $twig = new \Twig_Environment($loader, array(
+            'cache' => false,
+            'strict_variables' => false
+        ));
+	}
+ 
     return $twig;
-};
+ 
+	};
  
