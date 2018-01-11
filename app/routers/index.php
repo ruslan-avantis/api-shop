@@ -20,6 +20,7 @@ use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
+use ApiShop\Resources\Install;
 use ApiShop\Model\SessionUser;
 use RouterDb\Db;
 use RouterDb\Router;
@@ -49,7 +50,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     // Подключаем мультиязычность
     $language = (new Language())->get($lang);
     //print_r($language);
-	
+    
     // Подключаем плагины
     $utility = new Utility();
     // Генерируем токен
@@ -160,12 +161,25 @@ $app->get('/', function (Request $request, Response $response, array $args) {
             "content" => $content,
             "products" => $products
         ]);
-	
+    
     } else {
-	    // Если ключа доступа у нет, значит сайт еще не активирован
+        // Если ключа доступа у нет, значит сайт еще не активирован
         $content = '';
-		
-		$session->install = 1;
+        $index = "index";
+		$session->install = 0;
+ 
+        if (isset($session->install)) {
+            if ($session->install == 1) {
+                $index = "stores";
+				$content = (new Install())->stores_list();
+            } elseif ($session->install == 2) {
+                $index = "templates";
+				$content = (new Install())->templates_list();
+				
+            } elseif ($session->install == 3) {
+                $index = "welcome";
+            }
+        }
  
         $head = [
                 "page" => 'install',
@@ -178,7 +192,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
                 "path" => $path
         ];
  
-        return $this->twig->render('index.html', [
+        return $this->twig->render($index.'.html', [
             "template" => "install",
             "head" => $head,
             "config" => $config['settings']['site'],

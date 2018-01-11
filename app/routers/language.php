@@ -35,13 +35,13 @@ $app->post('/language', function (Request $request, Response $response, array $a
     }
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
-    $lang = filter_var($post['id'], FILTER_SANITIZE_STRING);
-    if ($lang) {
+    $lg = filter_var($post['id'], FILTER_SANITIZE_STRING);
+    if ($lg) {
         // Записываем в сессию язык выбранный пользователем
-        if ($lang == 1) {$session->language = "ru";}
-        if ($lang == 2) {$session->language = "ua";}
-        if ($lang == 3) {$session->language = "en";}
-        if ($lang == 4) {$session->language = "de";}
+        if ($lg == 1) {$session->language = "ru";}
+        if ($lg == 2) {$session->language = "ua";}
+        if ($lg == 3) {$session->language = "en";}
+        if ($lg == 4) {$session->language = "de";}
     }
     $language = (new Language())->get($session->language);
     foreach($language as $key => $value)

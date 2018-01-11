@@ -63,7 +63,7 @@ $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request,
     // Записываем токен в сессию
     $session->token = Crypto::encrypt($token, $token_key);
     // Если запись об авторизации есть расшифровываем
-    if ($session->authorize) {
+    if (isset($session->authorize)) {
         $authorize = $session->authorize;
     } else {
         $session->authorize = 0;

@@ -15,133 +15,9 @@ use ApiShop\Model\SessionUser;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
 use ApiShop\Resources\User;
-
- 
-// Страница авторизации
-$app->get('/sign-in', function (Request $request, Response $response, array $args) {
-    // Получаем конфигурацию \ApiShop\Config\Settings
-    $config = (new Settings())->get();
-    $site = new Site();
-    $site_config = $site->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
-    // Подключаем временное хранилище
-    $session_temp = new Session("_temp");
-    // Читаем ключи
-    $session_key = $config['key']['session'];
-    $token_key = $config['key']['token'];
-    // Получаем массив данных из таблицы language на языке из $session->language
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($session->language)) {
-        $lang = $session->language;
-    } elseif ($langs->getLanguage()) {
-        $lang = $langs->getLanguage();
-    } else {
-        $lang = $site_config["language"];
-    }
-    // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
-    //print_r($language);
-    // Подключаем плагины
-    $utility = new Utility();
-    // Генерируем токен
-    $token = $utility->random_token();
-    // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
-    // Если запись об авторизации есть расшифровываем
-    if (isset($session->authorize)) {
-        $authorize = $session->authorize;
-    } else {
-        $session->authorize = 0;
-        $authorize = 0;
-    }
-    // Отдаем информацию для шаблонизатора
-    // Информацию о странице
-    $page = ["page" => 'sign-in'];
-    // Данные пользователя из сессии
-    $session_user_data =(new SessionUser())->get();
-    // Что бы не давало ошибку присваиваем пустое значение
-    $content = '';
-    // print_r($content);
- 
-    return $this->twig->render('sign-in.html', [
-        "template" => $site->template(),
-        "pages" => $page,
-        "site" => $site_config,
-        "config" => $config['settings']['site'],
-        "language" => $language,
-        "token" => $session->token,
-        "session" => $session_user_data,
-        "session_temp" => $session_temp,
-        "content" => $content
-    ]);
-});
- 
-// Страница регистрации
-$app->get('/sign-up', function (Request $request, Response $response, array $args) {
-    // Получаем конфигурацию \ApiShop\Config\Settings
-    $config = (new Settings())->get();
-    $site = new Site();
-    $site_config = $site->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
-    // Подключаем временное хранилище
-    $session_temp = new Session("_temp");
-    // Читаем ключи
-    $session_key = $config['key']['session'];
-    $token_key = $config['key']['token'];
-    // Получаем массив данных из таблицы language на языке из $session->language
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($session->language)) {
-        $lang = $session->language;
-    } elseif ($langs->getLanguage()) {
-        $lang = $langs->getLanguage();
-    } else {
-        $lang = $site_config["language"];
-    }
-    // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
-    //print_r($language);
-    // Подключаем плагины
-    $utility = new Utility();
-    // Генерируем токен
-    $token = $utility->random_token();
-    // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
-    // Если запись об авторизации есть расшифровываем
-    if (isset($session->authorize)) {
-        $authorize = $session->authorize;
-    } else {
-        $session->authorize = 0;
-        $authorize = 0;
-    }
-    // Отдаем информацию для шаблонизатора
-    // Информацию о странице
-    $page = ["page" => 'sign-up'];
-    // Данные пользователя из сессии
-    $session_user_data =(new SessionUser())->get();
-    print_r($session_user_data);
-    // Что бы не давало ошибку присваиваем пустое значение
-    $content = '';
-    // print_r($content);
- 
-    return $this->twig->render('sign-up.html', [
-        "template" => $site->template(),
-        "pages" => $page,
-        "site" => $site_config,
-        "config" => $config['settings']['site'],
-        "language" => $language,
-        "token" => $session->token,
-        "session" => $session_user_data,
-        "session_temp" => $session_temp,
-        "content" => $content
-    ]);
-});
- 
+  
 // Выйти
-$app->post('/logout', function (Request $request, Response $response, array $args) {
+$app->post('/check_store', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -171,18 +47,12 @@ $app->post('/logout', function (Request $request, Response $response, array $arg
     $csrf = $utility->clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
-        $session->authorize = null;
-        $session->cookie = '';
-        unset($session->authorize); // удаляем сесию
-        unset($session->id); // удаляем сесию
-        unset($session->cookie); // удаляем сесию
-        $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
-        if ($config['settings']['site']['cookie_httponly'] === true){
-            setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain, 1, true);
-        } else {
-            setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain);
-        }
-        $session->destroy();
+        $id = filter_var($post['id'], FILTER_SANITIZE_STRING);
+        if ($id) {
+            $session->install = 2;
+			$session->install_store = $id;
+		}
+ 
         $callback = array(
             'status' => 200,
             'title' => "Информация",
@@ -208,38 +78,23 @@ $app->post('/logout', function (Request $request, Response $response, array $arg
 });
   
 // Авторизация
-$app->post('/login', function (Request $request, Response $response, array $args) {
-    $today = date("Y-m-d H:i:s");
+$app->post('/check_template', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
-    // Читаем ключи
-    $session_key = $config['key']['session'];
-    $cookie_key = $config['key']['cookie'];
-    $token_key = $config['key']['token'];
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    
     try {
         // Получаем токен из сессии
         $token = Crypto::decrypt($session->token, $token_key);
     } catch (CryptoEx $ex) {
         (new Security())->token();
-        // Сообщение об Атаке или подмене сессии
-        $callback = array(
-            'status' => 400,
-            'title' => "Сообщение системы",
-            'text' => "Вы не прошли проверку системы безопасности !<br>У вас осталась одна попытка :)"
-        );
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
-    } 
+        // Сообщение об Атаке или подборе токена
+    }
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
-    $post_email = filter_var($post['email'], FILTER_SANITIZE_STRING);
-    $post_phone = filter_var($post['phone'], FILTER_SANITIZE_STRING);
-    $post_password = filter_var($post['password'], FILTER_SANITIZE_STRING);
     try {
         // Получаем токен из POST
         $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
@@ -251,110 +106,29 @@ $app->post('/login', function (Request $request, Response $response, array $args
     $utility = new Utility();
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = $utility->clean($post_csrf);
-    $email = $utility->clean($post_email);
-    $new_phone = $utility->phone_clean($post_phone);
-    $password = $utility->clean($post_password);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
-        $pattern = "/^[\+0-9\-\(\)\s]*$/";
-        if(preg_match($pattern, $new_phone)) {
-            $phone = $new_phone;
-        } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Сообщение системы",
-                'text' => "Номер телефона не валиден"
-            );
-            // Выводим заголовки
-            $response->withStatus(200);
-            $response->withHeader('Content-type', 'application/json');
-            // Выводим json
-            echo json_encode($callback);
-        }
-        if(!empty($phone) && !empty($email)) {
-            $email_validate = filter_var($email, FILTER_VALIDATE_EMAIL);
-            if($utility->check_length($phone, 8, 25) && $email_validate) {
-                $session->phone = Crypto::encrypt($phone, $session_key);
-                $session->email = Crypto::encrypt($email, $session_key);
-                $user = new User();
-                //check for correct email and password
-                $user_id = $user->checkLogin($email, $phone, $password);
-                if ($user_id != 0) {
-
-                    // Ресурс (таблица) к которому обращаемся
-                    $resource = "user";
-                    // Отдаем роутеру RouterDb конфигурацию.
-                    $router = new Router($config);
-                    // Получаем название базы для указанного ресурса
-                    $name_db = $router->ping($resource);
-                    // Подключаемся к базе
-                    $db = new Db($name_db, $config);
-                    // Отправляем запрос и получаем данные
-                    $user_data = $db->get($resource, ["user_id" => $user_id]);
-                    
-                    $session->language = $user_data["body"]['items']['0']['item']["language"];
-                    $session->user_id = Crypto::encrypt($user_id, $session_key);
-                    $session->phone = Crypto::encrypt($user_data["body"]['items']['0']['item']["phone"], $session_key);
-                    $session->email = Crypto::encrypt($user_data["body"]['items']['0']['item']["email"], $session_key);
-                    $session->iname = Crypto::encrypt($user_data["body"]['items']['0']['item']["iname"], $session_key);
-                    $session->fname = Crypto::encrypt($user_data["body"]['items']['0']['item']["fname"], $session_key);
-                    $authorize = 1;
-                    // Записываем authorize в сессию
-                    $session->authorize = Crypto::encrypt($authorize, $session_key);
-                    $cookie = Crypto::decrypt($session->cookie, $cookie_key);
-                    $user->putUserCode($user_id, $cookie);
-                    $callback = array(
-                        'status' => 200,
-                        'title' => "Сообщение системы",
-                        'text' => "Урааааааа"
-                    );
-                    // Выводим заголовки
-                    $response->withStatus(200);
-                    $response->withHeader('Content-type', 'application/json');
-                    // Выводим json
-                    echo json_encode($callback);
-                } else {
-                    $callback = array(
-                        'status' => 400,
-                        'title' => "Сообщение системы",
-                        'text' => "Login failed. Incorrect credentials"
-                    );
-                    // Выводим заголовки
-                    $response->withStatus(200);
-                    $response->withHeader('Content-type', 'application/json');
-                    // Выводим json
-                    echo json_encode($callback);
-                }
-            } else {
-                $callback = array(
-                    'status' => 400,
-                    'title' => "Сообщение системы",
-                    'text' => "Введите правильные данные !"
-                );
-                // Выводим заголовки
-                $response->withStatus(200);
-                $response->withHeader('Content-type', 'application/json');
-                // Выводим json
-                echo json_encode($callback);
-            }
-        } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Сообщение системы",
-                'text' => "Заполните пустые поля"
-            );
-            // Выводим заголовки
-            $response->withStatus(200);
-            $response->withHeader('Content-type', 'application/json');
-            // Выводим json
-            echo json_encode($callback);
-        }
-        //print_r($callback);
+        $id = filter_var($post['id'], FILTER_SANITIZE_STRING);
+        if ($id) {
+            $session->install = 3;
+			$session->install_template = $id;
+		}
+ 
+        $callback = array(
+            'status' => 200,
+            'title' => "Информация",
+            'text' => "Вы вышли из системы"
+        );
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
     } else {
         $callback = array(
-            'status' => 400,
-            'title' => "Сообщение системы безопасности",
-            'text' => "Перегрузите страницу"
+            'status' => 200,
+            'title' => "Ошибка",
+            'text' => "Что то не так"
         );
         // Выводим заголовки
         $response->withStatus(200);
@@ -364,8 +138,8 @@ $app->post('/login', function (Request $request, Response $response, array $args
     }
 });
  
-// Регистрация
-$app->post('/check-in', function (Request $request, Response $response, array $args) {
+// Регистрация продавца
+$app->post('/check-in-seller', function (Request $request, Response $response, array $args) {
     $today = date("Y-m-d H:i:s");
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -455,13 +229,13 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
                     }
                     // Пишем в сессию identificator cookie
  
-                    $arr["role_id"] = 1;
+                    $arr["role_id"] = 100;
                     $arr["password"] = password_hash($password, PASSWORD_DEFAULT);
                     $arr["phone"] = $phone;
                     $arr["email"] = $email;
                     $arr["language"] = $session->language;
                     $arr["ticketed"] = 1;
-                    $arr["admin_access"] = 0;
+                    $arr["admin_access"] = 1;
                     $arr["iname"] = $iname;
                     $arr["fname"] = $fname;
                     $arr["cookie"] = $cookie;
