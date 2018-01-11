@@ -166,18 +166,23 @@ $app->get('/', function (Request $request, Response $response, array $args) {
         // Если ключа доступа у нет, значит сайт еще не активирован
         $content = '';
         $index = "index";
-		$session->install = 0;
+        //$session->install = 0;
  
         if (isset($session->install)) {
             if ($session->install == 1) {
                 $index = "stores";
-				$content = (new Install())->stores_list();
+                $content = (new Install())->stores_list();
             } elseif ($session->install == 2) {
                 $index = "templates";
-				$content = (new Install())->templates_list();
-				
+                $content = (new Install())->templates_list();
+                
             } elseif ($session->install == 3) {
                 $index = "welcome";
+            } elseif ($session->install == 10) {
+                $index = "key";
+            } elseif ($session->install == 11) {
+                $index = "templates";
+                $content = (new Install())->templates_list();
             }
         }
  

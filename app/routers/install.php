@@ -79,6 +79,121 @@ $app->post('/check-api-key', function (Request $request, Response $response, arr
     }
 });
  
+// Записать в сессию
+$app->post('/check-key', function (Request $request, Response $response, array $args) {
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    
+    try {
+        // Получаем токен из сессии
+        $token = Crypto::decrypt($session->token, $token_key);
+    } catch (CryptoEx $ex) {
+        (new Security())->token();
+        // Сообщение об Атаке или подборе токена
+    }
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
+    try {
+        // Получаем токен из POST
+        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+    } catch (CryptoEx $ex) {
+        (new Security())->csrf();
+        // Сообщение об Атаке или подборе csrf
+    }
+    // Подключаем плагины
+    $utility = new Utility();
+    // Чистим данные на всякий случай пришедшие через POST
+    $csrf = $utility->clean($post_csrf);
+    // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
+    if ($csrf == $token) {
+        
+        $session->install = 10;
+            
+        $callback = array(
+            'status' => 200,
+            'title' => "Информация",
+            'text' => "Все ок"
+        );
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
+    } else {
+        $callback = array(
+            'status' => 200,
+            'title' => "Ошибка",
+            'text' => "Что то не так"
+        );
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
+    }
+});
+
+// Записать в сессию
+$app->post('/check-no-key', function (Request $request, Response $response, array $args) {
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    
+    try {
+        // Получаем токен из сессии
+        $token = Crypto::decrypt($session->token, $token_key);
+    } catch (CryptoEx $ex) {
+        (new Security())->token();
+        // Сообщение об Атаке или подборе токена
+    }
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
+    try {
+        // Получаем токен из POST
+        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+    } catch (CryptoEx $ex) {
+        (new Security())->csrf();
+        // Сообщение об Атаке или подборе csrf
+    }
+    // Подключаем плагины
+    $utility = new Utility();
+    // Чистим данные на всякий случай пришедшие через POST
+    $csrf = $utility->clean($post_csrf);
+    // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
+    if ($csrf == $token) {
+        
+        $session->install = 0;
+            
+        $callback = array(
+            'status' => 200,
+            'title' => "Информация",
+            'text' => "Все ок"
+        );
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
+    } else {
+        $callback = array(
+            'status' => 200,
+            'title' => "Ошибка",
+            'text' => "Что то не так"
+        );
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
+    }
+});
 // Записать выбранный магазин в сессию
 $app->post('/check-store', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
