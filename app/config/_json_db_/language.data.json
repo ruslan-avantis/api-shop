@@ -1038,7 +1038,7 @@
         "id": 150,
         "state": 1,
         "en": "Managing director:",
-        "ua": null,
+        "ua": "Управляющий директор:",
         "ru": "Управляющий директор:",
         "de": "Geschäftsführer:"
     }, {
@@ -1222,7 +1222,7 @@
         "en": "Payment via",
         "ua": "Оплата через",
         "ru": "Оплата через",
-        "de": null
+        "de": "Payment via"
     }, {
         "id": 185,
         "state": 1,
@@ -1429,10 +1429,10 @@
     }, {
         "id": 214,
         "state": 1,
-        "en": null,
-        "ua": null,
-        "ru": null,
-        "de": null
+        "en": "Installation completed",
+        "ua": "Установка завершена",
+        "ru": "Установка завершена",
+        "de": "Installation abgeschlossen"
     }, {
         "id": 215,
         "state": 1,
@@ -3062,7 +3062,7 @@
         "state": 1,
         "en": "to the Homepage",
         "ua": "На головну сторінку",
-        "ru": "на главную страницу",
+        "ru": "На главную страницу",
         "de": "Zur Startseite"
     }, {
         "id": 451,
