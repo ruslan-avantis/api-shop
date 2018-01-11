@@ -49,10 +49,8 @@ if (file_exists(__DIR__ . '/../../vendor/_autoload.php')) {
     require __DIR__ . '/../../vendor/autoload.php';
  
 } else {
- 
     // Запускаем Автозагрузку
     $require->run($vendor_dir, $auto_require);
- 
 }
 
 require __DIR__ . '/../app/config/settings.php';
@@ -67,7 +65,7 @@ $app = new \Slim\App($config);
 // Автоматическое подключение роутеров
 $routers = glob(__DIR__ . '/routers/*.php');
 foreach ($routers as $router) {
-require $router;
+    require $router;
 }
 
 // Slim Run
