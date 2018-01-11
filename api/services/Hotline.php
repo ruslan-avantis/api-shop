@@ -11,12 +11,9 @@
  * file that was distributed with this source code.
  */
  
-namespace ApiShop\Services\Marketplace;
-
+namespace ApiShop\Api\Services;
+ 
 use ApiShop\Config\Settings;
-use ApiShop\Model\Payments;
-use ApiShop\Model\Delivery;
-use ApiShop\Model\Marketplace;
  
 /**
  * Пример промежуточного интерфейса для взаимодействия платежной системы и API Shop
@@ -28,40 +25,41 @@ class Hotline
     public function get($resource = null, array $arr = array(), $id = null)
     {
         // тело GET
-		// $resource - ресурс (модель)
-		// $id - записи
-		// $arr - массив с параметрами
+        // $resource - ресурс (модель)
+        // $id - записи
+        // $arr - массив с параметрами
+        print("-- TEST Hotline --");
     }
-	
+    
     public function post($resource = null, array $arr = array())
     {
         // тело POST
-		// $resource - ресурс (модель)
-		// $arr - массив с параметрами
+        // $resource - ресурс (модель)
+        // $arr - массив с параметрами
     }
-	
+    
     public function put($resource = null, array $arr = array(), $id = null)
     {
         // тело PUT
-		// $resource - ресурс (модель)
-		// $id - записи
-		// $arr - массив с параметрами
+        // $resource - ресурс (модель)
+        // $id - записи
+        // $arr - массив с параметрами
     }
-	
+    
     public function patch($resource = null, array $arr = array(), $id = null)
     {
         // тело PATCH
-		// $resource - ресурс (модель)
-		// $id - записи
-		// $arr - массив с параметрами
+        // $resource - ресурс (модель)
+        // $id - записи
+        // $arr - массив с параметрами
     }
 
     public function delete($resource = null, array $arr = array(), $id = null)
     {
         // тело DELETE
-		// $resource - ресурс (модель)
-		// $id - записи
-		// $arr - массив с параметрами
+        // $resource - ресурс (модель)
+        // $id - записи
+        // $arr - массив с параметрами
     }
 
     public function config()

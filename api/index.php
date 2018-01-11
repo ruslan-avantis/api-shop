@@ -57,7 +57,7 @@ if (file_exists(__DIR__ . '/../../vendor/_autoload.php')) {
  
 $loader = new \AutoRequire\Autoloader;
 $loader->register();
-$loader->addNamespace('ApiShop', __DIR__ . '/services');
+$loader->addNamespace('ApiShop\\Api\\Services', __DIR__ . '/services');
 
 require __DIR__ . '/../app/config/settings.php';
 // Подключаем файл конфигурации системы

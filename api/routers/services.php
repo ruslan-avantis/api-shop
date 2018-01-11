@@ -13,9 +13,6 @@
  
 use Slim\Http\Request;
 use Slim\Http\Response;
-use ApiShop\Services\Marketplace;
-use ApiShop\Services\Payments;
-use ApiShop\Services\Delivery;
  
 $app->get("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (Request $request, Response $response, array $args) {
     $service = $request->getAttribute('service');
@@ -33,8 +30,8 @@ $app->get("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (
     }
  
     if (isset($service)) {
-            $service = ucfirst($service);
-            $services = new $service();
+            $service_name = "\\ApiShop\\Api\\Services\\".ucfirst($service);
+            $services = new $service_name();
             $resp = $services->get($resource, $param, $id);
     } else {
         // Сервис не определен. Возвращаем ошибку 404
@@ -60,8 +57,8 @@ $app->post("/v1/json/{service:[\w]+}[/{resource:[\w]+}]", function (Request $req
  
     $param = $request->getParsedBody();
     if (isset($service)) {
-            $service = ucfirst($service);
-            $services = new $service();
+            $service_name = "\\ApiShop\\Api\\Services\\".ucfirst($service);
+            $services = new $service_name();
             $resp = $services->post($resource, $param);
     } else {
         // Сервис не определен. Возвращаем ошибку 404
@@ -92,8 +89,8 @@ $app->put("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (
     }
  
     if (isset($service)) {
-            $service = ucfirst($service);
-            $services = new $service();
+            $service_name = "\\ApiShop\\Api\\Services\\".ucfirst($service);
+            $services = new $service_name();
             $resp = $services->put($resource, $param, $id);
     } else {
         // Сервис не определен. Возвращаем ошибку 404
@@ -124,8 +121,8 @@ $app->patch("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function
     }
  
     if (isset($service)) {
-            $service = ucfirst($service);
-            $services = new $service();
+            $service_name = "\\ApiShop\\Api\\Services\\".ucfirst($service);
+            $services = new $service_name();
             $resp = $services->patch($resource, $param, $id);
     } else {
         // Сервис не определен. Возвращаем ошибку 404
@@ -156,8 +153,8 @@ $app->delete("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", functio
     }
  
     if (isset($service)) {
-            $service = ucfirst($service);
-            $services = new $service();
+            $service_name = "\\ApiShop\\Api\\Services\\".ucfirst($service);
+            $services = new $service_name();
             $resp = $services->delete($resource, $param, $id);
     } else {
         // Сервис не определен. Возвращаем ошибку 404
