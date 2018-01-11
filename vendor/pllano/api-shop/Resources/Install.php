@@ -17,14 +17,8 @@ use ApiShop\Config\Settings;
 use RouterDb\Db;
 use RouterDb\Router;
 
-class Site {
+class Install {
  
-    private $settings = null;
-    private $site = null;
-    private $themes = null;
-    private $resource;
-    private $db_name;
-    private $site_template;
     private $config;
  
     function __construct()
@@ -32,38 +26,40 @@ class Site {
         // Подключаем конфиг Settings\Config
         $config = (new Settings())->get();
         $this->config = $config;
- 
-        // Получаем название шаблона
-        $this->themes = $this->config["settings"]["themes"];
- 
+    }
+
+    public function stores_list()
+    {
         // Ресурс к которому обращаемся
-        $this->resource = "site";
+        $resource = "install_stores_list";
+ 
         // Отдаем роутеру RouterDb конфигурацию.
         $router = new Router($this->config);
         // Получаем название базы для указанного ресурса
-        $this->db_name = $router->ping($this->resource);
- 
-    }
-
-    public function get()
-    {
+        $db_name = $router->ping($resource);
         // Подключаемся к базе
-        $db = new Db($this->db_name, $this->config);
+        $db = new Db($db_name, $this->config);
         // Отправляем запрос и получаем данные
-        $response = $db->get($this->resource);
+        $response = $db->get($resource);
  
-        $this->site = $response["body"]["items"]["item"];
-		if ($this->config["db"]["api"]["config"] == true) {
-            $this->site_template = $response["body"]["items"]["item"]["template"];
-        } else {
-            $this->site_template = $this->themes["template"];
-        }
-        return $this->site;
+        return $response["body"]["items"];
     }
-    
-    public function template()
+ 
+    public function templates_list()
     {
-        return $this->site_template;
+        // Ресурс к которому обращаемся
+        $resource = "install_templates_list";
+ 
+        // Отдаем роутеру RouterDb конфигурацию.
+        $router = new Router($this->config);
+        // Получаем название базы для указанного ресурса
+        $db_name = $router->ping($resource);
+        // Подключаемся к базе
+        $db = new Db($db_name, $this->config);
+        // Отправляем запрос и получаем данные
+        $response = $db->get($resource);
+ 
+        return $response["body"]["items"];
     }
  
 }
