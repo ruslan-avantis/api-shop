@@ -20,8 +20,18 @@ use ApiShop\Services\Delivery;
 $app->get("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (Request $request, Response $response, array $args) {
     $service = $request->getAttribute('service');
     $param = $request->getQueryParams();
-    $resource = (isset($request->getAttribute('resource'))) ? $request->getAttribute('resource') : null;
-    $id = (isset($request->getAttribute('id'))) ? $request->getAttribute('id') : null;
+    
+    if ($request->getAttribute('resource') !== null) {
+        $resource = $request->getAttribute('resource');
+    } else {
+        $resource = null;
+    }
+    if ($id->getAttribute('id') !== null) {
+        $resource = $request->getAttribute('id');
+    } else {
+        $id = null;
+    }
+ 
     if (isset($service)) {
             $service = ucfirst($service);
             $services = new $service();
@@ -41,7 +51,13 @@ $app->get("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (
 
 $app->post("/v1/json/{service:[\w]+}[/{resource:[\w]+}]", function (Request $request, Response $response, array $args) {
     $service = $request->getAttribute('service');
-    $resource = (isset($request->getAttribute('resource'))) ? $request->getAttribute('resource') : null;
+ 
+    if ($request->getAttribute('resource') !== null) {
+        $resource = $request->getAttribute('resource');
+    } else {
+        $resource = null;
+    }
+ 
     $param = $request->getParsedBody();
     if (isset($service)) {
             $service = ucfirst($service);
@@ -62,9 +78,19 @@ $app->post("/v1/json/{service:[\w]+}[/{resource:[\w]+}]", function (Request $req
 
 $app->put("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (Request $request, Response $response, array $args) {
     $service = $request->getAttribute('service');
-    $resource = (isset($request->getAttribute('resource'))) ? $request->getAttribute('resource') : null;
     $param = $request->getParsedBody();
-    $id = (isset($request->getAttribute('id'))) ? $request->getAttribute('id') : null;
+ 
+    if ($request->getAttribute('resource') !== null) {
+        $resource = $request->getAttribute('resource');
+    } else {
+        $resource = null;
+    }
+    if ($id->getAttribute('id') !== null) {
+        $resource = $request->getAttribute('id');
+    } else {
+        $id = null;
+    }
+ 
     if (isset($service)) {
             $service = ucfirst($service);
             $services = new $service();
@@ -84,9 +110,19 @@ $app->put("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (
 
 $app->patch("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (Request $request, Response $response, array $args) {
     $service = $request->getAttribute('service');
-    $resource = (isset($request->getAttribute('resource'))) ? $request->getAttribute('resource') : null;
     $param = $request->getParsedBody();
-    $id = (isset($request->getAttribute('id'))) ? $request->getAttribute('id') : null;
+ 
+    if ($request->getAttribute('resource') !== null) {
+        $resource = $request->getAttribute('resource');
+    } else {
+        $resource = null;
+    }
+    if ($id->getAttribute('id') !== null) {
+        $resource = $request->getAttribute('id');
+    } else {
+        $id = null;
+    }
+ 
     if (isset($service)) {
             $service = ucfirst($service);
             $services = new $service();
@@ -107,7 +143,18 @@ $app->patch("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function
 $app->delete("/v1/json/{service:[\w]+}[/{resource:[\w]+}[/{id:[\w]+}]]", function (Request $request, Response $response, array $args) {
     $service = $request->getAttribute('service');
     $param = $request->getParsedBody();
-    $id = (isset($request->getAttribute('id'))) ? $request->getAttribute('id') : null;
+ 
+    if ($request->getAttribute('resource') !== null) {
+        $resource = $request->getAttribute('resource');
+    } else {
+        $resource = null;
+    }
+    if ($id->getAttribute('id') !== null) {
+        $resource = $request->getAttribute('id');
+    } else {
+        $id = null;
+    }
+ 
     if (isset($service)) {
             $service = ucfirst($service);
             $services = new $service();
