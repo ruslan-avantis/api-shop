@@ -21,6 +21,13 @@ padding: 100% 0px;
 .tab-content {
 padding-bottom: 4rem;
 }
+.banner-top {
+position: absolute;
+top: 10rem;
+width: 100%;
+padding-left: 20px;
+padding-right: 20px;
+}
 .banner-sec {
 background: url(https://cdn.pllano.com/images/glob/slide-image-1.jpg) no-repeat left bottom;
 background-size: cover;
@@ -66,13 +73,6 @@ color: #fff;
 .copy-text a {
 color: #fff;
 }
-.banner-top {
-position: absolute;
-top: 10rem;
-width: 100%;
-padding-left: 20px;
-padding-right: 20px;
-}
 
 .banner {
 width: 100%;
@@ -92,7 +92,6 @@ color: #484848;
 }
 
 form label, label small {
-font-size: 1rem;
 font-weight: 500;
 }
 
@@ -121,14 +120,14 @@ display: none;
 }
 </style>
 <section class="login-box centered">
-<div class="text-center text-white "><h1>{{ language.766 }} {{ language.765 }}.</h1></div>
-<div class="text-center text-white font_20">{{ language.764 }}</div>
+<div class="text-center text-white "><h1>{{ language.766 }}</h1></div>
+<div class="text-center text-white font_20">{{ language.738 }}. {{ language.740 }}</div>
 <br>
 <div class="container">
 <div class="row">
 <div class="col-md-6 banner-sec">
 <div class="banner-top text-center">
-<button type="submit" onClick="checkKey();" class="btn btn-lg bg-red-md btn-hover-effects text-white">{{ language.741 }}</button>
+<button type="submit" onClick="checkNoKey();" class="btn btn-lg bg-red-md btn-hover-effects text-white">{{ language.763 }}</button>
 </div>
 <div class="carousel-caption d-none d-md-block">
 <div class="banner text-center">
@@ -138,52 +137,23 @@ display: none;
 </div>
 </div>
 <div class="col-md-6 login-sec">
-<div class="text-center"><h3>{{ language.763 }}</h3></div>
+
+<div class="text-center"><h4>{{ language.741 }}</h4></div>
 <br>
 <div class="tab-content">
 <div class="tab-pane fade active show">
-<div class="row">
-<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
 <div class="form-group">
-<label class="text-uppercase">{{ language.58 }} *</label>
-<input type="iname" name="iname" id="iname" class="form-control" placeholder="">
-<div class="text-left-xl-lg-md text-red-md" id="iname-status"></div>
+<label>public_key *</label>
+<input type="public_key" name="public_key" id="public_key" class="form-control" placeholder="public_key">
+<div class="text-left-xl-lg-md text-red-md" id="public_key-status"></div>
 </div>
-</div>
-<div class='col-lg-6 col-md-6 col-sm-6 col-xs-12'>
-<div class='form-group'>
-<label class="text-uppercase">{{ language.57 }} *</label>
-<input type="fname" name="fname" id="fname" class="form-control" placeholder="">
-<div class="text-left-xl-lg-md text-red-md" id="fname-status"></div>
+<br>
+<div class="text-center">
+<button type="submit" onClick="checkApiKey();" class="btn btn-lg bg-primary-xl btn-hover-effects text-white">{{ language.759 }}</button>
 </div>
 </div>
 </div>
-<div class="form-group">
-<label class="text-uppercase">{{ language.200 }} *</label>
-<input type="tel" name="phone" id="phone" class="form-control" placeholder="">
-<div class="text-success-800"><span id="valid-msg" class="hide">✓ {{ language.71 }}</span></div>
-<div class="text-danger"><span id="error-msg" class="hide">{{ language.72 }}</span></div>
-<div class="text-danger" id="phone-status"></div>
-</div>
-<div class="form-group">
-<label class="text-uppercase">{{ language.161 }} *</label>
-<input type="email" name="email" id="email" class="form-control" placeholder="{{ language.161 }}">
-<div class="text-left-xl-lg-md text-red-md" id="email-status"></div>
-</div>
-<div class="form-group">
-<label class="text-uppercase">{{ language.201 }}</label>
-<input type="password" name="password" id="password" class="form-control" placeholder="{{ language.272 }}">
-<div class="text-left-xl-lg-md text-red-md" id="password-status"></div>
-</div>
-<div class="form-check">
-<label class="form-check-label">
-<input type="checkbox" class="form-check-input">
-<small class="text-pink-lg">{{ language.159 }}</small>
-</label>
-<button type="submit" onClick="checkInSeller();" class="btn btn-lg bg-primary-xl btn-hover-effects text-white float-right">{{ language.283 }}</button>
-</div>
-</div>
-</div>
+
 </div>
 </div>
 </div>

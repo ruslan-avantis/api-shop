@@ -82,3 +82,31 @@ function checkApiKey() {
     }
     ),"json"
 }
+
+function checkKey() {
+    var csrf = $("#csrf").val()
+    $.post("/check-key", {csrf: csrf}, function (response) {
+        var data = $.parseJSON(response)
+        if(data.status == 200) {
+            window.location.reload()
+        }
+        else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }
+    ),"json"
+}
+
+function checkNoKey() {
+    var csrf = $("#csrf").val()
+    $.post("/check-no-key", {csrf: csrf}, function (response) {
+        var data = $.parseJSON(response)
+        if(data.status == 200) {
+            window.location.reload()
+        }
+        else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }
+    ),"json"
+}
