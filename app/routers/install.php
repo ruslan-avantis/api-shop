@@ -11,13 +11,76 @@ use RouterDb\Router;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Model\Security;
-use ApiShop\Model\SessionUser;
 use ApiShop\Resources\Language;
-use ApiShop\Resources\Site;
 use ApiShop\Resources\User;
-  
-// Выйти
-$app->post('/check_store', function (Request $request, Response $response, array $args) {
+use ApiShop\Resources\Install;
+ 
+// Записать выбранный магазин в сессию
+$app->post('/check-api-key', function (Request $request, Response $response, array $args) {
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    
+    try {
+        // Получаем токен из сессии
+        $token = Crypto::decrypt($session->token, $token_key);
+    } catch (CryptoEx $ex) {
+        (new Security())->token();
+        // Сообщение об Атаке или подборе токена
+    }
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
+    try {
+        // Получаем токен из POST
+        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+    } catch (CryptoEx $ex) {
+        (new Security())->csrf();
+        // Сообщение об Атаке или подборе csrf
+    }
+    // Подключаем плагины
+    $utility = new Utility();
+    // Чистим данные на всякий случай пришедшие через POST
+    $csrf = $utility->clean($post_csrf);
+    // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
+    if ($csrf == $token) {
+        $public_key = filter_var($post['public_key'], FILTER_SANITIZE_STRING);
+        if ($public_key) {
+            $session->install = null;
+            $session->public_key = $public_key;
+            if (!file_exists($config["settings"]["install"]["key"])) {
+                file_put_contents($config["settings"]["install"]["key"], $public_key);
+            }
+        }
+ 
+        $callback = array(
+            'status' => 200,
+            'title' => "Информация",
+            'text' => "Все ок"
+        );
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
+    } else {
+        $callback = array(
+            'status' => 200,
+            'title' => "Ошибка",
+            'text' => "Что то не так"
+        );
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
+    }
+});
+ 
+// Записать выбранный магазин в сессию
+$app->post('/check-store', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -50,13 +113,13 @@ $app->post('/check_store', function (Request $request, Response $response, array
         $id = filter_var($post['id'], FILTER_SANITIZE_STRING);
         if ($id) {
             $session->install = 2;
-			$session->install_store = $id;
-		}
+            $session->install_store = $id;
+        }
  
         $callback = array(
             'status' => 200,
             'title' => "Информация",
-            'text' => "Вы вышли из системы"
+            'text' => "Все ок"
         );
         // Выводим заголовки
         $response->withStatus(200);
@@ -77,8 +140,8 @@ $app->post('/check_store', function (Request $request, Response $response, array
     }
 });
   
-// Авторизация
-$app->post('/check_template', function (Request $request, Response $response, array $args) {
+// Записать выбранный шаблон в сессию
+$app->post('/check-template', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -111,13 +174,13 @@ $app->post('/check_template', function (Request $request, Response $response, ar
         $id = filter_var($post['id'], FILTER_SANITIZE_STRING);
         if ($id) {
             $session->install = 3;
-			$session->install_template = $id;
-		}
+            $session->install_template = $id;
+        }
  
         $callback = array(
             'status' => 200,
             'title' => "Информация",
-            'text' => "Вы вышли из системы"
+            'text' => "Все ок"
         );
         // Выводим заголовки
         $response->withStatus(200);
