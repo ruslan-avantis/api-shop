@@ -27,24 +27,32 @@ if (PHP_SAPI == 'cli-server') {
     }
 }
 
-// Подключаем autoloader
-require __DIR__ . '/../app/autoloader.php';
+// Connect \AutoRequire\Autoloader
+require __DIR__ . '/../vendor/AutoRequire.php';
+ 
 // instantiate the loader
-$loader = new \Psr4\Autoloader;
-// register the autoloader
-$loader->register();
-// register the base directories for the namespace prefix
-$loader->addNamespace('ApiShop', __DIR__ . '/../app/classes');
-$loader->addNamespace('ApiShop', __DIR__ . '/services');
-
-// Подключаем Composer
-if (file_exists(__DIR__ . '/../../vendor/autoload.php';)){
+$require = new \AutoRequire\Autoloader;
+ 
+// Указываем путь к папке vendor для AutoRequire
+$vendor_dir = __DIR__ . '/../vendor';
+ 
+// Указываем путь к auto_require.json
+$auto_require_min = __DIR__ . '/../vendor/auto_require_min.json';
+$auto_require = __DIR__ . '/../vendor/auto_require.json';
+ 
+if (file_exists(__DIR__ . '/../../vendor/_autoload.php')) {
+ 
+    // Запускаем Автозагрузку
+    $require->run($vendor_dir, $auto_require_min);
+ 
+    // Подключаем Composer
     require __DIR__ . '/../../vendor/autoload.php';
-} elseif (file_exists(__DIR__ . '/../vendor/autoload.php';)){
-    require __DIR__ . '/../vendor/autoload.php';
+ 
 } else {
-	$error = new \ApiShop\Error();
-	$error->permission();
+ 
+    // Запускаем Автозагрузку
+    $require->run($vendor_dir, $auto_require);
+ 
 }
 
 require __DIR__ . '/../app/config/settings.php';
