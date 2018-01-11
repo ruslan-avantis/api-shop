@@ -40,11 +40,14 @@ class Settings {
  
     // Проверяем наличие public_key
     $public_key = $key."/public_key.txt";
-	if (file_exists($public_key)) {
+ 
+    $config["settings"]["install"]["key"] = $public_key;
+ 
+    if (file_exists($public_key)) {
         $config["settings"]["install"]["public_key"] = file_get_contents($public_key, true);
     } else {
 	    $config["settings"]["install"]["public_key"] = null;
-	}
+    }
  
     // Путь к папке шаблонов
     $config["settings"]["themes"]["dir"] = __DIR__ . "/../../themes";
