@@ -23,7 +23,7 @@ class Settings {
  
     $config['settings']['site']['title'] = "API Shop";
     $config['settings']['site']['description'] = "Работает через RESTful API";
-    $copyYear = 2016; // Set your website start date
+    $copyYear = 2017; // Set your website start date
     $curYear = date('Y'); // Keeps the second year updated
     $config['settings']['site']['copyright']['date'] = $copyYear . (($copyYear != $curYear) ? '-' . $curYear : '');
     $config['settings']['site']['copyright']['text'] = "API Shop";
@@ -31,6 +31,20 @@ class Settings {
 
     // Если сайт работает через https должно быть true
     $config['settings']['site']['cookie_httponly'] = false;
+ 
+    // Путь к ключам шифрования
+    $key = __DIR__ . "/key";
+    if (!file_exists($key)) {
+        mkdir($key, 0777, true);
+    }
+ 
+    // Проверяем наличие public_key
+    $public_key = $key."/public_key.txt";
+	if (file_exists($public_key)) {
+        $config["settings"]["install"]["public_key"] = file_get_contents($public_key, true);
+    } else {
+	    $config["settings"]["install"]["public_key"] = null;
+	}
  
     // Путь к папке шаблонов
     $config["settings"]["themes"]["dir"] = __DIR__ . "/../../themes";
@@ -81,12 +95,6 @@ class Settings {
     $config["settings"]["logger"]["name"]   = "slim-app";
     $config["settings"]["logger"]["level"] = \Monolog\Logger::DEBUG;
  
-    // Путь к ключам шифрования
-    $key = __DIR__ . "/key";
-    if (!file_exists($key)) {
-        mkdir($key, 0777, true);
-    }
-    
     $key_session = $key."/session.txt";
     $key_cookie = $key."/cookie.txt";
     $key_token = $key."/token.txt";
@@ -180,10 +188,17 @@ class Settings {
     $config["db"]["api"]["url"] = "https://ua.pllano.com/api/v1/json/";
     // Доступные методы аутентификации: CryptoAuth, QueryKeyAuth, HttpTokenAuth, LoginPasswordAuth
     $config["db"]["api"]["auth"] = "QueryKeyAuth";
-    // Публичный ключ аутентификации
-    $config["db"]["api"]["public_key"] = "3903f7b3fb82c2e609b3f07ccfa119352f1d26c55723c3f7f8fb36a0d0e31dae";
-    // Приватный ключ шифрования
+   // Приватный ключ шифрования
     $config["db"]["api"]["private_key"] = "";
+    // Публичный ключ аутентификации
+	// По умолчанию генерируется при установке сайта
+	// Можете заменить на статический ключ доступа
+	if (file_exists($public_key)) {
+        $config["db"]["api"]["public_key"] = file_get_contents($public_key, true);
+	} else {
+	    $config["db"]["api"]["public_key"] = null;
+	}
+	// $config["db"]["api"]["public_key"] = "";
  
     // Настройки подключения к базе MySQL
     $config["db"]["mysql"]["host"] = "localhost";
