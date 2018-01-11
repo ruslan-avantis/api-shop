@@ -231,6 +231,16 @@ class Settings {
     // Синхронизировать ресурс site или нет. По умолчанию false
     $config["db"]["resource"]["site"]["synchronize"] = false;
  
+    // Хранилище для ресурса install_stores_list
+    $config["db"]["resource"]["install_stores_list"]["db"] = "json"; // +
+    // Синхронизировать ресурс install_stores_list или нет. По умолчанию false
+    $config["db"]["resource"]["install_stores_list"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса install_templates
+    $config["db"]["resource"]["install_templates"]["db"] = "json"; // +
+    // Синхронизировать ресурс install_templates или нет. По умолчанию false
+    $config["db"]["resource"]["install_templates"]["synchronize"] = false;
+ 
     // Хранилище для ресурса price
     $config["db"]["resource"]["price"]["db"] = "api";
     // Синхронизировать ресурс price или нет. По умолчанию false
