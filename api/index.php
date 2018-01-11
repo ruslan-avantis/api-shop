@@ -21,7 +21,7 @@ if (PHP_SAPI == 'cli-server') {
     // something which should probably be served as a static file
     $url  = parse_url($_SERVER['REQUEST_URI']);
     $file = __DIR__ . $url['path'];
-	
+    
     if (is_file($file)) {
         return false;
     }
@@ -49,16 +49,19 @@ if (file_exists(__DIR__ . '/../../vendor/_autoload.php')) {
     require __DIR__ . '/../../vendor/autoload.php';
  
 } else {
+ 
     // Запускаем Автозагрузку
     $require->run($vendor_dir, $auto_require);
+ 
 }
  
 $loader = new \AutoRequire\Autoloader;
 $loader->register();
 $loader->addNamespace('ApiShop', __DIR__ . '/services');
- 
+
 require __DIR__ . '/../app/config/settings.php';
 // Подключаем файл конфигурации системы
+// Получаем конфигурацию
 $settings = new \ApiShop\Config\Settings();
 $config = $settings->get();
 
@@ -69,7 +72,7 @@ $app = new \Slim\App($config);
 // Автоматическое подключение роутеров
 $routers = glob(__DIR__ . '/routers/*.php');
 foreach ($routers as $router) {
-    require $router;
+require $router;
 }
 
 // Slim Run
