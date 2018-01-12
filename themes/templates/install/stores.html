@@ -1,4 +1,5 @@
 {{ include ('header.html') }}
+<input type="hidden" name="host" id="host" value="{{ head.host }}">
 <style>
 @import url(https://fonts.googleapis.com/css?family=Quicksand:400,200,300,500);
 .background {
@@ -22,14 +23,12 @@ background: linear-gradient(to bottom, #212529, #484848);
 <div class="row">
 {% for items in content %}
 <div class="col-lg-6 portfolio-item">
-<input type="hidden" name="host" id="host-{{ items.item.id }}" value="{{ host }}">
 <input type="hidden" name="id" id="id-{{ items.item.id }}" value="{{ items.item.id }}">
-
     <div class="card h-100">
-        <a href="#" onClick="checkStore({{ items.item.id }});"><img class="card-img-top" src="{{ items.item.image }}" alt=""></a>
+        <a href="#" onClick="installStore({{ items.item.id }});"><img class="card-img-top" src="{{ items.item.image }}" alt=""></a>
         <div class="card-body">
             <h4 class="card-title">
-                <a href="#" onClick="checkStore({{ items.item.id }});">{{ items.item.title }}</a>
+                <a href="#" onClick="installStore({{ items.item.id }});">{{ items.item.title }}</a>
             </h4>
             <p class="card-text">{{ items.item.description }}</p>
         </div>

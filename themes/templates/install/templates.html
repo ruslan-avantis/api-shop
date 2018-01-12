@@ -1,4 +1,6 @@
+
 {{ include ('header.html') }}
+<input type="hidden" name="host" id="host" value="{{ head.host }}">
 <style>
 @import url(https://fonts.googleapis.com/css?family=Quicksand:400,200,300,500);
 .background {
@@ -13,7 +15,6 @@ background: linear-gradient(to bottom, #212529, #484848);
   margin-bottom: 30px;
 }
 </style>
-<input type="hidden" name="host" id="host" value="{{ head.host }}">
 <section class="login-box background">
 <br>
 <div class="text-center text-white "><h1>{{ language.762 }}</h1></div>
@@ -50,10 +51,10 @@ background: linear-gradient(to bottom, #212529, #484848);
 <input type="hidden" name="uri" id="uri-{{ items.item.id }}" value="{{ items.item.uri }}">
 <input type="hidden" name="dir" id="dir-{{ items.item.id }}" value="{{ items.item.dir }}">
     <div class="card h-100">
-        <a href="#" onClick="checkTemplate({{ items.item.id }});"><img class="card-img-top" src="{{ items.item.image }}" alt=""></a>
+        <a href="#" onClick="installTemplate({{ items.item.id }});"><img class="card-img-top" src="{{ items.item.image }}" alt=""></a>
         <div class="card-body">
             <h4 class="card-title">
-                <a href="#" onClick="checkTemplate({{ items.item.id }});">{{ items.item.title }}</a>
+                <a href="#" onClick="installTemplate({{ items.item.id }});">{{ items.item.title }}</a>
             </h4>
             <p class="card-text">{{ items.item.description }}</p>
         </div>

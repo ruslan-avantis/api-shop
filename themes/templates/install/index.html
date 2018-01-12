@@ -1,4 +1,5 @@
 {{ include ('header.html') }}
+<input type="hidden" name="host" id="host" value="{{ head.host }}">
 <link href="/themes/lib/phone/1.0.1/css/intlTelInput.css" rel="stylesheet">
 <script src="/themes/lib/phone/1.0.1/js/intlTelInput.js"></script>
 <style>
@@ -128,7 +129,7 @@ display: none;
 <div class="row">
 <div class="col-md-6 banner-sec">
 <div class="banner-top text-center">
-<button type="submit" onClick="checkKey();" class="btn btn-lg bg-red-md btn-hover-effects text-white">{{ language.741 }}</button>
+<button type="submit" onClick="installKey();" class="btn btn-lg bg-red-md btn-hover-effects text-white">{{ language.741 }}</button>
 </div>
 <div class="carousel-caption d-none d-md-block">
 <div class="banner text-center">
@@ -180,7 +181,7 @@ display: none;
 <input type="checkbox" class="form-check-input">
 <small class="text-pink-lg">{{ language.159 }}</small>
 </label>
-<button type="submit" onClick="checkInSeller();" class="btn btn-lg bg-primary-xl btn-hover-effects text-white float-right">{{ language.283 }}</button>
+<button type="submit" onClick="registerInSeller();" class="btn btn-lg bg-primary-xl btn-hover-effects text-white float-right">{{ language.283 }}</button>
 </div>
 </div>
 </div>
