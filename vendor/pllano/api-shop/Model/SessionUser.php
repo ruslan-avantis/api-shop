@@ -23,7 +23,7 @@ class SessionUser {
             // Получаем данные пользователя по cookie
 			$data = (new User())->getUserCode();
             if ($data != null) {
-			    $session->user_id = Crypto::encrypt($data["items"]["0"]["item"]["user_id"], $session_key);
+			    $session->user_id = $data["items"]["0"]["item"]["user_id"];
                 $session->iname = Crypto::encrypt($data["items"]["0"]["item"]["iname"], $session_key);
                 $session->fname = Crypto::encrypt($data["items"]["0"]["item"]["fname"], $session_key);
                 $session->phone = Crypto::encrypt($data["items"]["0"]["item"]["phone"], $session_key);

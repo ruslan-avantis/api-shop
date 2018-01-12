@@ -83,8 +83,7 @@ class User {
             $session->cookie = $identificator;
             // cookie в расшифрованном виде для записи в базу
             $cookie = Crypto::decrypt($identificator, $cookie_key);
-            //print_r($cookie);
- 
+  
             // Ресурс (таблица) к которому обращаемся
             $resource = "user";
             // Отдаем роутеру RouterDb конфигурацию.
@@ -98,11 +97,10 @@ class User {
  
             // Если нашли пользователя в базе и получили его id
             if ($response != null && isset($response["body"]["items"]['0']["item"]['user_id'])) {
+ 
                 $user_id = $response["body"]["items"]['0']["item"]['user_id'];
-                
                 $db->put($resource, ["cookie" => $cookie], $user_id);
-                
-                //print_r($response["body"]["items"]['0']["item"]['user_id']);
+ 
                 // Пишем данные из базы в сессию
                 $session->id = Crypto::encrypt($user_id, $session_key);
                 $session->user_id = Crypto::encrypt($user_id, $session_key);
@@ -139,12 +137,12 @@ class User {
         $db = new Db($name_db, $config);
         // Отправляем запрос и получаем данные
         $response = $db->get($resource, ["phone" => $phone, "email" => $email]);
-
-        if ($response != null) {
+        if (isset($response["headers"]["code"])) {
+            $item = (array)$response["body"]["items"]["0"]["item"];
             // Если все ок читаем пароль
-            if (password_verify($password, $response["body"]["items"]["0"]["item"]["password"])) {
+            if (password_verify($password, $item["password"])) {
                 // Если все ок - отдаем user_id
-                return $response["body"]["items"]["0"]["item"]["user_id"];
+                return $item["user_id"];
             } else {
                 return null;
             }
@@ -183,7 +181,7 @@ class User {
                 // Отправляем запрос и получаем данные
                 $response = $db->get($resource, ["cookie" => $cookie]);
  
-                if ($response != null) {
+                if (isset($response["headers"]["code"])) {
                     // Возвращаем ответ на запрос
                     return $response;
                 } else {
@@ -219,12 +217,13 @@ class User {
         $router = new Router($config);
         // Получаем название базы для указанного ресурса
         $name_db = $router->ping($resource);
+ 
         // Подключаемся к базе
         $db = new Db($name_db, $config);
         // Отправляем запрос и получаем данные
         $response = $db->put($resource, ["cookie" => $cookie, "authorized" => $today], $user_id);
  
-        if ($response != null) {
+        if (isset($response["headers"]["code"])) {
             // Если все ок возвращаем 1
             return 1;
         } else {
@@ -250,10 +249,15 @@ class User {
         // Подключаемся к базе
         $db = new Db($name_db, $config);
         // Отправляем запрос и получаем данные
-        $response = $db->put($resource, $arrUser);
- 
-        if(isset($response["body"]["items"]["0"]["item"]["user_id"])){
-            return $response["body"]["items"]["0"]["item"]["user_id"];
+        $response = $db->get($resource, $arrUser);
+        
+        if (isset($response["headers"]["code"])) {
+            $item = (array)$response["body"]["items"]["0"]["item"];
+            if(isset($item["user_id"])){
+                return $item["user_id"];
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
