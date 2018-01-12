@@ -1,15 +1,15 @@
 <?php
-
+ 
 namespace ApiShop\Model;
-
-use Adbar\Session;
+ 
 use Defuse\Crypto\Crypto;
 use Sinergi\BrowserDetector\Language as Langs;
 use ApiShop\Config\Settings;
 use ApiShop\Resources\User;
-
+use Adbar\Session;
+ 
 class SessionUser {
-
+ 
     // Контролируем наличие всех необходимых данных
     // Если пользователь авторизовался или регестрировался на другом ресурсе
     public function checking()
@@ -37,15 +37,19 @@ class SessionUser {
         $config = (new Settings())->get();
         // Подключаем сессию
         $session = new Session($config['settings']['session']['name']);
-        $langs = new Langs();
+		$langs = new Langs();
+ 
         // Получаем массив данных из таблицы language на языке из $session->language
         if (isset($session->language)) {
             $lang = $session->language;
         } elseif ($langs->getLanguage()) {
-            $lang = $langs->getLanguage();
+            $session->language = $langs->getLanguage();
+			$lang = $session->language;
         } else {
             $lang = "en";
+			$session->language = $lang;
         }
+ 
 		if (isset($session->authorize)) {
         	if ($session->authorize == 1) {
 				// Читаем ключи
