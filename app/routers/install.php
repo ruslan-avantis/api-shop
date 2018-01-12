@@ -315,12 +315,29 @@ $app->post('/install-template', function (Request $request, Response $response, 
                     $zip->extractTo($template_dir);
                     $zip->close();
  
-                    // Обновляем название шаблона в базе
+                    // Обновляем название шаблона в настройках базы db
                     // Подключаемся к базе
                     $db = new Db("json", $config);
                     // Обновляем название шаблона в базе
                     $db->put("db", ["template" => $dir], 1);
-                    
+ 
+                    // Если пользователь авторизован как администратор, и у него в сессии есть site_id
+                    if (isset($session->authorize) && isset($session->role_id) && isset($session->site_id)) {
+                        if ($session->authorize == 1 && $session->role_id == 100) {
+                            // Обновляем название шаблона в ресурсе site
+                            // Ресурс (таблица) к которому обращаемся
+                            $resource = "site";
+                            // Отдаем роутеру RouterDb конфигурацию.
+                            $router = new Router($config);
+                            // Получаем название базы для указанного ресурса
+                            $name_db = $router->ping($resource);
+                            // Подключаемся к базе
+                            $db = new Db($name_db, $config);
+                            // Отправляем запрос и получаем данные
+                            $response = $db->put($resource, ["template" => $dir], $session->site_id);
+                        }
+                    }
+ 
                     $session->template = $dir;
                 }
  
@@ -400,7 +417,7 @@ $app->post('/install-template', function (Request $request, Response $response, 
 });
  
 // Регистрация продавца
-$app->post('/install-in-seller', function (Request $request, Response $response, array $args) {
+$app->post('/register-in-seller', function (Request $request, Response $response, array $args) {
     $today = date("Y-m-d H:i:s");
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -434,6 +451,7 @@ $app->post('/install-in-seller', function (Request $request, Response $response,
     $post_password = filter_var($post['password'], FILTER_SANITIZE_STRING);
     $post_iname = filter_var($post['iname'], FILTER_SANITIZE_STRING);
     $post_fname = filter_var($post['fname'], FILTER_SANITIZE_STRING);
+    $post_host = filter_var($post['host'], FILTER_SANITIZE_STRING);
     try {
         // Получаем токен из POST
         $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
@@ -452,6 +470,7 @@ $app->post('/install-in-seller', function (Request $request, Response $response,
         $password = $utility->clean($post_password);
         $iname = $utility->clean($post_iname);
         $fname = $utility->clean($post_fname);
+        $host = $utility->clean($post_host);
  
         $pattern = "/^[\+0-9\-\(\)\s]*$/";
         if(preg_match($pattern, $new_phone)) {
@@ -468,8 +487,8 @@ $app->post('/install-in-seller', function (Request $request, Response $response,
             // Выводим json
             echo json_encode($callback);
         }
-        
-        if(!empty($phone) && !empty($email) && !empty($iname) && !empty($fname)) {
+ 
+        if(!empty($phone) && !empty($email) && !empty($iname) && !empty($fname) && !empty($host)) {
             $email_validate = filter_var($email, FILTER_VALIDATE_EMAIL);
             if($utility->check_length($phone, 8, 25) && $email_validate) {
                 // Проверяем наличие пользователя
@@ -483,31 +502,31 @@ $app->post('/install-in-seller', function (Request $request, Response $response,
                     $identificator = Crypto::encrypt($cookie, $cookie_key);
                     // Записываем пользователю новый cookie
                     $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+ 
                     if ($config['settings']['site']['cookie_httponly'] === true){
                         setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain, 1, true);
                     } else {
                         setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain);
                     }
-                    // Пишем в сессию identificator cookie
  
-                    $arr["role_id"] = 100;
-                    $arr["password"] = password_hash($password, PASSWORD_DEFAULT);
-                    $arr["phone"] = $phone;
-                    $arr["email"] = $email;
-                    $arr["language"] = $session->language;
-                    $arr["ticketed"] = 1;
-                    $arr["admin_access"] = 1;
-                    $arr["iname"] = $iname;
-                    $arr["fname"] = $fname;
-                    $arr["cookie"] = $cookie;
-                    $arr["created"] = $today;
-                    $arr["authorized"] = $today;
-                    $arr["alias"] = $utility->random_alias_id();
-                    $arr["state"] = 1;
-                    $arr["score"] = 1;
+                    $install["password"] = password_hash($password, PASSWORD_DEFAULT);
+                    $install["phone"] = $phone;
+                    $install["email"] = $email;
+                    $install["language"] = $session->language;
+                    $install["iname"] = $iname;
+                    $install["fname"] = $fname;
+                    $install["host"] = $host;
  
-                    // Ресурс (таблица) к которому обращаемся
-                    $resource = "user";
+                    $session->host = $host;
+ 
+                    if (isset($session->template)) {
+                        if ($session->template != null) {
+                            $install["template"] = $session->template;
+                        }
+                    }
+ 
+                    // Регистрируем магазин и продавца на платформе
+                    $resource = "install";
                     // Отдаем роутеру RouterDb конфигурацию.
                     $router = new Router($config);
                     // Получаем название базы для указанного ресурса
@@ -515,33 +534,82 @@ $app->post('/install-in-seller', function (Request $request, Response $response,
                     // Подключаемся к базе
                     $db = new Db($name_db, $config);
                     // Отправляем запрос и получаем данные
-                    $user_id = $db->post($resource, $arr);
+                    $records = $db->post($resource, $install);
  
-                    if ($user_id >= 1) {
-                        // Обновляем данные в сессии
-                        $session->authorize = 1;
-                        $session->cookie = $identificator;
-                        $session->user_id = Crypto::encrypt($user_id, $session_key);
-                        $session->phone = Crypto::encrypt($phone, $session_key);
-                        $session->email = Crypto::encrypt($email, $session_key);
-                        $session->iname = Crypto::encrypt($iname, $session_key);
-                        $session->fname = Crypto::encrypt($fname, $session_key);
-
-                        $callback = array(
-                            'status' => 200,
-                            'title' => "Сообщение системы",
-                            'text' => "Урааааааа"
-                        );
-                        // Выводим заголовки
-                        $response->withStatus(200);
-                        $response->withHeader('Content-type', 'application/json');
-                        // Выводим json
-                        echo json_encode($callback);
+                    if (isset($records["response"]["public_key"])) {
+ 
+                        $public_key = $records["response"]["public_key"];
+                        $site_id = $records["response"]["id"];
+ 
+                        $session->public_key = $public_key;
+                        $session->site_id = $site_id;
+                        $session->install = 1;
+ 
+                        $arr["role_id"] = 100;
+                        $arr["site_id"] = $site_id;
+                        $arr["user_id"] = $records["response"]["user_id"];
+                        $arr["password"] = password_hash($password, PASSWORD_DEFAULT);
+                        $arr["phone"] = $phone;
+                        $arr["email"] = $email;
+                        $arr["language"] = $session->language;
+                        $arr["ticketed"] = 1;
+                        $arr["admin_access"] = 1;
+                        $arr["iname"] = $iname;
+                        $arr["fname"] = $fname;
+                        $arr["cookie"] = $cookie;
+                        $arr["created"] = $today;
+                        $arr["authorized"] = $today;
+                        $arr["alias"] = $utility->random_alias_id();
+                        $arr["state"] = 1;
+                        $arr["score"] = 1;
+ 
+                        // Ресурс (таблица) к которому обращаемся
+                        $resource = "user";
+                        // Отдаем роутеру RouterDb конфигурацию.
+                        $router = new Router($config);
+                        // Получаем название базы для указанного ресурса
+                        $name_db = $router->ping($resource);
+                        // Подключаемся к базе
+                        $db = new Db($name_db, $config);
+                        // Отправляем запрос и получаем данные
+                        $user_id = $db->post($resource, $arr);
+ 
+                        if ($user_id >= 1) {
+                            // Обновляем данные в сессии
+                            $session->authorize = 1;
+                            $session->role_id = 100;
+                            $session->cookie = $identificator;
+                            $session->user_id = Crypto::encrypt($user_id, $session_key);
+                            $session->phone = Crypto::encrypt($phone, $session_key);
+                            $session->email = Crypto::encrypt($email, $session_key);
+                            $session->iname = Crypto::encrypt($iname, $session_key);
+                            $session->fname = Crypto::encrypt($fname, $session_key);
+ 
+                            $callback = array('status' => 200);
+                            // Выводим заголовки
+                            $response->withStatus(200);
+                            $response->withHeader('Content-type', 'application/json');
+                            // Выводим json
+                            echo json_encode($callback);
+ 
+                        } else {
+                            $callback = array(
+                                'status' => 400,
+                                'title' => "Сообщение системы",
+                                'text' => "Что то не так"
+                            );
+                            // Выводим заголовки
+                            $response->withStatus(200);
+                            $response->withHeader('Content-type', 'application/json');
+                            // Выводим json
+                            echo json_encode($callback);
+                        }
+                    
                     } else {
                         $callback = array(
                             'status' => 400,
                             'title' => "Сообщение системы",
-                            'text' => "Что то не так"
+                            'text' => "Не могу получить public_key"
                         );
                         // Выводим заголовки
                         $response->withStatus(200);
@@ -549,6 +617,7 @@ $app->post('/install-in-seller', function (Request $request, Response $response,
                         // Выводим json
                         echo json_encode($callback);
                     }
+ 
                 } else {
                     $callback = array(
                         'status' => 400,
@@ -600,3 +669,117 @@ $app->post('/install-in-seller', function (Request $request, Response $response,
     } 
 });
  
+// Регистрация продавца
+$app->post('/start-shop', function (Request $request, Response $response, array $args) {
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    
+    try {
+        // Получаем токен из сессии
+        $token = Crypto::decrypt($session->token, $token_key);
+    } catch (CryptoEx $ex) {
+        (new Security())->token();
+        // Сообщение об Атаке или подборе токена
+    }
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
+    try {
+        // Получаем токен из POST
+        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+    } catch (CryptoEx $ex) {
+        (new Security())->csrf();
+        // Сообщение об Атаке или подборе csrf
+    }
+    // Подключаем плагины
+    $utility = new Utility();
+    // Чистим данные на всякий случай пришедшие через POST
+    $csrf = $utility->clean($post_csrf);
+    // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
+    if ($csrf == $token) {
+        if (isset($session->install_store) && isset($session->public_key) && isset($session->template) && isset($session->site_id)) {
+ 
+            $putArr["public_key"] = $session->public_key;
+            $putArr["template"] = $session->template;
+            $putArr["host"] = $session->host;
+            $putArr["store"] = $session->install_store;
+ 
+            // Регистрируем магазин и продавца на платформе
+            $resource = "install";
+            // Отдаем роутеру RouterDb конфигурацию.
+            $router = new Router($config);
+            // Получаем название базы для указанного ресурса
+            $name_db = $router->ping($resource);
+            // Подключаемся к базе
+            $db = new Db($name_db, $config);
+            // Отправляем запрос и получаем данные
+            $records = $db->put($resource, $putArr, $session->site_id);
+ 
+            if (isset($records["headers"]["code"])) {
+                if ($records["headers"]["code"] == 202 || $records["headers"]["code"] == "202") {
+ 
+                    // Подключаемся к базе json
+                    $db = new Db("json", $config);
+                    // Обновляем public_key в базе
+                    $db->put("db", ["public_key" => $session->public_key, "template" => $session->template, "site_id" => $session->site_id], 1);
+ 
+                    // Сохраняем резервный public_key
+                    if (!file_exists($config["settings"]["install"]["file"])) {
+                        file_put_contents($config["settings"]["install"]["file"], $public_key);
+                    }
+ 
+                    $session->install = null;
+                    $session->template = null;
+                    $session->public_key = null;
+                    $session->install_store = null;
+ 
+                    $callback = array('status' => 200);
+ 
+                    // Выводим заголовки
+                    $response->withStatus(200);
+                    $response->withHeader('Content-type', 'application/json');
+                    // Выводим json
+                    echo json_encode($callback);
+ 
+                }
+            } else {
+                $callback = array(
+                    'status' => 400,
+                    'title' => "Ошибка",
+                    'text' => "Что то не так"
+                );
+                // Выводим заголовки
+                $response->withStatus(200);
+                $response->withHeader('Content-type', 'application/json');
+                // Выводим json
+                echo json_encode($callback);
+            }
+        } else {
+            $callback = array(
+                'status' => 400,
+                'title' => "Ошибка",
+                'text' => "Что то не так"
+            );
+            // Выводим заголовки
+            $response->withStatus(200);
+            $response->withHeader('Content-type', 'application/json');
+            // Выводим json
+            echo json_encode($callback);
+        }
+    } else {
+        $callback = array(
+            'status' => 400,
+            'title' => "Ошибка",
+            'text' => "Что то не так"
+        );
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
+    }
+ 
+});
