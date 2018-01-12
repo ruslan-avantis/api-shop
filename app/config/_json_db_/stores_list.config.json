@@ -1,0 +1,16 @@
+{
+	"last_id": 4,
+	"schema": {
+		"id": "integer",
+		"stores_list_id": "integer",
+		"title": "string",
+		"keywords": "string",
+		"description": "string",
+		"note": "string",
+		"image": "string",
+		"sort": "integer",
+		"state": "integer",
+		"score": "integer"
+	},
+	"relations": {}
+}

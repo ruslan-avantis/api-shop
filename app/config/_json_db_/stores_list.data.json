@@ -1,0 +1,46 @@
+[{
+		"id": 1,
+		"stores_list_id": 1,
+		"title": "Магазин номер один",
+		"keywords": null,
+		"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae.",
+		"note": null,
+		"image": "https://cdn.pllano.com/images/store_type/1.png",
+		"sort": 1,
+		"state": 1,
+		"score": 0
+	}, {
+		"id": 2,
+		"stores_list_id": 2,
+		"title": "Магазин номер два",
+		"keywords": null,
+		"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae.",
+		"note": null,
+		"image": "https://cdn.pllano.com/images/store_type/1.png",
+		"sort": 2,
+		"state": 1,
+		"score": 0
+	}, {
+		"id": 3,
+		"stores_list_id": 3,
+		"title": "Магазин номер три",
+		"keywords": null,
+		"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae.",
+		"note": null,
+		"image": "https://cdn.pllano.com/images/store_type/1.png",
+		"sort": 3,
+		"state": 1,
+		"score": 0
+	}, {
+		"id": 4,
+		"stores_list_id": 4,
+		"title": "Магазин номер четыри",
+		"keywords": null,
+		"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae.",
+		"note": null,
+		"image": "https://cdn.pllano.com/images/store_type/1.png",
+		"sort": 4,
+		"state": 1,
+		"score": 0
+	}
+]
