@@ -16,7 +16,7 @@ use ApiShop\Resources\User;
 use ApiShop\Resources\Install;
  
 // Записать выбранный магазин в сессию
-$app->post('/check-api-key', function (Request $request, Response $response, array $args) {
+$app->post('/install-api-key', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -94,7 +94,7 @@ $app->post('/check-api-key', function (Request $request, Response $response, arr
 });
  
 // Записать в сессию
-$app->post('/check-key', function (Request $request, Response $response, array $args) {
+$app->post('/install-key', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -152,7 +152,7 @@ $app->post('/check-key', function (Request $request, Response $response, array $
 });
 
 // Записать в сессию
-$app->post('/check-no-key', function (Request $request, Response $response, array $args) {
+$app->post('/install-no-key', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -210,7 +210,7 @@ $app->post('/check-no-key', function (Request $request, Response $response, arra
 });
  
 // Записать выбранный магазин в сессию
-$app->post('/check-store', function (Request $request, Response $response, array $args) {
+$app->post('/install-store', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -271,7 +271,7 @@ $app->post('/check-store', function (Request $request, Response $response, array
 });
   
 // Записать выбранный шаблон в сессию
-$app->post('/check-template', function (Request $request, Response $response, array $args) {
+$app->post('/install-template', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -400,7 +400,7 @@ $app->post('/check-template', function (Request $request, Response $response, ar
 });
  
 // Регистрация продавца
-$app->post('/check-in-seller', function (Request $request, Response $response, array $args) {
+$app->post('/install-in-seller', function (Request $request, Response $response, array $args) {
     $today = date("Y-m-d H:i:s");
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();

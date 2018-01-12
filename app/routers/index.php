@@ -182,8 +182,6 @@ $app->get('/', function (Request $request, Response $response, array $args) {
                 $content = (new Install())->templates_list();
             } elseif ($session->install == 11) {
                 $index = "key";
-            } elseif ($session->install == 10 && $session->template) {
-                $index = "key";
             }
         }
  
