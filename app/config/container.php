@@ -32,7 +32,7 @@ $container['twig'] = function ($themes) {
  
     $config = $themes->get('settings')['themes'];
  
-    if ($themes->get('settings')["install"]["public_key"] != null) {
+    if ($themes->get('settings')["install"]["status"] != null) {
         // Получаем название шаблона
         $template = $config["template"]; // По умолчанию mini-mo
         $site = new Site();

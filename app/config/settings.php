@@ -25,21 +25,22 @@ class Settings {
     $config["settings"]["themes"]["dir"] = __DIR__ . "/../../themes";
     // Название папки с шаблонами
     $config["settings"]["themes"]["templates"] = "templates";
-    // Название шаблона. По умолчанию mini-mo
+    // Шаблон по умолчанию mini-mo
     // Если работает через api будет брать название шаблона с конфигурации api
     $config["settings"]["themes"]["template"] = "mini-mo";
  
     // Путь к ключам шифрования
     $key = __DIR__ . "/key";
+ 
     // Создаем директорию если ее еще нет.
     if (!file_exists($key)) {
         mkdir($key, 0777, true);
     }
  
     // Директория хранения файлов базы данных json
-    $config["db"]["json"]["dir"] = __DIR__ . "/_json_db_/";
+    $config["db"]["json"]["dir"] = __DIR__ . "/../../json-db/db/";
  
-    // Если директории нет создать.
+    // Если директории нет создать
     if (!file_exists($config["db"]["json"]["dir"])) {
         mkdir($config["db"]["json"]["dir"], 0777, true);
     }
@@ -48,6 +49,7 @@ class Settings {
     $public_key_file = $key."/public_key.txt";
     // public_key для активации сайта при установке
     $config["settings"]["install"]["file"] = $public_key_file;
+ 
     // Длина ключа public_key - колличество символов
     $config["settings"]["install"]["strlen"] = 64;
  
@@ -72,7 +74,7 @@ class Settings {
         $public_key = null;
     }
  
-    // Статус активации сайта null или любое другое значение
+    // Статус активации сайта null или public_key
     $config["settings"]["install"]["status"] = $public_key;
  
     // Кеширование запросов
@@ -254,15 +256,21 @@ class Settings {
     // API Shop позволяет одновременно работать с любым количеством баз данных
     // Название базы данных для каждого ресурса. По умолчанию api
  
-    // Хранилище для ресурса install_stores_list
-    $config["db"]["resource"]["install_stores_list"]["db"] = "json"; // +
-    // Синхронизировать ресурс install_stores_list или нет. По умолчанию false
-    $config["db"]["resource"]["install_stores_list"]["synchronize"] = false;
+    // Хранилище для ресурса install
+    // Установка API Shop
+    $config["db"]["resource"]["install"]["db"] = "api";
+    // Синхронизировать ресурс install или нет. По умолчанию false
+    $config["db"]["resource"]["install"]["synchronize"] = false;
  
-    // Хранилище для ресурса install_templates_list
-    $config["db"]["resource"]["install_templates_list"]["db"] = "json"; // +
-    // Синхронизировать ресурс install_templates_list или нет. По умолчанию false
-    $config["db"]["resource"]["install_templates_list"]["synchronize"] = false;
+    // Хранилище для ресурса stores_list
+    $config["db"]["resource"]["stores_list"]["db"] = "json"; // +
+    // Синхронизировать ресурс stores_list или нет. По умолчанию false
+    $config["db"]["resource"]["stores_list"]["synchronize"] = false;
+ 
+    // Хранилище для ресурса templates_list
+    $config["db"]["resource"]["templates_list"]["db"] = "json"; // +
+    // Синхронизировать ресурс templates_list или нет. По умолчанию false
+    $config["db"]["resource"]["templates_list"]["synchronize"] = false;
  
     // Хранилище для ресурса site
     $config["db"]["resource"]["site"]["db"] = "api"; // +
@@ -273,7 +281,7 @@ class Settings {
     $config["db"]["resource"]["price"]["db"] = "api";
     // Синхронизировать ресурс price или нет. По умолчанию false
     $config["db"]["resource"]["price"]["synchronize"] = false;
-
+ 
     // Хранилище для ресурса language
     $config["db"]["resource"]["language"]["db"] = "json";
     // Синхронизировать ресурс language или нет. По умолчанию false
