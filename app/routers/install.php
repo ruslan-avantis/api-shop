@@ -47,19 +47,33 @@ $app->post('/check-api-key', function (Request $request, Response $response, arr
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         $public_key = filter_var($post['public_key'], FILTER_SANITIZE_STRING);
-        if ($public_key) {
+        if (strlen($public_key) == $config["settings"]["install"]["strlen"]) {
+ 
             $session->install = null;
-            $session->public_key = $public_key;
-            if (!file_exists($config["settings"]["install"]["key"])) {
-                file_put_contents($config["settings"]["install"]["key"], $public_key);
+ 
+            // Подключаемся к базе json
+            $db = new Db("json", $config);
+            // Обновляем public_key в базе
+            $db->put("db", ["public_key" => $public_key], 1);
+ 
+            // Сохраняем резервный public_key
+            if (!file_exists($config["settings"]["install"]["file"])) {
+                file_put_contents($config["settings"]["install"]["file"], $public_key);
             }
+ 
+            $callback = array(
+                'status' => 200,
+                'title' => "Информация",
+                'text' => "Все ок"
+            );
+        } else {
+            $callback = array(
+                'status' => 400,
+                'title' => "Соообщение системы",
+                'text' => "Не валидный public_key"
+            );
         }
  
-        $callback = array(
-            'status' => 200,
-            'title' => "Информация",
-            'text' => "Все ок"
-        );
         // Выводим заголовки
         $response->withStatus(200);
         $response->withHeader('Content-type', 'application/json');
@@ -67,7 +81,7 @@ $app->post('/check-api-key', function (Request $request, Response $response, arr
         echo json_encode($callback);
     } else {
         $callback = array(
-            'status' => 200,
+            'status' => 400,
             'title' => "Ошибка",
             'text' => "Что то не так"
         );
@@ -194,6 +208,7 @@ $app->post('/check-no-key', function (Request $request, Response $response, arra
         echo json_encode($callback);
     }
 });
+ 
 // Записать выбранный магазин в сессию
 $app->post('/check-store', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
@@ -287,16 +302,84 @@ $app->post('/check-template', function (Request $request, Response $response, ar
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         $id = filter_var($post['id'], FILTER_SANITIZE_STRING);
-        if ($id) {
-            $session->install = 3;
-            $session->install_template = $id;
+        $uri = filter_var($post['uri'], FILTER_SANITIZE_STRING);
+        $dir = filter_var($post['dir'], FILTER_SANITIZE_STRING);
+        $host = filter_var($post['host'], FILTER_SANITIZE_STRING);
+        if ($id && $uri && $dir && $host) {
+            $template_dir = $config["settings"]["themes"]["dir"]."/".$config["settings"]["themes"]["templates"]."/".$dir;
+            if (!file_exists($template_dir)) {
+                mkdir($template_dir, 0777, true);
+                file_put_contents($template_dir."/template.zip", file_get_contents($uri));
+                $zip = new ZipArchive;
+                if ($zip->open($template_dir."/template.zip") === true) {
+                    $zip->extractTo($template_dir);
+                    $zip->close();
+ 
+                    // Обновляем название шаблона в базе
+                    // Подключаемся к базе
+                    $db = new Db("json", $config);
+                    // Обновляем название шаблона в базе
+                    $db->put("db", ["template" => $dir], 1);
+                    
+                    $session->template = $dir;
+                }
+ 
+                if (file_exists($template_dir."/template.zip")) {
+                    unlink($template_dir."/template.zip");
+                }
+ 
+                if ($session->install == 2) {
+                    $session->install = 3;
+                } elseif ($session->install == 10) {
+                    $session->install = 11;
+                } else {
+                    $session->install = null;
+                }
+ 
+                $session->install_template = $id;
+                $session->install_uri = $uri;
+                $session->install_dir = $dir;
+                $session->install_host = $host;
+ 
+                $callback = array(
+                    'status' => 200,
+                    'title' => "Информация",
+                    'text' => "Все ок"
+                );
+ 
+            } else {
+ 
+                // Обновляем название шаблона в базе
+                // Подключаемся к базе
+                $db = new Db("json", $config);
+                // Обновляем название шаблона в базе
+                $db->put("db", ["template" => $dir], 1);
+ 
+                $session->template = $dir;
+ 
+                if ($session->install == 2) {
+                    $session->install = 3;
+                } elseif ($session->install == 10) {
+                    $session->install = 11;
+                } else {
+                    $session->install = null;
+                }
+ 
+                $callback = array(
+                    'status' => 200,
+                    'title' => "Информация",
+                    'text' => "Этот шаблоу уже установлен"
+                );
+ 
+            }
+        } else {
+            $callback = array(
+                'status' => 400,
+                'title' => "Информация",
+                'text' => "Что то не так"
+            );
         }
  
-        $callback = array(
-            'status' => 200,
-            'title' => "Информация",
-            'text' => "Все ок"
-        );
         // Выводим заголовки
         $response->withStatus(200);
         $response->withHeader('Content-type', 'application/json');
@@ -304,7 +387,7 @@ $app->post('/check-template', function (Request $request, Response $response, ar
         echo json_encode($callback);
     } else {
         $callback = array(
-            'status' => 200,
+            'status' => 400,
             'title' => "Ошибка",
             'text' => "Что то не так"
         );

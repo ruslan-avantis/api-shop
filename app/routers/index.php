@@ -69,7 +69,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     $content = '';
     // print_r($content);
  
-    if ($config["settings"]["install"]["public_key"] != null) {
+    if ($config["settings"]["install"]["status"] != null) {
         $site = new Site();
         $site_config = $site->get(); 
  
@@ -175,14 +175,15 @@ $app->get('/', function (Request $request, Response $response, array $args) {
             } elseif ($session->install == 2) {
                 $index = "templates";
                 $content = (new Install())->templates_list();
-                
             } elseif ($session->install == 3) {
                 $index = "welcome";
             } elseif ($session->install == 10) {
-                $index = "key";
-            } elseif ($session->install == 11) {
                 $index = "templates";
                 $content = (new Install())->templates_list();
+            } elseif ($session->install == 11) {
+                $index = "key";
+            } elseif ($session->install == 10 && $session->template) {
+                $index = "key";
             }
         }
  
