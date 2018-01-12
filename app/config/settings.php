@@ -38,7 +38,7 @@ class Settings {
     }
  
     // Директория хранения файлов базы данных json
-    $config["db"]["json"]["dir"] = __DIR__ . "/../../json-db/db/";
+    $config["db"]["json"]["dir"] = __DIR__ . "/_json_db_/";
  
     // Если директории нет создать
     if (!file_exists($config["db"]["json"]["dir"])) {
