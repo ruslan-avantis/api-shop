@@ -122,8 +122,8 @@ display: none;
 </style>
 <section class="login-box centered">
 <div class="text-center text-white "><h1>{{ language.766 }} {{ language.765 }}.</h1></div>
-<div class="text-center text-white font_20">{{ language.764 }}</div>
-<br>
+<div class="text-center text-white font_20 padding_height_7">{{ language.764 }}</div>
+
 <div class="container">
 <div class="row">
 <div class="col-md-6 banner-sec">
@@ -187,8 +187,8 @@ display: none;
 </div>
 </div>
 </div>
-<div class="text-center padding_height_10">
-<div class="btn-group btn-white padding_height_4">
+<div class="text-center padding_height_7">
+<div class="btn-group btn-white">
 <button type="button" class="btn btn-md btn-hover-effects text-dark-gunmetal dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 {% if session.language == "ua" %}
 <img src="/themes/lib/phone/flags/ua.png" class="position-left" alt=""> Українська
@@ -209,6 +209,8 @@ display: none;
 <a class="dropdown-item" href="#" onClick="setLanguage(4);"><img src="/themes/lib/phone/flags/de.png" alt=""> Deutsch</a>
 </div>
 </div>
+</div>
+<div class="text-center padding_height_10">
 <div class="copy-text">Copyright © {{ config.copyright.date }} by <a href="https://pllano.com/">pllano.com</a></div>
 </div>
 </section>

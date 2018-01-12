@@ -4,26 +4,23 @@ function Load() {
 }
 function checkStore(id) {
     var csrf = $("#csrf").val()
-    $("#loader-div").html("<div class=\'loader-fon\'><div class=\'loader-wrapper\'><div class=\'loader\'></div></div></div>");
     $.post("/check-store", {id: id, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
-            // Сохраняем массив с локализацией у юзера
-            try {
-                window.location.reload()
-            } catch(e){
-                window.location.reload()
-            }
+            window.location.reload()
         } else if(data.status == 400) {
             OneNotify(data.title, data.text, data.color)
         }
     }),"json"
 }
+
 function checkTemplate(id) {
     var csrf = $("#csrf").val()
-    $("#loader-div").html("<div class=\'loader-fon\'><div class=\'loader-wrapper\'><div class=\'loader\'></div></div></div>");
-    $.post("/check-template", {id: id, csrf: csrf}, function (response) {
+    var host = $("#host").val()
+    var uri = $("#uri-" + id).val()
+    var dir = $("#dir-" + id).val()
+    $.post("/check-template", {id: id, csrf: csrf, host: host, uri: uri, dir: dir}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -69,6 +66,8 @@ function checkInSeller() {
 }
  
 function checkApiKey() {
+    $('.error_message').remove()
+    checkData('public_key', 'public_key', false)
     var public_key = $("#public_key").val()
     var csrf = $("#csrf").val()
     $.post("/check-api-key", {public_key: public_key, csrf: csrf}, function (response) {

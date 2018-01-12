@@ -120,9 +120,8 @@ display: none;
 }
 </style>
 <section class="login-box centered">
-<div class="text-center text-white "><h1>{{ language.766 }}</h1></div>
-<div class="text-center text-white font_20">{{ language.738 }}. {{ language.740 }}</div>
-<br>
+<div class="text-center text-white "><h1>{{ language.760 }}</h1></div>
+<div class="text-center text-white font_20 padding_height_7">{{ language.738 }}. {{ language.740 }}</div>
 <div class="container">
 <div class="row">
 <div class="col-md-6 banner-sec">
@@ -137,8 +136,7 @@ display: none;
 </div>
 </div>
 <div class="col-md-6 login-sec">
-
-<div class="text-center"><h4>{{ language.741 }}</h4></div>
+<div class="text-center"><h4>{{ language.688 }}</h4></div>
 <br>
 <div class="tab-content">
 <div class="tab-pane fade active show">
@@ -157,7 +155,7 @@ display: none;
 </div>
 </div>
 </div>
-<div class="text-center padding_height_10">
+<div class="text-center padding_height_7">
 <div class="btn-group btn-white padding_height_4">
 <button type="button" class="btn btn-md btn-hover-effects text-dark-gunmetal dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 {% if session.language == "ua" %}
@@ -179,8 +177,11 @@ display: none;
 <a class="dropdown-item" href="#" onClick="setLanguage(4);"><img src="/themes/lib/phone/flags/de.png" alt=""> Deutsch</a>
 </div>
 </div>
+</div>
+<div class="text-center padding_height_10">
 <div class="copy-text">Copyright © {{ config.copyright.date }} by <a href="https://pllano.com/">pllano.com</a></div>
 </div>
+<br>
 </section>
 <script>
 $(document).ready(function() {

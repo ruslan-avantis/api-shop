@@ -13,30 +13,13 @@ background: linear-gradient(to bottom, #212529, #484848);
   margin-bottom: 30px;
 }
 </style>
+<input type="hidden" name="host" id="host" value="{{ head.host }}">
 <section class="login-box background">
 <br>
-<div class="text-center text-white "><h1>Выберите дизайн (шаблон) сайта.</h1></div>
-<div class="text-center text-white font_20">После выбора система подключит товары к шаблону.</div>
-<br>
-<div class="container">
-<div class="row">
-{% for items in content %}
-<div class="col-lg-6 portfolio-item">
-<input type="hidden" name="host" id="host-{{ items.item.id }}" value="{{ host }}">
-    <div class="card h-100">
-        <a href="#" onClick="checkTemplate({{ items.item.id }});"><img class="card-img-top" src="{{ items.item.image }}" alt=""></a>
-        <div class="card-body">
-            <h4 class="card-title">
-                <a href="#" onClick="checkTemplate({{ items.item.id }});">{{ items.item.title }}</a>
-            </h4>
-            <p class="card-text">{{ items.item.description }}</p>
-        </div>
-    </div>
-</div>
-{% endfor %}
-</div>
-</div>
-<div class="text-center">
+<div class="text-center text-white "><h1>{{ language.762 }}</h1></div>
+<div class="text-center text-white font_20">{{ language.761 }}</div>
+
+<div class="text-center padding_height_7">
 <div class="btn-group btn-white">
 <button type="button" class="btn btn-md btn-hover-effects text-dark-gunmetal dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 {% if session.language == "ua" %}
@@ -59,5 +42,24 @@ background: linear-gradient(to bottom, #212529, #484848);
 </div>
 </div>
 </div>
-<br>
+
+<div class="container">
+<div class="row">
+{% for items in content %}
+<div class="col-lg-6 portfolio-item">
+<input type="hidden" name="uri" id="uri-{{ items.item.id }}" value="{{ items.item.uri }}">
+<input type="hidden" name="dir" id="dir-{{ items.item.id }}" value="{{ items.item.dir }}">
+    <div class="card h-100">
+        <a href="#" onClick="checkTemplate({{ items.item.id }});"><img class="card-img-top" src="{{ items.item.image }}" alt=""></a>
+        <div class="card-body">
+            <h4 class="card-title">
+                <a href="#" onClick="checkTemplate({{ items.item.id }});">{{ items.item.title }}</a>
+            </h4>
+            <p class="card-text">{{ items.item.description }}</p>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+</div>
 </section>
