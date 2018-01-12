@@ -31,7 +31,7 @@ class Install {
     public function stores_list()
     {
         // Ресурс к которому обращаемся
-        $resource = "install_stores_list";
+        $resource = "stores_list";
  
         // Отдаем роутеру RouterDb конфигурацию.
         $router = new Router($this->config);
@@ -48,7 +48,7 @@ class Install {
     public function templates_list()
     {
         // Ресурс к которому обращаемся
-        $resource = "install_templates_list";
+        $resource = "templates_list";
  
         // Отдаем роутеру RouterDb конфигурацию.
         $router = new Router($this->config);
