@@ -4,7 +4,7 @@ function Load() {
 }
 function checkStore(id) {
     var csrf = $("#csrf").val()
-    $.post("/check-store", {id: id, csrf: csrf}, function (response) {
+    $.post("/install-store", {id: id, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -20,7 +20,7 @@ function checkTemplate(id) {
     var host = $("#host").val()
     var uri = $("#uri-" + id).val()
     var dir = $("#dir-" + id).val()
-    $.post("/check-template", {id: id, csrf: csrf, host: host, uri: uri, dir: dir}, function (response) {
+    $.post("/install-template", {id: id, csrf: csrf, host: host, uri: uri, dir: dir}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -53,7 +53,7 @@ function checkInSeller() {
     setDb('email', email)
     setDb('iname', iname)
     setDb('fname', fname)
-    $.post("/check-in-seller", {email: email, phone: phone, password: password, iname: iname, fname: fname, csrf: csrf}, function (response) {
+    $.post("/install-in-seller", {email: email, phone: phone, password: password, iname: iname, fname: fname, csrf: csrf}, function (response) {
         var data = $.parseJSON(response)
         if(data.status == 200) {
             window.location.reload()
@@ -70,7 +70,7 @@ function checkApiKey() {
     checkData('public_key', 'public_key', false)
     var public_key = $("#public_key").val()
     var csrf = $("#csrf").val()
-    $.post("/check-api-key", {public_key: public_key, csrf: csrf}, function (response) {
+    $.post("/install-api-key", {public_key: public_key, csrf: csrf}, function (response) {
         var data = $.parseJSON(response)
         if(data.status == 200) {
             window.location.reload()
@@ -84,7 +84,7 @@ function checkApiKey() {
 
 function checkKey() {
     var csrf = $("#csrf").val()
-    $.post("/check-key", {csrf: csrf}, function (response) {
+    $.post("/install-key", {csrf: csrf}, function (response) {
         var data = $.parseJSON(response)
         if(data.status == 200) {
             window.location.reload()
@@ -98,7 +98,7 @@ function checkKey() {
 
 function checkNoKey() {
     var csrf = $("#csrf").val()
-    $.post("/check-no-key", {csrf: csrf}, function (response) {
+    $.post("/install-no-key", {csrf: csrf}, function (response) {
         var data = $.parseJSON(response)
         if(data.status == 200) {
             window.location.reload()
