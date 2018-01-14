@@ -90,11 +90,11 @@ class Settings {
  
     // Настройки подключения к jsondb через API
     // URL API jsondb
-    $config["db"]["jsonapi"]["url"] = "";
+    $config["db"]["jsonapi"]["url"] = "https://xti.com.ua/json-db/";
     // Доступные методы аутентификации: null, CryptoAuth, QueryKeyAuth, HttpTokenAuth, LoginPasswordAuth
     $config["db"]["jsonapi"]["auth"] = null;
     // Публичный ключ аутентификации
-    $config["db"]["jsonapi"]["public_key"] = "";
+    $config["db"]["jsonapi"]["public_key"] = null;
     // Приватный ключ шифрования
     $config["db"]["jsonapi"]["private_key"] = "";
  
@@ -281,16 +281,16 @@ class Settings {
     $config["db"]["resource"]["price"]["db"] = "api";
     // Синхронизировать ресурс price или нет. По умолчанию false
     $config["db"]["resource"]["price"]["synchronize"] = false;
+    
+    // Хранилище для ресурса user
+    $config["db"]["resource"]["user"]["db"] = "json";
+    // Синхронизировать ресурс user или нет. По умолчанию false
+    $config["db"]["resource"]["user"]["synchronize"] = false;
  
     // Хранилище для ресурса language
     $config["db"]["resource"]["language"]["db"] = "json";
     // Синхронизировать ресурс language или нет. По умолчанию false
     $config["db"]["resource"]["language"]["synchronize"] = false;
- 
-    // Хранилище для ресурса user
-    $config["db"]["resource"]["user"]["db"] = "json";
-    // Синхронизировать ресурс user или нет. По умолчанию false
-    $config["db"]["resource"]["user"]["synchronize"] = false;
  
     // Хранилище для ресурса cart
     $config["db"]["resource"]["cart"]["db"] = "json";
