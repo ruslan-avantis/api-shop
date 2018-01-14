@@ -122,7 +122,7 @@ $app->get('/sign-up', function (Request $request, Response $response, array $arg
     $page = ["page" => 'sign-up'];
     // Данные пользователя из сессии
     $session_user_data =(new SessionUser())->get();
-    print_r($session_user_data);
+    //print_r($session_user_data);
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // print_r($content);
@@ -274,45 +274,30 @@ $app->post('/login', function (Request $request, Response $response, array $args
         if(!empty($phone) && !empty($email)) {
             $email_validate = filter_var($email, FILTER_VALIDATE_EMAIL);
             if($utility->check_length($phone, 8, 25) && $email_validate) {
-                $session->phone = Crypto::encrypt($phone, $session_key);
-                $session->email = Crypto::encrypt($email, $session_key);
                 $user = new User();
                 //check for correct email and password
                 $user_id = $user->checkLogin($email, $phone, $password);
                 if ($user_id != 0) {
-
-                    // Ресурс (таблица) к которому обращаемся
-                    $resource = "user";
-                    // Отдаем роутеру RouterDb конфигурацию.
-                    $router = new Router($config);
-                    // Получаем название базы для указанного ресурса
-                    $name_db = $router->ping($resource);
-                    // Подключаемся к базе
-                    $db = new Db($name_db, $config);
-                    // Отправляем запрос и получаем данные
-                    $user_data = $db->get($resource, ["user_id" => $user_id]);
-                    
-                    $session->language = $user_data["body"]['items']['0']['item']["language"];
-                    $session->user_id = Crypto::encrypt($user_id, $session_key);
-                    $session->phone = Crypto::encrypt($user_data["body"]['items']['0']['item']["phone"], $session_key);
-                    $session->email = Crypto::encrypt($user_data["body"]['items']['0']['item']["email"], $session_key);
-                    $session->iname = Crypto::encrypt($user_data["body"]['items']['0']['item']["iname"], $session_key);
-                    $session->fname = Crypto::encrypt($user_data["body"]['items']['0']['item']["fname"], $session_key);
-                    $authorize = 1;
-                    // Записываем authorize в сессию
-                    $session->authorize = Crypto::encrypt($authorize, $session_key);
-                    $cookie = Crypto::decrypt($session->cookie, $cookie_key);
-                    $user->putUserCode($user_id, $cookie);
-                    $callback = array(
-                        'status' => 200,
-                        'title' => "Сообщение системы",
-                        'text' => "Урааааааа"
-                    );
+ 
+					$cookie = $user->putUserCode($user_id);
+                    if($cookie == 1) {
+                        $session->authorize = 1;
+						
+						$callback = array('status' => 200);
+                    } else {
+                        $callback = array(
+                           'status' => 400,
+                           'title' => "Сообщение системы",
+                           'text' => "Ошибка cookie"
+                        );
+                    }
+ 
                     // Выводим заголовки
                     $response->withStatus(200);
                     $response->withHeader('Content-type', 'application/json');
                     // Выводим json
                     echo json_encode($callback);
+ 
                 } else {
                     $callback = array(
                         'status' => 400,
@@ -444,10 +429,12 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
                     $session->clear();
                     // Создаем новую cookie
                     $cookie = $utility->random_token();
+
                     // Генерируем identificator
                     $identificator = Crypto::encrypt($cookie, $cookie_key);
-                    // Записываем пользователю новый cookie
+ 
                     $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+                    // Записываем пользователю новый cookie
                     if ($config['settings']['site']['cookie_httponly'] === true){
                         setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain, 1, true);
                     } else {
@@ -486,17 +473,13 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
                         // Обновляем данные в сессии
                         $session->authorize = 1;
                         $session->cookie = $identificator;
-                        $session->user_id = Crypto::encrypt($user_id, $session_key);
+                        $session->user_id = $user_id;
                         $session->phone = Crypto::encrypt($phone, $session_key);
                         $session->email = Crypto::encrypt($email, $session_key);
                         $session->iname = Crypto::encrypt($iname, $session_key);
                         $session->fname = Crypto::encrypt($fname, $session_key);
 
-                        $callback = array(
-                            'status' => 200,
-                            'title' => "Сообщение системы",
-                            'text' => "Урааааааа"
-                        );
+                        $callback = array('status' => 200);
                         // Выводим заголовки
                         $response->withStatus(200);
                         $response->withHeader('Content-type', 'application/json');
@@ -565,3 +548,4 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
     } 
 });
  
+    

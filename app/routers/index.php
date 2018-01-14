@@ -24,6 +24,13 @@ use ApiShop\Resources\Install;
 use ApiShop\Model\SessionUser;
 use RouterDb\Db;
 use RouterDb\Router;
+
+use ApiShop\Resources\User;
+
+use jsonDB\Db as Dddd;
+use jsonDB\Database;
+use jsonDB\Validate;
+use jsonDB\dbException;
  
 $app->get('/', function (Request $request, Response $response, array $args) {
     $host = $request->getUri()->getHost();
@@ -31,8 +38,42 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
  
+
+ 
+//$row = Database::table("user")->find(1);
+//$row->iname = "проверка";
+//$row->save();
+//print_r($row->id);
+
+//$user = new User();
+//print_r($user->identificator());
+ 
+/* try {
+    $user = new User();
+    $user_id = $user->putUserCode(1, "555555555555555555555555555");
+    //print_r($user_id);
+} catch (Exception $exception) {
+    //print_r("Ошибка главная");
+} */
+
+//$row = Database::table("user")->where('id', '=', 1)->findAll();
+//foreach($row as $value){
+//print_r($value->id);
+//}
+ 
+//
+//$db = new Db("json", $config);
+//$response = $db->get("user", ["phone" => "380670010011", "email" => "admin@pllano.com"]);
+//print_r($response);
+        
+//$user = new User();
+//$user_id = $user->checkLogin("admin@pllano.com", "380670010011", "admin@pllano.com");
+//$user_id["body"]["items"]["0"]["item"]["password"]
+        
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
+	
+	 
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
     // Читаем ключи
@@ -49,22 +90,14 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     }
     // Подключаем мультиязычность
     $language = (new Language())->get($lang);
-    //print_r($language);
-    
+ 
     // Подключаем плагины
     $utility = new Utility();
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token = Crypto::encrypt($token, $token_key);
-    // Если запись об авторизации есть расшифровываем
-    if (isset($session->authorize)) {
-        $authorize = $session->authorize;
-    } else {
-        $session->authorize = 0;
-        $authorize = 0;
-    }
-
+ 
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // print_r($content);
@@ -162,7 +195,8 @@ $app->get('/', function (Request $request, Response $response, array $args) {
             "products" => $products
         ]);
     
-    } else {
+    }
+    else {
         // Если ключа доступа у нет, значит сайт еще не активирован
         $content = '';
         $index = "index";
