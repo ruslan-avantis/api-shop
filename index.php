@@ -13,9 +13,9 @@
  */
  
 // Вывод ошибок. Что бы выключить закоментируйте эти строки
-// ini_set('error_reporting', E_ALL);
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
  
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
@@ -41,7 +41,7 @@ $vendor_dir = __DIR__ . '/vendor';
 $auto_require_min = __DIR__ . '/vendor/auto_require_min.json';
 $auto_require = __DIR__ . '/vendor/auto_require.json';
  
-if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+if (file_exists(__DIR__ . '/../vendor/_autoload.php')) {
  
     // Запускаем Автозагрузку
     $require->run($vendor_dir, $auto_require_min);
@@ -83,7 +83,7 @@ foreach ($routers as $router) {
  
 // Если одина из баз json запускаем jsonDB
 if ($config["db"]["master"] == "json" || $config["db"]["slave"] == "json") {
-// Запускаем jsonDB\Db
+    // Запускаем jsonDB\Db
     $jsonDb = new \jsonDB\Db($config['db']['json']['dir']);
     $jsonDb->setCached($config['db']['json']['cached']);
     $jsonDb->setCacheLifetime($config['db']['json']['cache_lifetime']);
