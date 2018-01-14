@@ -4705,10 +4705,10 @@
     }, {
         "id": 688,
         "state": 1,
-        "en": "Get more sales by improving the quality of service of your dealers",
-        "ua": "Отримати більше продажів поліпшивши якість обслуговування своїх дилерів",
-        "ru": "Получить больше продаж улучшив качество обслуживания своих дилеров",
-        "de": "Erhalten Sie mehr Umsatz durch die Verbesserung der Servicequalität Ihrer Händler"
+        "en": "Key Activation",
+        "ua": "Активація за допомогою ключа",
+        "ru": "Активация с помощью ключа",
+        "de": "Schlüsselaktivierung"
     }, {
         "id": 689,
         "state": 1,
@@ -5048,10 +5048,10 @@
     }, {
         "id": 738,
         "state": 1,
-        "en": "All services",
-        "ua": "Всі сервіси",
-        "ru": "Все сервисы",
-        "de": "Alle Dienstleistungen"
+        "en": "To connect products",
+        "ua": "Для підключення товарів",
+        "ru": "Для подключения товаров",
+        "de": "Um Produkte zu verbinden"
     }, {
         "id": 739,
         "state": 1,
@@ -5062,24 +5062,24 @@
     }, {
         "id": 740,
         "state": 1,
-        "en": "Find suppliers",
-        "ua": "Знайти постачальників",
-        "ru": "Найти поставщиков",
-        "de": "Lieferanten suchen"
+        "en": "Choose an activation option",
+        "ua": "Виберіть варіант активації",
+        "ru": "Выберите вариант активации",
+        "de": "Wählen Sie eine Aktivierungsoption"
     }, {
         "id": 741,
         "state": 1,
-        "en": "Connect suppliers",
-        "ua": "Підключити постачальників",
-        "ru": "Подключить поставщиков",
-        "de": "Lieferanten verbinden"
+        "en": "I have an API key",
+        "ua": "У мене є ключ API",
+        "ru": "У меня есть ключ API",
+        "de": "Ich habe einen API-Schlüssel"
     }, {
         "id": 742,
         "state": 1,
-        "en": "Invite supplier",
-        "ua": "Запросити постачальника",
-        "ru": "Пригласить поставщика",
-        "de": "Lieferanten einladen"
+        "en": "Select installation option",
+        "ua": "Виберіть варіант установки",
+        "ru": "Выберите вариант установки",
+        "de": "Wählen Sie die Installationsoption"
     }, {
         "id": 743,
         "state": 1,
@@ -5097,10 +5097,10 @@
     }, {
         "id": 745,
         "state": 1,
-        "en": "Your suppliers",
-        "ua": "Ваші постачальники",
-        "ru": "Ваши поставщики",
-        "de": "Ihre Lieferanten"
+        "en": "Choose the site design in the next step",
+        "ua": "Вибір дизайну сайту на наступному кроці",
+        "ru": "Выбор дизайна сайта на следующем шаге",
+        "de": "Wählen Sie das Website-Design im nächsten Schritt"
     }, {
         "id": 746,
         "state": 1,
@@ -5118,10 +5118,10 @@
     }, {
         "id": 748,
         "state": 1,
-        "en": "Your sites",
-        "ua": "Ваші сайти",
-        "ru": "Ваши сайты",
-        "de": "Ihre Websites"
+        "en": "Choose a store with the goods",
+        "ua": "Виберіть магазин з товарами",
+        "ru": "Выберите магазин с товарами",
+        "de": "Wählen Sie ein Geschäft mit den Waren"
     }, {
         "id": 749,
         "state": 1,
@@ -5202,52 +5202,52 @@
     }, {
         "id": 760,
         "state": 1,
-        "en": "30 days free trial",
-        "ua": "30 днів безкоштовно",
-        "ru": "30 дней бесплатно",
-        "de": "30 Tage kostenlose Testversion"
+        "en": "The template you selected is installed",
+        "ua": "Обраний вами шаблон встановлений",
+        "ru": "Выбранный вами шаблон установлен",
+        "de": "Die ausgewählte Vorlage ist installiert"
     }, {
         "id": 761,
         "state": 1,
-        "en": "Your suppliers",
-        "ua": "Ваші постачальники",
-        "ru": "Ваши поставщики",
-        "de": "Ihre Lieferanten"
+        "en": "After selecting a template, enter the API key so that the system connects the products.",
+        "ua": "Після вибору шаблону, введіть ключ API щоб система підключила товари.",
+        "ru": "После выбора шаблона, введите ключ API чтобы система подключила товары.",
+        "de": "Nachdem Sie eine Vorlage ausgewählt haben, geben Sie den API-Schlüssel ein, damit das System die Produkte verbindet."
     }, {
         "id": 762,
         "state": 1,
-        "en": "Your warehouses",
-        "ua": "Ваші склади",
-        "ru": "Ваши склады",
-        "de": "Ihre Lagerhäuser"
+        "en": "Choose a website design",
+        "ua": "Виберіть дизайн сайту",
+        "ru": "Выберите дизайн сайта",
+        "de": "Wählen Sie ein Website-Design"
     }, {
         "id": 763,
         "state": 1,
-        "en": "Warehouses",
-        "ua": "Склади",
-        "ru": "Склады",
-        "de": "Lagerhallen"
+        "en": "Create a seller account",
+        "ua": "Створити обліковий запис продавця",
+        "ru": "Создать учетную запись продавца",
+        "de": "Erstellen Sie ein Verkäuferkonto"
     }, {
         "id": 764,
         "state": 1,
-        "en": "All warehouses",
-        "ua": "Всі склади",
-        "ru": "Все склады",
-        "de": "Alle Lagerhäuser"
+        "en": "You need to create a seller account, select products, select a design.",
+        "ua": "Необхідно створити акаунт продавця, вибрати товари, вибрати дизайн.",
+        "ru": "Необходимо создать аккаунт продавца, выбрать товары, выбрать дизайн.",
+        "de": "Sie müssen ein Händlerkonto erstellen, Produkte auswählen und ein Design auswählen."
     }, {
         "id": 765,
         "state": 1,
-        "en": "All suppliers",
-        "ua": "Усі постачальники",
-        "ru": "Все поставщики",
-        "de": "Alle Lieferanten"
+        "en": "There are only three steps left",
+        "ua": "Залишилося всього три кроки",
+        "ru": "Осталось всего три шага",
+        "de": "Es sind nur noch drei Schritte übrig"
     }, {
         "id": 766,
         "state": 1,
-        "en": "Supplier Shares",
-        "ua": "Акції постачальників",
-        "ru": "Акции поставщиков",
-        "de": "Lieferantenanteile"
+        "en": "Your store is installed!",
+        "ua": "Ваш магазин встановлено!",
+        "ru": "Ваш магазин установлен !",
+        "de": "Ihr Geschäft ist installiert!"
     }, {
         "id": 767,
         "state": 1,
@@ -5391,24 +5391,24 @@
     }, {
         "id": 787,
         "state": 1,
-        "en": "Warehouse goods management",
-        "ua": "Управління товарами складу",
-        "ru": "Управление товарами склада",
-        "de": "Lager Warenwirtschaft"
+        "en": "last step !",
+        "ua": "останній крок !",
+        "ru": "последний шаг !",
+        "de": "Der letzte Schritt!"
     }, {
         "id": 788,
         "state": 1,
-        "en": "Dealer Management",
-        "ua": "Управління дилерами",
-        "ru": "Управление дилерами",
-        "de": "Händlerverwaltung"
+        "en": "Install",
+        "ua": "Встановити",
+        "ru": "Установить",
+        "de": "Installieren"
     }, {
         "id": 789,
         "state": 1,
-        "en": "Brand management",
-        "ua": "Управління брендами",
-        "ru": "Управление брендами",
-        "de": "Markenführung"
+        "en": "Install the products and template ?",
+        "ua": "Встановити товари і шаблон ?",
+        "ru": "Установить товары и шаблон ?",
+        "de": "Installieren Sie die Produkte und die Vorlage ?"
     }, {
         "id": 790,
         "state": 1,
