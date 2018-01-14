@@ -263,7 +263,7 @@ function checkIn() {
         }
     }
     ),"json"
-    }
+}
 
 function login() {
     $('.error_message').remove()
