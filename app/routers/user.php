@@ -279,11 +279,11 @@ $app->post('/login', function (Request $request, Response $response, array $args
                 $user_id = $user->checkLogin($email, $phone, $password);
                 if ($user_id != 0) {
  
-					$cookie = $user->putUserCode($user_id);
+                    $cookie = $user->putUserCode($user_id);
                     if($cookie == 1) {
                         $session->authorize = 1;
-						
-						$callback = array('status' => 200);
+                        
+                        $callback = array('status' => 200);
                     } else {
                         $callback = array(
                            'status' => 400,

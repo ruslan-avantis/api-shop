@@ -40,8 +40,8 @@ $app->get('/', function (Request $request, Response $response, array $args) {
  
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
-	
-	 
+    
+     
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
     // Читаем ключи
@@ -168,7 +168,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
         // Если ключа доступа у нет, значит сайт еще не активирован
         $content = '';
         $index = "index";
-        //$session->install = 0;
+        //$session->install = 1;
  
         if (isset($session->install)) {
             if ($session->install == 1) {
