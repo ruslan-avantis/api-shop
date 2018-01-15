@@ -14,48 +14,48 @@ class SessionUser {
         $config = (new Settings())->get();
         // Подключаем сессию
         $session = new Session($config['settings']['session']['name']);
-		$langs = new Langs();
+        $langs = new Langs();
  
         // Получаем массив данных из таблицы language на языке из $session->language
-		$lang = "en";
+        $lang = "en";
         if (isset($session->language)) {
             $lang = $session->language;
         } elseif ($langs->getLanguage()) {
             $session->language = $langs->getLanguage();
-			$lang = $session->language;
+            $lang = $session->language;
         } else {
             $lang = "en";
-			$session->language = $lang;
+            $session->language = $lang;
         }
  
-		if (isset($session->authorize)) {
-        	if ($session->authorize == 1) {
-				// Читаем ключи
-        		$session_key = $config['key']['session'];
-            	// Формируем массив данных сессии который отдаем шаблонизатору
-            	$response = array();
-				$response['language'] = $lang;
-				$response["authorize"] = $session->authorize;
-				if (isset($session->role_id)) {$response["role_id"] = $session->role_id;}
-				if (isset($session->user_id)) {$response["user_id"] = $session->user_id;}
-            	if (isset($session->iname)) {$response["iname"] = Crypto::decrypt($session->iname, $session_key);}
-            	if (isset($session->fname)) {$response["fname"] = Crypto::decrypt($session->fname, $session_key);}
-            	if (isset($session->phone)) {$response['phone'] = Crypto::decrypt($session->phone, $session_key);}
-            	if (isset($session->email)) {$response['email'] = Crypto::decrypt($session->email, $session_key);}
-            	// Возвращаем массив с данными сессии пользователя
-            	return $response;
-        	} else {
-		    	$response = array();
-				$response['language'] = $lang;
-				$response['authorize'] = $session->authorize;
-				return $response;
-			}
-		} else {
-		    	$response = array();
-				$response['language'] = $lang;
-				$response['authorize'] = $session->authorize;
-				return $response;
-		}
+        if (isset($session->authorize)) {
+            if ($session->authorize == 1) {
+                // Читаем ключи
+                $session_key = $config['key']['session'];
+                // Формируем массив данных сессии который отдаем шаблонизатору
+                $response = array();
+                $response['language'] = $lang;
+                $response["authorize"] = $session->authorize;
+                if (isset($session->role_id)) {$response["role_id"] = $session->role_id;}
+                if (isset($session->user_id)) {$response["user_id"] = $session->user_id;}
+                if (isset($session->iname)) {$response["iname"] = Crypto::decrypt($session->iname, $session_key);}
+                if (isset($session->fname)) {$response["fname"] = Crypto::decrypt($session->fname, $session_key);}
+                if (isset($session->phone)) {$response['phone'] = Crypto::decrypt($session->phone, $session_key);}
+                if (isset($session->email)) {$response['email'] = Crypto::decrypt($session->email, $session_key);}
+                // Возвращаем массив с данными сессии пользователя
+                return $response;
+            } else {
+                $response = array();
+                $response['language'] = $lang;
+                $response['authorize'] = $session->authorize;
+                return $response;
+            }
+        } else {
+                $response = array();
+                $response['language'] = $lang;
+                $response['authorize'] = $session->authorize;
+                return $response;
+        }
     }
  
 }

@@ -32,9 +32,9 @@ class User {
         $config = (new Settings())->get();
         // Подключаем сессию \Adbar\Session
         $session = new Session($config['settings']['session']['name']);
-		// Читаем ключи
+        // Читаем ключи
         $session_key = $config['key']['session'];
-		$cookie_key = $config['key']['cookie'];
+        $cookie_key = $config['key']['cookie'];
  
         // Читаем печеньку у юзера в браузере
         $identificator = isset($_COOKIE[$config['settings']['session']['name']]) ? $_COOKIE[$config['settings']['session']['name']] : null;
@@ -58,44 +58,44 @@ class User {
                 // Отправляем запрос и получаем данные
                 $response = $db->get($resource, ["cookie" => $cookie, "state" => 1]);
  
-				//print("<br>");
-				//print_r($response);
-				if (isset($response["headers"]["code"])) {
-				    if ($response["headers"]["code"] == 200 || $response["headers"]["code"] == "200") {
+                //print("<br>");
+                //print_r($response);
+                if (isset($response["headers"]["code"])) {
+                    if ($response["headers"]["code"] == 200 || $response["headers"]["code"] == "200") {
  
-				        if(is_object($response["body"]["items"]["0"]["item"])) {
-				            $user = (array)$response["body"]["items"]["0"]["item"];
-				        } elseif (is_array($response["body"]["items"]["0"]["item"])) {
-				            $user = $response["body"]["items"]["0"]["item"];
-				        }
+                        if(is_object($response["body"]["items"]["0"]["item"])) {
+                            $user = (array)$response["body"]["items"]["0"]["item"];
+                        } elseif (is_array($response["body"]["items"]["0"]["item"])) {
+                            $user = $response["body"]["items"]["0"]["item"];
+                        }
  
-				        if ($user["state"] == 1) {
-				            $session->authorize = 1;
-				            $session->role_id = $user["role_id"];
-				            $session->user_id = $user["id"];
-				            $session->iname = Crypto::encrypt($user["iname"], $session_key);
-				            $session->fname = Crypto::encrypt($user["fname"], $session_key);
-				            $session->phone = Crypto::encrypt($user["phone"], $session_key);
-				            $session->email = Crypto::encrypt($user["email"], $session_key);
-				        } else {
-				            $session->authorize = null;
-				            $session->role_id = null;
-				            $session->user_id = null;
-				            unset($session->authorize); // удаляем authorize
-				            unset($session->role_id); // удаляем role_id
-				            unset($session->user_id); // удаляем role_id
-				            $session->destroy();
-				            $session->clear();
-				        }
-				    }
-				} else {
-				    $session->authorize = null;
-				    $session->role_id = null;
-				    $session->user_id = null;
-				    unset($session->authorize); // удаляем authorize
-				    unset($session->role_id); // удаляем role_id
-				    unset($session->user_id); // удаляем role_id
-			    }
+                        if ($user["state"] == 1) {
+                            $session->authorize = 1;
+                            $session->role_id = $user["role_id"];
+                            $session->user_id = $user["id"];
+                            $session->iname = Crypto::encrypt($user["iname"], $session_key);
+                            $session->fname = Crypto::encrypt($user["fname"], $session_key);
+                            $session->phone = Crypto::encrypt($user["phone"], $session_key);
+                            $session->email = Crypto::encrypt($user["email"], $session_key);
+                        } else {
+                            $session->authorize = null;
+                            $session->role_id = null;
+                            $session->user_id = null;
+                            unset($session->authorize); // удаляем authorize
+                            unset($session->role_id); // удаляем role_id
+                            unset($session->user_id); // удаляем role_id
+                            $session->destroy();
+                            $session->clear();
+                        }
+                    }
+                } else {
+                    $session->authorize = null;
+                    $session->role_id = null;
+                    $session->user_id = null;
+                    unset($session->authorize); // удаляем authorize
+                    unset($session->role_id); // удаляем role_id
+                    unset($session->user_id); // удаляем role_id
+                }
             }
         } else {
             // Если cookie нет создаем новую
@@ -117,13 +117,13 @@ class User {
                 $session->cookie = $identificator;
             }
         }
-		
+        
         if (!isset($session->language)) {
-			$langs = new Langs();
-		    if ($langs->getLanguage()) {
+            $langs = new Langs();
+            if ($langs->getLanguage()) {
                 $session->language = $langs->getLanguage();
             }
-		}
+        }
     }
  
     // Авторизвация
