@@ -38,38 +38,6 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
  
-
- 
-//$row = Database::table("user")->find(1);
-//$row->iname = "проверка";
-//$row->save();
-//print_r($row->id);
-
-//$user = new User();
-//print_r($user->identificator());
- 
-/* try {
-    $user = new User();
-    $user_id = $user->putUserCode(1, "555555555555555555555555555");
-    //print_r($user_id);
-} catch (Exception $exception) {
-    //print_r("Ошибка главная");
-} */
-
-//$row = Database::table("user")->where('id', '=', 1)->findAll();
-//foreach($row as $value){
-//print_r($value->id);
-//}
- 
-//
-//$db = new Db("json", $config);
-//$response = $db->get("user", ["phone" => "380670010011", "email" => "admin@pllano.com"]);
-//print_r($response);
-        
-//$user = new User();
-//$user_id = $user->checkLogin("admin@pllano.com", "380670010011", "admin@pllano.com");
-//$user_id["body"]["items"]["0"]["item"]["password"]
-        
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
 	
