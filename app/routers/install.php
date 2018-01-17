@@ -503,8 +503,10 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                     }
                     
                     $session->host = $host;
+					
+					$password_hash = password_hash($password, PASSWORD_DEFAULT);
  
-                    $install["password"] = password_hash($password, PASSWORD_DEFAULT);
+                    $install["password"] = $password_hash;
                     $install["phone"] = $phone;
                     $install["email"] = $email;
                     $install["language"] = "ru";
@@ -552,7 +554,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                                 $session->install = 1;
  
                                 $arr["role_id"] = 100;
-                                $arr["password"] = password_hash($password, PASSWORD_DEFAULT);
+                                $arr["password"] = $password_hash;
                                 $arr["phone"] = strval($phone);
                                 $arr["email"] = $email;
                                 $arr["language"] = "ru";
