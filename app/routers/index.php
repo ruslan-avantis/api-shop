@@ -97,18 +97,19 @@ $app->get('/', function (Request $request, Response $response, array $args) {
             foreach($response['body']['items'] as $item)
             {
                 // Обрабатываем картинки
-                $product['image']['no_image'] = $utility->get_image(null, 'https://life24.com.ua/images/no_image.png', 360, 360);
+                //print_r($item['item']['image']);
+                $product['image']['no_image'] = $utility->get_image(null, '/images/no_image.png', 360, 360);
                 $image_1 = '';
-                $image_1 = (isset($item['item']['image']['1'])) ? $utility->clean($item['item']['image']['1']) : null;
+                $image_1 = (isset($item['item']['image']['0']['image_path'])) ? $utility->clean($item['item']['image']['0']['image_path']) : null;
                 if (isset($image_1)) {$product['image']['1'] = $utility->get_image($item['item']['product_id'], $image_1, 360, 360);}
                 $image_2 = '';
-                $image_2 = (isset($item['item']['image']['2'])) ? $utility->clean($item['item']['image']['2']) : null;
+                $image_2 = (isset($item['item']['image']['1']['image_path'])) ? $utility->clean($item['item']['image']['1']['image_path']) : null;
                 if (isset($image_2)) {$product['image']['2'] = $utility->get_image($item['item']['product_id'], $image_2, 360, 360);}
-
+ 
                 $path_url = pathinfo($item['item']['url']);
                 $basename = $path_url['basename']; // lib.inc.php
                 $baseurl = str_replace('-'.$item['item']['product_id'].'.html', '', $basename);
-
+ 
                 $product['url'] = '/product/'.$item['item']['id'].'/'.$baseurl.'.html';
                 $product['name'] = (isset($item['item']['name'])) ? $utility->clean($item['item']['name']) : '';
                 $product['type'] = (isset($item['item']['type'])) ? $utility->clean($item['item']['type']) : '';
@@ -120,7 +121,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
                 $product['price'] = (isset($item['item']['price'])) ? $utility->clean($item['item']['price']) : '';
                 $product['available'] = (isset($item['item']['available'])) ? $utility->clean($item['item']['available']) : '';
                 $product['product_id'] = (isset($item['item']['product_id'])) ? $utility->clean($item['item']['product_id']) : '';
-
+ 
                 $rand = rand(1000, 5000);
                 $date = date("Y-m-d H:i:s",strtotime(date("Y-m-d H:i:s")." +".$rand." minutes"));
                 $date = strtotime($date);
@@ -168,7 +169,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
         // Если ключа доступа у нет, значит сайт еще не активирован
         $content = '';
         $index = "index";
-        //$session->install = 1;
+        //$session->install = null;
  
         if (isset($session->install)) {
             if ($session->install == 1) {

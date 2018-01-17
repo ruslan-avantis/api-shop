@@ -269,7 +269,7 @@ $app->post('/install-store', function (Request $request, Response $response, arr
         echo json_encode($callback);
     }
 });
-  
+ 
 // Записать выбранный шаблон в сессию
 $app->post('/install-template', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
@@ -421,6 +421,8 @@ $app->post('/register-in-seller', function (Request $request, Response $response
     $today = date("Y-m-d H:i:s");
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
+	// Отдаем роутеру RouterDb конфигурацию.
+    $router = new Router($config);
     // Читаем ключи
     $session_key = $config['key']['session'];
     $cookie_key = $config['key']['cookie'];
@@ -432,17 +434,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
         $token = Crypto::decrypt($session->token, $token_key);
     } catch (CryptoEx $ex) {
         (new Security())->token();
-        // Сообщение об Атаке или подмене сессии
-        $callback = array(
-            'status' => 400,
-            'title' => "Сообщение системы",
-            'text' => "Вы не прошли проверку системы безопасности !<br>У вас осталась одна попытка :)"
-        );
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        $token = null;
     }
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
@@ -486,6 +478,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
             $response->withHeader('Content-type', 'application/json');
             // Выводим json
             echo json_encode($callback);
+            return false;
         }
  
         if(!empty($phone) && !empty($email) && !empty($iname) && !empty($fname) && !empty($host)) {
@@ -495,7 +488,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                 $user_search = (new User())->getEmailPhone($email, $phone);
                 if ($user_search == null) {
                     // Чистим сессию на всякий случай
-                    $session->clear();
+                    //$session->clear();
                     // Создаем новую cookie
                     $cookie = $utility->random_token();
                     // Генерируем identificator
@@ -508,114 +501,191 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                     } else {
                         setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain);
                     }
+                    
+                    $session->host = $host;
  
                     $install["password"] = password_hash($password, PASSWORD_DEFAULT);
                     $install["phone"] = $phone;
                     $install["email"] = $email;
-                    $install["language"] = $session->language;
+                    $install["language"] = "ru";
+                    $install["template"] = "mini-mo";
                     $install["iname"] = $iname;
                     $install["fname"] = $fname;
                     $install["host"] = $host;
- 
-                    $session->host = $host;
- 
                     if (isset($session->template)) {
                         if ($session->template != null) {
                             $install["template"] = $session->template;
                         }
                     }
+                    if (isset($_SERVER['SERVER_NAME'])) {
+                            $install["server"] = $_SERVER['SERVER_NAME'];
+                            $session->server = $_SERVER['SERVER_NAME'];
+                    }
+                    if (isset($_SERVER['SERVER_ADDR'])) {
+                            $install["ip"] = $_SERVER['SERVER_ADDR'];
+                            $session->ip = $_SERVER['SERVER_ADDR'];
+                    }
  
                     // Регистрируем магазин и продавца на платформе
                     $resource = "install";
-                    // Отдаем роутеру RouterDb конфигурацию.
-                    $router = new Router($config);
                     // Получаем название базы для указанного ресурса
                     $name_db = $router->ping($resource);
                     // Подключаемся к базе
                     $db = new Db($name_db, $config);
                     // Отправляем запрос и получаем данные
                     $records = $db->post($resource, $install);
+                    
+                    //file_put_contents(__DIR__ . "/records.json", json_encode($records));
+                    
+                    if (isset($records["headers"]["code"])) {
+                        if ($records["headers"]["code"] == 201 || $records["headers"]["code"] == "201") {
  
-                    if (isset($records["response"]["public_key"])) {
+                            if (isset($records["response"]["public_key"])) {
  
-                        $public_key = $records["response"]["public_key"];
-                        $site_id = $records["response"]["id"];
+                                $public_key = $records["response"]["public_key"];
+                                $private_key = $records["response"]["private_key"];
+                                $site_id = $records["response"]["id"];
  
-                        $session->public_key = $public_key;
-                        $session->site_id = $site_id;
-                        $session->install = 1;
+                                $session->private_key = $private_key;
+                                $session->public_key = $public_key;
+                                $session->site_id = intval($site_id);
+                                $session->install = 1;
  
-                        $arr["role_id"] = 100;
-                        $arr["site_id"] = $site_id;
-                        $arr["user_id"] = $records["response"]["user_id"];
-                        $arr["password"] = password_hash($password, PASSWORD_DEFAULT);
-                        $arr["phone"] = $phone;
-                        $arr["email"] = $email;
-                        $arr["language"] = $session->language;
-                        $arr["ticketed"] = 1;
-                        $arr["admin_access"] = 1;
-                        $arr["iname"] = $iname;
-                        $arr["fname"] = $fname;
-                        $arr["cookie"] = $cookie;
-                        $arr["created"] = $today;
-                        $arr["authorized"] = $today;
-                        $arr["alias"] = $utility->random_alias_id();
-                        $arr["state"] = 1;
-                        $arr["score"] = 1;
+                                $arr["role_id"] = 100;
+                                $arr["password"] = password_hash($password, PASSWORD_DEFAULT);
+                                $arr["phone"] = strval($phone);
+                                $arr["email"] = $email;
+                                $arr["language"] = "ru";
+                                $arr["ticketed"] = 1;
+                                $arr["admin_access"] = 1;
+                                $arr["iname"] = $iname;
+                                $arr["fname"] = $fname;
+                                $arr["cookie"] = $cookie;
+                                $arr["created"] = $today;
+                                $arr["authorized"] = $today;
+                                $arr["alias"] = $utility->random_alias_id();
+                                $arr["state"] = 1;
+                                $arr["score"] = 1;
  
-                        // Ресурс (таблица) к которому обращаемся
-                        $resource = "user";
-                        // Отдаем роутеру RouterDb конфигурацию.
-                        $router = new Router($config);
-                        // Получаем название базы для указанного ресурса
-                        $name_db = $router->ping($resource);
-                        // Подключаемся к базе
-                        $db = new Db($name_db, $config);
-                        // Отправляем запрос и получаем данные
-                        $user_id = $db->post($resource, $arr);
+                                //file_put_contents(__DIR__ . "/arr.json", json_encode($arr));
  
-                        if ($user_id >= 1) {
-                            // Обновляем данные в сессии
-                            $session->authorize = 1;
-                            $session->role_id = 100;
-                            $session->cookie = $identificator;
-                            $session->user_id = Crypto::encrypt($user_id, $session_key);
-                            $session->phone = Crypto::encrypt($phone, $session_key);
-                            $session->email = Crypto::encrypt($email, $session_key);
-                            $session->iname = Crypto::encrypt($iname, $session_key);
-                            $session->fname = Crypto::encrypt($fname, $session_key);
+                                // Ресурс (таблица) к которому обращаемся
+                                $resource = "user";
+                                // Получаем название базы для указанного ресурса
+                                $name_db = $router->ping($resource);
+                                // Подключаемся к базе
+                                $db = new Db($name_db, $config);
+                                // Отправляем запрос и получаем данные
+                                $user = $db->post($resource, $arr);
+                        
+                                if (isset($records["headers"]["code"])) {
+                                    if ($records["headers"]["code"] == 201 || $records["headers"]["code"] == "201") {
  
-                            $callback = array('status' => 200);
-                            // Выводим заголовки
-                            $response->withStatus(200);
-                            $response->withHeader('Content-type', 'application/json');
-                            // Выводим json
-                            echo json_encode($callback);
+                                        $user_id = $user["response"]["id"];
+ 
+                                        //file_put_contents(__DIR__ . "/user_id.json", json_encode($user));
+ 
+                                        if ($user_id >= 1) {
+                                            // Обновляем данные в сессии
+                                            $session->authorize = 1;
+                                            $session->role_id = 100;
+                                            $session->cookie = $identificator;
+                                            $session->platform_user_id = intval($user_id);
+                                            $session->phone = Crypto::encrypt($phone, $session_key);
+                                            $session->email = Crypto::encrypt($email, $session_key);
+                                            $session->iname = Crypto::encrypt($iname, $session_key);
+                                            $session->fname = Crypto::encrypt($fname, $session_key);
+ 
+                                            $callback = array('status' => 200);
+                                            // Выводим заголовки
+                                            $response->withStatus(200);
+                                            $response->withHeader('Content-type', 'application/json');
+                                            // Выводим json
+                                            echo json_encode($callback);
+                                            //return false;
+ 
+                                        } else {
+                                            $callback = array(
+                                                'status' => 400,
+                                                'title' => "Сообщение системы",
+                                                'text' => "Не могу создать пользователя. Нет id"
+                                            );
+                                            // Выводим заголовки
+                                            $response->withStatus(200);
+                                            $response->withHeader('Content-type', 'application/json');
+                                            // Выводим json
+                                            echo json_encode($callback);
+                                            return false;
+                                        }
+ 
+                                    } else {
+                                        $callback = array(
+                                            'status' => 400,
+                                            'title' => "Сообщение системы",
+                                            'text' => "Не могу создать пользователя"
+                                        );
+                                        // Выводим заголовки
+                                        $response->withStatus(200);
+                                        $response->withHeader('Content-type', 'application/json');
+                                        // Выводим json
+                                        echo json_encode($callback);
+                                        return false;
+                                    }
+ 
+                                } else {
+                                    $callback = array(
+                                        'status' => 400,
+                                        'title' => "Сообщение системы",
+                                        'text' => "Не могу создать пользователя. В данных есть ошибка"
+                                    );
+                                    // Выводим заголовки
+                                    $response->withStatus(200);
+                                    $response->withHeader('Content-type', 'application/json');
+                                    // Выводим json
+                                    echo json_encode($callback);
+                                    return false;
+                                }
+ 
+                            } else {
+                                $callback = array(
+                                    'status' => 400,
+                                    'title' => "Сообщение системы",
+                                    'text' => "Не могу получить public_key -1"
+                                );
+                                // Выводим заголовки
+                                $response->withStatus(200);
+                                $response->withHeader('Content-type', 'application/json');
+                                // Выводим json
+                                echo json_encode($callback);
+                                return false;
+                            }
  
                         } else {
                             $callback = array(
                                 'status' => 400,
                                 'title' => "Сообщение системы",
-                                'text' => "Что то не так"
+                                'text' => "Не могу получить public_key -2"
                             );
                             // Выводим заголовки
                             $response->withStatus(200);
                             $response->withHeader('Content-type', 'application/json');
                             // Выводим json
                             echo json_encode($callback);
+                            return false;
                         }
-                    
+ 
                     } else {
                         $callback = array(
                             'status' => 400,
                             'title' => "Сообщение системы",
-                            'text' => "Не могу получить public_key"
+                            'text' => "Не могу получить public_key -3"
                         );
                         // Выводим заголовки
                         $response->withStatus(200);
                         $response->withHeader('Content-type', 'application/json');
                         // Выводим json
                         echo json_encode($callback);
+                        return false;
                     }
  
                 } else {
@@ -629,6 +699,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                     $response->withHeader('Content-type', 'application/json');
                     // Выводим json
                     echo json_encode($callback);
+                    return false;
                 }
             } else {
                 $callback = array(
@@ -641,6 +712,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                 $response->withHeader('Content-type', 'application/json');
                 // Выводим json
                 echo json_encode($callback);
+                return false;
             }
         } else {
             $callback = array(
@@ -653,6 +725,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
             $response->withHeader('Content-type', 'application/json');
             // Выводим json
             echo json_encode($callback);
+            return false;
         }
         //print_r($callback);
     } else {
@@ -666,10 +739,11 @@ $app->post('/register-in-seller', function (Request $request, Response $response
         $response->withHeader('Content-type', 'application/json');
         // Выводим json
         echo json_encode($callback);
+        return false;
     } 
 });
  
-// Регистрация продавца
+// Запуск магазина
 $app->post('/start-shop', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -706,6 +780,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
             $putArr["template"] = $session->template;
             $putArr["host"] = $session->host;
             $putArr["store"] = $session->install_store;
+			$putArr["user_id"] = $session->platform_user_id;
  
             // Регистрируем магазин и продавца на платформе
             $resource = "install";
@@ -716,7 +791,9 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
             // Подключаемся к базе
             $db = new Db($name_db, $config);
             // Отправляем запрос и получаем данные
-            $records = $db->put($resource, $putArr, $session->site_id);
+            $records = $db->put($resource, $putArr);
+			
+			//file_put_contents(__DIR__ . "/put-records.json", json_encode($records));
  
             if (isset($records["headers"]["code"])) {
                 if ($records["headers"]["code"] == 202 || $records["headers"]["code"] == "202") {
@@ -724,7 +801,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     // Подключаемся к базе json
                     $db = new Db("json", $config);
                     // Обновляем public_key в базе
-                    $db->put("db", ["public_key" => $session->public_key, "template" => $session->template, "site_id" => $session->site_id], 1);
+                    $db->put("db", ["public_key" => $session->public_key, "template" => $session->template], 1);
  
                     // Сохраняем резервный public_key
                     if (!file_exists($config["settings"]["install"]["file"])) {
@@ -733,8 +810,9 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
  
                     $session->install = null;
                     $session->template = null;
-                    $session->public_key = null;
                     $session->install_store = null;
+					$session->private_key = null;
+					$session->public_key = null;
  
                     $callback = array('status' => 200);
  
@@ -744,6 +822,18 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     // Выводим json
                     echo json_encode($callback);
  
+                } else {
+                    $callback = array(
+                        'status' => 400,
+                        'title' => "Ошибка",
+                        'text' => "Что то не так"
+                    );
+                    // Выводим заголовки
+                    $response->withStatus(200);
+                    $response->withHeader('Content-type', 'application/json');
+                    // Выводим json
+                    echo json_encode($callback);
+                    return false;
                 }
             } else {
                 $callback = array(
@@ -756,6 +846,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                 $response->withHeader('Content-type', 'application/json');
                 // Выводим json
                 echo json_encode($callback);
+                return false;
             }
         } else {
             $callback = array(
@@ -768,6 +859,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
             $response->withHeader('Content-type', 'application/json');
             // Выводим json
             echo json_encode($callback);
+            return false;
         }
     } else {
         $callback = array(
@@ -780,6 +872,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
         $response->withHeader('Content-type', 'application/json');
         // Выводим json
         echo json_encode($callback);
+        return false;
     }
  
 });

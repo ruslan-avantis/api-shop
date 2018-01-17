@@ -281,9 +281,58 @@ $app->post('/login', function (Request $request, Response $response, array $args
  
                     $cookie = $user->putUserCode($user_id);
                     if($cookie == 1) {
-                        $session->authorize = 1;
-                        
-                        $callback = array('status' => 200);
+                        // Ресурс (таблица) к которому обращаемся
+                        $resource = "user";
+                        // Отдаем роутеру RouterDb конфигурацию.
+                        $router = new Router($config);
+                        // Получаем название базы для указанного ресурса
+                        $name_db = $router->ping($resource);
+                        // Подключаемся к базе
+                        $db = new Db($name_db, $config);
+                        // Отправляем запрос и получаем данные
+                        $resp = $db->get($resource, [], $user_id);
+ 
+                        //print("<br>");
+                        //print_r($resp);
+                        if (isset($resp["headers"]["code"])) {
+                            if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == "200") {
+ 
+                                if(is_object($resp["body"]["items"]["0"]["item"])) {
+                                    $user = (array)$resp["body"]["items"]["0"]["item"];
+                                } elseif (is_array($resp["body"]["items"]["0"]["item"])) {
+                                    $user = $resp["body"]["items"]["0"]["item"];
+                                }
+ 
+                                if ($user["state"] == 1) {
+ 
+                                    $session->authorize = 1;
+                                    $session->role_id = $user["role_id"];
+                                    $session->user_id = $user["id"];
+                                    $session->iname = Crypto::encrypt($user["iname"], $session_key);
+                                    $session->fname = Crypto::encrypt($user["fname"], $session_key);
+                                    $session->phone = Crypto::encrypt($user["phone"], $session_key);
+                                    $session->email = Crypto::encrypt($user["email"], $session_key);
+							
+                                    $callback = array('status' => 200);
+ 
+                                } else {
+                                    $session->authorize = null;
+                                    $session->role_id = null;
+                                    $session->user_id = null;
+                                    unset($session->authorize); // удаляем authorize
+                                    unset($session->role_id); // удаляем role_id
+                                    unset($session->user_id); // удаляем role_id
+ 
+									$callback = array(
+									    'status' => 400,
+									    'title' => "Сообщение системы",
+									    'text' => "Ваш аккаунт заблокирован"
+									);
+ 
+                                }
+                            }
+                        }
+ 
                     } else {
                         $callback = array(
                            'status' => 400,
@@ -426,7 +475,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
                 $user_search = (new User())->getEmailPhone($email, $phone);
                 if ($user_search == null) {
                     // Чистим сессию на всякий случай
-                    $session->clear();
+                    //$session->clear();
                     // Создаем новую cookie
                     $cookie = $utility->random_token();
 
@@ -444,7 +493,7 @@ $app->post('/check-in', function (Request $request, Response $response, array $a
  
                     $arr["role_id"] = 1;
                     $arr["password"] = password_hash($password, PASSWORD_DEFAULT);
-                    $arr["phone"] = $phone;
+                    $arr["phone"] = strval($phone);
                     $arr["email"] = $email;
                     $arr["language"] = $session->language;
                     $arr["ticketed"] = 1;

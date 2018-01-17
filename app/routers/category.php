@@ -129,12 +129,12 @@ $app->get('/category', function (Request $request, Response $response, array $ar
         foreach($response["body"]['items'] as $item)
         {
             // Обрабатываем картинки
-            $product['image']['no_image'] = $utility->get_image(null, 'https://life24.com.ua/images/no_image.png', 360, 360);
+            $product['image']['no_image'] = $utility->get_image(null, '/images/no_image.png', 360, 360);
             $image_1 = '';
-            $image_1 = (isset($item['item']['image']['1'])) ? $utility->clean($item['item']['image']['1']) : null;
+			$image_1 = (isset($item['item']['image']['0']['image_path'])) ? $utility->clean($item['item']['image']['0']['image_path']) : null;
             if (isset($image_1)) {$product['image']['1'] = $utility->get_image($item['item']['product_id'], $image_1, 360, 360);}
             $image_2 = '';
-            $image_2 = (isset($item['item']['image']['2'])) ? $utility->clean($item['item']['image']['2']) : null;
+            $image_2 = (isset($item['item']['image']['1']['image_path'])) ? $utility->clean($item['item']['image']['1']['image_path']) : null;
             if (isset($image_2)) {$product['image']['2'] = $utility->get_image($item['item']['product_id'], $image_2, 360, 360);}
 
             $path_url = pathinfo($item['item']['url']);

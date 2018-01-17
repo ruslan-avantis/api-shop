@@ -27,10 +27,10 @@ use ApiShop\Model\SessionUser;
 
 $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request, Response $response, array $args) {
     $host = $request->getUri()->getHost();
-	$path = $request->getUri()->getPath();
-	// Подключаем плагины
+    $path = $request->getUri()->getPath();
+    // Подключаем плагины
     $utility = new Utility();
-	// Получаем параметры из url
+    // Получаем параметры из url
      $alias = null;
     // Получаем alias из url
     if ($request->getAttribute('alias')) {
@@ -74,9 +74,9 @@ $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request,
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // print_r($content);
-	
-	if ($alias != null) {
-		
+    
+    if ($alias != null) {
+        
         // Ресурс (таблица) к которому обращаемся
         $resource = "price";
         // Отдаем роутеру RouterDb конфигурацию.
@@ -88,40 +88,43 @@ $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request,
         // Отправляем запрос и получаем данные
         $response = $db->get($resource, [], $alias);
  
-		//print_r($response);
         // Если ответ не пустой
         // Обрабатываем картинки
-        $product['image']['no_image'] = $utility->get_image(null, '/images/no_image.png', 360, 360);
-        $image_1 = '';
-        $image_1 = (isset($response["body"]['items']['item']['image']['1'])) ? $utility->clean($response["body"]['items']['item']['image']['1']) : null;
-        if (isset($image_1)) {$product['image']['1'] = $utility->get_image($response["body"]['items']['item']['product_id'], $image_1, 360, 360);}
-        $image_2 = '';
-        $image_2 = (isset($response["body"]['items']['item']['image']['2'])) ? $utility->clean($response["body"]['items']['item']['image']['2']) : null;
-        if (isset($image_2)) {$product['image']['2'] = $utility->get_image($response["body"]['items']['item']['product_id'], $image_2, 360, 360);}
+        $product['image']['no_image'] = $utility->get_image(null, '/images/no_image.png', 800, 800);
+ 
+        foreach($response["body"]['items']['0']['item']['image'] as $value)
+        {
+            $image = '';
+            $image = (isset($value['image_path'])) ? $utility->clean($value['image_path']) : null;
+            if (isset($image)) {$images[]  = $utility->get_image($response["body"]['items']['0']['item']['product_id'], $image, 800, 800);}
+        }
+        $product['image'] = $images;
  
         // Формируем URL страницы товара
-        $path_url = pathinfo($response["body"]['items']['item']['url']);
+        $path_url = pathinfo($response["body"]['items']['0']['item']['url']);
         $basename = $path_url['basename'];
-        $baseurl = str_replace('-'.$response["body"]['items']['item']['product_id'].'.html', '', $basename);
-        $product['url'] = '/product/'.$response["body"]['items']['item']['id'].'/'.$baseurl.'.html';
+        $baseurl = str_replace('-'.$response["body"]['items']['0']['item']['product_id'].'.html', '', $basename);
+        $product['url'] = '/product/'.$response["body"]['items']['0']['item']['id'].'/'.$baseurl.'.html';
  
-        $product['name'] = (isset($response["body"]['items']['item']['name'])) ? $utility->clean($response["body"]['items']['item']['name']) : '';
-        $product['type'] = (isset($response["body"]['items']['item']['type'])) ? $utility->clean($response["body"]['items']['item']['type']) : '';
-        $product['brand'] = (isset($response["body"]['items']['item']['brand'])) ? $utility->clean($response["body"]['items']['item']['brand']) : '';
-        $product['serie'] = (isset($response["body"]['items']['item']['serie'])) ? $utility->clean($response["body"]['items']['item']['serie']) : '';
-        $product['articul'] = (isset($response["body"]['items']['item']['articul'])) ? $utility->clean($response["body"]['items']['item']['articul']) : '';
-        if ($response["body"]['items']['item']['serie'] && $response["body"]['items']['item']['articul']) {$product['name'] = $response["body"]['items']['item']['serie'].' '.$response["body"]['items']['item']['articul'];}
-        $product['oldprice'] = (isset($response["body"]['items']['item']['oldprice'])) ? $utility->clean($response["body"]['items']['item']['oldprice']) : '';
-        $product['price'] = (isset($response["body"]['items']['item']['price'])) ? $utility->clean($response["body"]['items']['item']['price']) : '';
-        $product['available'] = (isset($response["body"]['items']['item']['available'])) ? $utility->clean($response["body"]['items']['item']['available']) : '';
-		$product['product_id'] = (isset($response["body"]['items']['item']['product_id'])) ? $utility->clean($response["body"]['items']['item']['product_id']) : '';
+        $product['name'] = (isset($response["body"]['items']['0']['item']['name'])) ? $utility->clean($response["body"]['items']['0']['item']['name']) : '';
+		
+		$product['description'] = (isset($response["body"]['items']['0']['item']['description']['text'])) ? $utility->clean($response["body"]['items']['0']['item']['description']['text']) : '';
+        $product['type'] = (isset($response["body"]['items']['0']['item']['type'])) ? $utility->clean($response["body"]['items']['0']['item']['type']) : '';
+        $product['brand'] = (isset($response["body"]['items']['0']['item']['brand'])) ? $utility->clean($response["body"]['items']['0']['item']['brand']) : '';
+        $product['serie'] = (isset($response["body"]['items']['0']['item']['serie'])) ? $utility->clean($response["body"]['items']['0']['item']['serie']) : '';
+        $product['articul'] = (isset($response["body"]['items']['0']['item']['articul'])) ? $utility->clean($response["body"]['items']['0']['item']['articul']) : '';
+        if ($response["body"]['items']['0']['item']['serie'] && $response["body"]['items']['0']['item']['articul']) {$product['name'] = $response["body"]['items']['0']['item']['serie'].' '.$response["body"]['items']['0']['item']['articul'];}
+        $product['oldprice'] = (isset($response["body"]['items']['0']['item']['oldprice'])) ? $utility->clean($response["body"]['items']['0']['item']['oldprice']) : '';
+        $product['price'] = (isset($response["body"]['items']['0']['item']['price'])) ? $utility->clean($response["body"]['items']['0']['item']['price']) : '';
+        $product['available'] = (isset($response["body"]['items']['0']['item']['available'])) ? $utility->clean($response["body"]['items']['0']['item']['available']) : '';
+        $product['product_id'] = (isset($response["body"]['items']['0']['item']['product_id'])) ? $utility->clean($response["body"]['items']['0']['item']['product_id']) : '';
  
-        if (isset($response["body"]['items']['item']['action_date'])) {
-            $date = $response["body"]['items']['item']['action_date'];
-		} else {
+        if (isset($response["body"]['items']['0']['item']['action_date'])) {
+            $date = $response["body"]['items']['0']['item']['action_date'];
+        } else {
             $rand = rand(1000, 5000);
             $date = date("Y-m-d H:i:s",strtotime(date("Y-m-d H:i:s")." +".$rand." minutes"));
-		}
+        }
  
         $date = strtotime($date);
         $product['y'] = date("Y", $date);
@@ -130,36 +133,36 @@ $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request,
         $product['h'] = date("H", $date);
         $product['i'] = date("i", $date);
         $product['s'] = date("s", $date);
-		
-		// Каждый товар может иметь свой уникальный шаблон
-		// Если шаблон товара не установлен берем по умолчанию
-		if (isset($response["body"]['items']['item']['template'])){
-			$themes_dir = $config["settings"]["themes"]["dir"];
-			$templates_dir = $config["settings"]["themes"]["templates"];
-			$template_name = $config["settings"]["themes"]["template"];
-			$templates_test = $themes_dir.'/'.$templates_dir.'/'.$template_name.'/layouts/'.$response["body"]['items']['item']['template'].'.html';
-			if (file_exists($templates_test)) {
-			    $template = $response["body"]['items']['item']['template'];
-			} else {
-			    $template = 'product';
-			}
-		} else {
-		    $template = 'product';
-		}
+        
+        // Каждый товар может иметь свой уникальный шаблон
+        // Если шаблон товара не установлен берем по умолчанию
+        if (isset($response["body"]['items']['0']['item']['template'])){
+            $themes_dir = $config["settings"]["themes"]["dir"];
+            $templates_dir = $config["settings"]["themes"]["templates"];
+            $template_name = $config["settings"]["themes"]["template"];
+            $templates_test = $themes_dir.'/'.$templates_dir.'/'.$template_name.'/layouts/'.$response["body"]['items']['0']['item']['template'].'.html';
+            if (file_exists($templates_test)) {
+                $template = $response["body"]['items']['0']['item']['template'];
+            } else {
+                $template = 'product';
+            }
+        } else {
+            $template = 'product';
+        }
 
         // Запись в лог
         $this->logger->info("product");
-		// Информация для head
-		$page = [
-			"page" => 'product',
-			"title" => $product['name'],
-			"keywords" => $product['name'],
-			"description" => $product['name'],
-			"og_title" => $product['name'],
-			"og_description" => $product['name'],
-			"host" => $host,
-			"path" => $path
-		];
+        // Информация для head
+        $page = [
+            "page" => 'product',
+            "title" => $product['name'],
+            "keywords" => $product['name'],
+            "description" => $product['name'],
+            "og_title" => $product['name'],
+            "og_description" => $product['name'],
+            "host" => $host,
+            "path" => $path
+        ];
  
         return $this->twig->render($template.'.html', [
             "template" => $site->template(),
@@ -171,12 +174,12 @@ $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request,
             "session" => $sessionUser,
             "content" => $content,
             "product" => $product,
-			"session_id" => $session->id
+            "session_id" => $session->id
         ]);
-	
-	} else {
-	    return $this->twig->render('404.html', ["template" => $site->template(), "language" => $language]);
-	}
-	
+    
+    } else {
+        return $this->twig->render('404.html', ["template" => $site->template(), "language" => $language]);
+    }
+    
 });
  
