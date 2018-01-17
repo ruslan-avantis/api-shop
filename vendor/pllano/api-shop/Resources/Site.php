@@ -51,7 +51,7 @@ class Site {
  
             // Получаем настройки сайта
             if ($response != null) {
-                $this->site = $response["body"]["items"]["item"];
+                $this->site = $response["body"]["items"]["0"]["item"];
             } else {
                 $this->site = null;
             }
@@ -74,18 +74,18 @@ class Site {
                 $this->site_template = $db_template;
  
                 // Проверяем название шаблона в настройках сайта и если он отличается от дефолтного записываем его в базу
-                if (isset($response["body"]["items"]["item"]["template"])) {
-                    if ($response["body"]["items"]["item"]["template"] != $this->config["settings"]["themes"]["template"]) {
+                if (isset($response["body"]["items"]["0"]["item"]["template"])) {
+                    if ($response["body"]["items"]["0"]["item"]["template"] != $this->config["settings"]["themes"]["template"]) {
                         // Подключаемся к базе json
                         $db_json = new Db("json", $this->config);
                         // Обновляем название шаблона в базе
-                        $db_json->put("db", ["template" => $response["body"]["items"]["item"]["template"]], 1);
+                        $db_json->put("db", ["template" => $response["body"]["items"]["0"]["item"]["template"]], 1);
                     }
                 }
  
-            } elseif (isset($response["body"]["items"]["item"]["template"])) {
+            } elseif (isset($response["body"]["items"]["0"]["item"]["template"])) {
                 // Если название шаблона есть в настройках сайта, берем его
-                $this->site_template = $response["body"]["items"]["item"]["template"];
+                $this->site_template = $response["body"]["items"]["0"]["item"]["template"];
                 
             } else {
                 // Берем название по умолчанию, из конфигурации

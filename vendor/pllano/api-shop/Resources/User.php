@@ -142,6 +142,7 @@ class User {
         $db = new Db($name_db, $config);
         // Отправляем запрос и получаем данные
         $response = $db->get($resource, ["phone" => $phone, "email" => $email]);
+ 
         if (isset($response["headers"]["code"])) {
             $item = (array)$response["body"]["items"]["0"]["item"];
             // Если все ок читаем пароль
@@ -235,10 +236,14 @@ class User {
         $response = $db->get($resource, $arrUser);
         
         if (isset($response["headers"]["code"])) {
-            $item = (array)$response["body"]["items"]["0"]["item"];
-            if(isset($item["user_id"])){
-                return $item["user_id"];
-            } else {
+			if ($response["headers"]["code"] == 200 || $response["headers"]["code"] == "200") {
+                $item = (array)$response["body"]["items"]["0"]["item"];
+                if(isset($item["user_id"])){
+                    return $item["user_id"];
+                } else {
+                    return null;
+                }
+			} else {
                 return null;
             }
         } else {
