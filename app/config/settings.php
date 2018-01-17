@@ -124,6 +124,22 @@ class Settings {
     // Ключ шифрования в базах данных. Отдаем в чистом виде.
     $config["db"]["key"] = file_get_contents($key_db, true);
  
+    $config["db"]["pllanoapi"]["config"] = true; // true|false
+    // URL API
+    $config["db"]["pllanoapi"]["url"] = "https://api.pllano.com/";
+    // Доступные методы аутентификации: CryptoAuth, QueryKeyAuth, HttpTokenAuth, LoginPasswordAuth
+    $config["db"]["pllanoapi"]["auth"] = "QueryKeyAuth";
+    // Приватный ключ шифрования
+    $config["db"]["pllanoapi"]["private_key"] = "";
+    // Публичный ключ аутентификации
+    // По умолчанию генерируется при установке сайта
+    // Можете заменить на статический ключ доступа
+    if ($public_key != null) {
+        $config["db"]["pllanoapi"]["public_key"] = $public_key;
+    } else {
+        $config["db"]["pllanoapi"]["public_key"] = null;
+    }
+ 
     // Если работает через API будет брать часть конфигурации из api
     $config["db"]["api"]["config"] = true; // true|false
     // URL API
@@ -258,149 +274,208 @@ class Settings {
  
     // Хранилище для ресурса install
     // Установка API Shop
-    $config["db"]["resource"]["install"]["db"] = "api";
+    $config["db"]["resource"]["install"]["db"] = "pllanoapi";
     // Синхронизировать ресурс install или нет. По умолчанию false
     $config["db"]["resource"]["install"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["install"]["auth"] = false;
+    $config["db"]["resource"]["install"]["authorization"] = false;
  
     // Хранилище для ресурса stores_list
-    $config["db"]["resource"]["stores_list"]["db"] = "json"; // +
+    $config["db"]["resource"]["stores_list"]["db"] = "pllanoapi";
     // Синхронизировать ресурс stores_list или нет. По умолчанию false
     $config["db"]["resource"]["stores_list"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["stores_list"]["authorization"] = false;
  
     // Хранилище для ресурса templates_list
-    $config["db"]["resource"]["templates_list"]["db"] = "json"; // +
+    $config["db"]["resource"]["templates_list"]["db"] = "pllanoapi";
     // Синхронизировать ресурс templates_list или нет. По умолчанию false
     $config["db"]["resource"]["templates_list"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["templates_list"]["authorization"] = false;
  
     // Хранилище для ресурса site
-    $config["db"]["resource"]["site"]["db"] = "api"; // +
+    $config["db"]["resource"]["site"]["db"] = "pllanoapi";
     // Синхронизировать ресурс site или нет. По умолчанию false
     $config["db"]["resource"]["site"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["site"]["authorization"] = true;
+ 
+    // Хранилище для ресурса language
+    $config["db"]["resource"]["language"]["db"] = "pllanoapi";
+    // Синхронизировать ресурс language или нет. По умолчанию false
+    $config["db"]["resource"]["language"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["language"]["authorization"] = false;
  
     // Хранилище для ресурса price
-    $config["db"]["resource"]["price"]["db"] = "api";
+    $config["db"]["resource"]["price"]["db"] = "pllanoapi";
     // Синхронизировать ресурс price или нет. По умолчанию false
     $config["db"]["resource"]["price"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["price"]["authorization"] = true;
     
     // Хранилище для ресурса user
     $config["db"]["resource"]["user"]["db"] = "json";
     // Синхронизировать ресурс user или нет. По умолчанию false
     $config["db"]["resource"]["user"]["synchronize"] = false;
- 
-    // Хранилище для ресурса language
-    $config["db"]["resource"]["language"]["db"] = "json";
-    // Синхронизировать ресурс language или нет. По умолчанию false
-    $config["db"]["resource"]["language"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["user"]["authorization"] = false;
  
     // Хранилище для ресурса cart
     $config["db"]["resource"]["cart"]["db"] = "json";
     // Синхронизировать ресурс cart или нет. По умолчанию false
     $config["db"]["resource"]["cart"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["cart"]["authorization"] = false;
  
     // Хранилище для ресурса order
     $config["db"]["resource"]["order"]["db"] = "json";
     // Синхронизировать ресурс order или нет. По умолчанию false
     $config["db"]["resource"]["order"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["order"]["authorization"] = false;
  
     // Хранилище для ресурса address
     $config["db"]["resource"]["address"]["db"] = "json";
     // Синхронизировать ресурс address или нет. По умолчанию false
     $config["db"]["resource"]["address"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["address"]["authorization"] = false;
  
     // Хранилище для ресурса pay
     $config["db"]["resource"]["pay"]["db"] = "json";
     // Синхронизировать ресурс pay или нет. По умолчанию false
     $config["db"]["resource"]["pay"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["pay"]["authorization"] = false;
  
     // Хранилище для ресурса product
     $config["db"]["resource"]["product"]["db"] = "json";
     // Синхронизировать ресурс product или нет. По умолчанию false
     $config["db"]["resource"]["product"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["product"]["authorization"] = false;
  
     // Хранилище для ресурса type
     $config["db"]["resource"]["type"]["db"] = "json";
     // Синхронизировать ресурс type или нет. По умолчанию false
     $config["db"]["resource"]["type"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["type"]["authorization"] = false;
  
     // Хранилище для ресурса brand
     $config["db"]["resource"]["brand"]["db"] = "json";
     // Синхронизировать ресурс brand или нет. По умолчанию false
     $config["db"]["resource"]["brand"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["brand"]["authorization"] = false;
  
     // Хранилище для ресурса serie
     $config["db"]["resource"]["serie"]["db"] = "json";
     // Синхронизировать ресурс serie или нет. По умолчанию false
     $config["db"]["resource"]["serie"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["serie"]["authorization"] = false;
  
     // Хранилище для ресурса images
     $config["db"]["resource"]["images"]["db"] = "json";
     // Синхронизировать ресурс images или нет. По умолчанию false
     $config["db"]["resource"]["images"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["images"]["authorization"] = false;
  
     // Хранилище для ресурса seo
     $config["db"]["resource"]["seo"]["db"] = "json";
     // Синхронизировать ресурс seo или нет. По умолчанию false
     $config["db"]["resource"]["seo"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["seo"]["authorization"] = false;
  
     // Хранилище для ресурса description
     $config["db"]["resource"]["description"]["db"] = "json";
     // Синхронизировать ресурс description или нет. По умолчанию false
     $config["db"]["resource"]["description"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["description"]["authorization"] = false;
  
     // Хранилище для ресурса params
     $config["db"]["resource"]["params"]["db"] = "json";
     // Синхронизировать ресурс params или нет. По умолчанию false
     $config["db"]["resource"]["params"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["params"]["authorization"] = false;
  
     // Хранилище для ресурса contact
     $config["db"]["resource"]["contact"]["db"] = "json";
     // Синхронизировать ресурс contact или нет. По умолчанию false
     $config["db"]["resource"]["contact"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["contact"]["authorization"] = false;
  
     // Хранилище для ресурса category
     $config["db"]["resource"]["category"]["db"] = "json";
     // Синхронизировать ресурс category или нет. По умолчанию false
     $config["db"]["resource"]["category"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["category"]["authorization"] = false;
  
     // Хранилище для ресурса role
     $config["db"]["resource"]["role"]["db"] = "json";
     // Синхронизировать ресурс role или нет. По умолчанию false
     $config["db"]["resource"]["role"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["role"]["authorization"] = false;
  
     // Хранилище для ресурса currency
     $config["db"]["resource"]["currency"]["db"] = "json";
     // Синхронизировать ресурс currency или нет. По умолчанию false
     $config["db"]["resource"]["currency"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["currency"]["authorization"] = false;
  
     // Хранилище для ресурса article
     $config["db"]["resource"]["article"]["db"] = "json";
     // Синхронизировать ресурс article или нет. По умолчанию false
     $config["db"]["resource"]["article"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["article"]["authorization"] = false;
  
     // Хранилище для ресурса article_category
     $config["db"]["resource"]["article_category"]["db"] = "json";
     // Синхронизировать ресурс article_category или нет. По умолчанию false
     $config["db"]["resource"]["article_category"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["article_category"]["authorization"] = false;
     
     // Хранилище для ресурса article_category
     $config["db"]["resource"]["article_category"]["db"] = "json";
     // Синхронизировать ресурс article_category или нет. По умолчанию false
     $config["db"]["resource"]["article_category"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["article_category"]["authorization"] = false;
  
     // Хранилище для ресурса queue
     $config["db"]["resource"]["queue"]["db"] = "json";
     // Синхронизировать ресурс queue или нет. По умолчанию false
     $config["db"]["resource"]["queue"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["queue"]["authorization"] = false;
  
     // Хранилище для ресурса cached
     $config["db"]["resource"]["cached"]["db"] = "json";
     // Синхронизировать ресурс cached или нет. По умолчанию false
     $config["db"]["resource"]["cached"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["cached"]["authorization"] = false;
  
     // Хранилище для ресурса db
     $config["db"]["resource"]["db"]["db"] = "json";
     // Синхронизировать ресурс db или нет. По умолчанию false
     $config["db"]["resource"]["db"]["synchronize"] = false;
+    // Для доступа требуется public_key - true, false или public_key
+    $config["db"]["resource"]["db"]["authorization"] = false;
  
     return $config;
  
