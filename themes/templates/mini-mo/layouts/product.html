@@ -12,9 +12,7 @@
 <h1 class="h1-description-heading padding_10">{{ product.name }}</h1>
 <meta itemprop="name" content="{{ product.name }}" />
 {% endif %}
-
 <meta itemprop="description" content="Мы гарантируем что товар 100% есть в наличии !">
-
 <div class="control-text-3 text-white"><div class="font_16 text_bold padding_2">Мы гарантируем что товар 100% есть в наличии !</div></div>
 <div class="font_16"><div class="control-text-3 text-white">Мы доставим вам заказ в течении 3-7 дней (Но не позже !)</div></div>
 <div class="font_16"><div class="control-text-3 text-white">Вы платите при получении !  (Наложенный платёж)</div></div>
@@ -68,46 +66,7 @@
 </div>
 </div>
 </section>
-
-
-
 <section class="product">
-	
-<div class="container">
-<div class="row justify-content-center padding_14">
-
-{% if product.image.1 %}
-<div class="col-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 control-background bg-white control-text-3 text-black">
-<div class="album">
-<div class="text-center cards">
-<div class="bg-white control-text-3 text-black">
-<a itemprop="image" data-fancybox="gallery" class="link-product-img" href="/{{ product.image.1 }}" alt="{{ product.name }}">
-<img itemprop="image" class="product-img-primary" src="/{{ product.image.1 }}" alt="{{ product.name }}" alt="{{ product.name }}">
-<img itemprop="image" content="/{{ product.image.1 }}">
-</a>
-</div>
-</div>
-</div>
-</div>
-{% endif %}
-
-{% if product.image.2 %}
-<div class="col-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 control-background bg-white control-text-3 text-black">
-<div class="album">
-<div class="text-center cards">
-<div class="bg-white control-text-3 text-black">
-<a itemprop="image" data-fancybox="gallery" class="link-product-img" href="/{{ product.image.2 }}" alt="{{ product.name }}">
-<img itemprop="image" class="product-img-primary" src="/{{ product.image.2 }}" alt="{{ product.name }}" alt="{{ product.name }}">
-<img itemprop="image" content="/{{ product.image.2 }}">
-</a>
-</div>
-</div>
-</div>
-</div>
-{% endif %}
-
-</div>
-</div>
 {% if product.description %}
 <div class="container">
 <div class="row justify-content-center padding_14">
@@ -119,9 +78,25 @@
 </div>
 </div>
 {% endif %}
-
+<div class="container">
+<div class="row justify-content-center padding_14">  
+{% for image in product.image %}
+<div class="col-6 col-xl-6 col-lg-6 col-md-6 col-sm-12 col-xs-12 control-background bg-white control-text-3 text-black">
+<div class="album">
+<div class="text-center cards">
+<div class="bg-white control-text-3 text-black">
+<a itemprop="image" data-fancybox="gallery" class="link-product-img" href="/{{ image }}" alt="{{ product.name }}">
+<img itemprop="image" class="product-img-primary" src="/{{ image }}" alt="{{ product.name }}" alt="{{ product.name }}">
+<img itemprop="image" content="/{{ image }}">
+</a>
+</div>
+</div>
+</div>
+</div>
+{% endfor %}
+</div>
+</div>
 </section>
-
 </div>
 {% endif %}
 {{ include ('helper/newsletter.html') }}
