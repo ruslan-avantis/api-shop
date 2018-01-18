@@ -421,7 +421,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
     $today = date("Y-m-d H:i:s");
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
-	// Отдаем роутеру RouterDb конфигурацию.
+    // Отдаем роутеру RouterDb конфигурацию.
     $router = new Router($config);
     // Читаем ключи
     $session_key = $config['key']['session'];
@@ -503,8 +503,8 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                     }
                     
                     $session->host = $host;
-					
-					$password_hash = password_hash($password, PASSWORD_DEFAULT);
+                    
+                    $password_hash = password_hash($password, PASSWORD_DEFAULT);
  
                     $install["password"] = $password_hash;
                     $install["phone"] = $phone;
@@ -553,7 +553,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                                 $session->site_id = intval($site_id);
                                 $session->install = 1;
  
-                                $arr["role_id"] = 100;
+                                $arr["role_id"] = intval(100);
                                 $arr["password"] = $password_hash;
                                 $arr["phone"] = strval($phone);
                                 $arr["email"] = $email;
@@ -590,7 +590,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                                         if ($user_id >= 1) {
                                             // Обновляем данные в сессии
                                             $session->authorize = 1;
-                                            $session->role_id = 100;
+                                            $session->role_id = intval(100);
                                             $session->cookie = $identificator;
                                             $session->platform_user_id = intval($user_id);
                                             $session->phone = Crypto::encrypt($phone, $session_key);
@@ -782,7 +782,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
             $putArr["template"] = $session->template;
             $putArr["host"] = $session->host;
             $putArr["store"] = $session->install_store;
-			$putArr["user_id"] = $session->platform_user_id;
+            $putArr["user_id"] = $session->platform_user_id;
  
             // Регистрируем магазин и продавца на платформе
             $resource = "install";
@@ -794,8 +794,8 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
             $db = new Db($name_db, $config);
             // Отправляем запрос и получаем данные
             $records = $db->put($resource, $putArr);
-			
-			//file_put_contents(__DIR__ . "/put-records.json", json_encode($records));
+            
+            //file_put_contents(__DIR__ . "/put-records.json", json_encode($records));
  
             if (isset($records["headers"]["code"])) {
                 if ($records["headers"]["code"] == 202 || $records["headers"]["code"] == "202") {
@@ -807,14 +807,14 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
  
                     // Сохраняем резервный public_key
                     if (!file_exists($config["settings"]["install"]["file"])) {
-                        file_put_contents($config["settings"]["install"]["file"], $public_key);
+                        file_put_contents($config["settings"]["install"]["file"], $session->public_key);
                     }
  
                     $session->install = null;
                     $session->template = null;
                     $session->install_store = null;
-					$session->private_key = null;
-					$session->public_key = null;
+                    $session->private_key = null;
+                    $session->public_key = null;
  
                     $callback = array('status' => 200);
  
@@ -823,6 +823,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     $response->withHeader('Content-type', 'application/json');
                     // Выводим json
                     echo json_encode($callback);
+					return;
  
                 } else {
                     $callback = array(
@@ -835,7 +836,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     $response->withHeader('Content-type', 'application/json');
                     // Выводим json
                     echo json_encode($callback);
-                    return false;
+                    return;
                 }
             } else {
                 $callback = array(
@@ -848,7 +849,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                 $response->withHeader('Content-type', 'application/json');
                 // Выводим json
                 echo json_encode($callback);
-                return false;
+                return;
             }
         } else {
             $callback = array(
@@ -861,7 +862,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
             $response->withHeader('Content-type', 'application/json');
             // Выводим json
             echo json_encode($callback);
-            return false;
+            return;
         }
     } else {
         $callback = array(
@@ -874,7 +875,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
         $response->withHeader('Content-type', 'application/json');
         // Выводим json
         echo json_encode($callback);
-        return false;
+        return;
     }
  
 });
