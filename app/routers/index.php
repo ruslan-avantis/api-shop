@@ -177,12 +177,17 @@ $app->get('/', function (Request $request, Response $response, array $args) {
                 $content = (new Install())->stores_list();
             } elseif ($session->install == 2) {
                 $index = "templates";
-                $content = (new Install())->templates_list();
+				if (isset($session->install_store)) {
+				    $install_store = $session->install_store;
+				} else {
+				    $install_store = null;
+				}
+                $content = (new Install())->templates_list($install_store);
             } elseif ($session->install == 3) {
                 $index = "welcome";
             } elseif ($session->install == 10) {
                 $index = "templates";
-                $content = (new Install())->templates_list();
+                $content = (new Install())->templates_list(null);
             } elseif ($session->install == 11) {
                 $index = "key";
             }
