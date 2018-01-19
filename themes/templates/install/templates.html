@@ -9,10 +9,10 @@ background: -webkit-linear-gradient(to bottom, #212529, #484848);
 background: linear-gradient(to bottom, #212529, #484848);
 }
 .portfolio-item {
-  margin-bottom: 30px;
+margin-bottom: 30px;
 }
 .pagination {
-  margin-bottom: 30px;
+margin-bottom: 30px;
 }
 </style>
 <section class="login-box background">
@@ -50,15 +50,51 @@ background: linear-gradient(to bottom, #212529, #484848);
 <div class="col-lg-4 portfolio-item">
 <input type="hidden" name="uri" id="uri-{{ items.item.id }}" value="{{ items.item.uri }}">
 <input type="hidden" name="dir" id="dir-{{ items.item.id }}" value="{{ items.item.dir }}">
-    <div class="card h-100">
-        <a href="#" onClick="installTemplate({{ items.item.id }});"><img class="card-img-top" src="{{ items.item.image }}" alt=""></a>
-        <div class="card-body">
-            <h4 class="card-title">
-                <a href="#" onClick="installTemplate({{ items.item.id }});">{{ items.item.title }}</a>
-            </h4>
-            <p class="card-text">{{ items.item.description }}</p>
-        </div>
-    </div>
+<div class="card h-100">
+<a target="_blank" href="{{ items.item.demo }}"><img class="card-img-top" src="{{ items.item.image }}" alt=""></a>
+<div class="card-body text-center">
+<h4 class="card-title">
+<a target="_blank" href="{{ items.item.demo }}">
+{% if session.language == "ua" %}
+{{ items.item.title_ua }}
+{% elseif session.language == "en" %}
+{{ items.item.title_en }}
+{% elseif session.language == "ru" %}
+{{ items.item.title_ru }}
+{% elseif session.language == "de" %}
+{{ items.item.title_de }}
+{% else %}
+{{ items.item.title }}
+{% endif %}
+</a>
+</h4>
+<p class="card-text">
+{% if session.language == "ua" %}
+{{ items.item.description_ua }}
+{% elseif session.language == "en" %}
+{{ items.item.description_en }}
+{% elseif session.language == "ru" %}
+{{ items.item.description_ru }}
+{% elseif session.language == "de" %}
+{{ items.item.description_de }}
+{% else %}
+{{ items.item.description }}
+{% endif %}
+</p>
+<div class="margin_7">
+<span class="control-link-a-3 a-white a-hover-green-xxs">
+<span class="control-button btn-success-xl">
+<a href="#" onClick="installTemplate({{ items.item.id }});" class="btn btn-md btn-hover-effects">{{ language.759 }} <i class="fa fa-check" aria-hidden="true"></i></a>
+</span>
+</span> 
+<span class="control-link-a-3 a-white a-hover-primary-xxs">
+<span class="control-button btn-indigo-xxxl">
+<a href="{{ items.item.demo }}" target="_blank" class="btn btn-md btn-hover-effects"><i class="fa fa-desktop" aria-hidden="true"></i> {{ language.517 }}</a>
+</span>
+</span>
+</div>
+</div>
+</div>
 </div>
 {% endfor %}
 </div>
