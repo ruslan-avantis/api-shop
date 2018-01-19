@@ -45,7 +45,7 @@ class Install {
         return $response["body"]["items"];
     }
  
-    public function templates_list()
+    public function templates_list($store = null)
     {
         // Ресурс к которому обращаемся
         $resource = "templates_list";
@@ -56,9 +56,12 @@ class Install {
         $db_name = $router->ping($resource);
         // Подключаемся к базе
         $db = new Db($db_name, $this->config);
-        // Отправляем запрос и получаем данные
-        $response = $db->get($resource);
- 
+		// Отправляем запрос и получаем данные
+		if (isset($store)) {
+		    $response = $db->get($resource, ["store_id" => $store]);
+		} else {
+		    $response = $db->get($resource);
+		}
         return $response["body"]["items"];
     }
  
