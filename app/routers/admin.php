@@ -323,7 +323,7 @@ $app->post('/admin/template-install', function (Request $request, Response $resp
                                 if ($zip->open($template_dir.'/template.zip') === true) {
                                     $zip->extractTo($template_dir);
                                     $zip->close();
-									
+                                    
                                     if (file_exists($template_dir."/template.zip")) {
                                         unlink($template_dir."/template.zip");
                                     }
@@ -836,7 +836,7 @@ $app->post('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Res
  
 });
  
-// Список шаблонов
+// Список пакетов
 $app->get('/admin/plugins', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
@@ -890,8 +890,8 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
             $plugins = new \ApiShop\Admin\Plugins();
             // Получаем массив
             $content = $plugins->get();
-			//print_r($content);
-			
+            //print_r($content);
+            
         } else {
             $render = "404";
         }
@@ -1193,7 +1193,7 @@ $app->get('/admin/db', function (Request $request, Response $response, array $ar
  
 });
  
-// Страница ресурса (таблицы)
+// Страница таблицы (ресурса)
 $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
