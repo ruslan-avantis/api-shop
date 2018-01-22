@@ -139,14 +139,18 @@ class Utility {
 
                                     //$optimizerChain = \Spatie\ImageOptimizer\OptimizerChainFactory::create();
                                     //$optimizerChain->optimize('images/temp/'.$basename, 'images/temp/'.$basename);
-
+                                try {
                                     $imagine = new \Imagine\Gd\Imagine();
                                     $size = new \Imagine\Image\Box($width, $height);
                                     $mode = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
-
+ 
                                     $imagine->open('images/temp/'.$basename)
                                         ->thumbnail($size, $mode)
                                         ->save('images/'.$dir_size.'/'.$subdir.'/'.$basename);
+ 
+								} catch (\Imagine\Exception\Exception $e) {
+                                   // handle the exception
+                                }
 
                                     unlink('images/temp/'.$basename);
 

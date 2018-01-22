@@ -107,7 +107,7 @@ class User {
                 // Генерируем identificator
                 $identificator = Crypto::encrypt($utility->random_token(), $cookie_key);
                 // Записываем пользователю новый cookie
-                $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+                $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : 'localhost';
                 if ($config['settings']['site']['cookie_httponly'] === true) {
                     setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain, 1, true);
                 } else {
@@ -195,7 +195,7 @@ class User {
                 $session->cookie = $new_cookie;
  
                 // Перезаписываем cookie в базе
-                $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
+                $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : 'localhost';
                 if ($config['settings']['site']['cookie_httponly'] === true) {
                     setcookie($config['settings']['session']['name'], $new_cookie, time()+60*60*24*365, '/', $domain, 1, true);
                 } else {
