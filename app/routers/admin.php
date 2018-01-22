@@ -37,8 +37,8 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-	$admin_config = $config['admin'];
-	$template = $admin_config["template"];
+    $admin_config = $config['admin'];
+    $template = $admin_config["template"];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -53,22 +53,25 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
     $session->token = Crypto::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
+    
+    $templates_list = (new Install())->templates_list($config['seller']['store']);
+    //print_r($templates_list);
  
-	// Получаем параметры из URL
+    // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-	// Подключаем определение языка в браузере
-	$langs = new Langs();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($getParams['lang'])) {
-		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-		    $lang = $getParams['lang'];
-			$session->language = $getParams['lang'];
-		} elseif (isset($session->language)) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
             $lang = $session->language;
-		} else {
+        } else {
             $lang = $langs->getLanguage();
-		}
-	} elseif (isset($session->language)) {
+        }
+    } elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -79,11 +82,11 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
     // Подключаем конфигурацию сайта
     $site = new Site();
     $site->get();
-	// Получаем название активного шаблона
+    // Получаем название активного шаблона
     $site_template = $site->template();
  
-	$adminDatabase = new AdminDatabase();
-	$adminDd = $adminDatabase->list();
+    $adminDatabase = new AdminDatabase();
+    $adminDd = $adminDatabase->list();
  
     $content = "";
     $render = "index";
@@ -107,7 +110,7 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
  
     return $this->admin->render($render.'.html', [
         "template" => $template,
-		"site_template" => $site_template,
+        "site_template" => $site_template,
         "head" => [
             "page" => $render,
             "title" => $language["709"],
@@ -120,7 +123,7 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
         "language" => $language,
         "token" => $session->token,
         "session" => $sessionUser,
-		"db" => $adminDd,
+        "db" => $adminDd,
         "content" => $content
     ]);
  
@@ -157,9 +160,9 @@ $app->post('/admin/order-activate', function (Request $request, Response $respon
     $csrf = $utility->clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
-		
+        
         if (isset($post['alias'])) {
-			$alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
+            $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
 
  
             $callback = array(
@@ -225,9 +228,9 @@ $app->post('/admin/template-buy', function (Request $request, Response $response
     $csrf = $utility->clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
-		
+        
         if (isset($post['alias'])) {
-			$alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
+            $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
 
  
             $callback = array(
@@ -293,16 +296,69 @@ $app->post('/admin/template-install', function (Request $request, Response $resp
     $csrf = $utility->clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
-		
         if (isset($post['alias'])) {
-			$alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
-
  
-            $callback = array(
-                'status' => 200,
-                'title' => "Информация",
-                'text' => "Все ок"
-            );
+            $dir = '';
+            $uri = '';
+            $name = '';
+ 
+            $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
+ 
+            $templates_list = (new Install())->templates_list($config['seller']['store']);
+ 
+            if (count($templates_list) >= 1) {
+                foreach($templates_list as $value)
+                {
+                    if ($value['item']["alias"] == $alias) {
+                        $dir = $value['item']['dir'];
+                        $uri = $value['item']['uri'];
+                        $name = $value['item']['dir'];
+ 
+                        if(isset($dir) && isset($uri)) {
+                            $template_dir = $config["settings"]["themes"]["dir"].'/'.$config["settings"]["themes"]["templates"].'/'.$dir;
+                            if (!file_exists($template_dir)) {
+                                mkdir($template_dir, 0777, true);
+                                file_put_contents($template_dir.'/template.zip', file_get_contents($uri));
+                                $zip = new ZipArchive;
+                                if ($zip->open($template_dir.'/template.zip') === true) {
+                                    $zip->extractTo($template_dir);
+                                    $zip->close();
+									
+                                    if (file_exists($template_dir."/template.zip")) {
+                                        unlink($template_dir."/template.zip");
+                                    }
+ 
+                                    // Активируем шаблон
+                                    // Подключаем класс
+                                    $settings = new \ApiShop\Admin\Config();
+                                    // Получаем массив
+                                    $arrJson = $settings->get();
+                                    $paramPost['settings']['themes']['template'] = $name;
+                                    // Соеденяем массивы
+                                    $newArr = array_replace_recursive($arrJson, $paramPost);
+                                    // Сохраняем в файл
+                                    $settings->put($newArr);
+                                }
+                                $callback = array('status' => 200);
+ 
+                            } else {
+                                $callback = array(
+                                    'status' => 400,
+                                    'title' => "Соообщение системы",
+                                    'text' => "Папка шаблона уже существует. Удалите или переименуйте папку."
+                                );
+                            }
+                        } else {
+                            $callback = array(
+                                'status' => 400,
+                                'title' => "Соообщение системы",
+                                'text' => "Шаблон не найден"
+                            );
+                        }
+                    }
+
+                }
+            }
         } else {
             $callback = array(
                 'status' => 400,
@@ -361,21 +417,21 @@ $app->post('/admin/template-activate', function (Request $request, Response $res
     $csrf = $utility->clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
-		
+        
         if (isset($post['name'])) {
-			$name = filter_var($post['name'], FILTER_SANITIZE_STRING);
-			$alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
+            $name = filter_var($post['name'], FILTER_SANITIZE_STRING);
+            $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
  
-			// Подключаем класс
+            // Подключаем класс
             $settings = new \ApiShop\Admin\Config();
             // Получаем массив
             $arrJson = $settings->get();
-			//print_r($content);
-			$paramPost['settings']['themes']['template'] = $name;
-			// Соеденяем массивы
-			$newArr = array_replace_recursive($arrJson, $paramPost);
-			// Сохраняем в файл
-			$settings->put($newArr);
+            //print_r($content);
+            $paramPost['settings']['themes']['template'] = $name;
+            // Соеденяем массивы
+            $newArr = array_replace_recursive($arrJson, $paramPost);
+            // Сохраняем в файл
+            $settings->put($newArr);
  
             $callback = array(
                 'status' => 200,
@@ -440,15 +496,15 @@ $app->post('/admin/template-delete', function (Request $request, Response $respo
     $csrf = $utility->clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
-		
+        
         if (isset($post['name'])) {
-			$name = filter_var($post['name'], FILTER_SANITIZE_STRING);
+            $name = filter_var($post['name'], FILTER_SANITIZE_STRING);
  
-			$directory = $config["settings"]["themes"]["dir"].'/'.$config["settings"]["themes"]["templates"].'/'.$name;
-			// Подключаем класс
+            $directory = $config["settings"]["themes"]["dir"].'/'.$config["settings"]["themes"]["templates"].'/'.$name;
+            // Подключаем класс
             $admin = new \ApiShop\Admin\Control();
             // Получаем массив
-			$admin->delete($directory);
+            $admin->delete($directory);
  
             $callback = array('status' => 200);
  
@@ -487,8 +543,8 @@ $app->get('/admin/template', function (Request $request, Response $response, arr
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-	$admin_config = $config['admin'];
-	$template = $admin_config["template"];
+    $admin_config = $config['admin'];
+    $template = $admin_config["template"];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -504,21 +560,21 @@ $app->get('/admin/template', function (Request $request, Response $response, arr
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
-	// Получаем параметры из URL
+    // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-	// Подключаем определение языка в браузере
-	$langs = new Langs();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($getParams['lang'])) {
-		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-		    $lang = $getParams['lang'];
-			$session->language = $getParams['lang'];
-		} elseif (isset($session->language)) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
             $lang = $session->language;
-		} else {
+        } else {
             $lang = $langs->getLanguage();
-		}
-	} elseif (isset($session->language)) {
+        }
+    } elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -529,14 +585,14 @@ $app->get('/admin/template', function (Request $request, Response $response, arr
     // Подключаем конфигурацию сайта
     $site = new Site();
     $site->get();
-	// Получаем название активного шаблона
+    // Получаем название активного шаблона
     $site_template = $site->template();
-	
-	$adminDatabase = new AdminDatabase();
-	$adminDd = $adminDatabase->list();
+    
+    $adminDatabase = new AdminDatabase();
+    $adminDd = $adminDatabase->list();
  
     $content = "";
-	$api = "";
+    $api = "";
     $render = "templates";
  
     if (isset($session->authorize)) {
@@ -545,7 +601,7 @@ $app->get('/admin/template', function (Request $request, Response $response, arr
             $templates = new \ApiShop\Admin\Template();
             // Получаем массив с настройками шаблона
             $content = $templates->get();
-			$api = (new Install())->templates_list($config['seller']['store']);
+            $api = (new Install())->templates_list($config['seller']['store']);
         } else {
             $render = "404";
         }
@@ -559,7 +615,7 @@ $app->get('/admin/template', function (Request $request, Response $response, arr
  
     return $this->admin->render($render.'.html', [
         "template" => $template,
-		"site_template" => $site_template,
+        "site_template" => $site_template,
         "head" => [
             "page" => $render,
             "title" => $language["815"],
@@ -586,8 +642,8 @@ $app->get('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Resp
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-	$admin_config = $config['admin'];
-	$template = $admin_config["template"];
+    $admin_config = $config['admin'];
+    $template = $admin_config["template"];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -596,8 +652,8 @@ $app->get('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Resp
     if ($request->getAttribute('name')) {
         $name = $utility->clean($request->getAttribute('name'));
     } else {
-	    $name = null;
-	}
+        $name = null;
+    }
  
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
@@ -610,21 +666,21 @@ $app->get('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Resp
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
-	// Получаем параметры из URL
+    // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-	// Подключаем определение языка в браузере
-	$langs = new Langs();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($getParams['lang'])) {
-		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-		    $lang = $getParams['lang'];
-			$session->language = $getParams['lang'];
-		} elseif (isset($session->language)) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
             $lang = $session->language;
-		} else {
+        } else {
             $lang = $langs->getLanguage();
-		}
-	} elseif (isset($session->language)) {
+        }
+    } elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -632,8 +688,8 @@ $app->get('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Resp
     // Подключаем мультиязычность
     $language = (new Language())->get($lang);
  
-	$adminDatabase = new AdminDatabase();
-	$adminDd = $adminDatabase->list();
+    $adminDatabase = new AdminDatabase();
+    $adminDd = $adminDatabase->list();
  
     $content = "";
     $render = "template";
@@ -668,7 +724,7 @@ $app->get('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Resp
         "language" => $language,
         "token" => $session->token,
         "session" => $sessionUser,
-		"db" => $adminDd,
+        "db" => $adminDd,
         "content" => $content
     ]);
  
@@ -681,8 +737,8 @@ $app->post('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Res
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-	$admin_config = $config['admin'];
-	$template = $admin_config["template"];
+    $admin_config = $config['admin'];
+    $template = $admin_config["template"];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -691,8 +747,8 @@ $app->post('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Res
     if ($request->getAttribute('name')) {
         $name = $utility->clean($request->getAttribute('name'));
     } else {
-	    $name = null;
-	}
+        $name = null;
+    }
  
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
@@ -705,21 +761,21 @@ $app->post('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Res
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
-	// Получаем параметры из URL
+    // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-	// Подключаем определение языка в браузере
-	$langs = new Langs();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($getParams['lang'])) {
-		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-		    $lang = $getParams['lang'];
-			$session->language = $getParams['lang'];
-		} elseif (isset($session->language)) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
             $lang = $session->language;
-		} else {
+        } else {
             $lang = $langs->getLanguage();
-		}
-	} elseif (isset($session->language)) {
+        }
+    } elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -727,8 +783,8 @@ $app->post('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Res
     // Подключаем мультиязычность
     $language = (new Language())->get($lang);
  
-	$adminDatabase = new AdminDatabase();
-	$adminDd = $adminDatabase->list();
+    $adminDatabase = new AdminDatabase();
+    $adminDd = $adminDatabase->list();
  
     $content = "";
     $render = "template";
@@ -738,17 +794,17 @@ $app->post('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Res
             // Подключаем класс
             $templates = new \ApiShop\Admin\Template($name);
             // Получаем массив
-			$arrJson = $templates->getOne();
+            $arrJson = $templates->getOne();
  
-			//print_r($content);
-			// Массив из POST
-			$paramPost = $request->getParsedBody();
-			// Соеденяем массивы
-			$newArr = array_replace_recursive($arrJson, $paramPost);
-			// Сохраняем в файл
-			$templates->put($newArr);
-			$content = $templates->getOne();
-			
+            //print_r($content);
+            // Массив из POST
+            $paramPost = $request->getParsedBody();
+            // Соеденяем массивы
+            $newArr = array_replace_recursive($arrJson, $paramPost);
+            // Сохраняем в файл
+            $templates->put($newArr);
+            $content = $templates->getOne();
+            
         } else {
             $render = "404";
         }
@@ -774,7 +830,7 @@ $app->post('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Res
         "language" => $language,
         "token" => $session->token,
         "session" => $sessionUser,
-		"db" => $adminDd,
+        "db" => $adminDd,
         "content" => $content
     ]);
  
@@ -787,8 +843,8 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-	$admin_config = $config['admin'];
-	$template = $admin_config["template"];
+    $admin_config = $config['admin'];
+    $template = $admin_config["template"];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -804,21 +860,21 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
-	// Получаем параметры из URL
+    // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-	// Подключаем определение языка в браузере
-	$langs = new Langs();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($getParams['lang'])) {
-		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-		    $lang = $getParams['lang'];
-			$session->language = $getParams['lang'];
-		} elseif (isset($session->language)) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
             $lang = $session->language;
-		} else {
+        } else {
             $lang = $langs->getLanguage();
-		}
-	} elseif (isset($session->language)) {
+        }
+    } elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -829,14 +885,14 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
     // Подключаем конфигурацию сайта
     $site = new Site();
     $site->get();
-	// Получаем название активного шаблона
+    // Получаем название активного шаблона
     $site_template = $site->template();
-	
-	$adminDatabase = new AdminDatabase();
-	$adminDd = $adminDatabase->list();
+    
+    $adminDatabase = new AdminDatabase();
+    $adminDd = $adminDatabase->list();
  
     $content = "";
-	$api = "";
+    $api = "";
     $render = "plugins";
  
     if (isset($session->authorize)) {
@@ -845,7 +901,7 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
             $templates = new \ApiShop\Admin\Template();
             // Получаем массив с настройками шаблона
             $content = $templates->get();
-			$api = (new Install())->templates_list($config['seller']['store']);
+            $api = (new Install())->templates_list($config['seller']['store']);
         } else {
             $render = "404";
         }
@@ -859,7 +915,7 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
  
     return $this->admin->render($render.'.html', [
         "template" => $template,
-		"site_template" => $site_template,
+        "site_template" => $site_template,
         "head" => [
             "page" => $render,
             "title" => $language["815"],
@@ -886,8 +942,8 @@ $app->get('/admin/config', function (Request $request, Response $response, array
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-	$admin_config = $config['admin'];
-	$template = $admin_config["template"];
+    $admin_config = $config['admin'];
+    $template = $admin_config["template"];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -917,11 +973,11 @@ $app->get('/admin/config', function (Request $request, Response $response, array
     // Подключаем конфигурацию сайта
     $site = new Site();
     $site->get();
-	// Получаем название активного шаблона
+    // Получаем название активного шаблона
     $site_template = $site->template();
-	
-	$adminDatabase = new AdminDatabase();
-	$adminDd = $adminDatabase->list();
+    
+    $adminDatabase = new AdminDatabase();
+    $adminDd = $adminDatabase->list();
  
     $content = "";
     $render = "config";
@@ -932,7 +988,7 @@ $app->get('/admin/config', function (Request $request, Response $response, array
             $settings = new \ApiShop\Admin\Config();
             // Получаем массив с настройками шаблона
             $content = $settings->get();
-			//print_r($content);
+            //print_r($content);
         } else {
             $render = "404";
         }
@@ -958,7 +1014,7 @@ $app->get('/admin/config', function (Request $request, Response $response, array
         "language" => $language,
         "token" => $session->token,
         "session" => $sessionUser,
-		"db" => $adminDd,
+        "db" => $adminDd,
         "content" => $content
     ]);
  
@@ -971,8 +1027,8 @@ $app->post('/admin/config', function (Request $request, Response $response, arra
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-	$admin_config = $config['admin'];
-	$template = $admin_config["template"];
+    $admin_config = $config['admin'];
+    $template = $admin_config["template"];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -988,21 +1044,21 @@ $app->post('/admin/config', function (Request $request, Response $response, arra
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
-	// Получаем параметры из URL
+    // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-	// Подключаем определение языка в браузере
-	$langs = new Langs();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($getParams['lang'])) {
-		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-		    $lang = $getParams['lang'];
-			$session->language = $getParams['lang'];
-		} elseif (isset($session->language)) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
             $lang = $session->language;
-		} else {
+        } else {
             $lang = $langs->getLanguage();
-		}
-	} elseif (isset($session->language)) {
+        }
+    } elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -1013,11 +1069,11 @@ $app->post('/admin/config', function (Request $request, Response $response, arra
     // Подключаем конфигурацию сайта
     $site = new Site();
     $site->get();
-	// Получаем название активного шаблона
+    // Получаем название активного шаблона
     $site_template = $site->template();
-	
-	$adminDatabase = new AdminDatabase();
-	$adminDd = $adminDatabase->list();
+    
+    $adminDatabase = new AdminDatabase();
+    $adminDd = $adminDatabase->list();
  
     $content = "";
     $render = "config";
@@ -1028,14 +1084,14 @@ $app->post('/admin/config', function (Request $request, Response $response, arra
             $settings = new \ApiShop\Admin\Config();
             // Получаем массив
             $arrJson = $settings->get();
-			//print_r($content);
-			// Массив из POST
-			$paramPost = $request->getParsedBody();
-			// Соеденяем массивы
-			$newArr = array_replace_recursive($arrJson, $paramPost);
-			// Сохраняем в файл
-			$settings->put($newArr);
-			$content = $settings->get();
+            //print_r($content);
+            // Массив из POST
+            $paramPost = $request->getParsedBody();
+            // Соеденяем массивы
+            $newArr = array_replace_recursive($arrJson, $paramPost);
+            // Сохраняем в файл
+            $settings->put($newArr);
+            $content = $settings->get();
         } else {
             $render = "404";
         }
@@ -1061,7 +1117,7 @@ $app->post('/admin/config', function (Request $request, Response $response, arra
         "language" => $language,
         "token" => $session->token,
         "session" => $sessionUser,
-		"db" => $adminDd,
+        "db" => $adminDd,
         "content" => $content
     ]);
  
@@ -1074,8 +1130,8 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-	$admin_config = $config['admin'];
-	$template = $admin_config["template"];
+    $admin_config = $config['admin'];
+    $template = $admin_config["template"];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1084,15 +1140,15 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
     if ($request->getAttribute('resource')) {
         $resource = $utility->clean($request->getAttribute('resource'));
     } else {
-	    $resource = null;
-	}
+        $resource = null;
+    }
  
     // Получаем resource из url
     if ($request->getAttribute('id')) {
         $id = $utility->clean($request->getAttribute('id'));
     } else {
-	    $id = null;
-	}
+        $id = null;
+    }
  
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
@@ -1105,21 +1161,21 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
-	// Получаем параметры из URL
+    // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-	// Подключаем определение языка в браузере
-	$langs = new Langs();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($getParams['lang'])) {
-		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-		    $lang = $getParams['lang'];
-			$session->language = $getParams['lang'];
-		} elseif (isset($session->language)) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
             $lang = $session->language;
-		} else {
+        } else {
             $lang = $langs->getLanguage();
-		}
-	} elseif (isset($session->language)) {
+        }
+    } elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -1127,17 +1183,17 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
     // Подключаем мультиязычность
     $language = (new Language())->get($lang);
  
-	$adminDatabase = new AdminDatabase();
-	$adminDd = $adminDatabase->list();
+    $adminDatabase = new AdminDatabase();
+    $adminDd = $adminDatabase->list();
  
     $content = "";
-	if (isset($id)) {
+    if (isset($id)) {
         $render = "db-id";
-	} else {
-	    $render = "db";
-	}
-	
-	$name_db = null;
+    } else {
+        $render = "db";
+    }
+    
+    $name_db = null;
  
     if (isset($session->authorize) && isset($resource)) {
         if ($session->role_id) {
@@ -1168,20 +1224,20 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
             $orderArray = $filter->order();
             $limitArray = $filter->limit();
             // Формируем массив по которому будем сортировать
-			
-			$resourceDd = $adminDatabase->getOne($resource);
-			
-			$arrs["id"] = "id";
-			$resourceArray = $arrs + $resourceDd; 
-			
-			$content_key = array_keys($resourceArray);
-			
-			//print_r($content_key);
-			
-			foreach($resourceArray as $key => $value)
-			{
-				$sortArr[$key] = $key;
-			}
+            
+            $resourceDd = $adminDatabase->getOne($resource);
+            
+            $arrs["id"] = "id";
+            $resourceArray = $arrs + $resourceDd; 
+            
+            $content_key = array_keys($resourceArray);
+            
+            //print_r($content_key);
+            
+            foreach($resourceArray as $key => $value)
+            {
+                $sortArr[$key] = $key;
+            }
  
             $sortArray = $filter->sort($sortArr);
  
@@ -1201,17 +1257,17 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
             $paginator = $filter->paginator($count);
             // Если ответ не пустой
             if (count($resp["body"]['items']) >= 1) {
-				$content = '';
+                $content = '';
                 // Отдаем пагинатору колличество
                 foreach($resp["body"]['items'] as $item)
                 {
-					
-					foreach($item["item"] as $key => $value)
-					{
-					    if ($value == ''){$value = "--";}
-						$contentArr[$key] = $utility->clean($value);
-					}
-					$content["items"][] = $contentArr;
+                    
+                    foreach($item["item"] as $key => $value)
+                    {
+                        if ($value == ''){$value = "--";}
+                        $contentArr[$key] = $utility->clean($value);
+                    }
+                    $content["items"][] = $contentArr;
                 }
             } else {
                 $content = null;
@@ -1229,7 +1285,7 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
  
     return $this->admin->render($render.'.html', [
         "template" => $template,
-		"resource" => $resource,
+        "resource" => $resource,
         "head" => [
             "page" => $render,
             "title" => $language["814"].': '.$render.' - '. $language["709"],
@@ -1242,10 +1298,10 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
         "language" => $language,
         "token" => $session->token,
         "session" => $sessionUser,
-		"db_type" => $name_db,
-		"db" => $adminDd,
+        "db_type" => $name_db,
+        "db" => $adminDd,
         "content" => $content,
-		"content_key" => $content_key,
+        "content_key" => $content_key,
         "paginator" => $paginator,
         "order" => $orderArray,
         "sort" => $sortArray,
@@ -1265,8 +1321,8 @@ $app->get('/admin/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-	$admin_config = $config['admin'];
-	$template = $admin_config["template"];
+    $admin_config = $config['admin'];
+    $template = $admin_config["template"];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1275,15 +1331,15 @@ $app->get('/admin/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $
     if ($request->getAttribute('resource')) {
         $resource = $utility->clean($request->getAttribute('resource'));
     } else {
-	    $resource = null;
-	}
+        $resource = null;
+    }
  
     // Получаем id из url
     if ($request->getAttribute('id')) {
         $id = $utility->clean($request->getAttribute('id'));
     } else {
-	    $id = null;
-	}
+        $id = null;
+    }
  
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
@@ -1296,21 +1352,21 @@ $app->get('/admin/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
-	// Получаем параметры из URL
+    // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-	// Подключаем определение языка в браузере
-	$langs = new Langs();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($getParams['lang'])) {
-		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-		    $lang = $getParams['lang'];
-			$session->language = $getParams['lang'];
-		} elseif (isset($session->language)) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
             $lang = $session->language;
-		} else {
+        } else {
             $lang = $langs->getLanguage();
-		}
-	} elseif (isset($session->language)) {
+        }
+    } elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -1318,54 +1374,54 @@ $app->get('/admin/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $
     // Подключаем мультиязычность
     $language = (new Language())->get($lang);
  
-	$adminDatabase = new AdminDatabase();
-	$adminDd = $adminDatabase->list();
+    $adminDatabase = new AdminDatabase();
+    $adminDd = $adminDatabase->list();
  
     $content = "";
     $title = "";
     $keywords = "";
     $description = "";
  
-	$control = new Control();
-	$test = $control->test($resource);
-	if ($test === true) {
-		
-		$site = new Site();
+    $control = new Control();
+    $test = $control->test($resource);
+    if ($test === true) {
+        
+        $site = new Site();
         $site_config = $site->get();
         $site_template = $site->template();
-		
-		//$param = $request->getParsedBody();
-		$param = $request->getQueryParams();
-		
-		$render = $resource;
-    	if (isset($session->authorize)) {
-			if ($session->role_id != 100) {
-				$render = "404";
-			} else {
-		    	if(stristr($resource, '_') === FALSE) {
-		        	$resourceName = "\\ApiShop\\Admin\\".ucfirst($resource);
-		    	} else {
-		        	$resourceNew = (str_replace(" ", "", ucwords(str_replace("_", " ", $resource))));
-		        	$resourceName = "\\ApiShop\\Admin\\".$resourceNew;
-		    	}
-		    	// Подключаем класс
-		    	$resourceClass = new $resourceName($site_template);
-		    	// Отправляем запрос
-		    	$get = $resourceClass->get($resource, $param, $id);
-				
-				if ($resource == "settings") {
-					$content = $get;
-				} else {
-				    $content = $get["body"]["items"];
-				}
-			}
-    	} else {
-        	$session->authorize = null;
-			$render = "404";
-    	}
+        
+        //$param = $request->getParsedBody();
+        $param = $request->getQueryParams();
+        
+        $render = $resource;
+        if (isset($session->authorize)) {
+            if ($session->role_id != 100) {
+                $render = "404";
+            } else {
+                if(stristr($resource, '_') === FALSE) {
+                    $resourceName = "\\ApiShop\\Admin\\".ucfirst($resource);
+                } else {
+                    $resourceNew = (str_replace(" ", "", ucwords(str_replace("_", " ", $resource))));
+                    $resourceName = "\\ApiShop\\Admin\\".$resourceNew;
+                }
+                // Подключаем класс
+                $resourceClass = new $resourceName($site_template);
+                // Отправляем запрос
+                $get = $resourceClass->get($resource, $param, $id);
+                
+                if ($resource == "settings") {
+                    $content = $get;
+                } else {
+                    $content = $get["body"]["items"];
+                }
+            }
+        } else {
+            $session->authorize = null;
+            $render = "404";
+        }
     } else {
-	    $render = "404";
-	}
+        $render = "404";
+    }
  
     // Запись в лог
     $this->logger->info("admin - ".$render);
@@ -1384,7 +1440,7 @@ $app->get('/admin/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $
         "language" => $language,
         "token" => $session->token,
         "session" => $sessionUser,
-		"db" => $adminDd,
+        "db" => $adminDd,
         "content" => $content
     ]);
  
