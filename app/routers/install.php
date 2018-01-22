@@ -815,7 +815,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     $session->template = null;
                     $session->private_key = null;
                     $session->public_key = null;
-					$session->platform_user_id = null;
+                    $session->platform_user_id = null;
  
                     $callback = array('status' => 200);
  
@@ -824,7 +824,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     $response->withHeader('Content-type', 'application/json');
                     // Выводим json
                     echo json_encode($callback);
-					return;
+                    return;
  
                 } else {
                     $callback = array(

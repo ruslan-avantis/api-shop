@@ -843,8 +843,7 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $admin_config = $config['admin'];
-    $template = $admin_config["template"];
+    $template = $config['admin']["template"];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -882,26 +881,17 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
     // Подключаем мультиязычность
     $language = (new Language())->get($lang);
  
-    // Подключаем конфигурацию сайта
-    $site = new Site();
-    $site->get();
-    // Получаем название активного шаблона
-    $site_template = $site->template();
-    
-    $adminDatabase = new AdminDatabase();
-    $adminDd = $adminDatabase->list();
- 
     $content = "";
-    $api = "";
     $render = "plugins";
  
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $templates = new \ApiShop\Admin\Template();
-            // Получаем массив с настройками шаблона
-            $content = $templates->get();
-            $api = (new Install())->templates_list($config['seller']['store']);
+            $plugins = new \ApiShop\Admin\Plugins();
+            // Получаем массив
+            $content = $plugins->get();
+			//print_r($content);
+			
         } else {
             $render = "404";
         }
@@ -915,7 +905,6 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
  
     return $this->admin->render($render.'.html', [
         "template" => $template,
-        "site_template" => $site_template,
         "head" => [
             "page" => $render,
             "title" => $language["815"],
@@ -928,9 +917,7 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
         "language" => $language,
         "token" => $session->token,
         "session" => $sessionUser,
-        "db" => $adminDd,
-        "content" => $content,
-        "api" => $api
+        "content" => $content
     ]);
  
 });
@@ -1123,6 +1110,89 @@ $app->post('/admin/config', function (Request $request, Response $response, arra
  
 });
  
+// Список баз данных
+$app->get('/admin/db', function (Request $request, Response $response, array $args) {
+ 
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+ 
+    $config = (new Settings())->get();
+    $admin_config = $config['admin'];
+    $template = $admin_config["template"];
+ 
+    // Подключаем плагины
+    $utility = new Utility();
+ 
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    // Генерируем токен
+    $token = $utility->random_token();
+    // Записываем токен в сессию
+    $session->token = Crypto::encrypt($token, $token_key);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
+ 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
+    // Получаем массив данных из таблицы language на языке из $session->language
+    if (isset($getParams['lang'])) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
+            $lang = $session->language;
+        } else {
+            $lang = $langs->getLanguage();
+        }
+    } elseif (isset($session->language)) {
+        $lang = $session->language;
+    } else {
+        $lang = $langs->getLanguage();
+    }
+    // Подключаем мультиязычность
+    $language = (new Language())->get($lang);
+ 
+    $content = '';
+    $render = "db";
+ 
+    if (isset($session->authorize)) {
+        if ($session->role_id) {
+            $adminDatabase = new AdminDatabase();
+            $content = $adminDatabase->list();
+        } else {
+            $render = "404";
+        }
+    } else {
+        $session->authorize = null;
+        $render = "404";
+    }
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    return $this->admin->render($render.'.html', [
+        "template" => $template,
+        "head" => [
+            "page" => $render,
+            "title" => $language["814"].': '.$render.' - '. $language["709"],
+            "keywords" => $language["814"].': '.$render.' - '. $language["709"],
+            "description" => $language["814"].': '.$render.' - '. $language["709"],
+            "host" => $host,
+            "path" => $path
+        ],
+        "config" => $config,
+        "language" => $language,
+        "token" => $session->token,
+        "session" => $sessionUser,
+        "content" => $content
+    ]);
+ 
+});
+ 
 // Страница ресурса (таблицы)
 $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
  
@@ -1188,9 +1258,9 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
  
     $content = "";
     if (isset($id)) {
-        $render = "db-id";
+        $render = "db-edit";
     } else {
-        $render = "db";
+        $render = "db-item";
     }
     
     $name_db = null;

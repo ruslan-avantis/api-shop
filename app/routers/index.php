@@ -48,21 +48,21 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
  
-	// Получаем параметры из URL
+    // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-	// Подключаем определение языка в браузере
-	$langs = new Langs();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($getParams['lang'])) {
-		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-		    $lang = $getParams['lang'];
-			$session->language = $getParams['lang'];
-		} elseif (isset($session->language)) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
             $lang = $session->language;
-		} else {
+        } else {
             $lang = $langs->getLanguage();
-		}
-	} elseif (isset($session->language)) {
+        }
+    } elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -173,7 +173,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
             "site" => $site_config,
             "config" => $config['settings']['site'],
             "language" => $language,
-			"template" => $template,
+            "template" => $template,
             "token" => $session->token,
             "session" => $sessionUser,
             "content" => $content,
@@ -193,11 +193,11 @@ $app->get('/', function (Request $request, Response $response, array $args) {
                 $content = (new Install())->stores_list();
             } elseif ($session->install == 2) {
                 $index = "templates";
-				if (isset($session->install_store)) {
-				    $install_store = $session->install_store;
-				} else {
-				    $install_store = null;
-				}
+                if (isset($session->install_store)) {
+                    $install_store = $session->install_store;
+                } else {
+                    $install_store = null;
+                }
                 $content = (new Install())->templates_list($install_store);
             } elseif ($session->install == 3) {
                 $index = "welcome";

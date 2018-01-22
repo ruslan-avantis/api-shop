@@ -66,7 +66,7 @@ $app->get('/sign-in', function (Request $request, Response $response, array $arg
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // print_r($content);
-	
+    
     $head = [
         "page" => 'sign-in',
         "title" => "",
@@ -80,7 +80,7 @@ $app->get('/sign-in', function (Request $request, Response $response, array $arg
  
     return $this->view->render('sign-in.html', [
         "head" => $head,
-		"template" => $site->template(),
+        "template" => $site->template(),
         "pages" => $page,
         "site" => $site_config,
         "config" => $config['settings']['site'],
@@ -142,7 +142,7 @@ $app->get('/sign-up', function (Request $request, Response $response, array $arg
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // print_r($content);
-	
+    
     $head = [
         "page" => 'sign-in',
         "title" => "",
@@ -155,7 +155,7 @@ $app->get('/sign-up', function (Request $request, Response $response, array $arg
     ];
  
     return $this->view->render('sign-up.html', [
-	    "head" => $head,
+        "head" => $head,
         "template" => $site->template(),
         "pages" => $page,
         "site" => $site_config,
@@ -340,7 +340,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
                                     $session->fname = Crypto::encrypt($user["fname"], $session_key);
                                     $session->phone = Crypto::encrypt($user["phone"], $session_key);
                                     $session->email = Crypto::encrypt($user["email"], $session_key);
-							
+                            
                                     $callback = array('status' => 200);
  
                                 } else {
@@ -351,11 +351,11 @@ $app->post('/login', function (Request $request, Response $response, array $args
                                     unset($session->role_id); // удаляем role_id
                                     unset($session->user_id); // удаляем role_id
  
-									$callback = array(
-									    'status' => 400,
-									    'title' => "Сообщение системы",
-									    'text' => "Ваш аккаунт заблокирован"
-									);
+                                    $callback = array(
+                                        'status' => 400,
+                                        'title' => "Сообщение системы",
+                                        'text' => "Ваш аккаунт заблокирован"
+                                    );
  
                                 }
                             }

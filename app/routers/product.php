@@ -59,21 +59,21 @@ $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request,
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
  
-	// Получаем параметры из URL
+    // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-	// Подключаем определение языка в браузере
-	$langs = new Langs();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($getParams['lang'])) {
-		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-		    $lang = $getParams['lang'];
-			$session->language = $getParams['lang'];
-		} elseif (isset($session->language)) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
             $lang = $session->language;
-		} else {
+        } else {
             $lang = $langs->getLanguage();
-		}
-	} elseif (isset($session->language)) {
+        }
+    } elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -130,8 +130,8 @@ $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request,
         $product['url'] = '/product/'.$response["body"]['items']['0']['item']['id'].'/'.$baseurl.'.html';
  
         $product['name'] = (isset($response["body"]['items']['0']['item']['name'])) ? $utility->clean($response["body"]['items']['0']['item']['name']) : '';
-		
-		$product['description'] = (isset($response["body"]['items']['0']['item']['description']['text'])) ? $utility->clean($response["body"]['items']['0']['item']['description']['text']) : '';
+        
+        $product['description'] = (isset($response["body"]['items']['0']['item']['description']['text'])) ? $utility->clean($response["body"]['items']['0']['item']['description']['text']) : '';
         $product['type'] = (isset($response["body"]['items']['0']['item']['type'])) ? $utility->clean($response["body"]['items']['0']['item']['type']) : '';
         $product['brand'] = (isset($response["body"]['items']['0']['item']['brand'])) ? $utility->clean($response["body"]['items']['0']['item']['brand']) : '';
         $product['serie'] = (isset($response["body"]['items']['0']['item']['serie'])) ? $utility->clean($response["body"]['items']['0']['item']['serie']) : '';
@@ -192,7 +192,7 @@ $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request,
             "site" => $site_config,
             "config" => $config['settings']['site'],
             "language" => $language,
-			"template" => $template,
+            "template" => $template,
             "token" => $session->token,
             "session" => $sessionUser,
             "content" => $content,
@@ -294,8 +294,8 @@ $app->get('/quick-view/product/{alias:[a-z0-9_]+}/{name}.html', function (Reques
         $product['url'] = '/product/'.$response["body"]['items']['0']['item']['id'].'/'.$baseurl.'.html';
  
         $product['name'] = (isset($response["body"]['items']['0']['item']['name'])) ? $utility->clean($response["body"]['items']['0']['item']['name']) : '';
-		
-		$product['description'] = (isset($response["body"]['items']['0']['item']['description']['text'])) ? $utility->clean($response["body"]['items']['0']['item']['description']['text']) : '';
+        
+        $product['description'] = (isset($response["body"]['items']['0']['item']['description']['text'])) ? $utility->clean($response["body"]['items']['0']['item']['description']['text']) : '';
         $product['type'] = (isset($response["body"]['items']['0']['item']['type'])) ? $utility->clean($response["body"]['items']['0']['item']['type']) : '';
         $product['brand'] = (isset($response["body"]['items']['0']['item']['brand'])) ? $utility->clean($response["body"]['items']['0']['item']['brand']) : '';
         $product['serie'] = (isset($response["body"]['items']['0']['item']['serie'])) ? $utility->clean($response["body"]['items']['0']['item']['serie']) : '';
@@ -340,7 +340,7 @@ $app->get('/quick-view/product/{alias:[a-z0-9_]+}/{name}.html', function (Reques
             "site" => $site_config,
             "config" => $config['settings']['site'],
             "language" => $language,
-			"template" => $template,
+            "template" => $template,
             "token" => $session->token,
             "session" => $sessionUser,
             "content" => $content,

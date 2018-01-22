@@ -37,8 +37,8 @@ $app->get('/{alias:[a-z0-9_-]+}.html', function (Request $request, Response $res
     if ($request->getAttribute('alias')) {
         $alias = $utility->clean($request->getAttribute('alias'));
     } else {
-	    $alias = null;
-	}
+        $alias = null;
+    }
  
     $config = (new Settings())->get();
  
@@ -55,21 +55,21 @@ $app->get('/{alias:[a-z0-9_-]+}.html', function (Request $request, Response $res
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
  
-	// Получаем параметры из URL
+    // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-	// Подключаем определение языка в браузере
-	$langs = new Langs();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($getParams['lang'])) {
-		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-		    $lang = $getParams['lang'];
-			$session->language = $getParams['lang'];
-		} elseif (isset($session->language)) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
             $lang = $session->language;
-		} else {
+        } else {
             $lang = $langs->getLanguage();
-		}
-	} elseif (isset($session->language)) {
+        }
+    } elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -99,7 +99,7 @@ $app->get('/{alias:[a-z0-9_-]+}.html', function (Request $request, Response $res
  
         if (file_exists($json_dir."".$alias.".json")) {
             $json = json_decode(file_get_contents($json_dir."".$alias.".json", true));
-		    if(is_object($json["0"])) {
+            if(is_object($json["0"])) {
                 $article = (array)$json["0"];
             } elseif (is_array($json["0"])) {
                 $article = $json["0"];
@@ -124,19 +124,19 @@ $app->get('/{alias:[a-z0-9_-]+}.html', function (Request $request, Response $res
         $resp = $db->get($resource, ["state" => 1, "alias" => $alias]);
  
         if (isset($resp["headers"]["code"])) {
-			if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == "200") {
-		        // Отдаем чистые данные
-				if(is_object($resp["body"]["items"]["0"]["item"])) {
+            if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == "200") {
+                // Отдаем чистые данные
+                if(is_object($resp["body"]["items"]["0"]["item"])) {
                     $article = (array)$resp["body"]["items"]["0"]["item"];
                 } elseif (is_array($resp["body"]["items"]["0"]["item"])) {
                     $article = $resp["body"]["items"]["0"]["item"];
-                }	
-			} else {
-		        $article = null;
-		    }
-		} else {
-		    $article = null;
-		}
+                }    
+            } else {
+                $article = null;
+            }
+        } else {
+            $article = null;
+        }
     }
  
     if (isset($article["alias"])) {
@@ -148,7 +148,7 @@ $app->get('/{alias:[a-z0-9_-]+}.html', function (Request $request, Response $res
         $og_url = $article["og_url"] ? $article["og_url"] : $site_config["http_protocol"].'://'.$host.''.$path;
         $og_title = $article["og_title"] ? $article["og_title"] : $host;
         $og_description = $article["og_description"] ? $article["og_description"] : $host;
-	} else {
+    } else {
         $content = "";
         $page = "";
         $title = "";
@@ -157,7 +157,7 @@ $app->get('/{alias:[a-z0-9_-]+}.html', function (Request $request, Response $res
         $og_url = "";
         $og_title = "";
         $og_description = "";
-	}
+    }
 
     // Запись в лог
     $this->logger->info("article - ".$alias);

@@ -49,21 +49,21 @@ $app->get('/category', function (Request $request, Response $response, array $ar
     $token_key = $config['key']['token'];
     // Подключаем мультиязычность
 
-	// Получаем параметры из URL
+    // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-	// Подключаем определение языка в браузере
-	$langs = new Langs();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($getParams['lang'])) {
-		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-		    $lang = $getParams['lang'];
-			$session->language = $getParams['lang'];
-		} elseif (isset($session->language)) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
             $lang = $session->language;
-		} else {
+        } else {
             $lang = $langs->getLanguage();
-		}
-	} elseif (isset($session->language)) {
+        }
+    } elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -149,7 +149,7 @@ $app->get('/category', function (Request $request, Response $response, array $ar
             // Обрабатываем картинки
             $product['image']['no_image'] = $utility->get_image(null, '/images/no_image.png', 360, 360);
             $image_1 = '';
-			$image_1 = (isset($item['item']['image']['0']['image_path'])) ? $utility->clean($item['item']['image']['0']['image_path']) : null;
+            $image_1 = (isset($item['item']['image']['0']['image_path'])) ? $utility->clean($item['item']['image']['0']['image_path']) : null;
             if (isset($image_1)) {$product['image']['1'] = $utility->get_image($item['item']['product_id'], $image_1, 360, 360);}
             $image_2 = '';
             $image_2 = (isset($item['item']['image']['1']['image_path'])) ? $utility->clean($item['item']['image']['1']['image_path']) : null;
