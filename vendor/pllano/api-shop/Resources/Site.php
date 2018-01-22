@@ -32,7 +32,7 @@ class Site {
         // Подключаем конфиг Settings\Config
         $config = (new Settings())->get();
         $this->config = $config;
-		$this->site_template = $config["settings"]["themes"]["template"];
+        $this->site_template = $config["settings"]["themes"]["template"];
     }
 
     public function get()

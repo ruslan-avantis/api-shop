@@ -21,42 +21,42 @@ class Index {
  
     function __construct()
     {
-		// Подключаем конфиг Settings\Config
+        // Подключаем конфиг Settings\Config
         $config = (new Settings())->get();
         $this->config = $config;
     }
  
     public function get()
     {
-		$resp["templates"] = array();
-		$templates = array();
-		$directory = $this->config["settings"]["themes"]["dir"]."/".$this->config["settings"]["themes"]["templates"];
-		$scanned = array_diff(scandir($directory), array('..', '.'));
-		if (count($scanned) >= 1) {
+        $resp["templates"] = array();
+        $templates = array();
+        $directory = $this->config["settings"]["themes"]["dir"]."/".$this->config["settings"]["themes"]["templates"];
+        $scanned = array_diff(scandir($directory), array('..', '.'));
+        if (count($scanned) >= 1) {
             foreach($scanned as $dir)
             {
-				if (is_dir($directory.'/'.$dir)) {
-					$json_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config["settings"]["themes"]["templates"].'/'.$dir.'/config/';
-					if (file_exists($json_dir."config.json")) {
-					    $json = json_decode(file_get_contents($json_dir."config.json"), true);
-					     $template = $json;
-						 $templates["alias"] = $template["alias"];
-						 $templates["name"] = $template["name"];
-						 $templates["dir"] = $dir;
-						 $templates["version"] = $template["version"];
-						 $templates["url"] = $template["url"];
-						 if(isset($template["demo"])){
-							 $templates["demo"] = $template["demo"];
-					     } else {
-						     $templates["demo"] = "https://".$dir.".pllano.com/";
-						 }
+                if (is_dir($directory.'/'.$dir)) {
+                    $json_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config["settings"]["themes"]["templates"].'/'.$dir.'/config/';
+                    if (file_exists($json_dir."config.json")) {
+                        $json = json_decode(file_get_contents($json_dir."config.json"), true);
+                         $template = $json;
+                         $templates["alias"] = $template["alias"];
+                         $templates["name"] = $template["name"];
+                         $templates["dir"] = $dir;
+                         $templates["version"] = $template["version"];
+                         $templates["url"] = $template["url"];
+                         if(isset($template["demo"])){
+                             $templates["demo"] = $template["demo"];
+                         } else {
+                             $templates["demo"] = "https://".$dir.".pllano.com/";
+                         }
  
-						 $resp["templates"][] = $templates;
-					}
-				}
-			}
-		}
-		return $resp;
+                         $resp["templates"][] = $templates;
+                    }
+                }
+            }
+        }
+        return $resp;
 
     }
  

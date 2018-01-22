@@ -148,7 +148,7 @@ class Utility {
                                         ->thumbnail($size, $mode)
                                         ->save('images/'.$dir_size.'/'.$subdir.'/'.$basename);
  
-								} catch (\Imagine\Exception\Exception $e) {
+                                } catch (\Imagine\Exception\Exception $e) {
                                    // handle the exception
                                 }
 

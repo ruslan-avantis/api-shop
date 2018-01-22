@@ -9,20 +9,20 @@ class Control {
     public function test($resource) {
         $config = (new Settings())->get();
         // Если ресурс активен
-		if (isset($config["settings"]["admin"]["resource"][$resource])) {
+        if (isset($config["settings"]["admin"]["resource"][$resource])) {
             if ($config["settings"]["admin"]["resource"][$resource] == true) {
                 return true;
             } else {
                 return false;
             }
-		} else {
+        } else {
             return false;
         }
     }
  
     public function delete($dir)
     {
-	   $files = array_diff(scandir($dir), array('.','..'));
+       $files = array_diff(scandir($dir), array('.','..'));
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? $this->delete("$dir/$file") : unlink("$dir/$file");
         }

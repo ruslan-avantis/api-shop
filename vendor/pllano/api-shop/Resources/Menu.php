@@ -14,7 +14,7 @@
 namespace ApiShop\Resources;
 
 class Menu {
-	
+    
     function __construct()
     {
 

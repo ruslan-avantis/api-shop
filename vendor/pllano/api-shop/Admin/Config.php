@@ -21,7 +21,7 @@ class Config {
  
     function __construct()
     {
-		// Подключаем конфиг Settings\Config
+        // Подключаем конфиг Settings\Config
         $config = (new Settings())->get();
         $this->config = $config;
     }
@@ -41,13 +41,13 @@ class Config {
  
     public function put($arr)
     {
-		$newArr = json_encode($arr);
-		$newArr = str_replace('"1"', 1, $newArr);
-		$newArr = str_replace('"0"', 0, $newArr);
-		
-		//if (is_numeric($value)) {$value = intval($value);}
-		
-		file_put_contents($this->config["settings"]["json"], $newArr);
+        $newArr = json_encode($arr);
+        $newArr = str_replace('"1"', 1, $newArr);
+        $newArr = str_replace('"0"', 0, $newArr);
+        
+        //if (is_numeric($value)) {$value = intval($value);}
+        
+        file_put_contents($this->config["settings"]["json"], $newArr);
         return true;
     }
  

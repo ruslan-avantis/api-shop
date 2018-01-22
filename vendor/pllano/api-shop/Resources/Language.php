@@ -22,13 +22,13 @@ class Language {
     private $db_name;
     private $language = "en";
     private $resource = "language";
-	private $config;
+    private $config;
  
     function __construct()
     {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
-	$this->config = $config;
+    $this->config = $config;
 
     // Отдаем роутеру RouterDb конфигурацию.
     $router = new Router($this->config);
@@ -47,10 +47,10 @@ class Language {
         // Отправляем запрос и получаем данные
         $response = $db->get($this->resource);
  
-		if ($response != null) {
-		    foreach($response['body']['items'] as $value)
-		    {
-			    $array = (array)$value['item'];
+        if ($response != null) {
+            foreach($response['body']['items'] as $value)
+            {
+                $array = (array)$value['item'];
                 $arr[$array["id"]] = $array[$this->language];
             }
             return $arr;

@@ -24,10 +24,10 @@ class Template {
     function __construct($template = null)
     {
         // Устанавливаем название шаблона
-		if ($template != null) {
-			$this->template = $template;
-		}
-		// Подключаем конфиг Settings\Config
+        if ($template != null) {
+            $this->template = $template;
+        }
+        // Подключаем конфиг Settings\Config
         $config = (new Settings())->get();
         $this->config = $config;
     }

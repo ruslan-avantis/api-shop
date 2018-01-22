@@ -28,7 +28,7 @@ class SessionUser {
             $session->language = $lang;
         }
  
-		$response = array();
+        $response = array();
  
         if (isset($session->authorize)) {
             if ($session->authorize == 1) {
@@ -39,7 +39,7 @@ class SessionUser {
                 $response['language'] = $lang;
                 $response["authorize"] = $session->authorize;
  
-				try {
+                try {
  
                     if (isset($session->role_id)) {$response["role_id"] = $session->role_id;}
                     if (isset($session->user_id)) {$response["user_id"] = $session->user_id;}
@@ -50,8 +50,8 @@ class SessionUser {
  
                 } catch (\Exception $ex) {
  
-				    // Если не можем расшифровать, чистим сессию
-				    $session->clear();
+                    // Если не можем расшифровать, чистим сессию
+                    $session->clear();
  
                 }
  

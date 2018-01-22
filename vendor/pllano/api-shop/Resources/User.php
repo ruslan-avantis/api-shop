@@ -236,14 +236,14 @@ class User {
         $response = $db->get($resource, $arrUser);
         
         if (isset($response["headers"]["code"])) {
-			if ($response["headers"]["code"] == 200 || $response["headers"]["code"] == "200") {
+            if ($response["headers"]["code"] == 200 || $response["headers"]["code"] == "200") {
                 $item = (array)$response["body"]["items"]["0"]["item"];
                 if(isset($item["user_id"])){
                     return $item["user_id"];
                 } else {
                     return null;
                 }
-			} else {
+            } else {
                 return null;
             }
         } else {

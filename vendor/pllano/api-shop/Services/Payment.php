@@ -22,19 +22,19 @@ use ApiShop\Services\Marketplace;
 */
 class Payment
 {
-	
+    
     public function __construct($service = null)
     {
         if ($service !== null) {
             $this->service = $service;
         }
     }
-	
+    
     public function pay($id = null, array $arr = array())
     {
         // тело GET
-		// $id - записи
-		// $arr - массив с параметрами
+        // $id - записи
+        // $arr - массив с параметрами
     }
 }
  
