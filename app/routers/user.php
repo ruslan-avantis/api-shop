@@ -19,6 +19,8 @@ use ApiShop\Resources\User;
  
 // Страница авторизации
 $app->get('/sign-in', function (Request $request, Response $response, array $args) {
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
     $site = new Site();
@@ -64,9 +66,21 @@ $app->get('/sign-in', function (Request $request, Response $response, array $arg
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // print_r($content);
+	
+    $head = [
+        "page" => 'sign-in',
+        "title" => "",
+        "keywords" => "",
+        "description" => "",
+        "og_title" => "",
+        "og_description" => "",
+        "host" => $host,
+        "path" => $path
+    ];
  
-    return $this->twig->render('sign-in.html', [
-        "template" => $site->template(),
+    return $this->view->render('sign-in.html', [
+        "head" => $head,
+		"template" => $site->template(),
         "pages" => $page,
         "site" => $site_config,
         "config" => $config['settings']['site'],
@@ -80,6 +94,8 @@ $app->get('/sign-in', function (Request $request, Response $response, array $arg
  
 // Страница регистрации
 $app->get('/sign-up', function (Request $request, Response $response, array $args) {
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
     $site = new Site();
@@ -126,8 +142,20 @@ $app->get('/sign-up', function (Request $request, Response $response, array $arg
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // print_r($content);
+	
+    $head = [
+        "page" => 'sign-in',
+        "title" => "",
+        "keywords" => "",
+        "description" => "",
+        "og_title" => "",
+        "og_description" => "",
+        "host" => $host,
+        "path" => $path
+    ];
  
-    return $this->twig->render('sign-up.html', [
+    return $this->view->render('sign-up.html', [
+	    "head" => $head,
         "template" => $site->template(),
         "pages" => $page,
         "site" => $site_config,

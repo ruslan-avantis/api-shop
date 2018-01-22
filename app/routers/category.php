@@ -22,6 +22,7 @@ use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
+use ApiShop\Resources\Template;
 use ApiShop\Model\SessionUser;
 use ApiShop\Model\Filter;
 use ApiShop\Model\Pagination;
@@ -33,8 +34,14 @@ $app->get('/category', function (Request $request, Response $response, array $ar
     $utility = new Utility();
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
+ 
     $site = new Site();
     $site_config = $site->get();
+    $site_template = $site->template();
+ 
+    $templateConfig = new Template($site_template);
+    $template = $templateConfig->get();
+ 
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
     // Читаем ключи
@@ -42,17 +49,28 @@ $app->get('/category', function (Request $request, Response $response, array $ar
     $token_key = $config['key']['token'];
     // Подключаем мультиязычность
 
-    $langs = new Langs();
+	// Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+	// Подключаем определение языка в браузере
+	$langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($session->language)) {
+    if (isset($getParams['lang'])) {
+		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+		    $lang = $getParams['lang'];
+			$session->language = $getParams['lang'];
+		} elseif (isset($session->language)) {
+            $lang = $session->language;
+		} else {
+            $lang = $langs->getLanguage();
+		}
+	} elseif (isset($session->language)) {
         $lang = $session->language;
-    } elseif ($langs->getLanguage()) {
-        $lang = $langs->getLanguage();
     } else {
-        $lang = $site_config["language"];
+        $lang = $langs->getLanguage();
     }
-
+    // Подключаем мультиязычность
     $language = (new Language())->get($lang);
+ 
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
@@ -183,8 +201,8 @@ $app->get('/category', function (Request $request, Response $response, array $ar
         "path" => $path
     ];
  
-    return $this->twig->render('category.html', [
-        "template" => $site->template(),
+    return $this->view->render('category.html', [
+        "template" => $template,
         "head" => $head,
         "site" => $site_config,
         "config" => $config['settings']['site'],
@@ -200,7 +218,7 @@ $app->get('/category', function (Request $request, Response $response, array $ar
         "param" => $arr,
         "total" => $count,
         "url_param" => $get_array,
-        "url" => $url_path,
+        "url" => $url_path
     ]);
  
 });

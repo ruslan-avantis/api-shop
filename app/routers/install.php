@@ -510,7 +510,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                     $install["phone"] = $phone;
                     $install["email"] = $email;
                     $install["language"] = "ru";
-                    $install["template"] = "mini-mo";
+                    $install["template"] = $config['settings']['themes']['template'];
                     $install["iname"] = $iname;
                     $install["fname"] = $fname;
                     $install["host"] = $host;
@@ -811,10 +811,11 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     }
  
                     $session->install = null;
-                    $session->template = null;
                     $session->install_store = null;
+                    $session->template = null;
                     $session->private_key = null;
                     $session->public_key = null;
+					$session->platform_user_id = null;
  
                     $callback = array('status' => 200);
  

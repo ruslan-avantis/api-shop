@@ -20,6 +20,7 @@ use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
+use ApiShop\Resources\Template;
 use ApiShop\Resources\Install;
 use ApiShop\Model\SessionUser;
 use RouterDb\Db;
@@ -40,18 +41,28 @@ $app->get('/', function (Request $request, Response $response, array $args) {
  
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
-    
-     
+ 
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
     // Читаем ключи
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
+ 
+	// Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+	// Подключаем определение языка в браузере
+	$langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
-    $langs = new Langs();
-
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($session->language)) {
+    if (isset($getParams['lang'])) {
+		if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+		    $lang = $getParams['lang'];
+			$session->language = $getParams['lang'];
+		} elseif (isset($session->language)) {
+            $lang = $session->language;
+		} else {
+            $lang = $langs->getLanguage();
+		}
+	} elseif (isset($session->language)) {
         $lang = $session->language;
     } else {
         $lang = $langs->getLanguage();
@@ -59,7 +70,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     // Подключаем мультиязычность
     $language = (new Language())->get($lang);
  
-    // Подключаем плагины
+ // Подключаем плагины
     $utility = new Utility();
     // Генерируем токен
     $token = $utility->random_token();
@@ -71,14 +82,19 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     // print_r($content);
  
     if ($config["settings"]["install"]["status"] != null) {
+ 
         $site = new Site();
-        $site_config = $site->get(); 
+        $site_config = $site->get();
+ 
+        $templateConfig = new Template($config["settings"]["themes"]["template"]);
+        $template = $templateConfig->get();
  
         // Эти параметры должны браться из конфигурации сайта получаемого через API
         $arr = array(
-            "limit" => 9,
+            "limit" => 12,
             "sort" => 'price',
-            "order" => 'ASC'
+            "order" => 'ASC',
+            "state_seller" => 1
         );
 
         // Ресурс (таблица) к которому обращаемся
@@ -98,13 +114,13 @@ $app->get('/', function (Request $request, Response $response, array $args) {
             {
                 // Обрабатываем картинки
                 //print_r($item['item']['image']);
-                $product['image']['no_image'] = $utility->get_image(null, '/images/no_image.png', 360, 360);
+                $product['image']['no_image'] = $utility->get_image(null, '/images/no_image.png', $template["home"]["product"]["image_width"], $template["home"]["product"]["image_height"]);
                 $image_1 = '';
                 $image_1 = (isset($item['item']['image']['0']['image_path'])) ? $utility->clean($item['item']['image']['0']['image_path']) : null;
-                if (isset($image_1)) {$product['image']['1'] = $utility->get_image($item['item']['product_id'], $image_1, 360, 360);}
+                if (isset($image_1)) {$product['image']['1'] = $utility->get_image($item['item']['product_id'], $image_1, $template["home"]["product"]["image_width"], $template["home"]["product"]["image_height"]);}
                 $image_2 = '';
                 $image_2 = (isset($item['item']['image']['1']['image_path'])) ? $utility->clean($item['item']['image']['1']['image_path']) : null;
-                if (isset($image_2)) {$product['image']['2'] = $utility->get_image($item['item']['product_id'], $image_2, 360, 360);}
+                if (isset($image_2)) {$product['image']['2'] = $utility->get_image($item['item']['product_id'], $image_2, $template["home"]["product"]["image_width"], $template["home"]["product"]["image_height"]);}
  
                 $path_url = pathinfo($item['item']['url']);
                 $basename = $path_url['basename']; // lib.inc.php
@@ -117,8 +133,8 @@ $app->get('/', function (Request $request, Response $response, array $args) {
                 $product['serie'] = (isset($item['item']['serie'])) ? $utility->clean($item['item']['serie']) : '';
                 $product['articul'] = (isset($item['item']['articul'])) ? $utility->clean($item['item']['articul']) : '';
                 if ($item['item']['serie'] && $item['item']['articul']) {$product['name'] = $item['item']['serie'].' '.$item['item']['articul'];}
-                $product['oldprice'] = (isset($item['item']['oldprice'])) ? $utility->clean($item['item']['oldprice']) : '';
-                $product['price'] = (isset($item['item']['price'])) ? $utility->clean($item['item']['price']) : '';
+                $product['oldprice'] = (isset($item['item']['oldprice_out'])) ? $utility->clean($item['item']['oldprice_out']) : '';
+                $product['price'] = (isset($item['item']['price_out'])) ? $utility->clean($item['item']['price_out']) : '';
                 $product['available'] = (isset($item['item']['available'])) ? $utility->clean($item['item']['available']) : '';
                 $product['product_id'] = (isset($item['item']['product_id'])) ? $utility->clean($item['item']['product_id']) : '';
  
@@ -152,12 +168,12 @@ $app->get('/', function (Request $request, Response $response, array $args) {
             "path" => $path
         ];
  
-        return $this->twig->render('index.html', [
-            "template" => $site->template(),
+        return $this->view->render('index.html', [
             "head" => $head,
             "site" => $site_config,
             "config" => $config['settings']['site'],
             "language" => $language,
+			"template" => $template,
             "token" => $session->token,
             "session" => $sessionUser,
             "content" => $content,
@@ -204,7 +220,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
                 "path" => $path
         ];
  
-        return $this->twig->render($index.'.html', [
+        return $this->view->render($index.'.html', [
             "template" => "install",
             "head" => $head,
             "config" => $config['settings']['site'],
