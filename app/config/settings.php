@@ -33,8 +33,8 @@ class Settings {
         }
  
         $config["settings"]["json"] = $settings;
-		
-		// Папка куда будут писатся логи Monolog
+ 
+        // Папка куда будут писатся логи Monolog
         $config["settings"]["logger"]["path"]   = isset($_ENV["docker"]) ? "php://stdout" : __DIR__ . "/../_logs/app.log";
         $config["settings"]["logger"]["name"]   = "slim-app";
         $config["settings"]["logger"]["level"] = \Monolog\Logger::DEBUG;
@@ -47,7 +47,7 @@ class Settings {
         $config["settings"]["cache"] =  __DIR__ . "/../_cache/";
  
         // Папка с шаблонами
-	    $config["settings"]["themes"]["dir"] = __DIR__ .''.$json["settings"]["themes"]["dir_name"];
+        $config["settings"]["themes"]["dir"] = __DIR__ .''.$json["settings"]["themes"]["dir_name"];
         // Директория хранения файлов базы данных json
         $config["db"]["json"]["dir"] = __DIR__ .''.$json["db"]["json"]["dir_name"];
         // Если директории нет создать
@@ -98,7 +98,7 @@ class Settings {
         $config["key"]["card"] = Key::loadFromAsciiSafeString(file_get_contents($key_card, true));
         // Динамический ключ шифрования для ajax
         $config["key"]["ajax"] = (Key::createNewRandomKey())->saveToAsciiSafeString();
-	
+    
         $key_db = $key."/db.txt";
         if (!file_exists($key_db)) {
             file_put_contents($key_db, (Key::createNewRandomKey())->saveToAsciiSafeString());
@@ -112,8 +112,8 @@ class Settings {
         if(isset($json["seller"]["public_key"])) {
             $public_key = $json["seller"]["public_key"];
         } else {
-		    $public_key = null;
-		}
+            $public_key = null;
+        }
         // Статус активации сайта null или public_key
         $config["settings"]["install"]["status"] = $public_key;
  

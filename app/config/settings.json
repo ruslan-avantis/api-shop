@@ -12,6 +12,8 @@
 		"name": "admin",
 		"language": "ru",
 		"template": "admin",
+		"vendor": "/../../vendor",
+		"plugins": "/../../plugins",
 		"marketplace": {
 			"url": "https://ru.pllano.com",
 			"seller": "/seller/",
