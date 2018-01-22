@@ -109,12 +109,11 @@ class Settings {
         // Длина ключа public_key - колличество символов
         $config["settings"]["install"]["strlen"] = 64;
  
-        if(strlen($json["seller"]["public_key"]) != $config["settings"]["install"]["strlen"]) {
-                $public_key = null;
-        }
         if(isset($json["seller"]["public_key"])) {
             $public_key = $json["seller"]["public_key"];
-        }
+        } else {
+		    $public_key = null;
+		}
         // Статус активации сайта null или public_key
         $config["settings"]["install"]["status"] = $public_key;
  
