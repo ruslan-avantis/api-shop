@@ -1,0 +1,138 @@
+{
+	"alias": "minimo1",
+	"name": "mini-mo",
+	"dir": "mini-mo",
+	"version": "1.0.1",
+	"url": "https://cdn.pllano.com/templates/mini-mo/1.0.1/mini-mo.zip",
+	"logo": "/images/logo.svg",
+	"demo": "https://mini-mo.pllano.com/",
+	"home": {
+		"name": "home",
+		"section": {
+			"menu": 1,
+			"parallax": 1,
+			"product": 1,
+			"countdown": 1,
+			"category": 1,
+			"social": 1,
+			"footer": 1
+		},
+		"product": {
+			"name": "Товары на главной",
+			"image_width": 380,
+			"image_height": 507
+		},
+		"parallax": {
+			"name": "Баннер на главной",
+			"data_to": 25,
+			"slogan": "",
+			"href": "/category",
+			"background": "/themes/templates/mini-mo/images/home/4.jpg"
+		},
+		"countdown": {
+			"name": "Таймер на главной",
+			"data_time": "2018/02/19 11:34:51",
+			"title_strong": "",
+			"title": "",
+			"background": "/themes/templates/mini-mo/images/pattern/pattern19.png",
+			"animation": "fadeInUp"
+		},
+		"category": {
+			"name": "Блок категории",
+			"one": {
+				"text": "Матрасы",
+				"title": {
+					"ru": "Матрасы",
+					"ua": "Матраци",
+					"de": "Mattresses",
+					"en": "Matratzen"
+				},
+				"url": "/category?type=матрас",
+				"image": "/themes/templates/mini-mo/images/shop/shop-category/1.jpg",
+				"count": 795
+			},
+			"two": {
+				"text": "Одеяла",
+				"title": {
+					"ru": "Одеяла",
+					"ua": "Ковдри",
+					"de": "Blankets",
+					"en": "Decken"
+				},
+				"url": "/category?type=одеяло",
+				"image": "/themes/templates/mini-mo/images/shop/shop-category/2.jpg",
+				"count": 35
+			},
+			"three": {
+				"text": "Подушки",
+				"title": {
+					"ru": "Подушки",
+					"ua": "Подушки",
+					"de": "Pillows",
+					"en": "Kissen"
+				},
+				"url": "/category?type=подушка",
+				"image": "/themes/templates/mini-mo/images/shop/shop-category/3.jpg",
+				"count": 40
+			},
+			"four": {
+				"text": "Топперы",
+				"title": {
+					"ru": "Топперы",
+					"ua": "Топпери",
+					"de": "Toppers",
+					"en": "Toppers"
+				},
+				"url": "/category?type=топпер",
+				"image": "/themes/templates/mini-mo/images/shop/shop-category/4.jpg",
+				"count": 250
+			}
+		}
+	},
+	"seo": {
+		"name": "seo",
+		"itemprop": {
+			"name": "",
+			"address": "Маршала Тимошенко 21",
+			"city": "Киев",
+			"postal_code": "01234",
+			"telephone": "380670000001",
+			"email": "info@example.com",
+			"logo": "",
+			"url": "",
+			"text": "",
+			"about": ""
+		}
+	},
+	"footer": {
+		"name": "footer",
+		"social": {
+			"rss": "#",
+			"facebook": "#",
+			"twitter": "#",
+			"vimeo": "#",
+			"youtube": "#",
+			"pinterest": "#",
+			"gplus": "#"
+		},
+		"quick_links": {
+			"one": {
+				"text": "",
+				"title": "",
+				"url": ""
+			},
+			"two": {
+				"text": "",
+				"title": "",
+				"url": ""
+			},
+			"three": {
+				"text": "",
+				"title": "",
+				"url": ""
+			}
+
+		}
+
+	}
+}
