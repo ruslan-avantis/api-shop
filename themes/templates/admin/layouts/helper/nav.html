@@ -1,0 +1,120 @@
+<nav class="bg-white sidebar sidebar-offcanvas" id="sidebar">
+<div class="user-info">
+<div class="text-center">
+<div class="btn-group btn-white text-red">
+<a class="nav-link" href="#" data-toggle="dropdown">
+{% if session.language == "ua" %}
+<i class="flag-icon flag-icon-ua"></i> <span class="menu-title"> Українська</span>
+{% elseif session.language == "en" %}
+<i class="flag-icon flag-icon-gb"></i> <span class="menu-title"> English</span>
+{% elseif session.language == "ru" %}
+<i class="flag-icon flag-icon-ru"></i> <span class="menu-title"> Русский</span>
+{% elseif session.language == "de" %}
+<i class="flag-icon flag-icon-de"></i> <span class="menu-title"> Deutsch</span>
+{% else %}
+<i class="flag-icon flag-icon-ru"></i> <span class="menu-title"> Русский</span>
+{% endif %}
+</a>
+<div class="dropdown-menu a-grey-xxxl a-hover-red-lg">
+<a class="dropdown-item" href="#" onClick="setLanguage(2);"><i class="flag-icon flag-icon-ua"></i> Українська</a>
+<a class="dropdown-item" href="#" onClick="setLanguage(1);"><i class="flag-icon flag-icon-ru"></i> Русский</a>
+<a class="dropdown-item" href="#" onClick="setLanguage(3);"><i class="flag-icon flag-icon-gb"></i> English</a>
+<a class="dropdown-item" href="#" onClick="setLanguage(4);"><i class="flag-icon flag-icon-de"></i> Deutsch</a>
+</div>
+</div>
+</div>
+{% if session.role_id == 100 %}
+<p class="name">{{ session.iname }} {{ session.fname }}</p>
+<p class="designation">ADMIN</p>
+{% endif %}
+{% if session.image %}
+<img src="/images/user/{{ session.image }}">
+{% endif %}
+<span class="online"></span>
+</div>
+<ul class="nav">
+<style>.nav-item .nav-link .flag-icon {margin-right: 15px;}</style>
+
+{% if head.page == "index" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
+<a class="nav-link" href="/admin">
+<img src="/themes/templates/{{ template }}/images/icons/1.png" alt="">
+<span class="menu-title">{{ language.24 }}</span>
+</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" target="_blank" href="{{ config.admin.marketplace.url }}{{ config.admin.marketplace.seller }}{{ config.seller.alias }}{{ config.admin.marketplace.orders }}">
+<img src="/themes/templates/{{ template }}/images/icons/5.png" alt="">
+<span class="menu-title">{{ language.90 }}</span>
+</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" target="_blank" href="{{ config.admin.marketplace.url }}{{ config.admin.marketplace.seller }}{{ config.seller.alias }}{{ config.admin.marketplace.price }}">
+<img src="/themes/templates/{{ template }}/images/icons/005-forms.png" alt="">
+<span class="menu-title">{{ language.710 }}</span>
+</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" target="_blank" href="{{ config.admin.marketplace.url }}{{ config.admin.marketplace.seller }}{{ config.seller.alias }}{{ config.admin.marketplace.supplier }}">
+<img src="/themes/templates/{{ template }}/images/icons/2.png" alt="">
+<span class="menu-title">{{ language.773 }}</span>
+</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" target="_blank" href="{{ config.admin.marketplace.url }}{{ config.admin.marketplace.seller }}{{ config.seller.alias }}">
+<img src="/themes/templates/{{ template }}/images/icons/4.png" alt="">
+<span class="menu-title">{{ language.712 }}</span>
+</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" target="_blank" href="{{ config.admin.marketplace.url }}{{ config.admin.marketplace.microservices }}">
+<img src="/themes/templates/{{ template }}/images/icons/017-diamond.png" alt="">
+<span class="menu-title">{{ language.713 }}</span>
+</a>
+</li>
+
+{% if head.page == "plugins" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
+<a class="nav-link" href="/admin/plugins">
+<img src="/themes/templates/{{ template }}/images/icons/7.png" alt="">
+<span class="menu-title">{{ language.836 }}</span>
+</a>
+</li>
+
+{% if head.page == "template" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
+<a class="nav-link" href="/admin/template">
+<img src="/themes/templates/{{ template }}/images/icons/009-layout.png" alt="">
+<span class="menu-title">{{ language.815 }}</span>
+</a>
+</li>
+
+
+
+{% if head.page == "config" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
+<a class="nav-link" href="/admin/config">
+<img src="/themes/templates/{{ template }}/images/icons/10.png" alt="">
+<span class="menu-title">{{ language.709 }}</span>
+</a>
+</li>
+
+{% if head.page == "db" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
+<a class="nav-link" data-toggle="collapse" href="#sample-pages" aria-expanded="false" aria-controls="sample-pages">
+<img src="/themes/templates/{{ template }}/images/icons/005-forms.png" alt="">
+<span class="menu-title">{{ language.828 }}<i class="fa fa-sort-down"></i></span>
+</a>
+<div class="collapse" id="sample-pages">
+<ul class="nav flex-column sub-menu">
+{% for table in db.table %}
+<li class="nav-item">
+<a class="nav-link" href="/admin/db/{{ table.name }}">{{ table.name }}</a>
+</li>
+{% endfor %}
+</ul>
+</div>
+</li>
+
+</ul>
+</nav>

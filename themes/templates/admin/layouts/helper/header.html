@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="{{ site.language }}">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="icon" href="/favicon.ico">
+<meta name="robots" content="noindex nofollow">
+{% if head.title %}<title>{{ head.title }}</title>{% endif %}
+{% if head.keywords %}<meta name="keywords" content="{{ head.keywords }}">{% endif %}
+{% if head.description %}<meta name="description" content="{{ head.description }}">{% endif %}
+{% if head.host and head.path %}<link name="canonical" href="//{{ head.host }}{{ head.path }}">{% endif %}
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.8.1/css/perfect-scrollbar.min.css" />
+<link rel="stylesheet" href="/themes/lib/flags/flag-icon.min.css" />
+<link href="/themes/lib/pnotify/3.2.0/css/pnotify.min.css" rel="stylesheet">
+<link href="/themes/templates/{{ template }}/css/style.css" rel="stylesheet">
+<link href="/themes/templates/{{ template }}/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link href="/themes/templates/{{ template }}/css/responsive.bootstrap4.min.css" rel="stylesheet">
+<link href="https://cdn.pllano.com/colors.css/1.0.3/css/colors.css" rel="stylesheet">
+<link href="https://cdn.joomimart.com/joomi-css/1.0.1/css/joomi-css.css" rel="stylesheet">
+
+</head>
+<body>
+<div class="container-scroller">
+<input type="hidden" name="csrf" id="csrf" value="{{ token }}">
