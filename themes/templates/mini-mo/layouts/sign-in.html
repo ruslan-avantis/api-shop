@@ -4,7 +4,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="/favicon.ico">
-<link rel="icon" href="/themes/templates/{{ template }}/ico/favicon.ico">
+<link rel="icon" href="/themes/templates/{{ template.name }}/ico/favicon.ico">
 <title>Login | {{ config.copyright.text }}</title>
 <meta name="description" content="Login | {{ config.copyright.text }}">
 <meta name="keyword" content="Login | {{ config.copyright.text }}">
@@ -128,7 +128,7 @@ display: none;
 <div class="col-md-6 banner-sec">
 <div class="carousel-caption d-none d-md-block">
 <div class="banner text-center">
-<a href="/"><img class="img-responsive" src="/themes/templates/{{ template }}/img/logo.svg" alt=""></a>
+<a href="/"><img class="img-responsive" src="/themes/templates/{{ template.name }}/img/logo.svg" alt=""></a>
 <h3>E-Commerce Platform API Shop</h3>
 </div>
 </div>
@@ -194,7 +194,7 @@ display: none;
 </div>
 
 </div>
-<div class="copy-text">Copyright © {{ config.copyright.date }} by <a href="{{ site.http_protocol }}://{{ site.uri }}">{{ config.copyright.text }}</a></div>
+<div class="copy-text">Copyright © {{ config.copyright.date }} by <a href="//{{ head.host }}">{{ head.host }}</a></div>
 
 </div>
 

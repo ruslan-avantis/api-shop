@@ -2,7 +2,7 @@
 <div class="footer-top wow fadeInUp" data-wow-duration="1000ms" data-wow-delay="300ms">
 <div class="container text-center">
 <div class="footer-logo">
-<a href="/"><img class="img-responsive" src="/themes/templates/{{ template }}/img/logo.svg" alt=""></a>
+<a href="/"><img class="img-responsive" src="/themes/templates/{{ template.name }}/img/logo.svg" alt=""></a>
 </div>
 <div class="social-icons">
 <ul>
@@ -16,12 +16,12 @@
 </div>
 <div class="payment-icons-list">
 <ul>
-<li><img src="/themes/templates/{{ template }}/img/payment/visa-straight-32px.png" alt="" title="Pay with Visa"></li>
-<li><img src="/themes/templates/{{ template }}/img/payment/mastercard-straight-32px.png" alt="" title="Pay with Mastercard"></li>
-<li><img src="/themes/templates/{{ template }}/img/payment/paypal-straight-32px.png" alt="" title="Pay with Paypal"></li>
-<li><img src="/themes/templates/{{ template }}/img/payment/visa-electron-straight-32px.png" alt="" title="Pay with Visa-electron"></li>
-<li><img src="/themes/templates/{{ template }}/img/payment/maestro-straight-32px.png" alt="" title="Pay with Maestro"></li>
-<li><img src="/themes/templates/{{ template }}/img/payment/discover-straight-32px.png" alt="" title="Pay with Discover"></li>
+<li><img src="/themes/templates/{{ template.name }}/img/payment/visa-straight-32px.png" alt="" title="Pay with Visa"></li>
+<li><img src="/themes/templates/{{ template.name }}/img/payment/mastercard-straight-32px.png" alt="" title="Pay with Mastercard"></li>
+<li><img src="/themes/templates/{{ template.name }}/img/payment/paypal-straight-32px.png" alt="" title="Pay with Paypal"></li>
+<li><img src="/themes/templates/{{ template.name }}/img/payment/visa-electron-straight-32px.png" alt="" title="Pay with Visa-electron"></li>
+<li><img src="/themes/templates/{{ template.name }}/img/payment/maestro-straight-32px.png" alt="" title="Pay with Maestro"></li>
+<li><img src="/themes/templates/{{ template.name }}/img/payment/discover-straight-32px.png" alt="" title="Pay with Discover"></li>
 </ul>
 </div>
 </div>
@@ -33,7 +33,7 @@
 <div class="row">
 <div class="col-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
 <div class="copyright-text padding_10 font_12">
-Copyright © {{ config.copyright.date }} <a class="control-link link-white" href="{{ site.http_protocol }}://{{ head.host }}">{{ config.copyright.text }}</a>
+Copyright © {{ config.copyright.date }} <a class="control-link link-white" href="//{{ head.host }}">{{ config.copyright.text }}</a>
 </div>
 </div>
 </div>
@@ -45,8 +45,8 @@ Copyright © {{ config.copyright.date }} <a class="control-link link-white" href
 
 </div>
 
-<link href="/themes/templates/{{ template }}/css/contact.css" rel="stylesheet">
-<link href="/themes/templates/{{ template }}/css/footer.css" rel="stylesheet">
+<link href="/themes/templates/{{ template.name }}/css/contact.css" rel="stylesheet">
+<link href="/themes/templates/{{ template.name }}/css/footer.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
 

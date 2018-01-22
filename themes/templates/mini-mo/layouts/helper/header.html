@@ -4,14 +4,13 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1">
 <link rel="icon" href="/favicon.ico">
-<link rel="icon" href="/themes/templates/{{ template }}/ico/favicon.ico">
 {% if head.page == "home" %}
 {% if config.title %}<title>{{ config.title }}</title>{% endif %}
 {% if config.description %}<meta name="description" content="{{ config.description }}">{% endif %}
 {% if site.keywords %}<meta name="keywords" content="{{ site.keywords }}">{% endif %}
-{% if head.host %}<link name="canonical" content="{{ site.http_protocol }}://{{ head.host }}">{% endif %}
+{% if head.host %}<link name="canonical" content="//{{ head.host }}">{% endif %}
 {% if site.robots %}<meta name="robots" content="{{ site.robots }}">{% endif %}
-{% if site.og_url %}<meta property="og:url" content="{{ site.http_protocol }}://{{ head.host }}{{ head.path }}">{% endif %}
+{% if site.og_url %}<meta property="og:url" content="//{{ head.host }}{{ head.path }}">{% endif %}
 {% if site.og_locale %}<meta property="og:locale" content="{{ site.og_locale }}">{% endif %}
 {% if site.og_type %}<meta property="og:type" content="{{ site.og_type }}">{% endif %}
 {% if site.og_title %}<meta property="og:title" content="{{ site.og_title }}">{% endif %}
@@ -22,9 +21,9 @@
 {% if head.title %}<title>{{ head.title }}</title>{% endif %}
 {% if head.keywords %}<meta name="keywords" content="{{ head.keywords }}">{% endif %}
 {% if head.description %}<meta name="description" content="{{ head.description }}">{% endif %}
-{% if head.host and head.path %}<link name="canonical" href="{{ site.http_protocol }}://{{ head.host }}{{ head.path }}">{% endif %}
+{% if head.host and head.path %}<link name="canonical" href="//{{ head.host }}{{ head.path }}">{% endif %}
 {% if head.robots %}<meta name="robots" content="{{ head.robots }}">{% endif %}
-{% if head.og_url %}<meta property="og:url" content="{{ site.http_protocol }}://{{ head.host }}{{ head.path }}">{% endif %}
+{% if head.og_url %}<meta property="og:url" content="//{{ head.host }}{{ head.path }}">{% endif %}
 {% if head.og_locale %}<meta property="og:locale" content="{{ head.og_locale }}">{% endif %}
 {% if head.og_type %}<meta property="og:type" content="{{ head.og_type }}">{% endif %}
 {% if head.og_title %}<meta property="og:title" content="{{ head.og_title }}">{% endif %}
@@ -40,10 +39,10 @@
 <link href="https://cdn.joomimart.com/joomi-css/1.0.1/css/joomi-css.css" rel="stylesheet">
 <link href="https://cdn.joomimart.com/joomi-colors/1.0.2/css/joomi-colors.css" rel="stylesheet">
 <link href="/themes/lib/pnotify/3.2.0/css/pnotify.min.css" rel="stylesheet">
-<link href="/themes/templates/{{ template }}/css/joomi-mini-mo.css" rel="stylesheet">
-<link href="/themes/templates/{{ template }}/css/marketing.css" rel="stylesheet">
-<link href="/themes/templates/{{ template }}/css/section_1.css" rel="stylesheet">
-<link href="/themes/templates/{{ template }}/css/product-list.css" rel="stylesheet">
+<link href="/themes/templates/{{ template.name }}/css/joomi-mini-mo.css" rel="stylesheet">
+<link href="/themes/templates/{{ template.name }}/css/marketing.css" rel="stylesheet">
+<link href="/themes/templates/{{ template.name }}/css/section_1.css" rel="stylesheet">
+<link href="/themes/templates/{{ template.name }}/css/product-list.css" rel="stylesheet">
 <script src="/themes/app/js/app.js"></script>
 
 </head>
