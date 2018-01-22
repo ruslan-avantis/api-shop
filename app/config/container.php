@@ -12,6 +12,7 @@
  */
  
 use ApiShop\Resources\Site;
+use ApiShop\Config\Settings;
 
 //use Twig_Loader_Filesystem;
 //use Twig_Environment;
@@ -28,33 +29,52 @@ $container['logger'] = function ($logger) {
 };
 
 // Register Original Twig View
-$container['twig'] = function ($themes) {
+$container['view'] = function ($conf) {
  
-    $config = $themes->get('settings')['themes'];
+    $config = $conf->get('settings')['themes'];
  
-    if ($themes->get('settings')["install"]["status"] != null) {
+    if ($conf->get('settings')["install"]["status"] != null) {
         // Получаем название шаблона
         $template = $config["template"]; // По умолчанию mini-mo
         $site = new Site();
+        $site->get();
         if ($site->template()) {
             $template = $site->template();
         }
  
         $loader = new \Twig_Loader_Filesystem($config['dir']."/".$config['templates']."/".$template."/layouts");
-        $twig = new \Twig_Environment($loader, array(
+        $view = new \Twig_Environment($loader, array(
             'cache' => false,
             'strict_variables' => false
         ));
  
-	} else {
+    } else {
+ 
         $loader = new \Twig_Loader_Filesystem($config['dir']."/".$config['templates']."/install");
-        $twig = new \Twig_Environment($loader, array(
+        $view = new \Twig_Environment($loader, array(
             'cache' => false,
             'strict_variables' => false
         ));
-	}
+    }
  
-    return $twig;
+    return $view;
  
-	};
+};
+
+// Register Original Twig View Admin Panel
+$container['admin'] = function () {
+ 
+    $config = (new Settings())->get();
+    // Получаем название шаблона
+    $template = $config['admin']["template"];
+ 
+    $loader = new \Twig_Loader_Filesystem($config['settings']['themes']['dir']."/".$config['settings']['themes']['templates']."/".$template."/layouts");
+    $admin = new \Twig_Environment($loader, array(
+        'cache' => false,
+        'strict_variables' => false
+    ));
+ 
+    return $admin;
+ 
+};
  
