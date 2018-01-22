@@ -77,13 +77,6 @@
 </a>
 </li>
 
-{% if head.page == "plugins" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
-<a class="nav-link" href="/admin/plugins">
-<img src="/themes/templates/{{ template }}/images/icons/7.png" alt="">
-<span class="menu-title">{{ language.836 }}</span>
-</a>
-</li>
-
 {% if head.page == "template" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
 <a class="nav-link" href="/admin/template">
 <img src="/themes/templates/{{ template }}/images/icons/009-layout.png" alt="">
@@ -91,29 +84,25 @@
 </a>
 </li>
 
+{% if head.page == "plugins" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
+<a class="nav-link" href="/admin/plugins">
+<img src="/themes/templates/{{ template }}/images/icons/7.png" alt="">
+<span class="menu-title">{{ language.836 }}</span>
+</a>
+</li>
 
+{% if head.page == "db" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
+<a class="nav-link" href="/admin/db">
+<img src="/themes/templates/{{ template }}/images/icons/005-forms.png" alt="">
+<span class="menu-title">{{ language.828 }}</span>
+</a>
+</li>
 
 {% if head.page == "config" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
 <a class="nav-link" href="/admin/config">
 <img src="/themes/templates/{{ template }}/images/icons/10.png" alt="">
 <span class="menu-title">{{ language.709 }}</span>
 </a>
-</li>
-
-{% if head.page == "db" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
-<a class="nav-link" data-toggle="collapse" href="#sample-pages" aria-expanded="false" aria-controls="sample-pages">
-<img src="/themes/templates/{{ template }}/images/icons/005-forms.png" alt="">
-<span class="menu-title">{{ language.828 }}<i class="fa fa-sort-down"></i></span>
-</a>
-<div class="collapse" id="sample-pages">
-<ul class="nav flex-column sub-menu">
-{% for table in db.table %}
-<li class="nav-item">
-<a class="nav-link" href="/admin/db/{{ table.name }}">{{ table.name }}</a>
-</li>
-{% endfor %}
-</ul>
-</div>
 </li>
 
 </ul>
