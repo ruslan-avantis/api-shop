@@ -29,6 +29,7 @@ use RouterDb\Db;
 use RouterDb\Router;
 use ApiShop\Admin\Control;
 use ApiShop\Admin\AdminDatabase;
+use ApiShop\Admin\Resources;
  
 // Главная страница админ панели
 $app->get('/admin', function (Request $request, Response $response, array $args) {
@@ -50,7 +51,7 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token_admin = Crypto::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
     
@@ -121,11 +122,621 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
         ],
         "config" => $config,
         "language" => $language,
-        "token" => $session->token,
+        "token" => $session->token_admin,
         "session" => $sessionUser,
         "db" => $adminDd,
         "content" => $content
     ]);
+ 
+});
+ 
+// Список items указанного resource
+$app->get('/admin/resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+ 
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+ 
+    $config = (new Settings())->get();
+    $template = $config['admin']["template"];
+ 
+    // Подключаем плагины
+    $utility = new Utility();
+ 
+    // Получаем resource из url
+    if ($request->getAttribute('resource')) {
+        $resource = $utility->clean($request->getAttribute('resource'));
+    } else {
+        $resource = null;
+    }
+ 
+    // Получаем id из url
+    if ($request->getAttribute('id')) {
+        $id = $utility->clean($request->getAttribute('id'));
+    } else {
+        $id = null;
+    }
+ 
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    // Генерируем токен
+    $token = $utility->random_token();
+    // Записываем токен в сессию
+    $session->token_admin = Crypto::encrypt($token, $token_key);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
+ 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    // Подключаем определение языка в браузере
+    $langs = new Langs();
+    // Получаем массив данных из таблицы language на языке из $session->language
+    if (isset($getParams['lang'])) {
+        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
+            $lang = $getParams['lang'];
+            $session->language = $getParams['lang'];
+        } elseif (isset($session->language)) {
+            $lang = $session->language;
+        } else {
+            $lang = $langs->getLanguage();
+        }
+    } elseif (isset($session->language)) {
+        $lang = $session->language;
+    } else {
+        $lang = $langs->getLanguage();
+    }
+    // Подключаем мультиязычность
+    $language = (new Language())->get($lang);
+ 
+    $content = '';
+    $title = '';
+    $keywords = '';
+    $description = '';
+    $name_db = '';
+    $type = 'get';
+ 
+    if (isset($session->authorize) && isset($resource)) {
+        if ($session->role_id == 100) {
+ 
+            $resource_list = explode(',', str_replace(array('"', "'", " "), '', $config['admin']['resource_list']));
+            if (array_key_exists($resource, array_flip($resource_list))) {
+                
+                $title = $resource.'- API Shop';
+                $keywords = $resource.'- API Shop';
+                $description = $resource.'- API Shop';
+ 
+                // Отдаем роутеру RouterDb конфигурацию.
+                $router = new Router($config);
+                // Получаем название базы для указанного ресурса
+                $name_db = $router->ping($resource);
+                // Подключаемся к базе
+                $db = new Db($name_db, $config);
+ 
+                if($id >= 1) {
+                    // Отправляем запрос и получаем данные
+                    $resp = $db->get($resource, [], $id);
+                    $content = $resp['body']['items']['0']['item'];
+                    $render = $resource.'_id';
+                    $type = 'edit';
+                    if($resource == 'article'){
+                        $title = $content['seo_title'].'- API Shop';
+                        $keywords = $content['seo_keywords'].'- API Shop';
+                        $description = $content['seo_description'].'- API Shop';
+                    }
+                } else {
+                    // Отправляем запрос и получаем данные
+                    $resp = $db->get($resource);
+                    $content = $resp['body']['items'];
+                    $render = $resource;
+
+                }
+            } else {
+                $render = "404";
+            }
+        } else {
+            $render = "404";
+        }
+    } else {
+        $session->authorize = null;
+        $render = "404";
+    }
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    return $this->admin->render($render.'.html', [
+        "template" => $template,
+        "head" => [
+            "page" => $render,
+            "title" => $title,
+            "keywords" => $keywords,
+            "description" => $description,
+            "host" => $host,
+            "path" => $path
+        ],
+        "config" => $config,
+        "language" => $language,
+        "token" => $session->token_admin,
+        "session" => $sessionUser,
+        "content" => $content,
+        "editor" => $config['admin']['editor'],
+        "name_db" => $name_db,
+        "resource" => $resource,
+        "type" => $type
+    ]);
+ 
+});
+ 
+// Содать запись в resource
+$app->post('/admin/resource-post', function (Request $request, Response $response, array $args) {
+ 
+    $today = date("Y-m-d H:i:s");
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
+    // Подключаем плагины
+    $utility = new Utility();
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+ 
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
+ 
+    $resource = null;
+    if (isset($post['resource'])) {
+        $resource = filter_var($post['resource'], FILTER_SANITIZE_STRING);
+    }
+ 
+    try {
+        // Получаем токен из сессии
+        $token = Crypto::decrypt($session->token_admin, $token_key);
+    } catch (CryptoEx $ex) {
+        $token = 0;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе токена
+                (new Security())->token();
+            }
+        } else {
+            // Сообщение об Атаке или подборе токена
+            (new Security())->token();
+        }
+    }
+ 
+    try {
+        // Получаем токен из POST
+        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        // Чистим данные на всякий случай пришедшие через POST
+        $csrf = $utility->clean($post_csrf);
+    } catch (CryptoEx $ex) {
+        $csrf = 1;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе csrf
+                (new Security())->csrf();
+            }
+        } else {
+            // Сообщение об Атаке или подборе csrf
+            (new Security())->csrf();
+        }
+    }
+ 
+    // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
+    if ($csrf == $token) {
+        if (isset($session->authorize)) {
+            if ($session->authorize == 1 || $session->role_id == 100) {
+                if (isset($resource)) {
+                    $resource_list = explode(',', str_replace(array('"', "'", " "), '', $config['admin']['resource_list']));
+                    if (array_key_exists($resource, array_flip($resource_list))) {
+ 
+                        $postArr = array();
+ 
+                        if ($resource == 'article') {
+                            $postArr['title'] = 'New';
+                            $postArr['text'] = 'New text';
+                            $postArr['alias'] = 'alias';
+                            $postArr['alias_id'] = $utility->random_alias_id();
+                            $postArr['created'] = $today;
+                            $postArr['category_id'] = 0;
+                            $postArr['state'] = 1;
+                        } elseif ($resource == 'article_category') {
+                            $postArr['title'] = 'New';
+                            $postArr['text'] = 'New text';
+                            $postArr['alias'] = 'alias';
+                            $postArr['parent_id'] = 0;
+                            $postArr['alias_id'] = $utility->random_alias_id();
+                            $postArr['created'] = $today;
+                            $postArr['state'] = 1;
+                        } elseif ($resource == 'user') {
+                            $postArr['iname'] = 'New';
+                            $postArr['fname'] = 'User';
+                            $postArr['email'] = 'user.' . rand(0,9) . rand(0,9) . rand(0,9) .'@example.com';
+                            $random_number = intval( rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) ); 
+                            $postArr['phone'] = '38067'.$random_number;
+                            $postArr['alias'] = $utility->random_alias_id();
+                            $postArr['language'] = 'ru';
+                            $postArr['password'] = password_hash(('12345'), PASSWORD_DEFAULT);
+                            $postArr['role_id'] = 1;
+                            $postArr['state'] = 1;
+                        }
+ 
+                        // Отдаем роутеру RouterDb конфигурацию.
+                        $router = new Router($config);
+                        // Получаем название базы для указанного ресурса
+                        $name_db = $router->ping($resource);
+                        // Подключаемся к базе
+                        $db = new Db($name_db, $config);
+                        // Обновляем данные
+                        $db->post($resource, $postArr);
+ 
+                        $callback = array('status' => 200);
+ 
+                    } else {
+                        $callback = array(
+                            'status' => 400,
+                            'title' => "Соообщение системы",
+                            'text' => "Действие заблокировано"
+                        );
+                    }
+                } else {
+                    $callback = array(
+                        'status' => 400,
+                        'title' => "Соообщение системы",
+                        'text' => "Что то не так !"
+                    );
+                }
+            } else {
+                $callback = array(
+                    'status' => 400,
+                    'title' => "Соообщение системы",
+                    'text' => "Вы не администратор"
+                );
+            }
+        } else {
+            $callback = array(
+                'status' => 400,
+                'title' => "Соообщение системы",
+                'text' => "Вы не авторизованы"
+            );
+        }
+ 
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+ 
+        // Выводим json
+        echo json_encode($callback);
+ 
+    } else {
+ 
+        $callback = array(
+            'status' => 400,
+            'title' => "Ошибка",
+            'text' => "Обновите страницу"
+        );
+ 
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
+ 
+    }
+ 
+});
+ 
+// Удалить запись в resource
+$app->post('/admin/resource-delete', function (Request $request, Response $response, array $args) {
+ 
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
+    // Подключаем плагины
+    $utility = new Utility();
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+ 
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
+ 
+    $resource = null;
+    if (isset($post['resource'])) {
+        $resource = filter_var($post['resource'], FILTER_SANITIZE_STRING);
+    }
+ 
+    $id = null;
+    if (isset($post['id'])) {
+        $id = intval($post['id']);
+    }
+ 
+    try {
+        // Получаем токен из сессии
+        $token = Crypto::decrypt($session->token_admin, $token_key);
+    } catch (CryptoEx $ex) {
+        $token = 0;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе токена
+                (new Security())->token();
+            }
+        } else {
+            // Сообщение об Атаке или подборе токена
+            (new Security())->token();
+        }
+    }
+ 
+    try {
+        // Получаем токен из POST
+        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        // Чистим данные на всякий случай пришедшие через POST
+        $csrf = $utility->clean($post_csrf);
+    } catch (CryptoEx $ex) {
+        $csrf = 1;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе csrf
+                (new Security())->csrf();
+            }
+        } else {
+            // Сообщение об Атаке или подборе csrf
+            (new Security())->csrf();
+        }
+    }
+ 
+    // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
+    if ($csrf == $token) {
+        if (isset($session->authorize)) {
+            if ($session->authorize == 1 || $session->role_id == 100) {
+                if (isset($resource) && isset($id)) {
+                    $resource_list = explode(',', str_replace(array('"', "'", " "), '', $config['admin']['resource_list']));
+                    if (array_key_exists($resource, array_flip($resource_list))) {
+ 
+                        $postArr = array();
+ 
+                        // Отдаем роутеру RouterDb конфигурацию.
+                        $router = new Router($config);
+                        // Получаем название базы для указанного ресурса
+                        $name_db = $router->ping($resource);
+                        // Подключаемся к базе
+                        $db = new Db($name_db, $config);
+                        // Обновляем данные
+                        $db->delete($resource, [], $id);
+ 
+                        $callback = array('status' => 200);
+                    
+                    } else {
+                        $callback = array(
+                            'status' => 400,
+                            'title' => "Соообщение системы",
+                            'text' => "Действие заблокировано"
+                        );
+                    }
+                } else {
+                    $callback = array(
+                        'status' => 400,
+                        'title' => "Соообщение системы",
+                        'text' => "Что то не так !"
+                    );
+                }
+            } else {
+                $callback = array(
+                    'status' => 400,
+                    'title' => "Соообщение системы",
+                    'text' => "Вы не администратор"
+                );
+            }
+        } else {
+            $callback = array(
+                'status' => 400,
+                'title' => "Соообщение системы",
+                'text' => "Вы не авторизованы"
+            );
+        }
+ 
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+ 
+        // Выводим json
+        echo json_encode($callback);
+ 
+    } else {
+ 
+        $callback = array(
+            'status' => 400,
+            'title' => "Ошибка",
+            'text' => "Обновите страницу"
+        );
+ 
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
+ 
+    }
+ 
+});
+ 
+// Редактируем запись в resource
+$app->post('/admin/resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+ 
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
+    // Подключаем плагины
+    $utility = new Utility();
+    // Подключаем сессию
+    $session = new Session($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+ 
+    // Получаем resource из url
+    if ($request->getAttribute('resource')) {
+        $resource_list = explode(',', str_replace(array('"', "'", " "), '', $config['admin']['resource_list']));
+        $resource = $utility->clean($request->getAttribute('resource'));
+        if (array_key_exists($resource, array_flip($resource_list))) {
+            $table = json_decode(file_get_contents($config["db"]["json"]["dir"].'/'.$resource.'.config.json'), true);
+            // Получаем данные отправленные нам через POST
+            $post = $request->getParsedBody();
+            $post = (array)$post;
+        } else {
+            $resource = null;
+        }
+    } else {
+        $resource = null;
+    }
+ 
+    // Получаем id из url
+    if ($request->getAttribute('id')) {
+        $id = intval($utility->clean($request->getAttribute('id')));
+    } else {
+        $id = null;
+    }
+ 
+
+ 
+    try {
+        // Получаем токен из сессии
+        $token = Crypto::decrypt($session->token_admin, $token_key);
+    } catch (CryptoEx $ex) {
+        $token = 0;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе токена
+                (new Security())->token();
+            }
+        } else {
+            // Сообщение об Атаке или подборе токена
+            (new Security())->token();
+        }
+    }
+ 
+    try {
+        // Получаем токен из POST
+        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        // Чистим данные на всякий случай пришедшие через POST
+        $csrf = $utility->clean($post_csrf);
+    } catch (CryptoEx $ex) {
+        $csrf = 1;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе csrf
+                (new Security())->csrf();
+            }
+        } else {
+            // Сообщение об Атаке или подборе csrf
+            (new Security())->csrf();
+        }
+    }
+ 
+    // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
+    if ($csrf == $token) {
+        if (isset($session->authorize)) {
+            if ($session->authorize == 1 && $session->role_id == 100) {
+                if (isset($resource) && isset($id)) {
+                    if (array_key_exists($resource, array_flip($resource_list))) {
+                        $saveArr = array();
+                        $resource_id = $resource."_id";
+ 
+                            foreach($post as $key => $value)
+                            {
+                                if (array_key_exists($key, $table["schema"]) && $value != "" && $key != "id") {
+                                    if($key == "text" || $key == "text_ru" || $key == "text_ua" || $key == "text_de" || $key == "text_en") {
+                                        $saveArr[$key] = $utility->cleanText($value);
+                                    } elseif ($key == $resource_id) {
+                                        $value = str_replace(array('"', "'", " "), '', $value);
+                                        $saveArr[$key] = intval($utility->clean($value));
+                                    } elseif ($key == "phone") {
+                                        $value = str_replace(array('"', "'", " "), '', $value);
+                                        $saveArr[$key] = strval($utility->clean($value));
+                                    } elseif ($key == "password") {
+                                        if(strlen($value) >= 55 && strlen($value) <= 65) {
+                                            $saveArr[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+                                        } else {
+                                            $saveArr[$key] = password_hash(filter_var($value, FILTER_SANITIZE_STRING), PASSWORD_DEFAULT);
+                                        }
+                                    } else {
+                                        if (is_numeric($utility->clean($value))) {
+                                            $value = str_replace(array('"', "'", " "), '', $value);
+                                            $saveArr[$key] = intval($utility->clean($value));
+                                        } elseif (is_float($utility->clean($value))) {
+                                            $value = str_replace(array('"', "'", " "), '', $value);
+                                            $saveArr[$key] = float($utility->clean($value));
+                                        } elseif (is_bool($utility->clean($value))) {
+                                            $value = str_replace(array('"', "'", " "), '', $value);
+                                            $saveArr[$key] = boolval($utility->clean($value));
+                                        } elseif (is_string($utility->clean($value))) {
+                                            $saveArr[$key] = filter_var(strval($value), FILTER_SANITIZE_STRING);
+                                        }
+                                    }
+                                }
+                            }
+ 
+                            // Отдаем роутеру RouterDb конфигурацию.
+                            $router = new Router($config);
+                            // Получаем название базы для указанного ресурса
+                            $name_db = $router->ping($resource);
+                            // Подключаемся к базе
+                            $db = new Db($name_db, $config);
+                            // Обновляем данные
+                            $db->put($resource, $saveArr, $id);
+ 
+                            $callback = array('status' => 200);
+
+                    } else {
+                        $callback = array(
+                            'status' => 400,
+                            'title' => "Соообщение системы",
+                            'text' => "Действие заблокировано"
+                        );
+                    }
+                } else {
+                    $callback = array(
+                        'status' => 400,
+                        'title' => "Соообщение системы",
+                        'text' => "Что то не так !"
+                    );
+                }
+            } else {
+                $callback = array(
+                    'status' => 400,
+                    'title' => "Соообщение системы",
+                    'text' => "Вы не администратор"
+                );
+            }
+        } else {
+            $callback = array(
+                'status' => 400,
+                'title' => "Соообщение системы",
+                'text' => "Вы не авторизованы"
+            );
+        }
+ 
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+ 
+        // Выводим json
+        echo json_encode($callback);
+ 
+    } else {
+ 
+        $callback = array(
+            'status' => 400,
+            'title' => "Ошибка",
+            'text' => "Обновите страницу"
+        );
+ 
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
+ 
+    }
  
 });
  
@@ -137,44 +748,73 @@ $app->post('/admin/order-activate', function (Request $request, Response $respon
     $session = new Session($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
-    
-    try {
-        // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token, $token_key);
-    } catch (CryptoEx $ex) {
-        (new Security())->token();
-        // Сообщение об Атаке или подборе токена
-    }
+ 
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
+ 
+    // Подключаем плагины
+    $utility = new Utility();
+
+    try {
+        // Получаем токен из сессии
+        $token = Crypto::decrypt($session->token_admin, $token_key);
+    } catch (CryptoEx $ex) {
+        $token = 0;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе токена
+                (new Security())->token();
+            }
+        } else {
+            // Сообщение об Атаке или подборе токена
+            (new Security())->token();
+        }
+    }
+ 
     try {
         // Получаем токен из POST
         $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        // Чистим данные на всякий случай пришедшие через POST
+        $csrf = $utility->clean($post_csrf);
     } catch (CryptoEx $ex) {
-        (new Security())->csrf();
-        // Сообщение об Атаке или подборе csrf
+        $csrf = 1;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе csrf
+                (new Security())->csrf();
+            }
+        } else {
+            // Сообщение об Атаке или подборе csrf
+            (new Security())->csrf();
+        }
     }
-    // Подключаем плагины
-    $utility = new Utility();
-    // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
-        
-        if (isset($post['alias'])) {
-            $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
-
- 
-            $callback = array(
-                'status' => 200,
-                'title' => "Информация",
-                'text' => "Все ок"
-            );
+        if (isset($session->authorize)) {
+            if ($session->authorize == 1 || $session->role_id == 100) {
+                if (isset($post['alias'])) {
+                    $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
+                    $callback = array('status' => 200);
+                } else {
+                    $callback = array(
+                        'status' => 400,
+                        'title' => "Соообщение системы",
+                        'text' => "Не определен alias заказа"
+                    );
+                }
+            } else {
+                $callback = array(
+                    'status' => 400,
+                    'title' => "Соообщение системы",
+                    'text' => "Вы не являетесь администратором"
+                );
+            }
         } else {
             $callback = array(
                 'status' => 400,
                 'title' => "Соообщение системы",
-                'text' => "Не определен alias заказа"
+                'text' => "Вы не авторизованы"
             );
         }
  
@@ -183,12 +823,15 @@ $app->post('/admin/order-activate', function (Request $request, Response $respon
         $response->withHeader('Content-type', 'application/json');
         // Выводим json
         echo json_encode($callback);
+ 
     } else {
+ 
         $callback = array(
             'status' => 400,
             'title' => "Ошибка",
             'text' => "Что то не так"
         );
+ 
         // Выводим заголовки
         $response->withStatus(200);
         $response->withHeader('Content-type', 'application/json');
@@ -208,7 +851,7 @@ $app->post('/admin/template-buy', function (Request $request, Response $response
     
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token, $token_key);
+        $token = Crypto::decrypt($session->token_admin, $token_key);
     } catch (CryptoEx $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
@@ -276,7 +919,7 @@ $app->post('/admin/template-install', function (Request $request, Response $resp
     
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token, $token_key);
+        $token = Crypto::decrypt($session->token_admin, $token_key);
     } catch (CryptoEx $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
@@ -397,7 +1040,7 @@ $app->post('/admin/template-activate', function (Request $request, Response $res
     
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token, $token_key);
+        $token = Crypto::decrypt($session->token_admin, $token_key);
     } catch (CryptoEx $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
@@ -476,7 +1119,7 @@ $app->post('/admin/template-delete', function (Request $request, Response $respo
     
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token, $token_key);
+        $token = Crypto::decrypt($session->token_admin, $token_key);
     } catch (CryptoEx $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
@@ -556,7 +1199,7 @@ $app->get('/admin/template', function (Request $request, Response $response, arr
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token_admin = Crypto::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
@@ -626,7 +1269,7 @@ $app->get('/admin/template', function (Request $request, Response $response, arr
         ],
         "config" => $config,
         "language" => $language,
-        "token" => $session->token,
+        "token" => $session->token_admin,
         "session" => $sessionUser,
         "db" => $adminDd,
         "content" => $content,
@@ -662,7 +1305,7 @@ $app->get('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Resp
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token_admin = Crypto::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
@@ -722,7 +1365,7 @@ $app->get('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Resp
         ],
         "config" => $admin_config,
         "language" => $language,
-        "token" => $session->token,
+        "token" => $session->token_admin,
         "session" => $sessionUser,
         "db" => $adminDd,
         "content" => $content
@@ -757,7 +1400,7 @@ $app->post('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Res
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token_admin = Crypto::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
@@ -828,7 +1471,7 @@ $app->post('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Res
         ],
         "config" => $admin_config,
         "language" => $language,
-        "token" => $session->token,
+        "token" => $session->token_admin,
         "session" => $sessionUser,
         "db" => $adminDd,
         "content" => $content
@@ -855,7 +1498,7 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token_admin = Crypto::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
@@ -915,7 +1558,7 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
         ],
         "config" => $config,
         "language" => $language,
-        "token" => $session->token,
+        "token" => $session->token_admin,
         "session" => $sessionUser,
         "content" => $content
     ]);
@@ -942,7 +1585,7 @@ $app->get('/admin/config', function (Request $request, Response $response, array
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token_admin = Crypto::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
@@ -999,7 +1642,7 @@ $app->get('/admin/config', function (Request $request, Response $response, array
         ],
         "config" => $config,
         "language" => $language,
-        "token" => $session->token,
+        "token" => $session->token_admin,
         "session" => $sessionUser,
         "db" => $adminDd,
         "content" => $content
@@ -1027,7 +1670,7 @@ $app->post('/admin/config', function (Request $request, Response $response, arra
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token_admin = Crypto::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
@@ -1102,7 +1745,7 @@ $app->post('/admin/config', function (Request $request, Response $response, arra
         ],
         "config" => $config,
         "language" => $language,
-        "token" => $session->token,
+        "token" => $session->token_admin,
         "session" => $sessionUser,
         "db" => $adminDd,
         "content" => $content
@@ -1130,7 +1773,7 @@ $app->get('/admin/db', function (Request $request, Response $response, array $ar
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token_admin = Crypto::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
@@ -1186,7 +1829,7 @@ $app->get('/admin/db', function (Request $request, Response $response, array $ar
         ],
         "config" => $config,
         "language" => $language,
-        "token" => $session->token,
+        "token" => $session->token_admin,
         "session" => $sessionUser,
         "content" => $content
     ]);
@@ -1227,7 +1870,7 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token_admin = Crypto::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
@@ -1258,9 +1901,9 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
  
     $content = "";
     if (isset($id)) {
-        $render = "db-edit";
+        $render = "db_id";
     } else {
-        $render = "db-item";
+        $render = "db_item";
     }
     
     $name_db = null;
@@ -1318,7 +1961,7 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
             // Подключаемся к базе
             $db = new Db($name_db, $config);
             // Отправляем запрос и получаем данные
-            $resp = $db->get($resource, $arr);
+            $resp = $db->get($resource);
  
             $count = 0;
             if (isset($resp["response"]['total'])) {
@@ -1366,7 +2009,7 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
         ],
         "config" => $config,
         "language" => $language,
-        "token" => $session->token,
+        "token" => $session->token_admin,
         "session" => $sessionUser,
         "db_type" => $name_db,
         "db" => $adminDd,
@@ -1385,7 +2028,7 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
 });
  
 // Глобально
-$app->get('/admin/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get('/admin_/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
@@ -1418,7 +2061,7 @@ $app->get('/admin/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token_admin = Crypto::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
@@ -1508,9 +2151,8 @@ $app->get('/admin/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $
         ],
         "config" => $config,
         "language" => $language,
-        "token" => $session->token,
+        "token" => $session->token_admin,
         "session" => $sessionUser,
-        "db" => $adminDd,
         "content" => $content
     ]);
  

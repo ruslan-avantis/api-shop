@@ -133,8 +133,12 @@ $app->get('/category', function (Request $request, Response $response, array $ar
     $name_db = $router->ping($resource);
     // Подключаемся к базе
     $db = new Db($name_db, $config);
+    
+    $relations['relations'] = "image,description";
+    $newArr = $arr + $relations;
+ 
     // Отправляем запрос и получаем данные
-    $response = $db->get($resource, $arr);
+    $response = $db->get($resource, $newArr);
 
     $count = 0;
     if (isset($response["response"]['total'])) {

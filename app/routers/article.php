@@ -94,78 +94,66 @@ $app->get('/{alias:[a-z0-9_-]+}.html', function (Request $request, Response $res
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
-    if ($site_template != null) {
-        $json_dir = $config["settings"]["themes"]["dir"].'/'.$config["settings"]["themes"]["templates"].'/'.$site_template.'/config/';
+    $title = "";
+    $keywords = "";
+    $description = "";
+    $og_url = "";
+    $og_title = "";
+    $og_description = "";
  
-        if (file_exists($json_dir."".$alias.".json")) {
-            $json = json_decode(file_get_contents($json_dir."".$alias.".json", true));
-            if(is_object($json["0"])) {
-                $article = (array)$json["0"];
-            } elseif (is_array($json["0"])) {
-                $article = $json["0"];
-            }
-        } else {
-            $article = null;
-        }
-    } else {
-        $article = null;
-    }
+    $render = "404";
+    $content = "";
  
-    if ($article == null) {
-        // Ресурс (таблица) к которому обращаемся
-        $resource = "article";
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($config);
-        // Получаем название базы для указанного ресурса
-        $name_db = $router->ping($resource);
-        // Подключаемся к базе
-        $db = new Db($name_db, $config);
-        // Отправляем запрос и получаем данные
-        $resp = $db->get($resource, ["state" => 1, "alias" => $alias]);
- 
-        if (isset($resp["headers"]["code"])) {
-            if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == "200") {
-                // Отдаем чистые данные
-                if(is_object($resp["body"]["items"]["0"]["item"])) {
-                    $article = (array)$resp["body"]["items"]["0"]["item"];
-                } elseif (is_array($resp["body"]["items"]["0"]["item"])) {
-                    $article = $resp["body"]["items"]["0"]["item"];
-                }    
-            } else {
-                $article = null;
-            }
-        } else {
-            $article = null;
-        }
-    }
- 
-    if (isset($article["alias"])) {
-        $content = $article["text_".$lang] ? $article["text_".$lang] : "";
-        $page = $article["alias"] ? $article["alias"] : "article";
-        $title = $article["seo_title"] ? $article["seo_title"].' | '.$host : $host;
-        $keywords = $article["seo_keywords"] ? $article["seo_keywords"] : $host;
-        $description = $article["seo_description"] ? $article["seo_description"] : $host;
-        $og_url = $article["og_url"] ? $article["og_url"] : $site_config["http_protocol"].'://'.$host.''.$path;
-        $og_title = $article["og_title"] ? $article["og_title"] : $host;
-        $og_description = $article["og_description"] ? $article["og_description"] : $host;
-    } else {
-        $content = "";
-        $page = "";
-        $title = "";
-        $keywords = "";
-        $description = "";
-        $og_url = "";
-        $og_title = "";
-        $og_description = "";
-    }
+    // Ресурс (таблица) к которому обращаемся
+    $resource = "article";
+    // Отдаем роутеру RouterDb конфигурацию.
+    $router = new Router($config);
+    // Получаем название базы для указанного ресурса
+    $name_db = $router->ping($resource);
+    // Подключаемся к базе
+    $db = new Db($name_db, $config);
 
+    // Отправляем запрос и получаем данные
+    $resp = $db->get($resource, ["alias" => $alias]);
+ 
+    if (isset($resp["headers"]["code"])) {
+        if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == "200") {
+        // Отдаем чистые данные
+            if(is_object($resp["body"]["items"]["0"]["item"])) {
+                $content = (array)$resp["body"]["items"]["0"]["item"];
+            } elseif (is_array($resp["body"]["items"]["0"]["item"])) {
+                $content = $resp["body"]["items"]["0"]["item"];
+            }
+ 
+            $content["text"] = htmlspecialchars_decode($content["text"]);
+            $content["text_ru"] = htmlspecialchars_decode($content["text_ru"]);
+            $content["text_ua"] = htmlspecialchars_decode($content["text_ua"]);
+            $content["text_en"] = htmlspecialchars_decode($content["text_en"]);
+            $content["text_de"] = htmlspecialchars_decode($content["text_de"]);
+ 
+            $title = $content["seo_title"];
+            $keywords = $content["seo_keywords"];
+            $description = $content["seo_description"];
+            $og_url = $content["og_url"];
+            $og_title = $content["og_title"];
+            $og_description = $content["og_description"];
+ 
+            $render = "article";
+ 
+        } else {
+            $render = "404";
+        }
+    } else {
+        $render = "404";
+    }
+ 
     // Запись в лог
     $this->logger->info("article - ".$alias);
  
-    return $this->view->render('article.html', [
+    return $this->view->render($render.'.html', [
         "template" => $template,
         "head" => [
-            "page" => $page,
+            "page" => "article",
             "title" => $title,
             "keywords" => $keywords,
             "description" => $description,

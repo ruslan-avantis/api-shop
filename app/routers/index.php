@@ -94,7 +94,8 @@ $app->get('/', function (Request $request, Response $response, array $args) {
             "limit" => 12,
             "sort" => 'price',
             "order" => 'ASC',
-            "state_seller" => 1
+            "state_seller" => 1,
+            "relations" => 'image,description'
         );
 
         // Ресурс (таблица) к которому обращаемся
@@ -185,7 +186,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
         // Если ключа доступа у нет, значит сайт еще не активирован
         $content = '';
         $index = "index";
-        //$session->install = null;
+        $session->install = null;
  
         if (isset($session->install)) {
             if ($session->install == 1) {

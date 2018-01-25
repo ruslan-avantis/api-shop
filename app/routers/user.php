@@ -328,7 +328,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
                                 if(is_object($resp["body"]["items"]["0"]["item"])) {
                                     $user = (array)$resp["body"]["items"]["0"]["item"];
                                 } elseif (is_array($resp["body"]["items"]["0"]["item"])) {
-                                    $user = $resp["body"]["items"]["0"]["item"];
+                                $user = $resp["body"]["items"]["0"]["item"];
                                 }
  
                                 if ($user["state"] == 1) {
