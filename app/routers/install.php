@@ -15,7 +15,7 @@ use ApiShop\Resources\Language;
 use ApiShop\Resources\User;
 use ApiShop\Resources\Install;
  
-// Записать выбранный магазин в сессию
+// Активация с помощью public_key
 $app->post('/install-api-key', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -47,19 +47,40 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         $public_key = filter_var($post['public_key'], FILTER_SANITIZE_STRING);
-        if (strlen($public_key) == $config["settings"]["install"]["strlen"]) {
+        if (isset($public_key)) {
  
             $session->install = null;
  
-            // Подключаемся к базе json
-            $db = new Db("json", $config);
-            // Обновляем public_key в базе
-            $db->put("db", ["public_key" => $public_key], 1);
+            // Подключаем класс
+            $settings = new \ApiShop\Admin\Config();
+            // Получаем массив
+            $arrJson = $settings->get();
+            //print_r($content);
+            // Массив из POST
+            $paramPost['seller']['public_key'] = $public_key;
+			$paramPost['db']['pllanoapi']['public_key'] = $public_key;
+			$paramPost['db']['api']['public_key'] = $public_key;
  
-            // Сохраняем резервный public_key
-            if (!file_exists($config["settings"]["install"]["file"])) {
-                file_put_contents($config["settings"]["install"]["file"], $public_key);
-            }
+            // Соеденяем массивы
+            $newArr = array_replace_recursive($arrJson, $paramPost);
+            // Сохраняем в файл
+            $settings->put($newArr);
+			
+			// Скачиваем демо данные
+			$dbJson = json_decode(file_get_contents(__DIR__ .'/../config/'.$this->config['db']['json']['dir_name'].'core/db.json'), true);
+			foreach($dbJson as $value)
+            {
+			    if ($value['demo_data'] != "none") {
+				    file_put_contents(
+					    __DIR__ .'/../config/'.$this->config['db']['json']['dir_name'].''.$value['table'].'.config.json', 
+					    file_get_contents($value['demo_data'].'/'.$value['table'].'.config.json')
+					);
+					file_put_contents(
+					    __DIR__ .'/../config/'.$this->config['db']['json']['dir_name'].''.$value['table'].'.data.json', 
+						file_get_contents($value['demo_data'].'/'.$value['table'].'.data.json')
+					);
+				}
+			}
  
             $callback = array(
                 'status' => 200,

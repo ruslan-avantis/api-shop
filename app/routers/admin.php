@@ -214,22 +214,30 @@ $app->get('/admin/resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (
                 $db = new Db($name_db, $config);
  
                 if($id >= 1) {
+					$render = $resource.'_id';
+                    $type = 'edit';
                     // Отправляем запрос и получаем данные
                     $resp = $db->get($resource, [], $id);
-                    $content = $resp['body']['items']['0']['item'];
-                    $render = $resource.'_id';
-                    $type = 'edit';
-                    if($resource == 'article'){
-                        $title = $content['seo_title'].'- API Shop';
-                        $keywords = $content['seo_keywords'].'- API Shop';
-                        $description = $content['seo_description'].'- API Shop';
+                    if (isset($resp["headers"]["code"])) {
+                        if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == '200') {
+                            $content = $resp['body']['items']['0']['item'];
+                            if($resource == 'article'){
+                                $title = $content['seo_title'].'- API Shop';
+                                $keywords = $content['seo_keywords'].'- API Shop';
+                                $description = $content['seo_description'].'- API Shop';
+                            }
+                        }
                     }
                 } else {
+				    $render = $resource;
                     // Отправляем запрос и получаем данные
                     $resp = $db->get($resource);
-                    $content = $resp['body']['items'];
-                    $render = $resource;
-
+                    if (isset($resp["headers"]["code"])) {
+                        if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == '200') {
+                            $content = $resp['body']['items'];
+                            
+                        }
+                    }
                 }
             } else {
                 $render = "404";
@@ -334,20 +342,27 @@ $app->post('/admin/resource-post', function (Request $request, Response $respons
                         $postArr = array();
  
                         if ($resource == 'article') {
-                            $postArr['title'] = 'New';
-                            $postArr['text'] = 'New text';
+                            $postArr['title'] = 'New Article';
+                            $postArr['text'] = '<div class="text-red font_56">New Text Article</div>';
                             $postArr['alias'] = 'alias';
                             $postArr['alias_id'] = $utility->random_alias_id();
                             $postArr['created'] = $today;
                             $postArr['category_id'] = 0;
                             $postArr['state'] = 1;
-                        } elseif ($resource == 'article_category') {
-                            $postArr['title'] = 'New';
-                            $postArr['text'] = 'New text';
+                        } elseif ($resource == 'article_category' || $resource == 'category') {
+                            $postArr['title'] = 'New Category';
+                            $postArr['text'] = '<div class="text-red font_56">New Text Category</div>';
                             $postArr['alias'] = 'alias';
                             $postArr['parent_id'] = 0;
                             $postArr['alias_id'] = $utility->random_alias_id();
                             $postArr['created'] = $today;
+                            $postArr['state'] = 1;
+                        } elseif ($resource == 'currency') {
+                            $postArr['name'] = 'New Article';
+                            $postArr['course'] = 'course';
+                            $postArr['iso_code'] = 'iso_code';
+                            $postArr['iso_code_num'] = 'iso_code_num';
+                            $postArr['modified'] = $today;
                             $postArr['state'] = 1;
                         } elseif ($resource == 'user') {
                             $postArr['iname'] = 'New';
