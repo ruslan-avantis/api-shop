@@ -14,6 +14,7 @@ use ApiShop\Model\Security;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\User;
 use ApiShop\Resources\Install;
+use GuzzleHttp\Client as Guzzle;
  
 // Активация с помощью public_key
 $app->post('/install-api-key', function (Request $request, Response $response, array $args) {
@@ -51,39 +52,53 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
  
             $session->install = null;
  
-			$dir_name = __DIR__ .'/../config'.$config["db"]["json"]["dir_name"];
-			$rep = 'https://raw.githubusercontent.com/pllano/structure-db/master/db.json';
-			file_put_contents($dir_name.'core/db.json', file_get_contents($rep));
-			// Скачиваем демо данные
-			$db = json_decode(file_get_contents($dir_name.'core/db.json'), true);
+            $dir_name = __DIR__ .'/../config'.$config["db"]["json"]["dir_name"];
+            $rep = 'https://raw.githubusercontent.com/pllano/structure-db/master/db.json';
+            file_put_contents($dir_name.'core/db.json', file_get_contents($rep));
+            // Скачиваем демо данные
+            $db = json_decode(file_get_contents($dir_name.'core/db.json'), true);
  
-			if (count($db) >= 1) {
-				foreach($db as $value)
-				{
-				    if (isset($value['demo_data'])) {
-						$data = $value['demo_data'];
-						$table = $value['table'];
-					    $get_config = file_get_contents($data.'/'.$table.'.config.json');
-					    $put_config = $dir_name.''.$table.'.config.json';
-					    file_put_contents($put_config, $get_config);
-					    $get_data = file_get_contents($data.'/'.$table.'.data.json');
-					    $put_data = $dir_name.''.$table.'.data.json';
-					    file_put_contents($put_data, $get_data);
-				    }
-				}
-			}
-			
-			$template = $session->template;
+            if (count($db) >= 1) {
+                foreach($db as $value)
+                {
+                    if (isset($value['demo_data'])) {
+                        $data = $value['demo_data'];
+                        $table = $value['table'];
+                        $get_config = file_get_contents($data.'/'.$table.'.config.json');
+                        $put_config = $dir_name.''.$table.'.config.json';
+                        file_put_contents($put_config, $get_config);
+                        $get_data = file_get_contents($data.'/'.$table.'.data.json');
+                        $put_data = $dir_name.''.$table.'.data.json';
+                        file_put_contents($put_data, $get_data);
+                    }
+                }
+            }
+            
+            $template = $session->template;
  
             // Подключаем класс
             $settingsAdmin = new \ApiShop\Admin\Config();
             // Получаем массив
             $arrJson = $settingsAdmin->get();
-			$paramPost = array();
+            $paramPost = array();
             $paramPost['seller']['public_key'] = $public_key;
-			$paramPost['db']['pllanoapi']['public_key'] = $public_key;
-			$paramPost['db']['api']['public_key'] = $public_key;
-			$paramPost['settings']['themes']['template'] = $template;
+            $paramPost['db']['pllanoapi']['public_key'] = $public_key;
+            $paramPost['db']['api']['public_key'] = $public_key;
+            $paramPost['settings']['themes']['template'] = $template;
+            
+            $guzzle = new Guzzle();
+            
+            $resp = $guzzle->request('GET', $this->url.'site?public_key='.$public_key);
+            
+            if (isset($resp["headers"]["code"])) {
+                $paramPost['seller']['alias'] = $resp['body']['items']['0']['item']['alias'];
+                $paramPost['seller']['download_dir'] = $resp['body']['items']['0']['item']['download_dir'];
+                $paramPost['seller']['download_alias'] = $resp['body']['items']['0']['item']['download_alias'];
+                $paramPost['seller']['terms_of_delivery'] = $resp['body']['items']['0']['item']['terms_of_delivery'];
+                $paramPost['seller']['currency_code'] = $resp['body']['items']['0']['item']['currency_code'];
+                $paramPost['seller']['private_key'] = $resp['body']['items']['0']['item']['private_key'];
+            }
+ 
             // Соеденяем массивы
             $newArr = array_replace_recursive($arrJson, $paramPost);
             // Сохраняем в файл
@@ -825,8 +840,8 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
             if (isset($records["headers"]["code"])) {
                 if ($records["headers"]["code"] == 202 || $records["headers"]["code"] == "202") {
  
-					$public_key = $session->public_key;
-					$template = $session->template;
+                    $public_key = $session->public_key;
+                    $template = $session->template;
  
                     $dir_name = __DIR__ .'/../config'.$config["db"]["json"]["dir_name"];
                     $rep = 'https://raw.githubusercontent.com/pllano/structure-db/master/db.json';
@@ -858,7 +873,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     $paramPost['seller']['public_key'] = $public_key;
                     $paramPost['db']['pllanoapi']['public_key'] = $public_key;
                     $paramPost['db']['api']['public_key'] = $public_key;
-					$paramPost['settings']['themes']['template'] = $template;
+                    $paramPost['settings']['themes']['template'] = $template;
                     // Соеденяем массивы
                     $newArr = array_replace_recursive($arrJson, $paramPost);
                     // Сохраняем в файл

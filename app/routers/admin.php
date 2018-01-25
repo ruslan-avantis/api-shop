@@ -214,7 +214,7 @@ $app->get('/admin/resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (
                 $db = new Db($name_db, $config);
  
                 if($id >= 1) {
-					$render = $resource.'_id';
+                    $render = $resource.'_id';
                     $type = 'edit';
                     // Отправляем запрос и получаем данные
                     $resp = $db->get($resource, [], $id);
@@ -229,7 +229,7 @@ $app->get('/admin/resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (
                         }
                     }
                 } else {
-				    $render = $resource;
+                    $render = $resource;
                     // Отправляем запрос и получаем данные
                     $resp = $db->get($resource);
                     if (isset($resp["headers"]["code"])) {
@@ -340,12 +340,13 @@ $app->post('/admin/resource-post', function (Request $request, Response $respons
                     if (array_key_exists($resource, array_flip($resource_list))) {
  
                         $postArr = array();
+                        $random_alias_id = $utility->random_alias_id();
  
                         if ($resource == 'article') {
                             $postArr['title'] = 'New Article';
                             $postArr['text'] = '<div class="text-red font_56">New Text Article</div>';
                             $postArr['alias'] = 'alias';
-                            $postArr['alias_id'] = $utility->random_alias_id();
+                            $postArr['alias_id'] = $random_alias_id;
                             $postArr['created'] = $today;
                             $postArr['category_id'] = 0;
                             $postArr['state'] = 1;
@@ -354,7 +355,7 @@ $app->post('/admin/resource-post', function (Request $request, Response $respons
                             $postArr['text'] = '<div class="text-red font_56">New Text Category</div>';
                             $postArr['alias'] = 'alias';
                             $postArr['parent_id'] = 0;
-                            $postArr['alias_id'] = $utility->random_alias_id();
+                            $postArr['alias_id'] = $random_alias_id;
                             $postArr['created'] = $today;
                             $postArr['state'] = 1;
                         } elseif ($resource == 'currency') {
@@ -370,9 +371,9 @@ $app->post('/admin/resource-post', function (Request $request, Response $respons
                             $postArr['email'] = 'user.' . rand(0,9) . rand(0,9) . rand(0,9) .'@example.com';
                             $random_number = intval( rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) ); 
                             $postArr['phone'] = '38067'.$random_number;
-                            $postArr['alias'] = $utility->random_alias_id();
+                            $postArr['alias'] = $random_alias_id;
                             $postArr['language'] = 'ru';
-                            $postArr['password'] = password_hash(('12345'), PASSWORD_DEFAULT);
+                            $postArr['password'] = password_hash($random_alias_id, PASSWORD_DEFAULT);
                             $postArr['role_id'] = 1;
                             $postArr['state'] = 1;
                         }
