@@ -52,11 +52,12 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
             $session->install = null;
  
             // Подключаем класс
-            $settings = new \ApiShop\Admin\Config();
+            $settingsAdmin = new \ApiShop\Admin\Config();
             // Получаем массив
-            $arrJson = $settings->get();
+            $arrJson = $settingsAdmin->get();
             //print_r($content);
-            // Массив из POST
+ 
+			$paramPost = array();
             $paramPost['seller']['public_key'] = $public_key;
 			$paramPost['db']['pllanoapi']['public_key'] = $public_key;
 			$paramPost['db']['api']['public_key'] = $public_key;
@@ -64,10 +65,11 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
             // Соеденяем массивы
             $newArr = array_replace_recursive($arrJson, $paramPost);
             // Сохраняем в файл
-            $settings->put($newArr);
+            $settingsAdmin->put($newArr);
 			
 			// Скачиваем демо данные
-			$dbJson = json_decode(file_get_contents(__DIR__ .'/../config/'.$this->config['db']['json']['dir_name'].'core/db.json'), true);
+			$dbJson = json_decode(file_get_contents('https://raw.githubusercontent.com/pllano/structure-db/master/db.json'), true);
+			
 			foreach($dbJson as $value)
             {
 			    if ($value['demo_data'] != "none") {
@@ -82,11 +84,8 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
 				}
 			}
  
-            $callback = array(
-                'status' => 200,
-                'title' => "Информация",
-                'text' => "Все ок"
-            );
+            $callback = array('status' => 200);
+ 
         } else {
             $callback = array(
                 'status' => 400,
