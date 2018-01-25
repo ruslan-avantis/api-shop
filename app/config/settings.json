@@ -6,6 +6,10 @@
 		"public_key": null,
 		"private_key": null,
 		"alias": null,
+		"download_dir": null,
+		"download_alias": null,
+		"terms_of_delivery": null,
+		"currency_code": null,
 		"store": "1"
 	},
 	"admin": {
@@ -82,14 +86,14 @@
 			"config": "1",
 			"url": "https://api.pllano.com/",
 			"auth": "QueryKeyAuth",
-			"public_key": "test",
-			"private_key": ""
+			"public_key": null,
+			"private_key": null
 		},
 		"api": {
-			"private_key": "test",
 			"url": "https://ua.pllano.com/api/v1/json/",
 			"auth": "QueryKeyAuth",
-			"public_key": "",
+			"public_key": null,
+			"private_key": null,
 			"config": "1"
 		},
 		"json": {
