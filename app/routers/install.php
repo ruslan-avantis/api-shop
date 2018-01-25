@@ -50,39 +50,39 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
         if (isset($public_key)) {
  
             $session->install = null;
+			
+			
+			$dir_name = __DIR__ .'/../config'.$config["db"]["json"]["dir_name"];
+			file_put_contents($dir_name.'core/db.json', file_get_contents('https://raw.githubusercontent.com/pllano/structure-db/master/db.json'));
+			// Скачиваем демо данные
+			$dbJson = json_decode(file_get_contents($dir_name.'core/db.json'), true);
+ 
+			if ($dbJson == true) {
+				foreach($dbJson as $value)
+				{
+				    if (isset($value['demo_data'])) {
+					    $get = file_get_contents($value['demo_data'].'/'.$value['table'].'.config.json');
+					    $put = $dir_name.''.$value['table'].'.config.json';
+					    file_put_contents($put, $get);
+					    $get = file_get_contents($value['demo_data'].'/'.$value['table'].'.data.json');
+					    $put = $dir_name.''.$value['table'].'.data.json';
+					    file_put_contents($put, $get);
+				    }
+				}
+			}
  
             // Подключаем класс
             $settingsAdmin = new \ApiShop\Admin\Config();
             // Получаем массив
             $arrJson = $settingsAdmin->get();
-            //print_r($content);
- 
 			$paramPost = array();
             $paramPost['seller']['public_key'] = $public_key;
 			$paramPost['db']['pllanoapi']['public_key'] = $public_key;
 			$paramPost['db']['api']['public_key'] = $public_key;
- 
             // Соеденяем массивы
             $newArr = array_replace_recursive($arrJson, $paramPost);
             // Сохраняем в файл
             $settingsAdmin->put($newArr);
-			
-			// Скачиваем демо данные
-			$dbJson = json_decode(file_get_contents('https://raw.githubusercontent.com/pllano/structure-db/master/db.json'), true);
-			
-			foreach($dbJson as $value)
-            {
-			    if ($value['demo_data'] != "none") {
-				    file_put_contents(
-					    __DIR__ .'/../config/'.$this->config['db']['json']['dir_name'].''.$value['table'].'.config.json', 
-					    file_get_contents($value['demo_data'].'/'.$value['table'].'.config.json')
-					);
-					file_put_contents(
-					    __DIR__ .'/../config/'.$this->config['db']['json']['dir_name'].''.$value['table'].'.data.json', 
-						file_get_contents($value['demo_data'].'/'.$value['table'].'.data.json')
-					);
-				}
-			}
  
             $callback = array('status' => 200);
  
