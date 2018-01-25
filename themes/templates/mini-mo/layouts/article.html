@@ -2,7 +2,17 @@
 {{ include ('helper/nav.html') }}
 {{ include ('helper/title.html') }}
 {% autoescape false %}
-{{ content }}{# content won't be escaped #}
+{% if session.language == "ua" and content.text_ua %}
+{{ content.text_ua }}
+{% elseif session.language == "en" and content.text_en %}
+{{ content.text_en }}
+{% elseif session.language == "ru" and content.text_ru %}
+{{ content.text_ru }}
+{% elseif session.language == "de" and content.text_de %}
+{{ content.text_de }}
+{% else %}
+{{ content.text }}
+{% endif %}
 {% endautoescape %}
 {{ include ('helper/newsletter.html') }}
 {{ include ('helper/footer.html') }}
