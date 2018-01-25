@@ -23,6 +23,8 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 - email: admin@example.com
 - пароль: admin12345
 
+Обязательно поменяйте данные и пароль пользователя по умолчанию !!!
+
 ## Установка с созданием учетной записи
 - Скачайте [`/install.php`](https://raw.githubusercontent.com/pllano/api-shop/master/install.php)
 - Скопируйте `install.php` в корень вашего сайта `http://example.com/`
