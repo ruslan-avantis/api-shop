@@ -25,7 +25,7 @@ class AdminDatabase {
                     foreach($json as $value)
                     {
                         $table["name"] = $value["table"];
-						$table["schema"] = $value["schema"];
+                        $table["schema"] = $value["schema"];
                         $resp["table"][] = $table;
                     }
                 }

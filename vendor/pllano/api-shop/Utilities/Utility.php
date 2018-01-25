@@ -58,6 +58,13 @@ class Utility {
         return $value;
         
     }
+    
+    // Функция клинер. Усиленная замена htmlspecialchars
+    public function cleanText($value = "") {
+        $value = trim($value);
+        $value = htmlspecialchars($value, ENT_QUOTES);
+        return $value; 
+    }
 
     public function phone_clean($value = "") {
 

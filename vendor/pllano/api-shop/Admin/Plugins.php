@@ -28,13 +28,12 @@ class Plugins {
  
     public function get()
     {
-        $vendor_dir = __DIR__ .''.$this->config["admin"]["vendor"].'/';
-		print_r($vendor_dir);
+        $vendor_dir = $this->config["admin"]["vendor"].'/';
         if (file_exists($vendor_dir."auto_require.json")) {
             return json_decode(file_get_contents($vendor_dir."auto_require.json"), true);
         } else {
-		    return null;
-		}
+            return null;
+        }
     }
  
     public function put($arr)
@@ -44,7 +43,7 @@ class Plugins {
         file_put_contents($vendor_dir."auto_require.json", $newArr);
         return true;
     }
-	
+    
     public function delete($arr)
     {
         $newArr = json_encode($arr);
