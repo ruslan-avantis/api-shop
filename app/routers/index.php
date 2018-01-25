@@ -186,7 +186,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
         // Если ключа доступа у нет, значит сайт еще не активирован
         $content = '';
         $index = "index";
-        $session->install = null;
+        //$session->install = null;
  
         if (isset($session->install)) {
             if ($session->install == 1) {
