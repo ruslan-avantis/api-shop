@@ -52,22 +52,28 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
             $session->install = null;
  
 			$dir_name = __DIR__ .'/../config'.$config["db"]["json"]["dir_name"];
-			file_put_contents($dir_name.'core/db.json', file_get_contents('https://raw.githubusercontent.com/pllano/structure-db/master/db.json'));
+			$rep = 'https://raw.githubusercontent.com/pllano/structure-db/master/db.json';
+			file_put_contents($dir_name.'core/db.json', file_get_contents($rep));
 			// Скачиваем демо данные
-			$dbJson = json_decode(file_get_contents($dir_name.'core/db.json'), true);
-			if (count($dbJson) >= 1) {
-				foreach($dbJson as $value)
+			$db = json_decode(file_get_contents($dir_name.'core/db.json'), true);
+ 
+			if (count($db) >= 1) {
+				foreach($db as $value)
 				{
 				    if (isset($value['demo_data'])) {
-					    $get = file_get_contents($value['demo_data'].'/'.$value['table'].'.config.json');
-					    $put = $dir_name.''.$value['table'].'.config.json';
-					    file_put_contents($put, $get);
-					    $get = file_get_contents($value['demo_data'].'/'.$value['table'].'.data.json');
-					    $put = $dir_name.''.$value['table'].'.data.json';
-					    file_put_contents($put, $get);
+						$data = $value['demo_data'];
+						$table = $value['table'];
+					    $get_config = file_get_contents($data.'/'.$table.'.config.json');
+					    $put_config = $dir_name.''.$table.'.config.json';
+					    file_put_contents($put_config, $get_config);
+					    $get_data = file_get_contents($data.'/'.$table.'.data.json');
+					    $put_data = $dir_name.''.$table.'.data.json';
+					    file_put_contents($put_data, $get_data);
 				    }
 				}
 			}
+			
+			$template = $session->template;
  
             // Подключаем класс
             $settingsAdmin = new \ApiShop\Admin\Config();
@@ -77,6 +83,7 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
             $paramPost['seller']['public_key'] = $public_key;
 			$paramPost['db']['pllanoapi']['public_key'] = $public_key;
 			$paramPost['db']['api']['public_key'] = $public_key;
+			$paramPost['settings']['themes']['template'] = $template;
             // Соеденяем массивы
             $newArr = array_replace_recursive($arrJson, $paramPost);
             // Сохраняем в файл
@@ -818,15 +825,44 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
             if (isset($records["headers"]["code"])) {
                 if ($records["headers"]["code"] == 202 || $records["headers"]["code"] == "202") {
  
-                    // Подключаемся к базе json
-                    $db = new Db("json", $config);
-                    // Обновляем public_key в базе
-                    $db->put("db", ["public_key" => $session->public_key, "template" => $session->template], 1);
+					$public_key = $session->public_key;
+					$template = $session->template;
  
-                    // Сохраняем резервный public_key
-                    if (!file_exists($config["settings"]["install"]["file"])) {
-                        file_put_contents($config["settings"]["install"]["file"], $session->public_key);
+                    $dir_name = __DIR__ .'/../config'.$config["db"]["json"]["dir_name"];
+                    $rep = 'https://raw.githubusercontent.com/pllano/structure-db/master/db.json';
+                    file_put_contents($dir_name.'core/db.json', file_get_contents($rep));
+                    // Скачиваем демо данные
+                    $db = json_decode(file_get_contents($dir_name.'core/db.json'), true);
+ 
+                    if (count($db) >= 1) {
+                        foreach($db as $value)
+                        {
+                            if (isset($value['demo_data'])) {
+                                $data = $value['demo_data'];
+                                $table = $value['table'];
+                                $get_config = file_get_contents($data.'/'.$table.'.config.json');
+                                $put_config = $dir_name.''.$table.'.config.json';
+                                file_put_contents($put_config, $get_config);
+                                $get_data = file_get_contents($data.'/'.$table.'.data.json');
+                                $put_data = $dir_name.''.$table.'.data.json';
+                                file_put_contents($put_data, $get_data);
+                            }
+                        }
                     }
+ 
+                    // Подключаем класс
+                    $settingsAdmin = new \ApiShop\Admin\Config();
+                    // Получаем массив
+                    $arrJson = $settingsAdmin->get();
+                    $paramPost = array();
+                    $paramPost['seller']['public_key'] = $public_key;
+                    $paramPost['db']['pllanoapi']['public_key'] = $public_key;
+                    $paramPost['db']['api']['public_key'] = $public_key;
+					$paramPost['settings']['themes']['template'] = $template;
+                    // Соеденяем массивы
+                    $newArr = array_replace_recursive($arrJson, $paramPost);
+                    // Сохраняем в файл
+                    $settingsAdmin->put($newArr);
  
                     $session->install = null;
                     $session->install_store = null;
