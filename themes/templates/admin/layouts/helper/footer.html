@@ -1,4 +1,15 @@
 </div>
+<footer class="footer">
+<div class="container-fluid clearfix">
+<span class="float-right">
+<div class="copy-text">Copyright © {{ config.copyright.date }} by <a href="//{{ head.host }}">{{ head.host }}</a></div>
+</span>
+</div>
+</footer>
+</div>
+</div>
+
+</div>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
@@ -11,27 +22,27 @@
 <script src="/themes/templates/{{ template }}/js/dataTables.bootstrap4.min.js"></script>
 <script src="/themes/templates/{{ template }}/js/dataTables.responsive.min.js"></script>
 <script src="/themes/templates/{{ template }}/js/responsive.bootstrap4.min.js"></script>
+{{ include ('helper/editor.html') }}
 <script src="/themes/templates/{{ template }}/js/admin.js"></script>
 <script src="/themes/app/js/app.js"></script>
 <script>
 $(document).ready(function() {
-    $('#table_responsive').DataTable( {
-        responsive: {
-            details: {
-                display: $.fn.dataTable.Responsive.display.modal( {
-                    header: function ( row ) {
-                        var data = row.data();
-                        return 'Details for '+data[0]+' '+data[1];
-                    }
-                } ),
-                renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
-                    tableClass: 'table'
-                } )
-            }
-        }
-    } );
-} );
-
+$('#table_responsive').DataTable({
+responsive: {
+details: {
+display: $.fn.dataTable.Responsive.display.modal({
+header: function ( row ) {
+var data = row.data()
+return 'Details for '+data[0]+' '+data[1]
+}
+}),
+renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+tableClass: 'table'
+})
+}
+}
+})
+})
 </script>
 </body>
 </html>

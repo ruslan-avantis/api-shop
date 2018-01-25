@@ -1,0 +1,54 @@
+<div class="card-deck">
+<div class="card col-lg-12 px-0 mb-4">
+<div class="card-body">
+<h5 class="card-title">{{ language.750 }}</h5>
+<div class="table-responsive">
+<table class="table center-aligned-table">
+<thead>
+<tr class="text-primary">
+<th>{{ language.816 }}</th>
+<th>{{ language.817 }}</th>
+<th>{{ language.818 }}</th>
+<th>{{ language.517 }}</th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+{% for template in content.templates %}
+<tr class="">
+<td>{{ template.name }}</td>
+<td>{{ template.dir }}</td>
+<td><label class="btn btn-sm bg-green-sm text-white">{{ template.version }}</label></td>
+<td><a target="_blank" href="{{ template.demo }}" class="btn btn-sm bg-orange-sm btn-hover-effects text-white">demo</a></td>
+<td>
+{% if site_template == template.name %}
+<label class="btn btn-sm bg-pink-sm btn-hover-effects text-white">{{ language.246 }}</label>
+{% else %}
+<a href="#" onClick="templateActivate('{{ template.alias }}', '{{ template.dir }}');" class="btn btn-sm bg-green-sm btn-hover-effects text-white">{{ language.759 }}</a>
+{% endif %}
+</td>
+<td>
+<a href="/admin/template/{{ template.dir }}" class="btn btn-sm bg-primary-sm btn-hover-effects text-white">{{ language.709 }}</a>
+</td>
+<td>
+{% if site_template != template.name %}
+<a href="#" onClick="templateDelete('{{ template.alias }}', '{{ template.dir }}');" class="btn btn-sm bg-danger-sm btn-hover-effects text-white">{{ language.799 }}</a>
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="text-left padding_width_14">
+<a class="btn btn-md bg-orange-md btn-hover-effects text-white" href="/admin/template">
+{{ language.835 }}
+</a>
+</div>
+
+</div>
+</div>
+</div>

@@ -1,38 +1,36 @@
 {{ include ('helper/header.html') }}
 {{ include ('helper/navbar.html') }}
-
-<h3 class="page-heading mb-4">{{ language.828 }}</h3>
-
+<h3 class="page-heading mb-4">{{ language.829 }}: {{ resource }} - {{ db_type }}</h3>
 <div class="card-deck">
 <div class="card col-lg-12 px-0 mb-4">
 <div class="card-body">
 <h5 class="card-title">{{ resource }}</h5>
-
 <table id="table_responsive" class="table table-striped table-bordered nowrap" cellspacing="0" width="100%">
 <thead>
 <tr class="text-primary">
-<th>{{ language.829 }}</th>
-<th>{{ language.840 }}</th>
+{% for key in content_key %}
+<th>{{ key }}</th>
+{% endfor %}
 </tr>
 </thead>
-<tbody>
-{% for table in content.table %}
-<tr class="">
-<td>
-<a href="/admin/db/{{ table.name }}">{{ table.name }}</a>
-</td>
-<td>
-{% for key, value in table.schema %}
-{{ key }} = {{ value }}<br>
+<tfoot>
+<tr class="text-primary">
+{% for key in content_key %}
+<th>{{ key }}</th>
 {% endfor %}
-</td>
+</tr>
+</tfoot>
+<tbody>
+{% for item in content.items %}
+<tr class="">
+{% for key, value in item %}
+<td>{{ value }}</td>
+{% endfor %}
 </tr>
 {% endfor %}
 </tbody>
 </table>
-
 </div>
 </div>
 </div>
-
 {{ include ('helper/footer.html') }}

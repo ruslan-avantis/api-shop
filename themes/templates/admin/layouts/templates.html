@@ -1,10 +1,5 @@
 {{ include ('helper/header.html') }}
 {{ include ('helper/navbar.html') }}
-<div class="container-fluid">
-<div class="row row-offcanvas row-offcanvas-right">
-{{ include ('helper/nav.html') }}
- 
-<div class="content-wrapper">
 <h3 class="page-heading mb-4">{{ language.815 }}</h3>
 
 <div class="card-deck">
@@ -39,7 +34,7 @@
 {% endif %}
 </td>
 <td>
-<a href="/admin/template/{{ template.dir }}" class="btn btn-sm bg-primary-sm btn-hover-effects text-white">{{ language.709 }}</a>
+<a href="/admin/template/{{ template.dir }}" class="btn btn-sm bg-grey-xxl btn-hover-effects text-white">{{ language.709 }}</a>
 </td>
 <td>
 {% if site_template != template.name %}
@@ -63,6 +58,7 @@
 <table id="table_responsive" class="table table-striped table-bordered nowrap" cellspacing="0" width="100%">
 <thead>
 <tr class="text-primary">
+<th>{{ language.843 }}</th>
 <th>{{ language.816 }}</th>
 <th>{{ language.817 }}</th>
 <th>{{ language.558 }}</th>
@@ -74,6 +70,7 @@
 <tbody>
 {% for template in api %}
 <tr class="">
+<td width="152px" class="text-center"><a target="_blank" href="{{ template.item.demo }}"><img width="150px" height="auto" alt="" src="{{ template.item.image }}"></a></td>
 <td>
 <a target="_blank" href="{{ template.item.demo }}">
 {% if session.language == "ua" %}
@@ -96,14 +93,14 @@
 {% if template.item.price == "0" %}
 <label class="btn btn-sm bg-green-sm text-white">{{ language.736 }}</label>
 {% else %}
-<div class="text-primary-lg font_20 text_bold">$ {{ template.item.price }}</div>
+<div class="text-primary-lg font_20 text_bold">{{ template.item.price }} $</div>
 {% endif %}
 </td>
 <td>
 {% if template.item.price == "0" %}
-<a href="#" onClick="templateInstall('{{ template.item.alias }}');" class="btn btn-sm bg-green-xl btn-hover-effects text-white">{{ language.788 }}</a>
+<a href="#" onClick="templateInstall('{{ template.item.alias }}');" class="btn btn-md bg-green-xl btn-hover-effects text-white">{{ language.788 }}</a>
 {% else %}
-<a href="#" onClick="templateBuy('{{ template.item.alias }}');" class="btn btn-sm bg-primary-lg btn-hover-effects text-white">{{ language.1 }}</a>
+<a href="#" onClick="templateBuy('{{ template.item.alias }}');" class="btn btn-md bg-primary-lg btn-hover-effects text-white">{{ language.1 }}</a>
 {% endif %}
 
 </td>
@@ -113,17 +110,6 @@
 </table>
 </div>
 </div>
-</div>
-</div>
-</div>
-
-<footer class="footer">
-<div class="container-fluid clearfix">
-<span class="float-right">
-<div class="copy-text">Copyright © {{ config.copyright.date }} by <a href="//{{ head.host }}">{{ head.host }}</a></div>
-</span>
-</div>
-</footer>
 </div>
 </div>
 {{ include ('helper/footer.html') }}

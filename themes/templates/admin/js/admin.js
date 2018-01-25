@@ -1,3 +1,43 @@
+function resourcePut(resource, id) {
+    var fields = $( ":input" || ":textarea" || ":checkbox" || ":radio" || "select").serializeArray();
+	//console.log( fields )
+    $.post('/admin/resource-put/' + resource + '/' + id, fields, function (response) {
+        var data = JSON && JSON.parse(response) || $.parseJSON(response)
+        if(data.status == 200)
+        {
+            window.location.reload()
+        } else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }),"json"
+}
+ 
+function resourcePost(resource) {
+    var csrf = $("#csrf").val()
+    $.post("/admin/resource-post", {resource: resource, csrf: csrf}, function (response) {
+        var data = JSON && JSON.parse(response) || $.parseJSON(response)
+        if(data.status == 200)
+        {
+            window.location.reload()
+            } else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }),"json"
+}
+ 
+function resourceDelete(resource, id) {
+    var csrf = $("#csrf").val()
+    $.post("/admin/resource-delete", {id: id, resource: resource, csrf: csrf}, function (response) {
+        var data = JSON && JSON.parse(response) || $.parseJSON(response)
+        if(data.status == 200)
+        {
+            window.location.reload()
+            } else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }),"json"
+}
+ 
 function templateInstall(alias) {
     var csrf = $("#csrf").val()
     $.post("/admin/template-install", {alias: alias, csrf: csrf}, function (response) {
@@ -10,7 +50,7 @@ function templateInstall(alias) {
         }
     }),"json"
 }
-
+ 
 function templateBuy(alias) {
     var csrf = $("#csrf").val()
     $.post("/admin/template-buy", {alias: alias, csrf: csrf}, function (response) {

@@ -1,10 +1,5 @@
 {{ include ('helper/header.html') }}
 {{ include ('helper/navbar.html') }}
-<div class="container-fluid">
-<div class="row row-offcanvas row-offcanvas-right">
-{{ include ('helper/nav.html') }}
- 
-<div class="content-wrapper">
 <h3 class="page-heading mb-4">{{ language.709 }} - {{ language.814 }}: {{ content.name }} - {{ language.818 }}: {{ content.version }}</h3>
 <div class="row mb-2">
 <div class="col-lg-12">
@@ -87,7 +82,7 @@
 
 {% else %}
 <div class="form-group col-xl-6">
-<label for="{{ key_two }}">{{ key_two }}</label>
+	<label for="{{ key_two }}">{{ key_two }}</label>
 <input type="text" class="form-control form-control-xs" name="home[{{ key }}][{{ key_two }}]" aria-describedby="{{ value_two }}" value="{{ value_two }}">
 </div>
 {% endif %}
@@ -323,17 +318,6 @@
 </form>
 </div>
 </div>
-</div>
-</div>
-</div>
-
-<footer class="footer">
-<div class="container-fluid clearfix">
-	<span class="float-right">
-<div class="copy-text">Copyright © {{ config.copyright.date }} by <a href="//{{ head.host }}">{{ head.host }}</a></div>
-</span>
-</div>
-</footer>
 </div>
 </div>
 {{ include ('helper/footer.html') }}

@@ -1,0 +1,215 @@
+{{ include ('helper/header.html') }}
+{{ include ('helper/navbar.html') }}
+<h1 class="page-heading mb-4">{{ language.423 }} - {{ content.title }}</h1>
+
+<div class="row mb-2">
+<div class="col-lg-12">
+<div class="card">
+<div class="card-body">
+
+<ul class="nav nav-tabs">
+<li class="nav-item">
+<a class="nav-link active" href="#index" data-toggle="tab">{{ language.24 }}</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="#language" data-toggle="tab">{{ language.848 }}</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="#seo" data-toggle="tab">SEO</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="#og" data-toggle="tab">Open Graph</a>
+</li>
+</ul>
+
+<div class="tab-content">
+	
+<div role="tabpanel" class="tab-pane active" id="index">
+
+<div class="form-row padding_7">
+<div class="form-group col-lg-6">
+<label for="title">title</label>
+<input type="text" class="form-control form-control-xs" name="title" id="title" value="{{ content.title }}">
+</div>
+<div class="form-group col-lg-6">
+<label for="alias}">alias</label>
+<input type="text" class="form-control form-control-xs" name="alias" id="alias" value="{{ content.alias }}">
+</div>
+<div class="form-group col-lg-6">
+<label for="state">state</label>
+<input type="text" class="form-control form-control-xs" name="state" id="state" value="{{ content.state }}">
+</div>
+</div>
+
+<div class="col-lg-12 padding_7">
+{% autoescape false %}
+<textarea name="text" id="text" style="width: 100%;">
+{{ content.text }}
+</textarea>
+{% endautoescape %}
+</div>
+
+</div>
+
+<div role="tabpanel" class="tab-pane fade in" id="og">
+<div class="form-row">
+	
+<div class="form-group col-lg-6">
+<label for="og_url">og_url</label>
+<input type="text" class="form-control form-control-xs" name="og_url" id="og_url" value="{{ content.og_url }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="og_title">og_title</label>
+<input type="text" class="form-control form-control-xs" name="og_title" id="og_title" value="{{ content.og_title }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="og_description">og_description</label>
+<input type="text" class="form-control form-control-xs" name="og_description" id="og_description" value="{{ content.og_description }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="og_locale">og_locale</label>
+<input type="text" class="form-control form-control-xs" name="og_locale" id="og_locale" value="{{ content.og_locale }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="og_type">og_type</label>
+<input type="text" class="form-control form-control-xs" name="og_type" id="og_type" value="{{ content.og_type }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="og_image">og_image</label>
+<input type="text" class="form-control form-control-xs" name="og_image" id="og_image" value="{{ content.og_image }}">
+</div>
+
+</div>
+</div>
+
+<div role="tabpanel" class="tab-pane fade in" id="seo">
+<div class="form-row">
+	
+<div class="form-group col-lg-6">
+<label for="seo_h1">seo_h1</label>
+<input type="text" class="form-control form-control-xs" name="seo_h1" id="seo_h1" value="{{ content.seo_h1 }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="seo_title">seo_title</label>
+<input type="text" class="form-control form-control-xs" name="seo_title" id="seo_title" value="{{ content.seo_title }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="seo_keywords">seo_keywords</label>
+<input type="text" class="form-control form-control-xs" name="seo_keywords" id="seo_keywords" value="{{ content.seo_keywords }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="seo_description">seo_description</label>
+<input type="text" class="form-control form-control-xs" name="seo_description" id="seo_description" value="{{ content.seo_description }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="robots">robots</label>
+<input type="text" class="form-control form-control-xs" name="robots" id="robots" value="{{ content.robots }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="sitemap_xml">sitemap_xml</label>
+<input type="text" class="form-control form-control-xs" name="sitemap_xml" id="sitemap_xml" value="{{ content.sitemap_xml }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="sitemap_html">sitemap_html</label>
+<input type="text" class="form-control form-control-xs" name="sitemap_html" id="sitemap_html" value="{{ content.sitemap_html }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="image">image</label>
+<input type="text" class="form-control form-control-xs" name="image" id="image" value="{{ content.image }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="category_id">category_id</label>
+<input type="text" class="form-control form-control-xs" name="category_id" id="category_id" value="{{ content.category_id }}">
+</div>
+ 			
+</div>
+</div>
+
+<div role="tabpanel" class="tab-pane fade in" id="language">
+
+<div class="col-lg-12">
+<label for="title_ru">title_ru</label>
+<input type="text" class="form-control form-control-xs" name="title_ru" id="title_ru" value="{{ content.title_ru }}">
+</div>
+
+<div class="col-lg-12 padding_height_4 padding_width_14">
+<label for="text_ru">text_ru</label>
+{% autoescape false %}
+<textarea name="text_ru" id="text_ru" style="width: 100%;">
+{{ content.text_ru }}
+</textarea>
+{% endautoescape %}
+</div>
+
+<div class="col-lg-12">
+<label for="title_ua">title_ua</label>
+<input type="text" class="form-control form-control-xs" name="title_ua" id="title_ua" value="{{ content.title_ua }}">
+</div>
+
+<div class="col-lg-12 padding_height_4 padding_width_14">
+<label for="text_ua">text_ua</label>
+{% autoescape false %}
+<textarea name="text_ua" id="text_ua" style="width: 100%;">
+{{ content.text_ua }}
+</textarea>
+{% endautoescape %}
+</div>
+
+<div class="col-lg-12">
+<label for="title_en">title_en</label>
+<input type="text" class="form-control form-control-xs" name="title_en" id="title_en" value="{{ content.title_en }}">
+</div>
+
+<div class="col-lg-12 padding_height_4 padding_width_14">
+<label for="text_en">text_en</label>
+{% autoescape false %}
+<textarea name="text_en" id="text_en" style="width: 100%;">
+{{ content.text_en }}
+</textarea>
+{% endautoescape %}
+</div>
+
+<div class="col-lg-12">
+<label for="title_de">title_de</label>
+<input type="text" class="form-control form-control-xs" name="title_de" id="title_de" value="{{ content.title_de }}">
+</div>
+
+<div class="col-lg-12 padding_height_4 padding_width_14">
+<label for="text_de">text_de</label>
+{% autoescape false %}
+<textarea name="text_de" id="text_de" style="width: 100%;">
+{{ content.text_de }}
+</textarea>
+{% endautoescape %}
+</div>
+
+</div>
+
+</div>
+
+<div class="col-lg-12">
+<div class="row padding_7">
+<button type="submit" onclick="resourcePut('{{ resource }}', {{ content.article_id }});" class="btn btn-primary text-white">{{ language.240 }}</button>
+</div>
+</div>
+
+
+</div>
+</div>
+</div>
+</div>
+
+{{ include ('helper/footer.html') }}

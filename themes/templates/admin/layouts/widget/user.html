@@ -1,0 +1,44 @@
+<div class="card-deck">
+<div class="card col-lg-12 px-0 mb-4">
+<div class="card-body">
+<h5 class="card-title">{{ language.846 }}</h5>
+<div class="table-responsive">
+<table class="table center-aligned-table">
+<thead>
+<tr class="text-primary">
+<th>id</th>
+<th>{{ language.816 }}</th>
+<th>email</th>
+<th>phone</th>
+<th>alias</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+{% for items in content.user %}
+<tr class="">
+<td>{{ items.item.id }}</td>
+<td><a href="/admin/resource/user/{{ items.item.id }}" class="">{{ items.item.iname }} {{ items.item.fname }}</a></td>
+<td>{{ items.item.email }}</td>
+<td>{{ items.item.phone }}</td>
+<td><a href="/admin/resource/user/{{ items.item.id }}" class="">{{ items.item.alias }}</a></td>
+<td class="text-center"><a href="/admin/resource/user/{{ items.item.id }}" class="text-grey"><i class="fa fa-cogs font_20" aria-hidden="true"></i></a></td>
+<td class="text-center">
+<a href="#" onclick="resourceDelete('user', {{ items.item.id }});" class="text-red"><i class="fa fa-times font_20" aria-hidden="true"></i></a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="text-left padding_width_14">
+<a class="btn btn-md bg-orange-md btn-hover-effects text-white" href="/admin/resource/user">
+{{ language.846 }}
+</a>
+</div>
+
+</div>
+</div>
+</div>

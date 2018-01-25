@@ -1,0 +1,44 @@
+<div class="card-deck">
+<div class="card col-lg-12 px-0 mb-4">
+<div class="card-body">
+<h5 class="card-title">{{ language.699 }}</h5>
+<div class="table-responsive">
+<table class="table center-aligned-table">
+<thead>
+<tr class="text-primary">
+<th>article_id</th>
+<th>{{ language.816 }}</th>
+<th>alias</th>
+<th>category_id</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+{% for items in content.article %}
+<tr class="">
+<td>{{ items.item.article_id }}</td>
+<td><a href="/admin/resource/article/{{ items.item.id }}" class="">{{ items.item.title }}</a></td>
+<td>{{ items.item.alias }}</td>
+<td>{{ items.item.category_id }}</td>
+<td class="text-center">
+<a href="/admin/resource/article/{{ items.item.id }}" class="text-grey"><i class="fa fa-cogs font_20" aria-hidden="true"></i></a>
+</td>
+<td class="text-center">
+<a href="#" onclick="resourceDelete('{{ resource }}', {{ items.item.id }});" class="text-red"><i class="fa fa-times font_20" aria-hidden="true"></i></a>
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="text-left padding_width_14">
+<a class="btn btn-md bg-orange-md btn-hover-effects text-white" href="/admin/resource/article">
+{{ language.856 }}
+</a>
+</div>
+
+</div>
+</div>
+</div>
