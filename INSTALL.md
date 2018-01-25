@@ -1,8 +1,26 @@
 # Установка API Shop
-## Простая установка
+## Установка с помощью `public_key`
 - Скачайте [`/install.php`](https://raw.githubusercontent.com/pllano/api-shop/master/install.php)
 - Скопируйте `install.php` в корень вашего сайта `http://example.com/`
 - Перейдите по ссылке `http://example.com/install.php`
+- Введите public_key
+- Выберите дизайн (шаблон) сайта
+- API Shop уже работает !
+
+При активации с помощью `public_key` система автоматически создаст пользователя, для того чтобы вы могли попасть в админ панель.
+
+Пользователь по умолчанию:
+- телефон: 0670101010
+- email: admin@example.com
+- пароль: admin12345
+
+## Установка с созданием учетной записи
+- Скачайте [`/install.php`](https://raw.githubusercontent.com/pllano/api-shop/master/install.php)
+- Скопируйте `install.php` в корень вашего сайта `http://example.com/`
+- Перейдите по ссылке `http://example.com/install.php`
+- Создайте учетную запись
+- Выбирите тип магазина (набор товаров)
+- Выберите дизайн (шаблон) сайта
 - API Shop уже работает !
 
 `P.S.` Во время первого запуска, загрузка страницы может длится до 60 секунд, в связи с тем что [AutoRequire](https://github.com/pllano/auto-require) скачивает необходимые компоненты (зависимости).
