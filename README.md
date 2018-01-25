@@ -5,12 +5,35 @@
 
 API Shop — E-Commerce Platform (движок интернет-магазина), использует RESTful API сторонних платформ для хранения и обработки информации. Написан на PHP. Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
 ## Демо версия API Shop — [DEMO](https://github.com/pllano/api-shop/blob/master/DEMO.md)
-## Простая установка
-- Скачайте [install.php](https://raw.githubusercontent.com/pllano/api-shop/master/install.php)
+
+### [Документация по установке](https://github.com/pllano/api-shop/blob/master/INSTALL.md) — API Shop
+
+## Установка с помощью `public_key`
+- Скачайте [`/install.php`](https://raw.githubusercontent.com/pllano/api-shop/master/install.php)
 - Скопируйте `install.php` в корень вашего сайта `http://example.com/`
 - Перейдите по ссылке `http://example.com/install.php`
+- Введите public_key
+- Выберите дизайн (шаблон) сайта
 - API Shop уже работает !
-### [Документация по установке](https://github.com/pllano/api-shop/blob/master/INSTALL.md) — API Shop
+
+При активации с помощью `public_key` система автоматически создаст пользователя, для того чтобы вы могли попасть в админ панель. Для перехода в админ панель в правом верхнем меню нажмите на имя и фамилию - Admin Admin.
+
+Пользователь по умолчанию:
+- телефон: 0670101010
+- email: admin@example.com
+- пароль: admin12345
+
+## Установка с созданием учетной записи
+- Скачайте [`/install.php`](https://raw.githubusercontent.com/pllano/api-shop/master/install.php)
+- Скопируйте `install.php` в корень вашего сайта `http://example.com/`
+- Перейдите по ссылке `http://example.com/install.php`
+- Создайте учетную запись
+- Выбирите тип магазина (набор товаров)
+- Выберите дизайн (шаблон) сайта
+- API Shop уже работает !
+
+После установки вы автоматически будете авторизованны как администратор под своей учетной записью. Для перехода в админ панель в правом верхнем меню нажмите на свое имя и фамилию.
+
 #### Внимание ! API Shop в активной разработке.
 - 18 января 2018 г. мы выпустили `1.0.1-BETA-1`
 - Первая стабильная версия `1.0.1` планируется в феврале-марте 2018 г.
