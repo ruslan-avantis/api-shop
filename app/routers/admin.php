@@ -202,9 +202,9 @@ $app->get('/admin/resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (
             $resource_list = explode(',', str_replace(array('"', "'", " "), '', $config['admin']['resource_list']));
             if (array_key_exists($resource, array_flip($resource_list))) {
                 
-                $title = $resource.'- API Shop';
-                $keywords = $resource.'- API Shop';
-                $description = $resource.'- API Shop';
+                $title = $resource.' - API Shop';
+                $keywords = $resource.' - API Shop';
+                $description = $resource.' - API Shop';
  
                 // Отдаем роутеру RouterDb конфигурацию.
                 $router = new Router($config);
