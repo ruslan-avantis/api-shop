@@ -12,11 +12,13 @@ API Shop — E-Commerce Platform (движок интернет-магазина
 - Скачайте [`/install.php`](https://raw.githubusercontent.com/pllano/api-shop/master/install.php)
 - Скопируйте `install.php` в корень вашего сайта `http://example.com/`
 - Перейдите по ссылке `http://example.com/install.php`
-- Введите public_key
+- Введите public_key из вашей учетной записи на ua.pllano.com
 - Выберите дизайн (шаблон) сайта
 - API Shop уже работает !
 
 При активации с помощью `public_key` система автоматически создаст пользователя, для того чтобы вы могли попасть в админ панель. Для перехода в админ панель в правом верхнем меню нажмите на имя и фамилию - Admin Admin.
+
+Для установки Демо версии `public_key` - test
 
 Пользователь по умолчанию:
 - телефон: 0670101010
