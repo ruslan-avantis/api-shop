@@ -31,6 +31,9 @@ class Settings {
                 $config = $config + $json;
             }
         }
+		
+		$config["admin"]["vendor"] = __DIR__ .''.$json["admin"]["vendor_dir"];
+		$config["admin"]["plugins"] = __DIR__ .''.$json["admin"]["plugins_dir"];
  
         $config["settings"]["json"] = $settings;
  
