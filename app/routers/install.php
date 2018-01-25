@@ -50,14 +50,12 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
         if (isset($public_key)) {
  
             $session->install = null;
-			
-			
+ 
 			$dir_name = __DIR__ .'/../config'.$config["db"]["json"]["dir_name"];
 			file_put_contents($dir_name.'core/db.json', file_get_contents('https://raw.githubusercontent.com/pllano/structure-db/master/db.json'));
 			// Скачиваем демо данные
 			$dbJson = json_decode(file_get_contents($dir_name.'core/db.json'), true);
- 
-			if ($dbJson == true) {
+			if (count($dbJson) >= 1) {
 				foreach($dbJson as $value)
 				{
 				    if (isset($value['demo_data'])) {
