@@ -1,6 +1,11 @@
 {{ include ('helper/header.html') }}
 {{ include ('helper/nav.html') }}
-{{ include ('helper/title.html') }}
+<div class="control-background-2 bg-black">
+<div class="control-text-3 text-white">
+<div class="container">
+<div class="row">
+<div class="col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+<div class="padding_top_56 padding_bottom_21 text-center">
 {% autoescape false %}
 {% if session.language == "ua" and content.text_ua %}
 {{ content.text_ua }}
@@ -14,5 +19,11 @@
 {{ content.text }}
 {% endif %}
 {% endautoescape %}
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 {{ include ('helper/newsletter.html') }}
 {{ include ('helper/footer.html') }}
