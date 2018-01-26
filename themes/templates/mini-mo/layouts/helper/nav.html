@@ -17,18 +17,29 @@
 </div>
 <div class="nav-nav a-white a-hover-light-grey-md">
 <ul class="nav justify-content-end animated bounceInRight" role="tablist">
-{% if pages.page != "category" %}
-<li class="nav-item">
-<a class="nav-link" href="/category"><span class="text-white">{{ language.402 }}</span></a>
-</li>
-{% endif %}
-<li class="nav-item">
-<a class="nav-link" href="/about-us.html"><span class="text-white">{{ language.404 }}</span></a>
-</li>
-<li class="nav-item">
-<a class="nav-link" href="/contact.html"><span class="text-white">{{ language.105 }}</span></a>
-</li>
 
+{% for menu in menu %}
+{% if pages.page == menu.alias %}
+<li class="nav-item active">
+{% else %}
+<li class="nav-item">
+{% endif %}
+<a class="nav-link" href="/{{ menu.url }}"><span class="text-white">
+{% if session.language == "ua" %}
+{{ menu.title_ua }}
+{% elseif session.language == "en" %}
+{{ menu.title_en }}
+{% elseif session.language == "ru" %}
+{{ menu.title_ru }}
+{% elseif session.language == "de" %}
+{{ menu.title_de }}
+{% else %}
+{{ menu.title }}
+{% endif %}
+</span></a>
+</li>
+{% endfor %}
+ 
 <li class="nav-item"> 
 <div class="btn-group btn-red">
 <button type="button" class="btn btn-md btn-hover-effects text-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
