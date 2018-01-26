@@ -15,7 +15,6 @@
 <link href="https://cdn.joomimart.com/joomi-colors/collection/joomi-colors-march-2017.css" rel="stylesheet">
 <link href="https://cdn.joomimart.com/joomi-colors/collection/joomi-colors-april-2017.css" rel="stylesheet">
 <link href="/themes/lib/pnotify/3.2.0/css/pnotify.min.css" rel="stylesheet">
-<link href="/themes/lib/icomoon/1.0.1/icomoon.css" rel="stylesheet">
 </head>
 <body>
 <input type="hidden" name="csrf" id="csrf" value="{{ token }}">
@@ -128,7 +127,7 @@ display: none;
 <div class="col-md-6 banner-sec">
 <div class="carousel-caption d-none d-md-block">
 <div class="banner text-center">
-<a href="/"><img class="img-responsive" src="/themes/templates/{{ template.name }}/img/logo.svg" alt=""></a>
+<a href="/"><img class="img-responsive" src="/images/logo.svg" alt=""></a>
 <h3>E-Commerce Platform API Shop</h3>
 </div>
 </div>
@@ -208,6 +207,13 @@ display: none;
 <script src="/themes/lib/pnotify/3.2.0/js/pnotify.min.js"></script>
 <link rel="stylesheet" href="/themes/lib/phone/1.0.1/css/intlTelInput.css">
 <script src="/themes/lib/phone/1.0.1/js/intlTelInput.js"></script>
+<script>
+var router_check_in = '{{ routers.check_in }}'
+var router_login = '{{ routers.login }}'
+var router_logout = '{{ routers.logout }}'
+var router_cart = '{{ routers.cart }}'
+var router_language = '{{ routers.language }}'
+</script>
 <script src="/themes/app/js/app.js"></script>
 <script src="/themes/app/js/check.js"></script>
 <script>
