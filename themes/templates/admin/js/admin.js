@@ -1,5 +1,3 @@
-var admin_dir = '/admin/'
- 
 function resourcePut(resource, id) {
     var fields = $( ":input" || ":textarea" || ":checkbox" || ":radio" || "select").serializeArray();
 	//console.log( fields )
