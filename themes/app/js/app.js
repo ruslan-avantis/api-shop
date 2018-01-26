@@ -162,7 +162,7 @@ function getLanguages() {
             return obj
         } else {
             setDb('lang', 2)
-            $.post("/language", {id: 2}, function (response) {
+            $.post(router_language, {id: 2}, function (response) {
                 var data = JSON && JSON.parse(response) || $.parseJSON(response)
                 if(data.status == 200)
                 {
@@ -186,7 +186,7 @@ function getLanguages() {
 
 function setLanguage(id) {
     setDb('lang', id)
-    $.post("/language", {id: id}, function (response) {
+    $.post(router_language, {id: id}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -221,7 +221,7 @@ function checkIn() {
     setDb('email', email)
     setDb('iname', iname)
     setDb('fname', fname)
-    $.post("/check-in", {email: email, phone: phone, password: password, iname: iname, fname: fname, csrf: csrf}, function (response) {
+    $.post(router_check_in, {email: email, phone: phone, password: password, iname: iname, fname: fname, csrf: csrf}, function (response) {
         var data = $.parseJSON(response)
         if(data.status == 200) {
             window.location = '/'
@@ -244,7 +244,7 @@ function login() {
     var csrf = $("#csrf").val()
     setDb('phone', phone)
     setDb('email', email)
-    $.post("/login", {email: email, phone: phone, password: password, csrf: csrf}, function (response) {
+    $.post(router_login, {email: email, phone: phone, password: password, csrf: csrf}, function (response) {
         var data = $.parseJSON(response)
         if(data.status == 200) {
             window.location = '/'
@@ -258,7 +258,7 @@ function login() {
 
 function logout() {
     var csrf = $("#csrf").val()
-    $.post("/logout", {csrf: csrf}, function (response) {
+    $.post(router_logout, {csrf: csrf}, function (response) {
         var data = $.parseJSON(response)
         if(data.status == 200)
         {
@@ -285,7 +285,7 @@ function newOrder(id) {
     var apart = $("#apart-" + id).val()
     var description = $("#description-" + id).val()
     var csrf = $("#csrf").val()
-    $.post("/cart/new-order", {csrf: csrf, id: id, product_id: product_id, num: num, price: price, iname: iname, fname: fname, phone: phone, email: email, city_name: city_name, street: street, build: build, apart: apart, description: description}, function (response) {
+    $.post(router_cart + "new-order", {csrf: csrf, id: id, product_id: product_id, num: num, price: price, iname: iname, fname: fname, phone: phone, email: email, city_name: city_name, street: street, build: build, apart: apart, description: description}, function (response) {
         var data = $.parseJSON(response)
         if(data.status == 200) {
             $("#ok-" + id).html(data.title)
@@ -301,7 +301,7 @@ function addToCart(id) {
     var num = $("#num-" + id).val()
     var price = $("#price-" + id).val()
     var csrf = $("#csrf").val()
-    $.post("/cart/add-to-cart", {csrf: csrf, id: id, product_id: product_id, num: num, price: price}, function (response) {
+    $.post(router_cart + "add-to-cart", {csrf: csrf, id: id, product_id: product_id, num: num, price: price}, function (response) {
         var data = $.parseJSON(response)
         if(data.status == 200) {
             OneNotify(data.title, data.text, data.color)
