@@ -42,6 +42,13 @@
 </a>
 </li>
 
+{% if head.page == "category" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
+<a class="nav-link" href="/admin/resource/category">
+<img src="/themes/templates/{{ template }}/images/icons/009-layout.png" alt="">
+<span class="menu-title">{{ language.187 }}</span>
+</a>
+</li>
+
 {% if head.page == "article" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
 <a class="nav-link" href="/admin/resource/article">
 <img src="/themes/templates/{{ template }}/images/icons/009-layout.png" alt="">
@@ -67,13 +74,6 @@
 <a class="nav-link" href="/admin/template">
 <img src="/themes/templates/{{ template }}/images/icons/009-layout.png" alt="">
 <span class="menu-title">{{ language.815 }}</span>
-</a>
-</li>
-
-{% if head.page == "plugins" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
-<a class="nav-link" href="/admin/plugins">
-<img src="/themes/templates/{{ template }}/images/icons/7.png" alt="">
-<span class="menu-title">{{ language.836 }}</span>
 </a>
 </li>
 
@@ -109,6 +109,13 @@
 <a class="nav-link" target="_blank" href="{{ config.admin.marketplace.url }}{{ config.admin.marketplace.microservices }}">
 <img src="/themes/templates/{{ template }}/images/icons/017-diamond.png" alt="">
 <span class="menu-title">{{ language.713 }}</span>
+</a>
+</li>
+
+{% if head.page == "plugins" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
+<a class="nav-link" href="/admin/plugins">
+<img src="/themes/templates/{{ template }}/images/icons/7.png" alt="">
+<span class="menu-title">{{ language.836 }}</span>
 </a>
 </li>
 
