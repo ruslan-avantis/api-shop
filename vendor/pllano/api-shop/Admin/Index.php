@@ -31,7 +31,7 @@ class Index {
     public function get()
     {
         // Получаем список виджетов для вывода на главную
-        $resource_list = explode(',', str_replace(array('"', "'", " "), '', $this->config['settings']['index_widget']));
+        $resource_list = explode(',', str_replace(array('"', "'", " "), '', $this->config['admin']['index_widget']));
         foreach($resource_list as $resource)
         {
             if($resource == 'templates'){
