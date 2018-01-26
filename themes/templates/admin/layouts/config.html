@@ -1,6 +1,5 @@
 {{ include ('helper/header.html') }}
 {{ include ('helper/navbar.html') }}
-
 <h3 class="page-heading mb-4">{{ language.663 }}</h3>
 <div class="row mb-2">
 <div class="col-lg-12">
@@ -213,7 +212,6 @@
 {% for key, value in content.routers %}
 {% if key != 'name' %}
 
-
 {% if value is iterable %}
 <div class="col-lg-12"><h5 class="padding_top_14">{% if key %}{{ key }}{% endif %}</h5></div>
 
@@ -273,5 +271,4 @@
 </div>
 </div>
 </div>
-
 {{ include ('helper/footer.html') }}
