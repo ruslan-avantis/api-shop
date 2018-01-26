@@ -17,9 +17,12 @@ use Adbar\Session;
 use Sinergi\BrowserDetector\Language as Langs;
 use ApiShop\Config\Settings;
 use ApiShop\Resources\Language;
+ 
+$config = (new Settings())->get();
+$language_router = $config['routers']['language'];
 
 // Меняем язык отображения в session пользователя
-$app->post('/language', function (Request $request, Response $response, array $args) {
+$app->post($language_router, function (Request $request, Response $response, array $args) {
     // Подключаем конфигурацию
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -64,7 +67,7 @@ $app->post('/language', function (Request $request, Response $response, array $a
 });
 
 // Меняем язык отображения в session пользователя
-$app->get('/language', function (Request $request, Response $response, array $args) {
+$app->get($language_router, function (Request $request, Response $response, array $args) {
     // Подключаем конфигурацию
     $config = (new Settings())->get();
     // Подключаем сессию

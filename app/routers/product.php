@@ -25,10 +25,15 @@ use ApiShop\Resources\Site;
 use ApiShop\Resources\Menu;
 use ApiShop\Resources\Template;
 use ApiShop\Model\SessionUser;
-
-// Product Routes Controllers
-
-$app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request, Response $response, array $args) {
+ 
+$config = (new Settings())->get();
+$product_router = $config['routers']['product'];
+$product_alias = $config['routers']['product_alias'];
+$product_name = $config['routers']['product_name'];
+$product_quick_view_router = $config['routers']['product_quick_view'];
+ 
+$app->get($product_router.''.$product_alias.''.$product_name, function (Request $request, Response $response, array $args) {
+ 
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Подключаем плагины
@@ -209,7 +214,7 @@ $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request,
     
 });
  
-$app->get('/quick-view/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request, Response $response, array $args) {
+$app->get($product_quick_view_router.'{alias:[a-z0-9_]+}/{name}.html', function (Request $request, Response $response, array $args) {
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Подключаем плагины

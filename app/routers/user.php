@@ -15,10 +15,16 @@ use ApiShop\Model\SessionUser;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
 use ApiShop\Resources\User;
-
+ 
+$config = (new Settings())->get();
+$sign_in_router = $config['routers']['sign_in'];
+$sign_up_router = $config['routers']['sign_up'];
+$logout_router = $config['routers']['logout'];
+$login_router = $config['routers']['login'];
+$check_in_router = $config['routers']['check_in'];
  
 // Страница авторизации
-$app->get('/sign-in', function (Request $request, Response $response, array $args) {
+$app->get($sign_in_router, function (Request $request, Response $response, array $args) {
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Получаем конфигурацию \ApiShop\Config\Settings
@@ -93,7 +99,7 @@ $app->get('/sign-in', function (Request $request, Response $response, array $arg
 });
  
 // Страница регистрации
-$app->get('/sign-up', function (Request $request, Response $response, array $args) {
+$app->get($sign_up_router, function (Request $request, Response $response, array $args) {
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Получаем конфигурацию \ApiShop\Config\Settings
@@ -169,7 +175,7 @@ $app->get('/sign-up', function (Request $request, Response $response, array $arg
 });
  
 // Выйти
-$app->post('/logout', function (Request $request, Response $response, array $args) {
+$app->post($logout_router, function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -236,7 +242,7 @@ $app->post('/logout', function (Request $request, Response $response, array $arg
 });
   
 // Авторизация
-$app->post('/login', function (Request $request, Response $response, array $args) {
+$app->post($login_router, function (Request $request, Response $response, array $args) {
     $today = date("Y-m-d H:i:s");
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -427,7 +433,7 @@ $app->post('/login', function (Request $request, Response $response, array $args
 });
  
 // Регистрация
-$app->post('/check-in', function (Request $request, Response $response, array $args) {
+$app->post($check_in_router, function (Request $request, Response $response, array $args) {
     $today = date("Y-m-d H:i:s");
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();

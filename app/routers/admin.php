@@ -31,8 +31,12 @@ use ApiShop\Admin\Control;
 use ApiShop\Admin\AdminDatabase;
 use ApiShop\Admin\Resources;
  
+$config = (new Settings())->get();
+$admin_router = $config['routers']['admin'];
+$admin_index_router = $config['routers']['admin_index'];
+ 
 // Главная страница админ панели
-$app->get('/admin', function (Request $request, Response $response, array $args) {
+$app->get($admin_index_router.'', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
@@ -131,7 +135,7 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
 });
  
 // Список items указанного resource
-$app->get('/admin/resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
@@ -277,7 +281,7 @@ $app->get('/admin/resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (
 });
  
 // Содать запись в resource
-$app->post('/admin/resource-post', function (Request $request, Response $response, array $args) {
+$app->post($admin_router.'resource-post', function (Request $request, Response $response, array $args) {
  
     $today = date("Y-m-d H:i:s");
     // Подключаем конфиг Settings\Config
@@ -444,7 +448,7 @@ $app->post('/admin/resource-post', function (Request $request, Response $respons
 });
  
 // Удалить запись в resource
-$app->post('/admin/resource-delete', function (Request $request, Response $response, array $args) {
+$app->post($admin_router.'resource-delete', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -578,7 +582,7 @@ $app->post('/admin/resource-delete', function (Request $request, Response $respo
 });
  
 // Редактируем запись в resource
-$app->post('/admin/resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -757,7 +761,7 @@ $app->post('/admin/resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', funct
 });
  
 // Активировать заказ
-$app->post('/admin/order-activate', function (Request $request, Response $response, array $args) {
+$app->post($admin_router.'order-activate', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -857,7 +861,7 @@ $app->post('/admin/order-activate', function (Request $request, Response $respon
 });
  
 // Купить и установить шаблон
-$app->post('/admin/template-buy', function (Request $request, Response $response, array $args) {
+$app->post($admin_router.'template-buy', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -925,7 +929,7 @@ $app->post('/admin/template-buy', function (Request $request, Response $response
 });
  
 // Установить шаблон
-$app->post('/admin/template-install', function (Request $request, Response $response, array $args) {
+$app->post($admin_router.'template-install', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -1046,7 +1050,7 @@ $app->post('/admin/template-install', function (Request $request, Response $resp
 });
  
 // Активировать шаблон
-$app->post('/admin/template-activate', function (Request $request, Response $response, array $args) {
+$app->post($admin_router.'template-activate', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -1125,7 +1129,7 @@ $app->post('/admin/template-activate', function (Request $request, Response $res
 });
  
 // Удалить шаблон
-$app->post('/admin/template-delete', function (Request $request, Response $response, array $args) {
+$app->post($admin_router.'template-delete', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -1196,7 +1200,7 @@ $app->post('/admin/template-delete', function (Request $request, Response $respo
 });
  
 // Список шаблонов
-$app->get('/admin/template', function (Request $request, Response $response, array $args) {
+$app->get($admin_router.'template', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
@@ -1295,7 +1299,7 @@ $app->get('/admin/template', function (Request $request, Response $response, arr
 });
  
 // Страница шаблона
-$app->get('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+$app->get($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
@@ -1390,7 +1394,7 @@ $app->get('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Resp
 });
  
 // Редактируем настройки шаблона
-$app->post('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+$app->post($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
@@ -1496,7 +1500,7 @@ $app->post('/admin/template/{name:[a-z0-9_-]+}', function (Request $request, Res
 });
  
 // Список пакетов
-$app->get('/admin/plugins', function (Request $request, Response $response, array $args) {
+$app->get($admin_router.'plugins', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
@@ -1582,7 +1586,7 @@ $app->get('/admin/plugins', function (Request $request, Response $response, arra
 });
  
 // Глобальные настройки
-$app->get('/admin/config', function (Request $request, Response $response, array $args) {
+$app->get($admin_router.'config', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
@@ -1667,7 +1671,7 @@ $app->get('/admin/config', function (Request $request, Response $response, array
 });
  
 // Редактируем глобальные настройки
-$app->post('/admin/config', function (Request $request, Response $response, array $args) {
+$app->post($admin_router.'config', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
@@ -1770,7 +1774,7 @@ $app->post('/admin/config', function (Request $request, Response $response, arra
 });
  
 // Список баз данных
-$app->get('/admin/db', function (Request $request, Response $response, array $args) {
+$app->get($admin_router.'db', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
@@ -1853,7 +1857,7 @@ $app->get('/admin/db', function (Request $request, Response $response, array $ar
 });
  
 // Страница таблицы (ресурса)
-$app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
@@ -2044,7 +2048,7 @@ $app->get('/admin/db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $
 });
  
 // Глобально
-$app->get('/admin_/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();

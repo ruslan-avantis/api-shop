@@ -23,7 +23,10 @@ use RouterDb\Router;
 use ApiShop\Config\Settings;
 use ApiShop\Resources\Language;
  
-$app->post('/cart/new-order', function (Request $request, Response $response, array $args) {
+$config = (new Settings())->get();
+$cart_router = $config['routers']['cart'];
+ 
+$app->post($cart_router.'new-order', function (Request $request, Response $response, array $args) {
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
     // Подключаем сессию
@@ -213,7 +216,7 @@ $app->post('/cart/new-order', function (Request $request, Response $response, ar
  
     });
  
-$app->post('/cart/add-to-cart', function (Request $request, Response $response, array $args) {
+$app->post($cart_router.'add-to-cart', function (Request $request, Response $response, array $args) {
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
     // Подключаем сессию

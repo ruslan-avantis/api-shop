@@ -28,7 +28,10 @@ use ApiShop\Model\SessionUser;
 use ApiShop\Model\Filter;
 use ApiShop\Model\Pagination;
  
-$app->get('/category', function (Request $request, Response $response, array $args) {
+$config = (new Settings())->get();
+$category_router = $config['routers']['category'];
+ 
+$app->get($category_router.'', function (Request $request, Response $response, array $args) {
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Подключаем плагины

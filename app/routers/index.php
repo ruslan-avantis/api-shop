@@ -23,18 +23,19 @@ use ApiShop\Resources\Site;
 use ApiShop\Resources\Menu;
 use ApiShop\Resources\Template;
 use ApiShop\Resources\Install;
+use ApiShop\Resources\User;
 use ApiShop\Model\SessionUser;
 use RouterDb\Db;
 use RouterDb\Router;
-
-use ApiShop\Resources\User;
-
 use jsonDB\Db as Dddd;
 use jsonDB\Database;
 use jsonDB\Validate;
 use jsonDB\dbException;
  
-$app->get('/', function (Request $request, Response $response, array $args) {
+$config = (new Settings())->get();
+$index_router = $config['routers']['index'];
+ 
+$app->get($index_router, function (Request $request, Response $response, array $args) {
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Получаем конфигурацию \ApiShop\Config\Settings
