@@ -74,25 +74,26 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
                 }
             }
  
-            $paramPost = array();
- 
+			$api = null;
             $guzzle = new Guzzle();
-            $resp = $guzzle->request('GET', $config["db"]["pllanoapi"]["url"].'api?public_key='.$public_key);
- 
-            if (isset($resp['headers']['code'])) {
-                
-                if(is_object($resp["body"]["items"]["0"]["item"])) {
-                    $api = (array)$resp["body"]["items"]["0"]["item"];
-                } elseif (is_array($resp["body"]["items"]["0"]["item"])) {
-                    $api = $resp["body"]["items"]["0"]["item"];
+            $guzz = $guzzle->request('GET', $config["db"]["pllanoapi"]["url"].'api?public_key='.$public_key);
+			$resp = $guzz->getBody();
+			$output = $utility->clean_json($resp);
+            $records = json_decode($output, true);
+            if (isset($records['headers']['code'])) {
+                if(is_object($records["body"]["items"]["0"]["item"])) {
+                    $api = (array)$records["body"]["items"]["0"]["item"];
+                } elseif (is_array($records["body"]["items"]["0"]["item"])) {
+                    $api = $records["body"]["items"]["0"]["item"];
                 }
-                
-                $paramPost['seller']['alias'] = $api['alias'];
-                $paramPost['seller']['download_dir'] = $api['download_dir'];
-                $paramPost['seller']['download_alias'] = $api['download_alias'];
-                $paramPost['seller']['terms_of_delivery'] = $api['terms_of_delivery'];
-                $paramPost['seller']['currency_code'] = $api['currency_code'];
-                $paramPost['seller']['private_key'] = $api['private_key'];
+				if (isset($api['alias'])) {
+                    $paramPost['seller']['alias'] = $api['alias'];
+                    $paramPost['seller']['download_dir'] = $api['download_dir'];
+                    $paramPost['seller']['download_alias'] = $api['download_alias'];
+                    $paramPost['seller']['terms_of_delivery'] = $api['terms_of_delivery'];
+                    $paramPost['seller']['currency_code'] = $api['currency_code'];
+                    $paramPost['seller']['private_key'] = $api['private_key'];
+				}
             }
  
             $paramPost['seller']['public_key'] = $public_key;
@@ -104,7 +105,6 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
             } else {
                 $template = 'mini-mo';
             }
- 
             $paramPost['settings']['themes']['template'] = $template;
  
             // Подключаем класс
