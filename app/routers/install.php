@@ -73,31 +73,44 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
                     }
                 }
             }
-            
-            $template = $session->template;
+ 
+            $paramPost = array();
+ 
+            $guzzle = new Guzzle();
+            $resp = $guzzle->request('GET', $config["db"]["pllanoapi"]["url"].'api?public_key='.$public_key);
+ 
+            if (isset($resp['headers']['code'])) {
+                
+                if(is_object($resp["body"]["items"]["0"]["item"])) {
+                    $api = (array)$resp["body"]["items"]["0"]["item"];
+                } elseif (is_array($resp["body"]["items"]["0"]["item"])) {
+                    $api = $resp["body"]["items"]["0"]["item"];
+                }
+                
+                $paramPost['seller']['alias'] = $api['alias'];
+                $paramPost['seller']['download_dir'] = $api['download_dir'];
+                $paramPost['seller']['download_alias'] = $api['download_alias'];
+                $paramPost['seller']['terms_of_delivery'] = $api['terms_of_delivery'];
+                $paramPost['seller']['currency_code'] = $api['currency_code'];
+                $paramPost['seller']['private_key'] = $api['private_key'];
+            }
+ 
+            $paramPost['seller']['public_key'] = $public_key;
+            $paramPost['db']['pllanoapi']['public_key'] = $public_key;
+            $paramPost['db']['api']['public_key'] = $public_key;
+ 
+            if (isset($session->template)) {
+                $template = $session->template;
+            } else {
+                $template = 'mini-mo';
+            }
+ 
+            $paramPost['settings']['themes']['template'] = $template;
  
             // Подключаем класс
             $settingsAdmin = new \ApiShop\Admin\Config();
             // Получаем массив
             $arrJson = $settingsAdmin->get();
-            $paramPost = array();
-            $paramPost['seller']['public_key'] = $public_key;
-            $paramPost['db']['pllanoapi']['public_key'] = $public_key;
-            $paramPost['db']['api']['public_key'] = $public_key;
-            $paramPost['settings']['themes']['template'] = $template;
-            
-            $guzzle = new Guzzle();
-            
-            $resp = $guzzle->request('GET', $this->url.'site?public_key='.$public_key);
-            
-            if (isset($resp["headers"]["code"])) {
-                $paramPost['seller']['alias'] = $resp['body']['items']['0']['item']['alias'];
-                $paramPost['seller']['download_dir'] = $resp['body']['items']['0']['item']['download_dir'];
-                $paramPost['seller']['download_alias'] = $resp['body']['items']['0']['item']['download_alias'];
-                $paramPost['seller']['terms_of_delivery'] = $resp['body']['items']['0']['item']['terms_of_delivery'];
-                $paramPost['seller']['currency_code'] = $resp['body']['items']['0']['item']['currency_code'];
-                $paramPost['seller']['private_key'] = $resp['body']['items']['0']['item']['private_key'];
-            }
  
             // Соеденяем массивы
             $newArr = array_replace_recursive($arrJson, $paramPost);
