@@ -5,15 +5,15 @@
 <div class="product-img">
 <a itemprop="url" href="{% if product.url %}{{ product.url }}{% endif %}" class="link-product-img">
 {% if product.image.1 %}
-<img itemprop="image" class="product-img-primary" src="{{ product.image.1 }}" alt="{{ product.name }}">
-<img itemprop="image" content="{{ product.image.1 }}">
+<img itemprop="image" class="product-img-primary" src="/{{ product.image.1 }}" alt="{{ product.name }}">
+<img itemprop="image" content="/{{ product.image.1 }}">
 {% else %}
-<img itemprop="image" class="product-img-primary" src="{{ product.image.no_image }}" alt="{{ product.name }}">
+<img itemprop="image" class="product-img-primary" src="/{{ product.no_image }}" alt="{{ product.name }}">
 {% endif %}
 {% if product.image.2 %}
-<img itemprop="image" class="product-img-alt" src="{{ product.image.2 }}" alt="{{ product.name }}">
+<img itemprop="image" class="product-img-alt" src="/{{ product.image.2 }}" alt="{{ product.name }}">
 {% else %}
-<img itemprop="image" class="product-img-alt" src="{{ product.image.no_image }}" alt="{{ product.name }}">
+<img itemprop="image" class="product-img-alt" src="/{{ product.no_image }}" alt="{{ product.name }}">
 {% endif %}
 </a>
 </div>

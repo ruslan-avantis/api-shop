@@ -4,19 +4,7 @@
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1">
 <link rel="icon" href="/favicon.ico">
-{% if config.title %}
-{% if config.title %}<title>{{ config.title }} | {{ head.host }}</title>{% endif %}
-{% if config.description %}<meta name="description" content="{{ config.description }} | {{ head.host }}">{% endif %}
-{% if site.keywords %}<meta name="keywords" content="{{ site.keywords }}, {{ head.host }}">{% endif %}
-{% if head.host %}<link name="canonical" content="//{{ head.host }}">{% endif %}
-{% if site.robots %}<meta name="robots" content="{{ site.robots }}">{% endif %}
-{% if site.og_url %}<meta property="og:url" content="//{{ head.host }}{{ head.path }}">{% endif %}
-{% if site.og_locale %}<meta property="og:locale" content="{{ site.og_locale }}">{% endif %}
-{% if site.og_type %}<meta property="og:type" content="{{ site.og_type }}">{% endif %}
-{% if site.og_title %}<meta property="og:title" content="{{ site.og_title }} | {{ head.host }}">{% endif %}
-{% if site.og_description %}<meta property="og:description" content="{{ site.og_description }} | {{ head.host }}">{% endif %}
-{% if site.og_image %}<meta property="og:image" content="{{ site.og_image }}">{% endif %}
-{% elseif head.title %}
+{% if head.title or page == 'category_list' %}
 {% if head.title %}<title>{{ head.title }} | {{ head.host }}</title>{% endif %}
 {% if head.keywords %}<meta name="keywords" content="{{ head.keywords }}, {{ head.host }}">{% endif %}
 {% if head.description %}<meta name="description" content="{{ head.description }} | {{ head.host }}">{% endif %}

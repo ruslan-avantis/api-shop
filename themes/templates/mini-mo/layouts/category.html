@@ -1,7 +1,6 @@
 {{ include ('helper/header.html') }}
 {{ include ('helper/nav.html') }}
 {{ include ('helper/title.html') }}
-
 {% if products %}
 <section id="product-list" class="product-list">
 <div class="control-background bg-white">
@@ -13,9 +12,6 @@
 <div class="container">
 <div class="row">
 <div class="col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 padding_21 text-right">
-    
-
-
 <div class="dropdown">
 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 <i class="icon-sort-amount-desc" aria-hidden="true"></i>
@@ -43,7 +39,7 @@
 <div class="container">
 <div class="row text-center cards">
 {% for product in products.product %}
-{{ include ('helper/products.html') }}
+{{ include (products_template) }}
 {% endfor %}
 </div>
 </div>
@@ -51,13 +47,11 @@
 <div class="container">
 <div class="row">
 <div class="col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 padding_21">
-<nav aria-label="">
 <ul class="pagination justify-content-center">
-{% autoescape false %}
-{{ paginator }}{# paginator won't be escaped #}
-{% endautoescape %}
+{% for pagination in paginator %}
+{{ include ('helper/paginator.html') }}
+{% endfor %}
 </ul>
-</nav>
 </div>
 </div>
 </div>
