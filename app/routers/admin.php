@@ -44,7 +44,7 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
     $config = (new Settings())->get();
     $admin_config = $config['admin'];
     $template = $admin_config["template"];
-	
+    
     // Подключаем плагины
     $utility = new Utility();
  
@@ -615,8 +615,6 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
     } else {
         $id = null;
     }
- 
-
  
     try {
         // Получаем токен из сессии
@@ -1993,7 +1991,6 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
                 // Отдаем пагинатору колличество
                 foreach($resp["body"]['items'] as $item)
                 {
-                    
                     foreach($item["item"] as $key => $value)
                     {
                         if ($value == ''){$value = "--";}

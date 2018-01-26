@@ -46,7 +46,7 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
     }
  
     $config = (new Settings())->get();
-	$routers = $config['routers'];
+    $routers = $config['routers'];
  
     $site = new Site();
     $site_config = $site->get();
@@ -109,9 +109,9 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
  
     $render = "404";
     $content = "";
-	
+    
     // Меню
-	$menu = (new Menu())->get();
+    $menu = (new Menu())->get();
  
     // Ресурс (таблица) к которому обращаемся
     $resource = "article";
@@ -173,7 +173,7 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
             "path" => $path
         ],
         "site" => $site_config,
-		"routers" => $routers,
+        "routers" => $routers,
         "config" => $config['settings']['site'],
         "language" => $language,
         "token" => $session->token,
@@ -200,7 +200,7 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
     }
  
     $config = (new Settings())->get();
-	$routers = $config['routers'];
+    $routers = $config['routers'];
  
     $site = new Site();
     $site_config = $site->get();
@@ -263,9 +263,9 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
  
     $render = "404";
     $content = "";
-	
+    
     // Меню
-	$menu = (new Menu())->get();
+    $menu = (new Menu())->get();
  
     // Ресурс (таблица) к которому обращаемся
     $resource = "article";
@@ -327,7 +327,7 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
             "path" => $path
         ],
         "site" => $site_config,
-		"routers" => $routers,
+        "routers" => $routers,
         "config" => $config['settings']['site'],
         "language" => $language,
         "token" => $session->token,

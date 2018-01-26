@@ -40,7 +40,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
     $path = $request->getUri()->getPath();
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
-	$routers = $config['routers'];
+    $routers = $config['routers'];
  
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
@@ -73,7 +73,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
     // Подключаем мультиязычность
     $language = (new Language())->get($lang);
  
- // Подключаем плагины
+    // Подключаем плагины
     $utility = new Utility();
     // Генерируем токен
     $token = $utility->random_token();
@@ -83,7 +83,18 @@ $app->get($index_router, function (Request $request, Response $response, array $
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // Меню
-	$menu = (new Menu())->get();
+    $menu = (new Menu())->get();
+ 
+    $title = $config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
  
     if ($config["settings"]["install"]["status"] != null) {
  
@@ -101,7 +112,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
             "state_seller" => 1,
             "relations" => 'image,description'
         );
-
+ 
         // Ресурс (таблица) к которому обращаемся
         $resource = "price";
         // Отдаем роутеру RouterDb конфигурацию.
@@ -119,7 +130,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
             {
                 // Обрабатываем картинки
                 //print_r($item['item']['image']);
-                $product['image']['no_image'] = $utility->get_image(null, '/images/no_image.png', $template["home"]["product"]["image_width"], $template["home"]["product"]["image_height"]);
+                $product['no_image'] = $utility->get_image(null, '/images/no_image.png', $template["home"]["product"]["image_width"], $template["home"]["product"]["image_height"]);
                 $image_1 = '';
                 $image_1 = (isset($item['item']['image']['0']['image_path'])) ? $utility->clean($item['item']['image']['0']['image_path']) : null;
                 if (isset($image_1)) {$product['image']['1'] = $utility->get_image($item['item']['product_id'], $image_1, $template["home"]["product"]["image_width"], $template["home"]["product"]["image_height"]);}
@@ -161,21 +172,26 @@ $app->get($index_router, function (Request $request, Response $response, array $
  
         // Запись в лог
         $this->logger->info("home");
-    
+ 
         $head = [
             "page" => 'home',
-            "title" => "",
-            "keywords" => "",
-            "description" => "",
-            "og_title" => "",
-            "og_description" => "",
+            "title" => $title,
+            "keywords" => $keywords,
+            "description" => $description,
+            "robots" => $robots,
+            "og_title" => $og_title,
+            "og_description" => $og_description,
+            "og_image" => $og_image,
+            "og_type" => $og_type,
+            "og_locale" => $og_locale,
+            "og_url" => $og_url,
             "host" => $host,
             "path" => $path
         ];
  
         return $this->view->render('index.html', [
             "head" => $head,
-			"routers" => $routers,
+            "routers" => $routers,
             "site" => $site_config,
             "config" => $config['settings']['site'],
             "language" => $language,
@@ -183,10 +199,10 @@ $app->get($index_router, function (Request $request, Response $response, array $
             "token" => $session->token,
             "session" => $sessionUser,
             "content" => $content,
-			"menu" => $menu,
+            "menu" => $menu,
             "products" => $products
         ]);
-    
+ 
     }
     else {
         // Если ключа доступа у нет, значит сайт еще не активирован
@@ -218,18 +234,18 @@ $app->get($index_router, function (Request $request, Response $response, array $
  
         $head = [
                 "page" => 'install',
-                "title" => "",
-                "keywords" => "",
-                "description" => "",
-                "og_title" => "",
-                "og_description" => "",
+                "title" => "install",
+                "keywords" => "install",
+                "description" => "install",
+                "og_title" => "install",
+                "og_description" => "install",
                 "host" => $host,
                 "path" => $path
         ];
  
         return $this->view->render($index.'.html', [
             "template" => "install",
-			"routers" => $routers,
+            "routers" => $routers,
             "head" => $head,
             "config" => $config['settings']['site'],
             "language" => $language,

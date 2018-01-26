@@ -51,7 +51,7 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
     }
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
-	$routers = $config['routers'];
+    $routers = $config['routers'];
  
     $site = new Site();
     $site_config = $site->get();
@@ -104,7 +104,7 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // Меню
-	$menu = (new Menu())->get();
+    $menu = (new Menu())->get();
     
     if ($alias != null) {
         
@@ -197,7 +197,7 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
  
         return $this->view->render($template_product.'.html', [
             "head" => $page,
-			"routers" => $routers,
+            "routers" => $routers,
             "site" => $site_config,
             "config" => $config['settings']['site'],
             "language" => $language,
@@ -205,7 +205,7 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
             "token" => $session->token,
             "session" => $sessionUser,
             "content" => $content,
-			"menu" => $menu,
+            "menu" => $menu,
             "product" => $product,
             "session_id" => $session->id
         ]);
@@ -271,7 +271,7 @@ $app->get($product_quick_view_router.''.$product_alias.''.$product_name, functio
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // Меню
-	$menu = (new Menu())->get();
+    $menu = (new Menu())->get();
     
     if ($alias != null) {
         
@@ -355,7 +355,7 @@ $app->get($product_quick_view_router.''.$product_alias.''.$product_name, functio
             "token" => $session->token,
             "session" => $sessionUser,
             "content" => $content,
-			"menu" => $menu,
+            "menu" => $menu,
             "product" => $product,
             "session_id" => $session->id
         ]);

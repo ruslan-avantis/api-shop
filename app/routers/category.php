@@ -31,15 +31,18 @@ use ApiShop\Model\Pagination;
 $config = (new Settings())->get();
 $category_router = $config['routers']['category'];
  
-$app->get($category_router.'', function (Request $request, Response $response, array $args) {
+$app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
+ 
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
     // Подключаем плагины
     $utility = new Utility();
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
-	$routers = $config['routers'];
- 
+    $routers = $config['routers'];
+    
     $site = new Site();
     $site_config = $site->get();
     $site_template = $site->template();
@@ -53,9 +56,7 @@ $app->get($category_router.'', function (Request $request, Response $response, a
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
     // Подключаем мультиязычность
-
-    // Получаем параметры из URL
-    $getParams = $request->getQueryParams();
+ 
     // Подключаем определение языка в браузере
     $langs = new Langs();
     // Получаем массив данных из таблицы language на языке из $session->language
@@ -92,16 +93,92 @@ $app->get($category_router.'', function (Request $request, Response $response, a
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // Меню
-	$menu = (new Menu())->get();
+    $menu = (new Menu())->get();
+ 
+    // Получаем category из url
+    if ($request->getAttribute('category')) {
+        $category_alias = $utility->clean($request->getAttribute('category'));
+    } else {
+        $category_alias = null;
+    }
+ 
+    $title = $language['402'];
+    $keywords = $language['402'];
+    $description = $language['402'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $language['402'];
+    $og_description = $language['402'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
+ 
+    $category = '';
+    $render = 'category';
+    $products_template = 'helper/products.html';
+    $products_limit = 15;
+    $products_order = "ASC";
+    $products_sort = "price";
+    $image_width = 360;
+    $image_height = 360;
+ 
+    if (isset($category_alias)) {
+        // Ресурс (таблица) к которому обращаемся
+        $category_resource = "category";
+        // Отдаем роутеру RouterDb конфигурацию.
+        $router = new Router($config);
+        // Получаем название базы для указанного ресурса
+        $category_db = $router->ping($category_resource);
+        // Подключаемся к базе
+        $db = new Db($category_db, $config);
+        // Отправляем запрос и получаем данные
+        $resp = $db->get($category_resource, ['alias' => $category_alias]);
+ 
+        if (isset($resp["headers"]["code"])) {
+            if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == '200') {
+                $cat = $resp['body']['items']['0']['item'];
+                if(is_object($cat)) {
+                    $category = (array)$cat;
+                } elseif (is_array($cat)) {
+                    $category = $cat;
+                }
+                $title = $category['seo_title'] ? $category['seo_title'] : $category['title'];
+                $keywords = $category['seo_keywords'] ? $category['seo_keywords'] : $category['title'];
+                $description = $category['seo_description'] ? $category['seo_description'] : $category['title'];
+                $og_title = $category['og_title'] ? $category['og_title'] : $category['title'];
+                $og_description = $category['og_description'] ? $category['og_description'] : $category['title'];
+                $og_image = $category['og_image'] ? $category['og_image'] : '';
+                $og_type = $category['og_type'] ? $category['og_type'] : '';
+                $robots = $category['robots'] ? $category['robots'] : 'index, follow';
+                $render = $category['categories_template'] ? $category['categories_template'] : 'category';
+                $products_template = $category['products_template'] ? 'helper/'.$category['products_template'].'.html' : 'helper/products.html';
+                $products_limit = $category['products_limit'] ? $category['products_limit'] : 15;
+                $products_order = $category['products_order'] ? $category['products_order'] : "ASC";
+                $products_sort = $category['products_sort'] ? $category['products_sort'] : "price";
+                $image_width = $category['image_width'] ? $category['image_width'] : 360;
+                $image_height = $category['image_height'] ? $category['image_height'] : 360;
+            }
+        }
+ 
+        if (isset($category['product_type'])) {
+            //$product_type = explode(',', str_replace(array('"', "'", " "), '', $category['product_type']));
+            $product_type = $category['product_type'];
+        } else {
+            $product_type = null;
+        }
+    
+    }
+ 
+
 
     // Получаем массив параметров uri
     $queryParams = $request->getQueryParams();
     $arr = array();
     $arr['state'] = 1;
     $arr['offset'] = 0;
-    $arr['limit'] = 30;
-    $arr['order'] = "ASC";
-    $arr['sort'] = "price";
+    $arr['limit'] = $products_limit;
+    $arr['order'] = $products_order;
+    $arr['sort'] = $products_sort;
     if (count($queryParams) >= 1) {
         foreach($queryParams as $key => $value)
         {
@@ -110,7 +187,7 @@ $app->get($category_router.'', function (Request $request, Response $response, a
             }
         }
     }
-
+ 
     // Собираем полученные параметры в url и отдаем шаблону
     $get_array = http_build_query($arr);
     // Вытягиваем URL_PATH для правильного формирования юрл
@@ -139,9 +216,12 @@ $app->get($category_router.'', function (Request $request, Response $response, a
     $name_db = $router->ping($resource);
     // Подключаемся к базе
     $db = new Db($name_db, $config);
-    
-    $relations['relations'] = "image,description";
-    $newArr = $arr + $relations;
+ 
+    if (isset($product_type)) {
+        $arrPlus['type'] = $product_type;
+    }
+    $arrPlus['relations'] = "image,description";
+    $newArr = $arr + $arrPlus;
  
     // Отправляем запрос и получаем данные
     $response = $db->get($resource, $newArr);
@@ -151,19 +231,20 @@ $app->get($category_router.'', function (Request $request, Response $response, a
         $count = $response["response"]['total'];
     }
     $paginator = $filter->paginator($count);
+ 
     // Если ответ не пустой
     if (count($response["body"]['items']) >= 1) {
         // Отдаем пагинатору колличество
         foreach($response["body"]['items'] as $item)
         {
             // Обрабатываем картинки
-            $product['image']['no_image'] = $utility->get_image(null, '/images/no_image.png', 360, 360);
+            $product['no_image'] = $utility->get_image(null, '/images/no_image.png', $image_width, $image_height);
             $image_1 = '';
             $image_1 = (isset($item['item']['image']['0']['image_path'])) ? $utility->clean($item['item']['image']['0']['image_path']) : null;
-            if (isset($image_1)) {$product['image']['1'] = $utility->get_image($item['item']['product_id'], $image_1, 360, 360);}
+            if (isset($image_1)) {$product['image']['1'] = $utility->get_image($item['item']['product_id'], $image_1, $image_width, $image_height);}
             $image_2 = '';
             $image_2 = (isset($item['item']['image']['1']['image_path'])) ? $utility->clean($item['item']['image']['1']['image_path']) : null;
-            if (isset($image_2)) {$product['image']['2'] = $utility->get_image($item['item']['product_id'], $image_2, 360, 360);}
+            if (isset($image_2)) {$product['image']['2'] = $utility->get_image($item['item']['product_id'], $image_2, $image_width, $image_height);}
 
             $path_url = pathinfo($item['item']['url']);
             $basename = $path_url['basename']; // lib.inc.php
@@ -198,30 +279,36 @@ $app->get($category_router.'', function (Request $request, Response $response, a
     }
  
     // Запись в лог
-    $this->logger->info("category");
+    $this->logger->info($render."");
  
     $head = [
-        "page" => 'category',
-        "title" => $language['402'].' | '.$host,
-        "keywords" => $language['402'].' | '.$host,
-        "description" => $language['402'].' | '.$host,
-        "og_title" => $language['402'].' | '.$host,
-        "og_description" => $language['402'].' | '.$host,
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
         "host" => $host,
         "path" => $path
     ];
  
-    return $this->view->render('category.html', [
+    return $this->view->render($render.'.html', [
         "template" => $template,
+        "products_template" => $products_template,
         "head" => $head,
         "site" => $site_config,
-		"routers" => $routers,
+        "routers" => $routers,
         "config" => $config['settings']['site'],
         "language" => $language,
         "token" => $session->token,
         "session" => $sessionUser,
         "content" => $content,
-		"menu" => $menu,
+        "menu" => $menu,
         "products" => $products,
         "paginator" => $paginator,
         "order" => $orderArray,
@@ -234,3 +321,4 @@ $app->get($category_router.'', function (Request $request, Response $response, a
     ]);
  
 });
+ 
