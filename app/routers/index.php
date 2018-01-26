@@ -20,6 +20,7 @@ use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
+use ApiShop\Resources\Menu;
 use ApiShop\Resources\Template;
 use ApiShop\Resources\Install;
 use ApiShop\Model\SessionUser;
@@ -79,7 +80,8 @@ $app->get('/', function (Request $request, Response $response, array $args) {
  
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
-    // print_r($content);
+    // Меню
+	$menu = (new Menu())->get();
  
     if ($config["settings"]["install"]["status"] != null) {
  
@@ -178,6 +180,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
             "token" => $session->token,
             "session" => $sessionUser,
             "content" => $content,
+			"menu" => $menu,
             "products" => $products
         ]);
     

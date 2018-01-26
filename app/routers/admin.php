@@ -40,7 +40,7 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
     $config = (new Settings())->get();
     $admin_config = $config['admin'];
     $template = $admin_config["template"];
- 
+	
     // Подключаем плагины
     $utility = new Utility();
  
@@ -345,7 +345,7 @@ $app->post('/admin/resource-post', function (Request $request, Response $respons
                         if ($resource == 'article') {
                             $postArr['title'] = 'New Article';
                             $postArr['text'] = '<div class="text-red font_56">New Text Article</div>';
-                            $postArr['alias'] = 'alias';
+                            $postArr['alias'] = 'alias-'.$random_alias_id;
                             $postArr['alias_id'] = $random_alias_id;
                             $postArr['created'] = $today;
                             $postArr['category_id'] = 0;
@@ -353,7 +353,7 @@ $app->post('/admin/resource-post', function (Request $request, Response $respons
                         } elseif ($resource == 'article_category' || $resource == 'category') {
                             $postArr['title'] = 'New Category';
                             $postArr['text'] = '<div class="text-red font_56">New Text Category</div>';
-                            $postArr['alias'] = 'alias';
+                            $postArr['alias'] = 'alias-'.$random_alias_id;
                             $postArr['parent_id'] = 0;
                             $postArr['alias_id'] = $random_alias_id;
                             $postArr['created'] = $today;

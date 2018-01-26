@@ -22,6 +22,7 @@ use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
+use ApiShop\Resources\Menu;
 use ApiShop\Resources\Template;
 use ApiShop\Model\SessionUser;
 
@@ -96,7 +97,8 @@ $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request,
     $sessionUser =(new SessionUser())->get();
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
-    // print_r($content);
+    // Меню
+	$menu = (new Menu())->get();
     
     if ($alias != null) {
         
@@ -196,6 +198,7 @@ $app->get('/product/{alias:[a-z0-9_]+}/{name}.html', function (Request $request,
             "token" => $session->token,
             "session" => $sessionUser,
             "content" => $content,
+			"menu" => $menu,
             "product" => $product,
             "session_id" => $session->id
         ]);
@@ -260,7 +263,8 @@ $app->get('/quick-view/product/{alias:[a-z0-9_]+}/{name}.html', function (Reques
     $sessionUser =(new SessionUser())->get();
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
-    // print_r($content);
+    // Меню
+	$menu = (new Menu())->get();
     
     if ($alias != null) {
         
@@ -344,6 +348,7 @@ $app->get('/quick-view/product/{alias:[a-z0-9_]+}/{name}.html', function (Reques
             "token" => $session->token,
             "session" => $sessionUser,
             "content" => $content,
+			"menu" => $menu,
             "product" => $product,
             "session_id" => $session->id
         ]);

@@ -22,6 +22,7 @@ use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
+use ApiShop\Resources\Menu;
 use ApiShop\Resources\Template;
 use ApiShop\Model\SessionUser;
 use ApiShop\Model\Filter;
@@ -86,7 +87,8 @@ $app->get('/category', function (Request $request, Response $response, array $ar
     $sessionUser =(new SessionUser())->get();
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
-    // print_r($content);
+    // Меню
+	$menu = (new Menu())->get();
 
     // Получаем массив параметров uri
     $queryParams = $request->getQueryParams();
@@ -214,6 +216,7 @@ $app->get('/category', function (Request $request, Response $response, array $ar
         "token" => $session->token,
         "session" => $sessionUser,
         "content" => $content,
+		"menu" => $menu,
         "products" => $products,
         "paginator" => $paginator,
         "order" => $orderArray,

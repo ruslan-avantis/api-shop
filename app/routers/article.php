@@ -20,6 +20,7 @@ use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
+use ApiShop\Resources\Menu;
 use ApiShop\Resources\Template;
 use ApiShop\Model\SessionUser;
 use RouterDb\Db;
@@ -103,6 +104,9 @@ $app->get('/{alias:[a-z0-9_-]+}.html', function (Request $request, Response $res
  
     $render = "404";
     $content = "";
+	
+    // Меню
+	$menu = (new Menu())->get();
  
     // Ресурс (таблица) к которому обращаемся
     $resource = "article";
@@ -168,7 +172,8 @@ $app->get('/{alias:[a-z0-9_-]+}.html', function (Request $request, Response $res
         "language" => $language,
         "token" => $session->token,
         "session" => $sessionUser,
-        "content" => $content
+        "content" => $content,
+        "menu" => $menu,
     ]);
  
 });
