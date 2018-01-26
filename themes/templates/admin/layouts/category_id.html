@@ -23,7 +23,7 @@
 </ul>
 
 <div class="tab-content">
-	
+
 <div role="tabpanel" class="tab-pane active" id="index">
 
 <div class="form-row padding_7">
@@ -35,30 +35,70 @@
 <label for="url">url</label>
 <input type="text" class="form-control form-control-xs" name="url" id="url" value="{{ content.url }}">
 </div>
+ 
+<div class="form-group col-lg-6">
+<label for="parent_id}">parent_id</label>
+<input type="text" class="form-control form-control-xs" name="parent_id" id="parent_id" value="{{ content.parent_id }}">
+</div>
+
 <div class="form-group col-lg-6">
 <label for="alias}">alias</label>
 <input type="text" class="form-control form-control-xs" name="alias" id="alias" value="{{ content.alias }}">
 </div>
+
 <div class="form-group col-lg-6">
 <label for="state">state</label>
 <input type="text" class="form-control form-control-xs" name="state" id="state" value="{{ content.state }}">
 </div>
+
 <div class="form-group col-lg-6">
 <label for="sort">sort</label>
 <input type="text" class="form-control form-control-xs" name="sort" id="sort" value="{{ content.sort }}">
 </div>
+
 <div class="form-group col-lg-6">
 <label for="top_menu">top_menu</label>
 <input type="text" class="form-control form-control-xs" name="menu" id="menu" value="{{ content.menu }}">
 </div>
+
+<div class="form-group col-lg-6">
+<label for="product_category">product_category</label>
+<input type="text" class="form-control form-control-xs" name="product_category" id="product_category" value="{{ content.product_category }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="product_type">product_type</label>
+<input type="text" class="form-control form-control-xs" name="product_type" id="product_type" value="{{ content.product_type }}">
+</div>
+
 <div class="form-group col-lg-6">
 <label for="category_list">category_list</label>
-<input type="text" class="form-control form-control-xs" name="list" id="list" value="{{ content.list }}">
+<input type="text" class="form-control form-control-xs" name="category_list" id="category_list" value="{{ content.category_list }}">
 </div>
 
 <div class="form-group col-lg-6">
 <label for="products_limit">products_limit</label>
 <input type="text" class="form-control form-control-xs" name="products_limit" id="products_limit" value="{{ content.products_limit }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="products_order">products_order</label>
+<input type="text" class="form-control form-control-xs" name="products_order" id="products_order" value="{{ content.products_order }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="products_sort">products_sort</label>
+<input type="text" class="form-control form-control-xs" name="products_sort" id="products_sort" value="{{ content.products_sort }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="image_width">image_width</label>
+<input type="text" class="form-control form-control-xs" name="image_width" id="image_width" value="{{ content.image_width }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="image_height">image_height</label>
+<input type="text" class="form-control form-control-xs" name="image_height" id="image_height" value="{{ content.image_height }}">
 </div>
 
 <div class="form-group col-lg-6">
@@ -76,10 +116,15 @@
 <input type="text" class="form-control form-control-xs" name="authorize" id="authorize" value="{{ content.authorize }}">
 </div>
 
+<div class="form-group col-lg-6">
+<label for="image">image</label>
+<input type="text" class="form-control form-control-xs" name="image" id="image" value="{{ content.image }}">
+</div>
+
 </div>
 
 <div class="col-lg-12 padding_7">
-	{% autoescape false %}
+{% autoescape false %}
 <textarea name="text" id="text" style="width: 100%;">
 {{ content.text }}
 </textarea>
@@ -89,8 +134,8 @@
 </div>
 
 <div role="tabpanel" class="tab-pane fade in" id="og">
-<div class="form-row">
-	
+<div class="form-row padding_7">
+
 <div class="form-group col-lg-6">
 <label for="og_url">og_url</label>
 <input type="text" class="form-control form-control-xs" name="og_url" id="og_url" value="{{ content.og_url }}">
@@ -125,8 +170,8 @@
 </div>
 
 <div role="tabpanel" class="tab-pane fade in" id="seo">
-<div class="form-row">
-	
+<div class="form-row padding_7">
+
 <div class="form-group col-lg-6">
 <label for="seo_h1">seo_h1</label>
 <input type="text" class="form-control form-control-xs" name="seo_h1" id="seo_h1" value="{{ content.seo_h1 }}">
@@ -162,17 +207,11 @@
 <input type="text" class="form-control form-control-xs" name="sitemap_html" id="sitemap_html" value="{{ content.sitemap_html }}">
 </div>
 
-<div class="form-group col-lg-6">
-<label for="image">image</label>
-<input type="text" class="form-control form-control-xs" name="image" id="image" value="{{ content.image }}">
-</div>
-
-
- 			
 </div>
 </div>
 
 <div role="tabpanel" class="tab-pane fade in" id="language">
+<div class="form-row padding_7">
 
 <div class="col-lg-12">
 <label for="title_ru">title_ru</label>
@@ -230,6 +269,7 @@
 {% endautoescape %}
 </div>
 
+</div>
 </div>
 
 </div>

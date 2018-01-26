@@ -1,6 +1,6 @@
 {{ include ('helper/header.html') }}
 {{ include ('helper/navbar.html') }}
-<h1 class="page-heading mb-4">{{ language.187 }} - db: {{ name_db }}</h1>
+<h1 class="page-heading mb-4">{{ language.858 }} & {{ language.187 }} - db: {{ name_db }}</h1>
 <div class="card-deck">
 <div class="card col-lg-12 px-0 mb-4">
 <div class="card-body">
@@ -12,7 +12,7 @@
 <th>sort</th>
 <th>{{ language.816 }}</th>
 <th>alias</th>
-<th>parent_id</th>
+<th>url</th>
 <th></th>
 <th></th>
 </tr>
@@ -24,7 +24,7 @@
 <td>{{ items.item.sort }}</td>
 <td><a href="{{ config.routers.admin }}resource/category/{{ items.item.id }}" class="">{{ items.item.title }}</a></td>
 <td>{{ items.item.alias }}</td>
-<td>{{ items.item.parent_id }}</td>
+<td><a href="/{{ items.item.url }}" target="_blank">{{ items.item.url }}</a></td>
 <td class="text-center">
 <a href="{{ config.routers.admin }}resource/category/{{ items.item.id }}" class="text-grey"><i class="fa fa-cogs font_20" aria-hidden="true"></i></a>
 </td>
