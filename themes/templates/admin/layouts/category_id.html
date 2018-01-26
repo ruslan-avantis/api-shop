@@ -32,6 +32,10 @@
 <input type="text" class="form-control form-control-xs" name="title" id="title" value="{{ content.title }}">
 </div>
 <div class="form-group col-lg-6">
+<label for="url">url</label>
+<input type="text" class="form-control form-control-xs" name="url" id="url" value="{{ content.url }}">
+</div>
+<div class="form-group col-lg-6">
 <label for="alias}">alias</label>
 <input type="text" class="form-control form-control-xs" name="alias" id="alias" value="{{ content.alias }}">
 </div>
@@ -39,6 +43,35 @@
 <label for="state">state</label>
 <input type="text" class="form-control form-control-xs" name="state" id="state" value="{{ content.state }}">
 </div>
+<div class="form-group col-lg-6">
+<label for="top_menu">top_menu</label>
+<input type="text" class="form-control form-control-xs" name="menu" id="menu" value="{{ content.menu }}">
+</div>
+<div class="form-group col-lg-6">
+<label for="category_list">category_list</label>
+<input type="text" class="form-control form-control-xs" name="list" id="list" value="{{ content.list }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="products_limit">products_limit</label>
+<input type="text" class="form-control form-control-xs" name="products_limit" id="products_limit" value="{{ content.products_limit }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="categories_template">categories_template</label>
+<input type="text" class="form-control form-control-xs" name="categories_template" id="categories_template" value="{{ content.categories_template }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="products_template">products_template</label>
+<input type="text" class="form-control form-control-xs" name="products_template" id="products_template" value="{{ content.products_template }}">
+</div>
+
+<div class="form-group col-lg-6">
+<label for="authorize">authorize</label>
+<input type="text" class="form-control form-control-xs" name="authorize" id="authorize" value="{{ content.authorize }}">
+</div>
+
 </div>
 
 <div class="col-lg-12 padding_7">
@@ -130,10 +163,7 @@
 <input type="text" class="form-control form-control-xs" name="image" id="image" value="{{ content.image }}">
 </div>
 
-<div class="form-group col-lg-6">
-<label for="category_id">category_id</label>
-<input type="text" class="form-control form-control-xs" name="category_id" id="category_id" value="{{ content.category_id }}">
-</div>
+
  			
 </div>
 </div>
@@ -202,7 +232,7 @@
 
 <div class="col-lg-12">
 <div class="row padding_7">
-<button type="submit" onclick="resourcePut('{{ resource }}', {{ content.article_id }});" class="btn btn-primary text-white">{{ language.240 }}</button>
+<button type="submit" onclick="resourcePut('{{ resource }}', {{ content.id }});" class="btn btn-primary text-white">{{ language.240 }}</button>
 </div>
 </div>
 
