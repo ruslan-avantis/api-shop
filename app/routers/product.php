@@ -214,7 +214,7 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
     
 });
  
-$app->get($product_quick_view_router.'{alias:[a-z0-9_]+}/{name}.html', function (Request $request, Response $response, array $args) {
+$app->get($product_quick_view_router.''.$product_alias.''.$product_name, function (Request $request, Response $response, array $args) {
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Подключаем плагины
