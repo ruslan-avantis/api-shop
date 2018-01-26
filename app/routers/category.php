@@ -38,6 +38,7 @@ $app->get($category_router.'', function (Request $request, Response $response, a
     $utility = new Utility();
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
+	$routers = $config['routers'];
  
     $site = new Site();
     $site_config = $site->get();
@@ -214,6 +215,7 @@ $app->get($category_router.'', function (Request $request, Response $response, a
         "template" => $template,
         "head" => $head,
         "site" => $site_config,
+		"routers" => $routers,
         "config" => $config['settings']['site'],
         "language" => $language,
         "token" => $session->token,

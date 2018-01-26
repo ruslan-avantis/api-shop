@@ -51,6 +51,7 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
     }
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
+	$routers = $config['routers'];
  
     $site = new Site();
     $site_config = $site->get();
@@ -196,6 +197,7 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
  
         return $this->view->render($template_product.'.html', [
             "head" => $page,
+			"routers" => $routers,
             "site" => $site_config,
             "config" => $config['settings']['site'],
             "language" => $language,

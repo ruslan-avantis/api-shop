@@ -1305,8 +1305,7 @@ $app->get($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $reques
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $admin_config = $config['admin'];
-    $template = $admin_config["template"];
+    $template = $admin_config['admin']["template"];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1383,7 +1382,7 @@ $app->get($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $reques
             "host" => $host,
             "path" => $path
         ],
-        "config" => $admin_config,
+        "config" => $config,
         "language" => $language,
         "token" => $session->token_admin,
         "session" => $sessionUser,

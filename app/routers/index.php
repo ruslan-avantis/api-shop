@@ -40,6 +40,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
     $path = $request->getUri()->getPath();
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
+	$routers = $config['routers'];
  
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
@@ -174,6 +175,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
  
         return $this->view->render('index.html', [
             "head" => $head,
+			"routers" => $routers,
             "site" => $site_config,
             "config" => $config['settings']['site'],
             "language" => $language,
@@ -227,6 +229,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
  
         return $this->view->render($index.'.html', [
             "template" => "install",
+			"routers" => $routers,
             "head" => $head,
             "config" => $config['settings']['site'],
             "language" => $language,

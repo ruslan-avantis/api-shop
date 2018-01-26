@@ -29,6 +29,7 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
     $path = $request->getUri()->getPath();
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
+	$routers = $config['routers'];
     $site = new Site();
     $site_config = $site->get();
     // Подключаем сессию
@@ -89,6 +90,7 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
         "template" => $site->template(),
         "pages" => $page,
         "site" => $site_config,
+		"routers" => $routers,
         "config" => $config['settings']['site'],
         "language" => $language,
         "token" => $session->token,
@@ -104,6 +106,7 @@ $app->get($sign_up_router, function (Request $request, Response $response, array
     $path = $request->getUri()->getPath();
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
+	$routers = $config['routers'];
     $site = new Site();
     $site_config = $site->get();
     // Подключаем сессию
@@ -165,6 +168,7 @@ $app->get($sign_up_router, function (Request $request, Response $response, array
         "template" => $site->template(),
         "pages" => $page,
         "site" => $site_config,
+		"routers" => $routers,
         "config" => $config['settings']['site'],
         "language" => $language,
         "token" => $session->token,
