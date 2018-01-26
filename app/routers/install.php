@@ -20,11 +20,15 @@ use GuzzleHttp\Client as Guzzle;
 $app->post('/install-api-key', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
+    // Подключаем плагины
+    $utility = new Utility();
     // Подключаем сессию
     $session = new Session($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
-    
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
+ 
     try {
         // Получаем токен из сессии
         $token = Crypto::decrypt($session->token, $token_key);
@@ -32,8 +36,6 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
     }
-    // Получаем данные отправленные нам через POST
-    $post = $request->getParsedBody();
     try {
         // Получаем токен из POST
         $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
@@ -41,12 +43,12 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
     }
-    // Подключаем плагины
-    $utility = new Utility();
+ 
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = $utility->clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
+ 
         $public_key = filter_var($post['public_key'], FILTER_SANITIZE_STRING);
         if (isset($public_key)) {
  
@@ -74,11 +76,11 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
                 }
             }
  
-			$api = null;
+            $api = null;
             $guzzle = new Guzzle();
             $guzz = $guzzle->request('GET', $config["db"]["pllanoapi"]["url"].'api?public_key='.$public_key);
-			$resp = $guzz->getBody();
-			$output = $utility->clean_json($resp);
+            $resp = $guzz->getBody();
+            $output = $utility->clean_json($resp);
             $records = json_decode($output, true);
             if (isset($records['headers']['code'])) {
                 if(is_object($records["body"]["items"]["0"]["item"])) {
@@ -86,14 +88,14 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
                 } elseif (is_array($records["body"]["items"]["0"]["item"])) {
                     $api = $records["body"]["items"]["0"]["item"];
                 }
-				if (isset($api['alias'])) {
+                if (isset($api['alias'])) {
                     $paramPost['seller']['alias'] = $api['alias'];
                     $paramPost['seller']['download_dir'] = $api['download_dir'];
                     $paramPost['seller']['download_alias'] = $api['download_alias'];
                     $paramPost['seller']['terms_of_delivery'] = $api['terms_of_delivery'];
                     $paramPost['seller']['currency_code'] = $api['currency_code'];
                     $paramPost['seller']['private_key'] = $api['private_key'];
-				}
+                }
             }
  
             $paramPost['seller']['public_key'] = $public_key;
@@ -107,14 +109,13 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
             }
             $paramPost['settings']['themes']['template'] = $template;
  
-            // Подключаем класс
+            // Подключаем класс файла конфигурации
             $settingsAdmin = new \ApiShop\Admin\Config();
-            // Получаем массив
+            // Получаем массив конфигурации
             $arrJson = $settingsAdmin->get();
- 
-            // Соеденяем массивы
+            // Соеденяем два массива
             $newArr = array_replace_recursive($arrJson, $paramPost);
-            // Сохраняем в файл
+            // Сохраняем
             $settingsAdmin->put($newArr);
  
             $callback = array('status' => 200);
