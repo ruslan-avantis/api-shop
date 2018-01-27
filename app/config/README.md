@@ -12,10 +12,18 @@
 - `download_alias` - папка файлов продавца на платформе (не менять!)
 - `terms_of_delivery` - условия доставки
 - `currency_code` - код валюты - по умолчанию:UAH
-- `currency_id` - id валюты - по умолчанию: 1 (UAH)
-- `store` - Тип магазина или набор товаров - по умолчанию: 1
+- `currency_id` - id валюты - по умолчанию: `1` (UAH)
+- `store` - Тип магазина или набор товаров - по умолчанию: `1`
 ### settings - Конфигурация сайта
-- `language` - Язык по умолчнию
+- `language` - по умолчанию: `ru`
+- `http-codes` - по умолчанию: `https://github.com/pllano/APIS-2018/tree/master/http-codes/`
+- `debug` - по умолчанию: `1`
+- `displayErrorDetails` - по умолчанию: `1`
+- `addContentLengthHeader` - по умолчанию: `0`
+- `determineRouteBeforeAppMiddleware` - по умолчанию: `1`
+- `cookies.httponly` - по умолчанию: `1`
+- `phpSettings.session.cookie_httponly` - по умолчанию: `1`
+- `rebodys.session.cookie_httponly` - по умолчанию: `1`
 #### settings: `site` - настройка сайта
 - `demo_panel` - активация демо панели шаблона - по умолчанию: `1` активна
 - `title` - по умолчанию: `API Shop`
