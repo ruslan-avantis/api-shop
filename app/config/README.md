@@ -4,8 +4,49 @@
 - `settings.json` - файл в котором хранится конфигурация
 ## Разделы конфигурации
 ### seller - Настройки продавца
-
+- `name` - название вкладки - по умолчанию: seller
+- `public_key` - публичный ключ продавца
+- `private_key` - приватный ключ продавца
+- `alias` - alias продавца на платформе (не менять!)
+- `download_dir` - папка файлов продавца на платформе (не менять!)
+- `download_alias` - папка файлов продавца на платформе (не менять!)
+- `terms_of_delivery` - условия доставки
+- `currency_code` - код валюты - по умолчанию:UAH
+- `currency_id` - id валюты - по умолчанию: 1 (UAH)
+- `store` - Тип магазина или набор товаров - по умолчанию: 1
 ### settings - Конфигурация сайта
+- `language` - Язык по умолчнию
+#### settings: `site` - настройка сайта
+- `demo_panel` - активация демо панели шаблона - по умолчанию: `1` активна
+- `title` - по умолчанию: `API Shop`
+- `description` - по умолчанию: `API Shop`
+- `keywords` - по умолчанию: `API Shop`
+- `robots` - по умолчанию: `index, follow`
+- `og_title` - по умолчанию: `API Shop`
+- `og_description` - по умолчанию: `API Shop`
+- `og_image` - по умолчанию: `null`
+- `og_locale` - по умолчанию: `ru_RU`
+- `og_type` - по умолчанию: `site`
+- `og_url` - по умолчанию: `null`
+- `cookie_httponly` - по умолчанию: `0`
+#### settings: `session` - настройка session
+- `name` - по умолчанию: `_session`
+- `lifetime` - по умолчанию: `48`
+- `path` - по умолчанию: `/`
+- `domain` - по умолчанию: `null`
+- `secure` - по умолчанию: `0`
+- `httponly` - по умолчанию: `0`
+- `cookie_autoset` - по умолчанию: `1`
+- `save_path` - по умолчанию: `0`
+- `cache_limiter` - по умолчанию: `nocache`
+- `autorefresh` - по умолчанию: `1`
+- `encryption_key` - по умолчанию: `0`
+- `namespace` - по умолчанию: `_session`
+
+#### settings: `themes` - настройка шаблонов
+- `template` - название шаблона - по умолчанию: `mini-mo`
+- `dir_name` - глобальная директория - по умолчанию: `/../../themes`
+- `templates` - директория самих шаблонов - по умолчанию: `templates`
 
 ### admin - Настройки админ-панели
 
