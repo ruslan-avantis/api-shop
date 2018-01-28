@@ -26,46 +26,51 @@ use ApiShop\Resources\Install;
 use ApiShop\Resources\User;
 use ApiShop\Resources\Products;
 use ApiShop\Model\SessionUser;
-
-use ApiShop\Admin\Packages;
  
 $config = (new Settings())->get();
 $index_router = $config['routers']['index'];
  
 $app->get($index_router, function (Request $request, Response $response, array $args) {
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
-    // Получаем конфигурацию \ApiShop\Config\Settings
-    $config = (new Settings())->get();
-    $routers = $config['routers'];
- 
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
- 
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
-    // Читаем ключи
-    $session_key = $config['key']['session'];
-    $token_key = $config['key']['token'];
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
- 
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers'];
     // Подключаем плагины
     $utility = new Utility();
+    // Настройки сайта
+    $site = new Site();
+    $site_config = $site->get();
+    // Получаем название шаблона
+    $site_template = $site->template();
+    // Конфигурация шаблона
+    $templateConfig = new Template($site_template);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
+    // Меню, берет название класса из конфигурации
+    $menu = (new $config['vendor']['menu']())->get();
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $user_data =(new SessionUser())->get();
+    // Подключаем временное хранилище
+    $session_temp = new $config['vendor']['session']("_temp");
+    // Читаем ключи
+    $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
- 
-    // Что бы не давало ошибку присваиваем пустое значение
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
     $content = '';
-    // Меню, берет название класса из конфигурации
-    $menu = (new $config['vendor']['menu']())->get();
- 
+    // Заголовки по умолчанию из конфигурации
     $title = $config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
     $description = $config['settings']['site']['description'];
@@ -77,10 +82,23 @@ $app->get($index_router, function (Request $request, Response $response, array $
     $og_locale = $config['settings']['site']['og_locale'];
     $og_url = $config['settings']['site']['og_url'];
  
-    if ($config["settings"]["install"]["status"] != null) {
+    $head = [
+        "page" => 'home',
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
  
-        $site = new Site();
-        $site_config = $site->get();
+    if ($config["settings"]["install"]["status"] != null) {
  
         $templateConfig = new Template($config["settings"]["themes"]["template"]);
         $template = $templateConfig->get();
@@ -96,32 +114,11 @@ $app->get($index_router, function (Request $request, Response $response, array $
  
         // Получаем список товаров
         $productsList = new $config['vendor']['products_home']();
-        $products = $productsList->get($arr, $template);
- 
-        //$packages = new Packages();
-        //$putArr = $template['install']['packages'];
-        //print_r($putArr);
-        //$packages->delete($putArr);
-        //print_r($packages->get());
- 
-        // Запись в лог
-        $this->logger->info("home");
- 
-        $head = [
-            "page" => 'home',
-            "title" => $title,
-            "keywords" => $keywords,
-            "description" => $description,
-            "robots" => $robots,
-            "og_title" => $og_title,
-            "og_description" => $og_description,
-            "og_image" => $og_image,
-            "og_type" => $og_type,
-            "og_locale" => $og_locale,
-            "og_url" => $og_url,
-            "host" => $host,
-            "path" => $path
-        ];
+        $content = $productsList->get($arr, $template);
+        
+        if (count($content) >= 1) {
+            $render = $template['layouts']['index'] ? $template['layouts']['index'] : 'index.html';
+        }
  
         $view = [
             "head" => $head,
@@ -131,15 +128,10 @@ $app->get($index_router, function (Request $request, Response $response, array $
             "language" => $language,
             "template" => $template,
             "token" => $session->token,
-            "session" => $sessionUser,
-            "content" => $content,
+            "session" => $user_data,
             "menu" => $menu,
-            "products" => $products
+            "content" => $content
         ];
- 
-        $render = $template['layouts']['index'] ? $template['layouts']['index'] : 'index.html';
- 
-        return $this->view->render($render, $view);
  
     }
     else {
@@ -150,10 +142,10 @@ $app->get($index_router, function (Request $request, Response $response, array $
  
         if (isset($session->install)) {
             if ($session->install == 1) {
-                $render = "stores";
+                $render = "stores.html";
                 $content = (new Install())->stores_list();
             } elseif ($session->install == 2) {
-                $render = "templates";
+                $render = "templates.html";
                 if (isset($session->install_store)) {
                     $install_store = $session->install_store;
                 } else {
@@ -161,30 +153,19 @@ $app->get($index_router, function (Request $request, Response $response, array $
                 }
                 $content = (new Install())->templates_list($install_store);
             } elseif ($session->install == 3) {
-                $render = "welcome";
+                $render = "welcome.html";
             } elseif ($session->install == 10) {
-                $render = "templates";
+                $render = "templates.html";
                 $content = (new Install())->templates_list(null);
             } elseif ($session->install == 11) {
-                $render = "key";
+                $render = "key.html";
             }
         }
  
-        $head = [
-                "page" => 'install',
-                "title" => "install",
-                "keywords" => "install",
-                "description" => "install",
-                "og_title" => "install",
-                "og_description" => "install",
-                "host" => $host,
-                "path" => $path
-        ];
- 
         $view = [
+            "head" => $head,
             "template" => "install",
             "routers" => $routers,
-            "head" => $head,
             "config" => $config['settings']['site'],
             "language" => $language,
             "token" => $session->token,
@@ -192,9 +173,13 @@ $app->get($index_router, function (Request $request, Response $response, array $
             "content" => $content
         ];
  
-        return $this->view->render($render.'.html', $view);
- 
     }
+
+    // Запись в лог
+    $this->logger->info($render);
+ 
+    // Отдаем данные шаблонизатору
+    return $this->view->render($render, $view);
  
 });
  
