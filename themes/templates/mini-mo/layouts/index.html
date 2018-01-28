@@ -2,7 +2,7 @@
 {% if template.layouts.helper.nav %}{{ include (template.layouts.helper.nav) }}{% endif %}
 {% if template.layouts.helper.carousel %}{{ include (template.layouts.helper.carousel) }}{% endif %}
 {% if template.layouts.helper.title %}{{ include (template.layouts.helper.title) }}{% endif %}
-{% if products %}
+{% if content %}
 <section id="product-list" class="product-list">
 <div class="control-background bg-white">
 <div class="control-text-3 text-black">
@@ -12,7 +12,7 @@
 <div class="album">
 <div class="container">
 <div class="row text-center cards">
-{% for product in products %}
+{% for item in content %}
 {% if template.layouts.helper.products %}{{ include (template.layouts.helper.products) }}{% endif %}
 {% endfor %}
 </div>
