@@ -10,19 +10,24 @@
 <div class="col-lg-12">
 
 <ul class="nav nav-tabs">
+{% if content.settings %}
+<li class="nav-item">
+<a class="nav-link active" href="#settings" data-toggle="tab">{{ language.832 }}</a>
+</li>
+{% endif %}
 
 {% if content.seller %}
 <li class="nav-item">
-<a class="nav-link active" href="#seller" data-toggle="tab">{{ language.830 }}</a>
+<a class="nav-link" href="#seller" data-toggle="tab">{{ language.830 }}</a>
 </li>
 {% endif %}
 
-{% if content.settings %}
+{% if content.payments %}
 <li class="nav-item">
-<a class="nav-link" href="#settings" data-toggle="tab">{{ language.832 }}</a>
+<a class="nav-link" href="#payments" data-toggle="tab">{{ language.731 }}</a>
 </li>
 {% endif %}
-
+ 
 {% if content.admin %}
 <li class="nav-item">
 <a class="nav-link" href="#admin" data-toggle="tab">{{ language.831 }}</a>
@@ -35,9 +40,27 @@
 </li>
 {% endif %}
 
+{% if content.dir %}
+<li class="nav-item">
+<a class="nav-link" href="#dir" data-toggle="tab">Folders</a>
+</li>
+{% endif %}
+
+{% if content.vendor %}
+<li class="nav-item">
+<a class="nav-link" href="#vendor" data-toggle="tab">Vendor</a>
+</li>
+{% endif %}
+
 {% if content.routers %}
 <li class="nav-item">
 <a class="nav-link" href="#routers" data-toggle="tab">Routers</a>
+</li>
+{% endif %}
+
+{% if content.slim %}
+<li class="nav-item">
+<a class="nav-link" href="#slim" data-toggle="tab">Slim</a>
 </li>
 {% endif %}
 
@@ -45,40 +68,160 @@
 
 <div class="tab-content">
 
-{% if content.seller %}
-<div role="tabpanel" class="tab-pane active" id="seller">
-<div class="col-lg-12"><h4 class="padding_top_14">{% if content.seller.name %}{{ content.seller.name }}{% endif %}</h5></div>
+{% if content.payments %}
+<div role="tabpanel" class="tab-pane fade in" id="payments">
+{% if content.payments %}
+<div class="col-lg-12"><h4 class="padding_top_14">{% if content.payments.name %}{{ content.payments.name }}{% endif %}</h4></div>
 <div class="form-row">
-{% for key, value in content.seller %}
-{% if key != 'name' %}
 {# -------------- #}
+{% for key, value in content.payments %}
+{% if key != 'name' %}
 
 {% if value is iterable %}
+<div class="col-lg-12"><h5 class="padding_top_14">{% if key %}{{ key }}{% endif %}</h5></div>
 
 {# ------ #}
 {% for key_two, value_two in value %}
+
+{% if value_two is iterable %}
+<div class="col-lg-12"><h6 class="padding_top_14">{% if key_two %}{{ key_two }}{% endif %}</h6></div>
+{# --- #}
+{% for key_three, value_three in value_two %}
+<div class="form-group col-xl-6">
+<label for="{{ key_three }}">{{ key_three }}</label>
+<input type="text" class="form-control form-control-xs" name="payments[{{ key }}][{{ key_two }}][{{ key_three }}]" aria-describedby="{{ value_three }}" value="{{ value_three }}">
+</div>
+{% endfor %}
+{# --- #}
+
+{% else %}
 <div class="form-group col-xl-6">
 <label for="{{ key_two }}">{{ key_two }}</label>
-<input type="text" class="form-control form-control-xs" name="seller[{{ key }}][{{ key_two }}]" aria-describedby="{{ value_two }}" value="{{ value_two }}">
+<input type="text" class="form-control form-control-xs" name="payments[{{ key }}][{{ key_two }}]" aria-describedby="{{ value_two }}" value="{{ value_two }}">
 </div>
+{% endif %}
+
 {% endfor %}
 {# ------ #}
 
 {% else %}
 <div class="form-group col-xl-6">
 <label for="{{ key }}">{{ key }}</label>
-{% if value == false %}{% set value = 0 %}{% endif %}
+<input type="text" class="form-control form-control-xs" name="payments[{{ key }}]" aria-describedby="{{ value }}" value="{{ value }}">
+</div>
+{% endif %}
+
+{% endif %}
+{% endfor %}
+{# -------------- #}
+</div>
+{% endif %}
+</div>
+{% endif %}
+
+
+{% if content.slim %}
+<div role="tabpanel" class="tab-pane fade in" id="slim">
+{% if content.slim %}
+<div class="col-lg-12"><h4 class="padding_top_14">{% if content.slim.name %}{{ content.slim.name }}{% endif %}</h4></div>
+<div class="form-row">
+{# -------------- #}
+{% for key, value in content.slim %}
+{% if key != 'name' %}
+
+{% if value is iterable %}
+<div class="col-lg-12"><h5 class="padding_top_14">{% if key %}{{ key }}{% endif %}</h5></div>
+
+{# ------ #}
+{% for key_two, value_two in value %}
+
+{% if value_two is iterable %}
+<div class="col-lg-12"><h6 class="padding_top_14">{% if key_two %}{{ key_two }}{% endif %}</h6></div>
+{# --- #}
+{% for key_three, value_three in value_two %}
+<div class="form-group col-xl-6">
+<label for="{{ key_three }}">{{ key_three }}</label>
+<input type="text" class="form-control form-control-xs" name="slim[{{ key }}][{{ key_two }}][{{ key_three }}]" aria-describedby="{{ value_three }}" value="{{ value_three }}">
+</div>
+{% endfor %}
+{# --- #}
+
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key_two }}">{{ key_two }}</label>
+<input type="text" class="form-control form-control-xs" name="slim[{{ key }}][{{ key_two }}]" aria-describedby="{{ value_two }}" value="{{ value_two }}">
+</div>
+{% endif %}
+
+{% endfor %}
+{# ------ #}
+
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key }}">{{ key }}</label>
+<input type="text" class="form-control form-control-xs" name="slim[{{ key }}]" aria-describedby="{{ value }}" value="{{ value }}">
+</div>
+{% endif %}
+
+{% endif %}
+{% endfor %}
+{# -------------- #}
+</div>
+{% endif %}
+</div>
+{% endif %}
+
+{% if content.seller %}
+<div role="tabpanel" class="tab-pane fade in" id="seller">
+{% if content.seller %}
+<div class="col-lg-12"><h4 class="padding_top_14">{% if content.seller.name %}{{ content.seller.name }}{% endif %}</h4></div>
+<div class="form-row">
+{# -------------- #}
+{% for key, value in content.seller %}
+{% if key != 'name' %}
+
+{% if value is iterable %}
+<div class="col-lg-12"><h5 class="padding_top_14">{% if key %}{{ key }}{% endif %}</h5></div>
+
+{# ------ #}
+{% for key_two, value_two in value %}
+
+{% if value_two is iterable %}
+<div class="col-lg-12"><h6 class="padding_top_14">{% if key_two %}{{ key_two }}{% endif %}</h6></div>
+{# --- #}
+{% for key_three, value_three in value_two %}
+<div class="form-group col-xl-6">
+<label for="{{ key_three }}">{{ key_three }}</label>
+<input type="text" class="form-control form-control-xs" name="seller[{{ key }}][{{ key_two }}][{{ key_three }}]" aria-describedby="{{ value_three }}" value="{{ value_three }}">
+</div>
+{% endfor %}
+{# --- #}
+
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key_two }}">{{ key_two }}</label>
+<input type="text" class="form-control form-control-xs" name="seller[{{ key }}][{{ key_two }}]" aria-describedby="{{ value_two }}" value="{{ value_two }}">
+</div>
+{% endif %}
+
+{% endfor %}
+{# ------ #}
+
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key }}">{{ key }}</label>
 <input type="text" class="form-control form-control-xs" name="seller[{{ key }}]" aria-describedby="{{ value }}" value="{{ value }}">
 </div>
 {% endif %}
 
-{# -------------- #}
 {% endif %}
 {% endfor %}
-</div>
+{# -------------- #}
 </div>
 {% endif %}
-
+</div>
+{% endif %}
+ 
 {% if content.admin %}
 <div role="tabpanel" class="tab-pane fade in" id="admin">
 {% if content.admin %}
@@ -116,7 +259,7 @@
 {% endif %}
 
 {% if content.settings %}
-<div role="tabpanel" class="tab-pane fade in" id="settings">
+<div role="tabpanel" class="tab-pane active" id="settings">
 {% if content.settings %}
 <div class="col-lg-12"><h4 class="padding_top_14">{% if content.settings.name %}{{ content.settings.name }}{% endif %}</h4></div>
 <div class="form-row">
@@ -243,6 +386,108 @@
 <div class="form-group col-xl-6">
 <label for="{{ key }}">{{ key }}</label>
 <input type="text" class="form-control form-control-xs" name="routers[{{ key }}]" aria-describedby="{{ value }}" value="{{ value }}">
+</div>
+{% endif %}
+
+{% endif %}
+{% endfor %}
+{# -------------- #}
+</div>
+{% endif %}
+</div>
+{% endif %}
+
+{% if content.vendor %}
+<div role="tabpanel" class="tab-pane fade in" id="vendor">
+{% if content.vendor %}
+<div class="col-lg-12"><h4 class="padding_top_14">{% if content.vendor.name %}{{ content.vendor.name }}{% endif %}</h4></div>
+<div class="form-row">
+{# -------------- #}
+{% for key, value in content.vendor %}
+{% if key != 'name' %}
+
+{% if value is iterable %}
+<div class="col-lg-12"><h5 class="padding_top_14">{% if key %}{{ key }}{% endif %}</h5></div>
+
+{# ------ #}
+{% for key_two, value_two in value %}
+
+{% if value_two is iterable %}
+<div class="col-lg-12"><h6 class="padding_top_14">{% if key_two %}{{ key_two }}{% endif %}</h6></div>
+{# --- #}
+{% for key_three, value_three in value_two %}
+<div class="form-group col-xl-6">
+<label for="{{ key_three }}">{{ key_three }}</label>
+<input type="text" class="form-control form-control-xs" name="vendor[{{ key }}][{{ key_two }}][{{ key_three }}]" aria-describedby="{{ value_three }}" value="{{ value_three }}">
+</div>
+{% endfor %}
+{# --- #}
+
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key_two }}">{{ key_two }}</label>
+<input type="text" class="form-control form-control-xs" name="vendor[{{ key }}][{{ key_two }}]" aria-describedby="{{ value_two }}" value="{{ value_two }}">
+</div>
+{% endif %}
+
+{% endfor %}
+{# ------ #}
+
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key }}">{{ key }}</label>
+<input type="text" class="form-control form-control-xs" name="vendor[{{ key }}]" aria-describedby="{{ value }}" value="{{ value }}">
+</div>
+{% endif %}
+
+{% endif %}
+{% endfor %}
+{# -------------- #}
+</div>
+{% endif %}
+</div>
+{% endif %}
+
+{% if content.dir %}
+<div role="tabpanel" class="tab-pane fade in" id="dir">
+{% if content.dir %}
+<div class="col-lg-12"><h4 class="padding_top_14">{% if content.dir.name %}{{ content.dir.name }}{% endif %}</h4></div>
+<div class="form-row">
+{# -------------- #}
+{% for key, value in content.dir %}
+{% if key != 'name' %}
+
+{% if value is iterable %}
+<div class="col-lg-12"><h5 class="padding_top_14">{% if key %}{{ key }}{% endif %}</h5></div>
+
+{# ------ #}
+{% for key_two, value_two in value %}
+
+{% if value_two is iterable %}
+<div class="col-lg-12"><h6 class="padding_top_14">{% if key_two %}{{ key_two }}{% endif %}</h6></div>
+{# --- #}
+{% for key_three, value_three in value_two %}
+<div class="form-group col-xl-6">
+<label for="{{ key_three }}">{{ key_three }}</label>
+<input type="text" class="form-control form-control-xs" name="dir[{{ key }}][{{ key_two }}][{{ key_three }}]" aria-describedby="{{ value_three }}" value="{{ value_three }}">
+</div>
+{% endfor %}
+{# --- #}
+
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key_two }}">{{ key_two }}</label>
+<input type="text" class="form-control form-control-xs" name="dir[{{ key }}][{{ key_two }}]" aria-describedby="{{ value_two }}" value="{{ value_two }}">
+</div>
+{% endif %}
+
+{% endfor %}
+{# ------ #}
+
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key }}">{{ key }}</label>
+<input type="text" class="form-control form-control-xs" name="dir[{{ key }}]" aria-describedby="{{ value }}" value="{{ value }}">
 </div>
 {% endif %}
 
