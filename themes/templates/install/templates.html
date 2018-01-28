@@ -1,4 +1,3 @@
-
 {{ include ('header.html') }}
 <input type="hidden" name="host" id="host" value="{{ head.host }}">
 <style>
@@ -19,31 +18,7 @@ margin-bottom: 30px;
 <br>
 <div class="text-center text-white "><h1>{{ language.762 }}</h1></div>
 <div class="text-center text-white font_20">{{ language.761 }}</div>
-
-<div class="text-center padding_height_7">
-<div class="btn-group btn-white">
-<button type="button" class="btn btn-md btn-hover-effects text-dark-gunmetal dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-{% if session.language == "ua" %}
-<img src="/themes/lib/phone/flags/ua.png" class="position-left" alt=""> Українська
-{% elseif session.language == "en" %}
-<img src="/themes/lib/phone/flags/gb.png" class="position-left" alt=""> English
-{% elseif session.language == "ru" %}
-<img src="/themes/lib/phone/flags/ru.png" class="position-left" alt=""> Русский
-{% elseif session.language == "de" %}
-<img src="/themes/lib/phone/flags/de.png" class="position-left" alt=""> Deutsch
-{% else %}
-<img src="/themes/lib/phone/flags/ru.png" class="position-left" alt=""> Русский
-{% endif %}
-</button>
-<div class="dropdown-menu a-dark-gunmetal a-hover-blue-violet">
-<a class="dropdown-item" href="#" onClick="setLanguage(2);"><img src="/themes/lib/phone/flags/ua.png" alt=""> Українська</a>
-<a class="dropdown-item" href="#" onClick="setLanguage(1);"><img src="/themes/lib/phone/flags/ru.png" alt=""> Русский</a>
-<a class="dropdown-item" href="#" onClick="setLanguage(3);"><img src="/themes/lib/phone/flags/gb.png" alt=""> English</a>
-<a class="dropdown-item" href="#" onClick="setLanguage(4);"><img src="/themes/lib/phone/flags/de.png" alt=""> Deutsch</a>
-</div>
-</div>
-</div>
-
+{{ include ('language.html') }}
 <div class="container">
 <div class="row">
 {% for items in content %}
@@ -68,6 +43,33 @@ margin-bottom: 30px;
 {% endif %}
 </a>
 </h4>
+<div class="margin_4">
+{% if items.item.price == "0" %}
+<div class="text-green-lg font_26 text_bold">{{ language.736 }}</div>
+{% else %}
+<div class="text-primary-lg font_26 text_bold">{{ items.item.price }} $</div>
+{% endif %}
+</div>
+<div class="margin_4">
+{% if items.item.price == "0" %}
+<span class="control-link-a-3 a-white a-hover-white">
+<span class="control-button btn-success-xl">
+<a href="#" onClick="installTemplate({{ items.item.id }});" class="btn btn-md btn-hover-effects">{{ language.759 }} <i class="fa fa-check" aria-hidden="true"></i></a>
+</span>
+</span>
+{% else %}
+<span class="control-link-a-3 a-white a-hover-white">
+<span class="control-button btn-red-md">
+<a href="#" onClick="buyTemplate('{{ items.item.alias }}');" class="btn btn-md btn-hover-effects">{{ language.1 }} <i class="fa fa-cart-plus" aria-hidden="true"></i></a>
+</span>
+</span>
+{% endif %}
+<span class="control-link-a-3 a-white a-hover-white">
+<span class="control-button btn-indigo-xxxl">
+<a href="{{ items.item.demo }}" target="_blank" class="btn btn-md btn-hover-effects"><i class="fa fa-desktop" aria-hidden="true"></i> {{ language.517 }}</a>
+</span>
+</span>
+</div>
 <p class="card-text">
 {% if session.language == "ua" %}
 {{ items.item.description_ua }}
@@ -81,18 +83,6 @@ margin-bottom: 30px;
 {{ items.item.description }}
 {% endif %}
 </p>
-<div class="margin_7">
-<span class="control-link-a-3 a-white a-hover-green-xxs">
-<span class="control-button btn-success-xl">
-<a href="#" onClick="installTemplate({{ items.item.id }});" class="btn btn-md btn-hover-effects">{{ language.759 }} <i class="fa fa-check" aria-hidden="true"></i></a>
-</span>
-</span> 
-<span class="control-link-a-3 a-white a-hover-primary-xxs">
-<span class="control-button btn-indigo-xxxl">
-<a href="{{ items.item.demo }}" target="_blank" class="btn btn-md btn-hover-effects"><i class="fa fa-desktop" aria-hidden="true"></i> {{ language.517 }}</a>
-</span>
-</span>
-</div>
 </div>
 </div>
 </div>

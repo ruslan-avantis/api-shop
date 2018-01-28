@@ -130,7 +130,7 @@ display: none;
 </div>
 <div class="carousel-caption d-none d-md-block">
 <div class="banner text-center">
-<a href="/"><img class="img-responsive" src="/images/pllano-logo.svg" alt=""></a>
+<a href="/"><img class="img-responsive" src="/images/logo.svg" alt=""></a>
 <h3>E-Commerce Platform API Shop</h3>
 </div>
 </div>
@@ -155,29 +155,7 @@ display: none;
 </div>
 </div>
 </div>
-<div class="text-center padding_height_7">
-<div class="btn-group btn-white padding_height_4">
-<button type="button" class="btn btn-md btn-hover-effects text-dark-gunmetal dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-{% if session.language == "ua" %}
-<img src="/themes/lib/phone/flags/ua.png" class="position-left" alt=""> Українська
-{% elseif session.language == "en" %}
-<img src="/themes/lib/phone/flags/gb.png" class="position-left" alt=""> English
-{% elseif session.language == "ru" %}
-<img src="/themes/lib/phone/flags/ru.png" class="position-left" alt=""> Русский
-{% elseif session.language == "de" %}
-<img src="/themes/lib/phone/flags/de.png" class="position-left" alt=""> Deutsch
-{% else %}
-<img src="/themes/lib/phone/flags/ru.png" class="position-left" alt=""> Русский
-{% endif %}
-</button>
-<div class="dropdown-menu a-dark-gunmetal a-hover-blue-violet">
-<a class="dropdown-item" href="#" onClick="setLanguage(2);"><img src="/themes/lib/phone/flags/ua.png" alt=""> Українська</a>
-<a class="dropdown-item" href="#" onClick="setLanguage(1);"><img src="/themes/lib/phone/flags/ru.png" alt=""> Русский</a>
-<a class="dropdown-item" href="#" onClick="setLanguage(3);"><img src="/themes/lib/phone/flags/gb.png" alt=""> English</a>
-<a class="dropdown-item" href="#" onClick="setLanguage(4);"><img src="/themes/lib/phone/flags/de.png" alt=""> Deutsch</a>
-</div>
-</div>
-</div>
+{{ include ('language.html') }}
 <div class="text-center padding_height_10">
 <div class="copy-text">Copyright © {{ config.copyright.date }} by <a href="https://pllano.com/">pllano.com</a></div>
 </div>

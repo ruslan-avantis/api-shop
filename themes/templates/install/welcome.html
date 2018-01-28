@@ -11,29 +11,7 @@
 <h2 class="mb-5">{{ language.789 }}</h2>
 <div id="loader-link"><a class="btn btn-primary btn-xl" href="/" onclick="startShop();">{{ language.788 }}</a></div>
 <br>
-<div class="text-center">
-<div class="btn-group btn-white">
-<button type="button" class="btn btn-md btn-hover-effects text-dark-gunmetal dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-{% if session.language == "ua" %}
-<img src="/themes/lib/phone/flags/ua.png" class="position-left" alt=""> Українська
-{% elseif session.language == "en" %}
-<img src="/themes/lib/phone/flags/gb.png" class="position-left" alt=""> English
-{% elseif session.language == "ru" %}
-<img src="/themes/lib/phone/flags/ru.png" class="position-left" alt=""> Русский
-{% elseif session.language == "de" %}
-<img src="/themes/lib/phone/flags/de.png" class="position-left" alt=""> Deutsch
-{% else %}
-<img src="/themes/lib/phone/flags/ru.png" class="position-left" alt=""> Русский
-{% endif %}
-</button>
-<div class="dropdown-menu a-dark-gunmetal a-hover-blue-violet">
-<a class="dropdown-item" href="#" onClick="setLanguage(2);"><img src="/themes/lib/phone/flags/ua.png" alt=""> Українська</a>
-<a class="dropdown-item" href="#" onClick="setLanguage(1);"><img src="/themes/lib/phone/flags/ru.png" alt=""> Русский</a>
-<a class="dropdown-item" href="#" onClick="setLanguage(3);"><img src="/themes/lib/phone/flags/gb.png" alt=""> English</a>
-<a class="dropdown-item" href="#" onClick="setLanguage(4);"><img src="/themes/lib/phone/flags/de.png" alt=""> Deutsch</a>
-</div>
-</div>
-</div>
+{{ include ('language.html') }}
 </div>
 <br>
 </header>
