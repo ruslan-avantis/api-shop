@@ -11,9 +11,15 @@
 
 <ul class="nav nav-tabs">
 
+{% if content.layouts %}
+<li class="nav-item">
+<a class="nav-link active" href="#layouts" data-toggle="tab">Layouts</a>
+</li>
+{% endif %}
+
 {% if content.home %}
 <li class="nav-item">
-<a class="nav-link active" href="#home" data-toggle="tab">{{ language.24 }}</a>
+<a class="nav-link" href="#home" data-toggle="tab">{{ language.24 }}</a>
 </li>
 {% endif %}
 
@@ -41,12 +47,6 @@
 </li>
 {% endif %}
 
-{% if content.layouts %}
-<li class="nav-item">
-<a class="nav-link" href="#layouts" data-toggle="tab">Layouts</a>
-</li>
-{% endif %}
-
 {% if content.install %}
 <li class="nav-item">
 <a class="nav-link" href="#install" data-toggle="tab">Install</a>
@@ -58,7 +58,7 @@
 <div class="tab-content">
 	
 {% if content.home %}
-<div role="tabpanel" class="tab-pane active" id="home">
+<div role="tabpanel" class="tab-pane fade in" id="home">
 {% if content.home.name %}<div class="col-lg-12"><h3 class="padding_top_14 text-green-xxxl">{{ content.home.name }}</h3></div>{% endif %}
 <div class="form-row">
 {# -------------- #}
@@ -318,7 +318,7 @@
 {% endif %}
 
 {% if content.layouts %}
-<div role="tabpanel" class="tab-pane fade in" id="layouts">
+<div role="tabpanel" class="tab-pane active" id="layouts">
 {% if content.layouts.name %}<div class="col-lg-12"><h3 class="padding_top_14 text-green-xxxl">{{ content.layouts.name }}</h3></div>{% endif %}
 <div class="form-row">
 {# -------------- #}

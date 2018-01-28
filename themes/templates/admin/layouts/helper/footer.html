@@ -14,19 +14,19 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.8.1/js/perfect-scrollbar.jquery.min.js"></script>
 <script src="/themes/lib/pnotify/3.2.0/js/pnotify.min.js"></script>
-<script src="/themes/templates/{{ template }}/js/off-canvas.js"></script>
-<script src="/themes/templates/{{ template }}/js/hoverable-collapse.js"></script>
-<script src="/themes/templates/{{ template }}/js/misc.js"></script>
-<script src="/themes/templates/{{ template }}/js/jquery.dataTables.min.js"></script>
-<script src="/themes/templates/{{ template }}/js/dataTables.bootstrap4.min.js"></script>
-<script src="/themes/templates/{{ template }}/js/dataTables.responsive.min.js"></script>
-<script src="/themes/templates/{{ template }}/js/responsive.bootstrap4.min.js"></script>
+<script src="/themes/templates/{{ template.name }}/js/off-canvas.js"></script>
+<script src="/themes/templates/{{ template.name }}/js/hoverable-collapse.js"></script>
+<script src="/themes/templates/{{ template.name }}/js/misc.js"></script>
+<script src="/themes/templates/{{ template.name }}/js/jquery.dataTables.min.js"></script>
+<script src="/themes/templates/{{ template.name }}/js/dataTables.bootstrap4.min.js"></script>
+<script src="/themes/templates/{{ template.name }}/js/dataTables.responsive.min.js"></script>
+<script src="/themes/templates/{{ template.name }}/js/responsive.bootstrap4.min.js"></script>
 {{ include ('helper/editor.html') }}
 <script>
 var admin_dir = '{{ config.routers.admin }}'
 var router_language = '{{ config.routers.language }}'
 </script>
-<script src="/themes/templates/{{ template }}/js/admin.js"></script>
+<script src="/themes/templates/{{ template.name }}/js/admin.js"></script>
 <script src="/themes/app/js/app.js"></script>
 <link href="https://cdn.joomimart.com/prism/css/prism.css" rel="stylesheet" />
 <script src="https://cdn.joomimart.com/prism/js/prism.js"></script>
