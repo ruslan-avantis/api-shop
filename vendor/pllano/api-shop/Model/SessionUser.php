@@ -2,21 +2,18 @@
  
 namespace ApiShop\Model;
  
-use Defuse\Crypto\Crypto;
-use Sinergi\BrowserDetector\Language as Langs;
 use ApiShop\Config\Settings;
-use Adbar\Session;
  
 class SessionUser {
  
     // Получаем данные из session
     public function get() {
         $config = (new Settings())->get();
-        // Подключаем сессию
-        $session = new Session($config['settings']['session']['name']);
+        // Подключаем сессию, берет название класса из конфигурации
+        $session = new $config['vendor']['session']($config['settings']['session']['name']);
         // Определяем язык интерфейса пользователя
  
-        $langs = new Langs();
+        $langs = new $config['vendor']['language_detector']();
         // Получаем массив данных из таблицы language на языке из $session->language
         $lang = $config["settings"]["language"];
         if (isset($session->language)) {
@@ -43,10 +40,10 @@ class SessionUser {
  
                     if (isset($session->role_id)) {$response["role_id"] = $session->role_id;}
                     if (isset($session->user_id)) {$response["user_id"] = $session->user_id;}
-                    if (isset($session->iname)) {$response["iname"] = Crypto::decrypt($session->iname, $session_key);}
-                    if (isset($session->fname)) {$response["fname"] = Crypto::decrypt($session->fname, $session_key);}
-                    if (isset($session->phone)) {$response['phone'] = Crypto::decrypt($session->phone, $session_key);}
-                    if (isset($session->email)) {$response['email'] = Crypto::decrypt($session->email, $session_key);}
+                    if (isset($session->iname)) {$response["iname"] = $config['vendor']['crypto']::decrypt($session->iname, $session_key);}
+                    if (isset($session->fname)) {$response["fname"] = $config['vendor']['crypto']::decrypt($session->fname, $session_key);}
+                    if (isset($session->phone)) {$response['phone'] = $config['vendor']['crypto']::decrypt($session->phone, $session_key);}
+                    if (isset($session->email)) {$response['email'] = $config['vendor']['crypto']::decrypt($session->email, $session_key);}
  
                 } catch (\Exception $ex) {
  

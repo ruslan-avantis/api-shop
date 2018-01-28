@@ -1,4 +1,15 @@
 <?php
+/**
+* This file is part of the REST API SHOP library
+*
+* @license http://opensource.org/licenses/MIT
+* @link https://github.com/API-Shop/api-shop
+* @version 1.0
+* @package api-shop.api-shop
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
  
 namespace ApiShop\Admin;
  

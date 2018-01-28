@@ -1,8 +1,18 @@
 <?php
-
+/**
+ * This file is part of the API SHOP
+ *
+ * @license http://opensource.org/licenses/MIT
+ * @link https://github.com/pllano/api-shop
+ * @version 1.0.1
+ * @package pllano.api-shop
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+ 
 namespace ApiShop\Model;
-
-use Adbar\Session;
+ 
 use ApiShop\Config\Settings;
 
 class Security {
@@ -11,8 +21,8 @@ class Security {
     public function token()
     {
         $config = (new Settings())->get();
-        // Подключаем сессию
-        $session = new Session($config['settings']['session']['name']);
+        // Подключаем сессию, берет название класса из конфигурации
+        $session = new $config['vendor']['session']($config['settings']['session']['name']);
         // Отправляем сообщение администратору
     }
  
@@ -20,8 +30,8 @@ class Security {
     public function csrf()
     {
         $config = (new Settings())->get();
-        // Подключаем сессию
-        $session = new Session($config['settings']['session']['name']);
+        // Подключаем сессию, берет название класса из конфигурации
+        $session = new $config['vendor']['session']($config['settings']['session']['name']);
         // Отправляем сообщение администратору
     }
  

@@ -12,11 +12,12 @@
  */
 
 namespace ApiShop\Resources;
-
+ 
 use ApiShop\Config\Settings;
+ 
 use RouterDb\Db;
 use RouterDb\Router;
-
+ 
 class Site {
  
     private $settings = null;

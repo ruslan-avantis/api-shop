@@ -64,7 +64,7 @@ class Template {
         return $resp;
 
     }
-    
+ 
     public function getOne()
     {
         if ($this->template != null) {
@@ -78,9 +78,10 @@ class Template {
             return null;
         }
     }
-    
-    public function put($arr)
+ 
+    public function put($param)
     {
+        $arr = array_replace_recursive($this->get(), $param);
         $newArr = json_encode($arr);
         $json_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config["settings"]["themes"]["templates"].'/'.$this->template.'/config/';
         file_put_contents($json_dir."config.json", $newArr);

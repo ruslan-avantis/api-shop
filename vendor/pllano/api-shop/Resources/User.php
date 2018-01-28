@@ -12,13 +12,10 @@
  */
 
 namespace ApiShop\Resources;
-
-use Adbar\Session;
-use Defuse\Crypto\Crypto;
-use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException as CryptoEx;
-use Sinergi\BrowserDetector\Language as Langs;
+ 
 use RouterDb\Db;
 use RouterDb\Router;
+ 
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Model\SessionUser;
@@ -30,8 +27,8 @@ class User {
     {
         // Подключаем конфиг \ApiShop\Config\Settings
         $config = (new Settings())->get();
-        // Подключаем сессию \Adbar\Session
-        $session = new Session($config['settings']['session']['name']);
+        // Подключаем сессию, берет название класса из конфигурации
+        $session = new $config['vendor']['session']($config['settings']['session']['name']);
         // Читаем ключи
         $session_key = $config['key']['session'];
         $cookie_key = $config['key']['cookie'];
@@ -41,8 +38,8 @@ class User {
  
         if ($identificator != null) {
             try {
-                $cookie = Crypto::decrypt($identificator, $cookie_key);
-            } catch (CryptoEx $ex) {
+                $cookie = $config['vendor']['crypto']::decrypt($identificator, $cookie_key);
+            } catch (\Exception $ex) {
                 $cookie = null;
             }
  
@@ -73,10 +70,10 @@ class User {
                             $session->authorize = 1;
                             $session->role_id = $user["role_id"];
                             $session->user_id = $user["id"];
-                            $session->iname = Crypto::encrypt($user["iname"], $session_key);
-                            $session->fname = Crypto::encrypt($user["fname"], $session_key);
-                            $session->phone = Crypto::encrypt($user["phone"], $session_key);
-                            $session->email = Crypto::encrypt($user["email"], $session_key);
+                            $session->iname = $config['vendor']['crypto']::encrypt($user["iname"], $session_key);
+                            $session->fname = $config['vendor']['crypto']::encrypt($user["fname"], $session_key);
+                            $session->phone = $config['vendor']['crypto']::encrypt($user["phone"], $session_key);
+                            $session->email = $config['vendor']['crypto']::encrypt($user["email"], $session_key);
                         } else {
                             $session->authorize = null;
                             $session->role_id = null;
@@ -105,7 +102,7 @@ class User {
                 // Подключаем утилиту
                 $utility = new Utility();
                 // Генерируем identificator
-                $identificator = Crypto::encrypt($utility->random_token(), $cookie_key);
+                $identificator = $config['vendor']['crypto']::encrypt($utility->random_token(), $cookie_key);
                 // Записываем пользователю новый cookie
                 $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : 'localhost';
                 if ($config['settings']['site']['cookie_httponly'] === true) {
@@ -119,7 +116,7 @@ class User {
         }
         
         if (!isset($session->language)) {
-            $langs = new Langs();
+            $langs = new $config['vendor']['language_detector']();
             if ($langs->getLanguage()) {
                 $session->language = $langs->getLanguage();
             }
@@ -162,8 +159,8 @@ class User {
     {
         // Получаем конфигурацию \ApiShop\Config\Settings
         $config = (new Settings())->get();
-        // Подключаем сессию
-        $session = new Session($config['settings']['session']['name']);
+        // Подключаем сессию, берет название класса из конфигурации
+        $session = new $config['vendor']['session']($config['settings']['session']['name']);
  
         // Текущая дата
         $today = date("Y-m-d H:i:s");
@@ -189,7 +186,7 @@ class User {
                 // Читаем ключи шифрования
                 $cookie_key = $config['key']['cookie'];
                 // Шифруем cookie
-                $new_cookie = Crypto::encrypt($cookie, $cookie_key);
+                $new_cookie = $config['vendor']['crypto']::encrypt($cookie, $cookie_key);
  
                 // Перезаписываем cookie в сессии
                 $session->cookie = $new_cookie;
