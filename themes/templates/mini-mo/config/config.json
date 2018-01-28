@@ -6,6 +6,63 @@
 	"url": "https://cdn.pllano.com/templates/mini-mo/1.0.1/mini-mo.zip",
 	"logo": "/images/logo.svg",
 	"demo": "https://mini-mo.pllano.com/",
+	"layouts": {
+		"name": "layouts",
+		"404": "404.html",
+		"blank": "blank.html",
+		"index": "index.html",
+		"article": "article.html",
+		"article_category": "article-category.html",
+		"categories": "categories.html",
+		"category": "category.html",
+		"product": "product.html",
+		"product_quick_view": "product-quick-view.html",
+		"sign_in": "sign-in.html",
+		"sign_up": "sign-up.html",
+		"cart": "cart.html",
+		"orders": "orders.html",
+		"checkout": "checkout.html",
+		"wishlist": "wishlist.html",
+		"comparison": "comparison.html",
+		"payments": "payments.html",
+		"helper": {
+			"carousel": "helper/carousel.html",
+			"footer": "helper/footer.html",
+			"header": "helper/header.html",
+			"menu": "helper/menu.html",
+			"nav": "helper/nav.html",
+			"newsletter": "helper/newsletter.html",
+			"cart": "helper/cart.html",
+			"order": "helper/order.html",
+			"paginator": "helper/paginator.html",
+			"products": "helper/products.html",
+			"title": "helper/title.html"
+		},
+		"widget": {
+			"blank": "widget/blank.html"
+		},
+		"panel": {
+			"settings": "panel/settings.html",
+			"demo": "panel/demo.html"
+		}
+	},
+	"products": {
+		"name": "Список товаров",
+		"image_width": 380,
+		"image_height": 507,
+		"home": {
+			"limit": 12,
+			"sort": "price",
+			"order": "ASC",
+			"relations": "image"
+		},
+		"category": {
+			"limit": 30,
+			"sort": "price",
+			"order": "ASC",
+			"relations": "image"
+		}
+	},
 	"home": {
 		"name": "home",
 		"section": {
@@ -16,11 +73,6 @@
 			"category": 1,
 			"social": 1,
 			"footer": 1
-		},
-		"product": {
-			"name": "Товары на главной",
-			"image_width": 380,
-			"image_height": 507
 		},
 		"parallax": {
 			"name": "Баннер на главной",
@@ -89,21 +141,6 @@
 			}
 		}
 	},
-	"seo": {
-		"name": "seo",
-		"itemprop": {
-			"name": "",
-			"address": "Маршала Тимошенко 21",
-			"city": "Киев",
-			"postal_code": "01234",
-			"telephone": "380670000001",
-			"email": "info@example.com",
-			"logo": "",
-			"url": "",
-			"text": "",
-			"about": ""
-		}
-	},
 	"footer": {
 		"name": "footer",
 		"social": {
@@ -134,5 +171,53 @@
 
 		}
 
+	},
+	"plugins": {
+		"name": "plugins",
+		"test": {
+			"name": "Plugin Name",
+			"state": 0,
+			"url": "modules",
+			"name2": "modules",
+			"name3": "modules"
+		}
+	},
+	"install": {
+		"config": {
+			"vendor": {
+				"menu": "\\ApiShop\\Test\\BigMenu",
+				"session": "\\ApiShop\\ModelTest\\Session"
+			},
+			"routers": {
+				"router_1": "\/router_1\/",
+				"router_2": "\/router_2\/"
+			}
+		},
+		"routers": [{
+				"file": "router_1.php",
+				"action": "add"
+			}, {
+				"file": "router_2.php",
+				"action": "replace"
+			}
+		],
+		"packages": [{
+				"namespace": "\\ApiShop\\Test\\BigMenu",
+				"dir": "\/pllano\/test",
+				"link": "https:\/\/cdn.pllano.com\/test\/big-menu-master.zip",
+				"git": null,
+				"name": "big-menu",
+				"version": "master",
+				"vendor": "pllano"
+			}, {
+				"namespace": "\\ApiShop\\ModelTest\\Session",
+				"dir": "\/pllano\/model-test",
+				"link": "https:\/\/cdn.pllano.com\/test\/session-master.zip",
+				"git": null,
+				"name": "session",
+				"version": "master",
+				"vendor": "pllano"
+			}
+		]
 	}
 }
