@@ -78,7 +78,8 @@
 		"image_thumbnail": "",
 		"image_compression": "",
 		"crypto": "\\Defuse\\Crypto\\Crypto",
-		"crypto_key": "\\Defuse\\Crypto\\Key",
+		"crypto_key_create": "\\Defuse\\Crypto\\Key::createNewRandomKey",
+		"crypto_key_load": "\\Defuse\\Crypto\\Key::loadFromAsciiSafeString",
 		"crypto_ex": "\\Defuse\\Crypto\\Exception\\WrongKeyOrModifiedCiphertextException"
 	},
 	"routers": {
@@ -98,7 +99,22 @@
 		"sign_up": "\/sign-up",
 		"logout": "\/logout",
 		"login": "\/login",
-		"check_in": "\/check-in"
+		"check_in": "\/check-in",
+		"admin": {
+			"login": "\/login",
+		}
+	},
+	"hooks": {
+		"hook_get": {
+			"request": "GET",
+			"render": "index.html",
+			"vendor": "\\ApiShop\\Hooks\\HookGet"
+		},
+		"hook_post": {
+			"request": "POST",
+			"render": "all",
+			"vendor": "\\ApiShop\\Hooks\\HookPost"
+		}
 	},
 	"admin": {
 		"name": "admin",
