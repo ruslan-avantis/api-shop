@@ -19,6 +19,7 @@ use RouterDb\Router;
  
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
+use ApiShop\Hooks\Hook;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
 use ApiShop\Resources\Template;
@@ -66,6 +67,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
+ 
     // Шаблон по умолчанию 404
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
@@ -174,12 +176,18 @@ $app->get($index_router, function (Request $request, Response $response, array $
         ];
  
     }
-
+ 
     // Запись в лог
     $this->logger->info($render);
  
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setGet($request, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
+ 
     // Отдаем данные шаблонизатору
-    return $this->view->render($render, $view);
+    return $this->view->render($hookRender, $hookView);
  
 });
  

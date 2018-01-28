@@ -19,6 +19,7 @@ use RouterDb\Router;
  
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
+use ApiShop\Hooks\Hook;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
 use ApiShop\Resources\Template;
@@ -32,8 +33,6 @@ $product_quick_view_router = $config['routers']['product_quick_view'];
  
 $app->get($product_router.''.$product_alias.''.$product_name, function (Request $request, Response $response, array $args) {
  
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
     // Подключаем плагины
     $utility = new Utility();
     // Получаем параметры из url
@@ -47,49 +46,57 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
     if ($request->getAttribute('name')) {
         $name = $utility->clean($request->getAttribute('name'));
     }
-    // Получаем конфигурацию \ApiShop\Config\Settings
-    $config = (new Settings())->get();
-    $routers = $config['routers'];
- 
-    $site = new Site();
-    $site_config = $site->get();
-    $site_template = $site->template();
- 
-    $templateConfig = new Template($site_template);
-    $template = $templateConfig->get();
- 
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
-    // Читаем ключи
-    $session_key = $config['key']['session'];
-    $token_key = $config['key']['token'];
- 
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
- 
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers'];
+    // Настройки сайта
+    $site = new Site();
+    $site_config = $site->get();
+    // Получаем название шаблона
+    $site_template = $site->template();
+    // Конфигурация шаблона
+    $templateConfig = new Template($site_template);
+    $template = $templateConfig->get();
     // Подключаем мультиязычность
     $language = (new Language($getParams))->get();
- 
+    // Меню, берет название класса из конфигурации
+    $menu = (new $config['vendor']['menu']())->get();
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
+    // Подключаем временное хранилище
+    $session_temp = new $config['vendor']['session']("_temp");
+    // Читаем ключи
+    $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Если запись об авторизации есть расшифровываем
-    if (isset($session->authorize)) {
-        $authorize = $session->authorize;
-    } else {
-        $session->authorize = 0;
-        $authorize = 0;
-    }
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
-    // Что бы не давало ошибку присваиваем пустое значение
+ 
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
     $content = '';
-    // Меню, берет название класса из конфигурации
-    $menu = (new $config['vendor']['menu']())->get();
-    
+    // Заголовки по умолчанию из конфигурации
+    $title = $config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
+ 
     if ($alias != null) {
-        
+ 
         // Ресурс (таблица) к которому обращаемся
         $resource = "price";
         // Отдаем роутеру RouterDb конфигурацию.
@@ -194,12 +201,19 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
             "session_id" => $session->id
         ];
  
-        return $this->view->render($render, $view);
+        
     
-    } else {
-        return $this->view->render('404.html', ["template" => $template, "language" => $language]);
     }
-    
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->view->render($hookRender, $hookView);
+ 
 });
  
 $app->get($product_quick_view_router.''.$product_alias.''.$product_name, function (Request $request, Response $response, array $args) {
@@ -341,11 +355,16 @@ $app->get($product_quick_view_router.''.$product_alias.''.$product_name, functio
  
         $render = $template['layouts']['product-quick-view'] ? $template['layouts']['product-quick-view'] : 'product-quick-view.html';
  
-        return $this->view->render($render, $view);
-    
-    } else {
-        return $this->view->render('404.html', ["template" => $template, "language" => $language]);
     }
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->view->render($hookRender, $hookView);
  
 });
  

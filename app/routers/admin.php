@@ -19,6 +19,7 @@ use RouterDb\Router;
  
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
+use ApiShop\Hooks\Hook;
 use ApiShop\Resources\Install;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
@@ -38,46 +39,46 @@ $admin_index_router = $config['routers']['admin_index'];
 // Главная страница админ панели
 $app->get($admin_index_router.'', function (Request $request, Response $response, array $args) {
  
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
- 
-    $config = (new Settings())->get();
-    $template = $config['admin']['template'];
-    
     // Подключаем плагины
     $utility = new Utility();
- 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
-    
-    $templates_list = (new Install())->templates_list($config['seller']['store']);
-    //print_r($templates_list);
- 
-    // Получаем параметры из URL
-    $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
- 
-    // Подключаем конфигурацию сайта
-    $site = new Site();
-    $site->get();
-    // Получаем название активного шаблона
-    $site_template = $site->template();
- 
-    $adminDatabase = new AdminDatabase();
-    $adminDd = $adminDatabase->list();
- 
-    $content = "";
-    $render = "index";
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["709"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
  
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
@@ -85,87 +86,113 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
             $index = new \ApiShop\Admin\Index();
             // Получаем массив с настройками шаблона
             $content = $index->get();
-        } else {
-            $render = "404";
+			// Получаем название шаблона
+			$render = $template['layouts']['index'] ? $template['layouts']['index'] : 'index.html';
         }
     } else {
         $session->authorize = null;
-        $render = "404";
     }
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
-    
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
     $view = [
-        "template" => $template,
-        "site_template" => $site_template,
-        "head" => [
-            "page" => $render,
-            "title" => $language["709"],
-            "keywords" => $language["709"],
-            "description" => $language["709"],
-            "host" => $host,
-            "path" => $path
-        ],
+        "head" => $head,
+        "routers" => $routers,
         "config" => $config,
         "language" => $language,
+        "template" => $template,
         "token" => $session->token_admin,
         "session" => $sessionUser,
-        "db" => $adminDd,
         "content" => $content
     ];
  
-    return $this->admin->render($render.'.html', $view);
+    // Запись в лог
+    $this->logger->info($render);
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
+ 
  
 });
  
 // Список items указанного resource
 $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
- 
-    $config = (new Settings())->get();
-    $template = $config['admin']['template'];
- 
     // Подключаем плагины
     $utility = new Utility();
- 
     // Получаем resource из url
     if ($request->getAttribute('resource')) {
         $resource = $utility->clean($request->getAttribute('resource'));
     } else {
         $resource = null;
     }
- 
     // Получаем id из url
     if ($request->getAttribute('id')) {
         $id = $utility->clean($request->getAttribute('id'));
     } else {
         $id = null;
     }
- 
+    // Подключаем плагины
+    $utility = new Utility();
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
- 
-    // Получаем параметры из URL
-    $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
- 
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
     $content = '';
-    $title = '';
-    $keywords = '';
-    $description = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["709"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
+ 
     $name_db = '';
     $type = 'get';
  
@@ -173,11 +200,8 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
         if ($session->role_id == 100) {
  
             $resource_list = explode(',', str_replace(array('"', "'", " "), '', $config['admin']['resource_list']));
+ 
             if (array_key_exists($resource, array_flip($resource_list))) {
-                
-                $title = $resource.' - API Shop';
-                $keywords = $resource.' - API Shop';
-                $description = $resource.' - API Shop';
  
                 // Отдаем роутеру RouterDb конфигурацию.
                 $router = new Router($config);
@@ -187,7 +211,7 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
                 $db = new Db($name_db, $config);
  
                 if($id >= 1) {
-                    $render = $resource.'_id';
+                    $render = $resource.'_id.html';
                     $type = 'edit';
                     // Отправляем запрос и получаем данные
                     $resp = $db->get($resource, [], $id);
@@ -202,39 +226,43 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
                         }
                     }
                 } else {
-                    $render = $resource;
+                    $render = $resource.'.html';
                     // Отправляем запрос и получаем данные
                     $resp = $db->get($resource);
                     if (isset($resp["headers"]["code"])) {
                         if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == '200') {
                             $content = $resp['body']['items'];
-                            
                         }
                     }
                 }
-            } else {
-                $render = "404";
             }
-        } else {
-            $render = "404";
         }
     } else {
         $session->authorize = null;
-        $render = "404";
     }
-    
+ 
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
     $view = [
-        "template" => $template,
-        "head" => [
-            "page" => $render,
-            "title" => $title,
-            "keywords" => $keywords,
-            "description" => $description,
-            "host" => $host,
-            "path" => $path
-        ],
+        "head" => $head,
+        "routers" => $routers,
         "config" => $config,
         "language" => $language,
+        "template" => $template,
         "token" => $session->token_admin,
         "session" => $sessionUser,
         "content" => $content,
@@ -247,7 +275,15 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
     // Запись в лог
     $this->logger->info("admin/".$render);
  
-    return $this->admin->render($render.'.html', $view);
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
  
 });
  
@@ -255,6 +291,9 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
 $app->post($admin_router.'resource-post', function (Request $request, Response $response, array $args) {
  
     $today = date("Y-m-d H:i:s");
+	// Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
+ 
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем плагины
@@ -263,9 +302,6 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
- 
-    // Получаем данные отправленные нам через POST
-    $post = $request->getParsedBody();
  
     $resource = null;
     if (isset($post['resource'])) {
@@ -1196,44 +1232,48 @@ $app->post($admin_router.'template-delete', function (Request $request, Response
 // Список шаблонов
 $app->get($admin_router.'template', function (Request $request, Response $response, array $args) {
  
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
- 
-    $config = (new Settings())->get();
-    $template = $config['admin']['template'];
- 
     // Подключаем плагины
     $utility = new Utility();
- 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["815"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
  
-    // Получаем параметры из URL
-    $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
- 
-    // Подключаем конфигурацию сайта
-    $site = new Site();
-    $site->get();
-    // Получаем название активного шаблона
-    $site_template = $site->template();
-    
-    $adminDatabase = new AdminDatabase();
-    $adminDd = $adminDatabase->list();
- 
-    $content = "";
-    $api = "";
-    $render = "templates";
+    $api = '';
  
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
@@ -1242,170 +1282,213 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
             // Получаем массив с настройками шаблона
             $content = $templates->get();
             $api = (new Install())->templates_list($config['seller']['store']);
-        } else {
-            $render = "404";
+			$render = $template['layouts']['templates'] ? $template['layouts']['templates'] : 'templates.html';
         }
     } else {
         $session->authorize = null;
-        $render = "404";
     }
-    
+ 
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
     $view = [
-        "template" => $template,
-        "site_template" => $site_template,
-        "head" => [
-            "page" => $render,
-            "title" => $language["815"],
-            "keywords" => $language["815"],
-            "description" => $language["815"],
-            "host" => $host,
-            "path" => $path
-        ],
+        "head" => $head,
+        "routers" => $routers,
         "config" => $config,
         "language" => $language,
+        "template" => $template,
         "token" => $session->token_admin,
         "session" => $sessionUser,
-        "db" => $adminDd,
         "content" => $content,
+        "editor" => $config['admin']['editor'],
         "api" => $api
     ];
  
     // Запись в лог
     $this->logger->info("admin/".$render);
  
-    return $this->admin->render($render.'.html', $view);
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
  
 });
  
 // Страница шаблона
-$app->get($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
- 
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
- 
-    $config = (new Settings())->get();
-    $template = $config['admin']['template'];
+$app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
     // Подключаем плагины
     $utility = new Utility();
- 
-    // Получаем name из url
-    if ($request->getAttribute('name')) {
-        $name = $utility->clean($request->getAttribute('name'));
+    // Получаем alias из url
+    if ($request->getAttribute('alias')) {
+        $alias = $utility->clean($request->getAttribute('alias'));
     } else {
-        $name = null;
+        $alias = null;
     }
- 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
  
-    // Получаем параметры из URL
-    $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
- 
-    $adminDatabase = new AdminDatabase();
-    $adminDd = $adminDatabase->list();
- 
-    $content = "";
-    $render = "template";
- 
-    if (isset($session->authorize) && isset($name)) {
+    if (isset($session->authorize) && isset($alias)) {
         if ($session->role_id) {
             // Подключаем класс
-            $templates = new \ApiShop\Admin\Template($name);
+            $templates = new \ApiShop\Admin\Template($alias);
             $content = $templates->getOne();
-        } else {
-            $render = "404";
+			$render = $template['layouts']['template'] ? $template['layouts']['template'] : 'template.html';
         }
     } else {
         $session->authorize = null;
-        $render = "404";
     }
-    
+ 
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
     $view = [
-        "template" => $template,
-        "head" => [
-            "page" => $render,
-            "title" => $language["814"].': '.$render.' - '. $language["709"],
-            "keywords" => $language["814"].': '.$render.' - '. $language["709"],
-            "description" => $language["814"].': '.$render.' - '. $language["709"],
-            "host" => $host,
-            "path" => $path
-        ],
+        "head" => $head,
+        "routers" => $routers,
         "config" => $config,
         "language" => $language,
+        "template" => $template,
         "token" => $session->token_admin,
         "session" => $sessionUser,
-        "db" => $adminDd,
         "content" => $content
     ];
  
     // Запись в лог
     $this->logger->info("admin/".$render);
  
-    return $this->admin->render($render.'.html', $view);
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
  
 });
  
 // Редактируем настройки шаблона
-$app->post($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
- 
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
- 
-    $config = (new Settings())->get();
-    $template = $config['admin']['template'];
- 
+$app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
     // Подключаем плагины
     $utility = new Utility();
- 
-    // Получаем name из url
-    if ($request->getAttribute('name')) {
-        $name = $utility->clean($request->getAttribute('name'));
+    // Получаем alias из url
+    if ($request->getAttribute('alias')) {
+        $alias = $utility->clean($request->getAttribute('alias'));
     } else {
-        $name = null;
+        $alias = null;
     }
- 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
  
-    // Получаем параметры из URL
-    $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
- 
-    $adminDatabase = new AdminDatabase();
-    $adminDd = $adminDatabase->list();
- 
-    $content = "";
-    $render = "template";
- 
-    if (isset($session->authorize) && isset($name)) {
+    if (isset($session->authorize) && isset($alias)) {
         if ($session->role_id) {
             // Подключаем класс
-            $templates = new \ApiShop\Admin\Template($name);
+            $templates = new \ApiShop\Admin\Template($alias);
             // Получаем массив
             $arrJson = $templates->getOne();
- 
             //print_r($content);
             // Массив из POST
             $paramPost = $request->getParsedBody();
@@ -1414,69 +1497,98 @@ $app->post($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $reque
             // Сохраняем в файл
             $templates->put($newArr);
             $content = $templates->getOne();
-            
-        } else {
-            $render = "404";
+ 
+			$render = $template['layouts']['template'] ? $template['layouts']['template'] : 'template.html';
+ 
         }
     } else {
         $session->authorize = null;
-        $render = "404";
     }
+ 
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
+    $view = [
+        "head" => $head,
+        "routers" => $routers,
+        "config" => $config,
+        "language" => $language,
+        "template" => $template,
+        "token" => $session->token_admin,
+        "session" => $sessionUser,
+        "content" => $content
+    ];
  
     // Запись в лог
     $this->logger->info("admin/".$render);
  
-    return $this->admin->render($render.'.html', [
-        "template" => $template,
-        "head" => [
-            "page" => $render,
-            "title" => $language["814"].': '.$render.' - '. $language["709"],
-            "keywords" => $language["814"].': '.$render.' - '. $language["709"],
-            "description" => $language["814"].': '.$render.' - '. $language["709"],
-            "host" => $host,
-            "path" => $path
-        ],
-        "config" => $config,
-        "language" => $language,
-        "token" => $session->token_admin,
-        "session" => $sessionUser,
-        "db" => $adminDd,
-        "content" => $content
-    ]);
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
  
 });
  
 // Список пакетов
 $app->get($admin_router.'packages', function (Request $request, Response $response, array $args) {
  
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
- 
-    $config = (new Settings())->get();
-    $template = $config['admin']['template'];
- 
     // Подключаем плагины
     $utility = new Utility();
- 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
- 
-    // Получаем параметры из URL
-    $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
- 
-    $content = "";
-    $render = "packages";
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
  
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
@@ -1484,28 +1596,35 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
             $packages = new \ApiShop\Admin\Packages();
             // Получаем массив
             $content = $packages->get();
-            //print_r($content);
+            $render = $template['layouts']['packages'] ? $template['layouts']['packages'] : 'packages.html';
             
-        } else {
-            $render = "404";
         }
     } else {
         $session->authorize = null;
-        $render = "404";
     }
-    
+ 
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
     $view = [
-        "template" => $template,
-        "head" => [
-            "page" => $render,
-            "title" => $language["815"],
-            "keywords" => $language["815"],
-            "description" => $language["815"],
-            "host" => $host,
-            "path" => $path
-        ],
+        "head" => $head,
+        "routers" => $routers,
         "config" => $config,
         "language" => $language,
+        "template" => $template,
         "token" => $session->token_admin,
         "session" => $sessionUser,
         "content" => $content
@@ -1514,50 +1633,60 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
     // Запись в лог
     $this->logger->info("admin/".$render);
  
-    return $this->admin->render($render.'.html', $view);
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
  
 });
  
 // Глобальные настройки
 $app->get($admin_router.'config', function (Request $request, Response $response, array $args) {
  
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
- 
-    $config = (new Settings())->get();
-    $template = $config['admin']['template'];
- 
     // Подключаем плагины
     $utility = new Utility();
- 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
- 
-    // Получаем параметры из URL
-    $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
-    
-    // Подключаем конфигурацию сайта
-    $site = new Site();
-    $site->get();
-    // Получаем название активного шаблона
-    $site_template = $site->template();
-    
-    $adminDatabase = new AdminDatabase();
-    $adminDd = $adminDatabase->list();
- 
-    $content = "";
-    $render = "config";
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
  
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
@@ -1565,80 +1694,96 @@ $app->get($admin_router.'config', function (Request $request, Response $response
             $settings = new \ApiShop\Admin\Config();
             // Получаем массив с настройками шаблона
             $content = $settings->get();
-            //print_r($content);
-        } else {
-            $render = "404";
+            $render = $template['layouts']['config'] ? $template['layouts']['config'] : 'config.html';
         }
     } else {
         $session->authorize = null;
-        $render = "404";
     }
-    
+ 
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
     $view = [
-        "template" => $template,
-        "head" => [
-            "page" => $render,
-            "title" => $language["709"],
-            "keywords" => $language["709"],
-            "description" => $language["709"],
-            "host" => $host,
-            "path" => $path
-        ],
+        "head" => $head,
+        "routers" => $routers,
         "config" => $config,
         "language" => $language,
+        "template" => $template,
         "token" => $session->token_admin,
         "session" => $sessionUser,
-        "db" => $adminDd,
         "content" => $content
     ];
  
     // Запись в лог
     $this->logger->info("admin/".$render);
  
-    return $this->admin->render($render.'.html', $view);
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
  
 });
  
 // Редактируем глобальные настройки
 $app->post($admin_router.'config', function (Request $request, Response $response, array $args) {
  
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
- 
-    $config = (new Settings())->get();
-    $template = $config['admin']['template'];
- 
     // Подключаем плагины
     $utility = new Utility();
- 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
- 
-    // Получаем параметры из URL
-    $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
- 
-    // Подключаем конфигурацию сайта
-    $site = new Site();
-    $site->get();
-    // Получаем название активного шаблона
-    $site_template = $site->template();
-    
-    $adminDatabase = new AdminDatabase();
-    $adminDd = $adminDatabase->list();
- 
-    $content = "";
-    $render = "config";
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
  
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
@@ -1650,93 +1795,35 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
             $settings->put($paramPost);
             // Получаем обновленные данные
             $content = $settings->get();
-        } else {
-            $render = "404";
+			
+			$render = $template['layouts']['config'] ? $template['layouts']['config'] : 'config.html';
         }
     } else {
         $session->authorize = null;
-        $render = "404";
     }
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
  
-    return $this->admin->render($render.'.html', [
-        "template" => $template,
-        "head" => [
-            "page" => $render,
-            "title" => $language["709"],
-            "keywords" => $language["709"],
-            "description" => $language["709"],
-            "host" => $host,
-            "path" => $path
-        ],
-        "config" => $config,
-        "language" => $language,
-        "token" => $session->token_admin,
-        "session" => $sessionUser,
-        "db" => $adminDd,
-        "content" => $content
-    ]);
- 
-});
- 
-// Список баз данных
-$app->get($admin_router.'db', function (Request $request, Response $response, array $args) {
- 
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
- 
-    $config = (new Settings())->get();
-    $template = $config['admin']['template'];
- 
-    // Подключаем плагины
-    $utility = new Utility();
- 
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
-    // Читаем ключи
-    $token_key = $config['key']['token'];
-    // Генерируем токен
-    $token = $utility->random_token();
-    // Записываем токен в сессию
-    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
- 
-    // Получаем параметры из URL
-    $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
- 
-    $content = '';
-    $render = "db";
- 
-    if (isset($session->authorize)) {
-        if ($session->role_id) {
-            $adminDatabase = new AdminDatabase();
-            $content = $adminDatabase->list();
-        } else {
-            $render = "404";
-        }
-    } else {
-        $session->authorize = null;
-        $render = "404";
-    }
-    
     $view = [
-        "template" => $template,
-        "head" => [
-            "page" => $render,
-            "title" => $language["814"].': '.$render.' - '. $language["709"],
-            "keywords" => $language["814"].': '.$render.' - '. $language["709"],
-            "description" => $language["814"].': '.$render.' - '. $language["709"],
-            "host" => $host,
-            "path" => $path
-        ],
+        "head" => $head,
+        "routers" => $routers,
         "config" => $config,
         "language" => $language,
+        "template" => $template,
         "token" => $session->token_admin,
         "session" => $sessionUser,
         "content" => $content
@@ -1745,63 +1832,168 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
     // Запись в лог
     $this->logger->info("admin/".$render);
  
-    return $this->admin->render($render.'.html', $view);
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
  
 });
  
-// Страница таблицы (ресурса)
-$app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
- 
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
- 
-    $config = (new Settings())->get();
-    $template = $config['admin']['template'];
+// Список баз данных
+$app->get($admin_router.'db', function (Request $request, Response $response, array $args) {
  
     // Подключаем плагины
     $utility = new Utility();
- 
-    // Получаем resource из url
-    if ($request->getAttribute('resource')) {
-        $resource = $utility->clean($request->getAttribute('resource'));
-    } else {
-        $resource = null;
-    }
- 
-    // Получаем resource из url
-    if ($request->getAttribute('id')) {
-        $id = $utility->clean($request->getAttribute('id'));
-    } else {
-        $id = null;
-    }
- 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["814"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
  
+    if (isset($session->authorize)) {
+        if ($session->role_id) {
+            $adminDatabase = new AdminDatabase();
+            $content = $adminDatabase->list();
+			$render = $template['layouts']['db'] ? $template['layouts']['db'] : 'db.html';
+        }
+    } else {
+        $session->authorize = null;
+    }
+ 
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
+    $view = [
+        "head" => $head,
+        "routers" => $routers,
+        "config" => $config,
+        "language" => $language,
+        "template" => $template,
+        "token" => $session->token_admin,
+        "session" => $sessionUser,
+        "content" => $content
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
+ 
+});
+ 
+// Страница таблицы (ресурса)
+$app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
+ 
+    // Подключаем плагины
+    $utility = new Utility();
+    // Получаем resource из url
+    if ($request->getAttribute('resource')) {
+        $resource = $utility->clean($request->getAttribute('resource'));
+    } else {
+        $resource = null;
+    }
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
- 
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
     // Подключаем мультиязычность
     $language = (new Language($getParams))->get();
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    // Генерируем токен
+    $token = $utility->random_token();
+    // Записываем токен в сессию
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["814"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
  
-    $adminDatabase = new AdminDatabase();
-    $adminDd = $adminDatabase->list();
- 
-    $content = "";
     if (isset($id)) {
-        $render = "db_id";
+		$render = $template['layouts']['db_id'] ? $template['layouts']['db_id'] : 'db_id.html';
     } else {
-        $render = "db_item";
+	    $render = $template['layouts']['db_item'] ? $template['layouts']['db_item'] : 'db_item.html';
     }
-    
+ 
     $name_db = null;
  
     if (isset($session->authorize) && isset($resource)) {
@@ -1887,24 +2079,31 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
         $session->authorize = null;
         $render = "404";
     }
-    
+ 
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
     $view = [
-        "template" => $template,
-        "resource" => $resource,
-        "head" => [
-            "page" => $render,
-            "title" => $language["814"].': '.$render.' - '. $language["709"],
-            "keywords" => $language["814"].': '.$render.' - '. $language["709"],
-            "description" => $language["814"].': '.$render.' - '. $language["709"],
-            "host" => $host,
-            "path" => $path
-        ],
+        "head" => $head,
+        "routers" => $routers,
         "config" => $config,
         "language" => $language,
+        "template" => $template,
         "token" => $session->token_admin,
         "session" => $sessionUser,
-        "db_type" => $name_db,
-        "db" => $adminDd,
         "content" => $content,
         "content_key" => $content_key,
         "paginator" => $paginator,
@@ -1920,77 +2119,88 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
     // Запись в лог
     $this->logger->info("admin/".$render);
  
-    return $this->admin->render($render.'.html', $view);
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
  
 });
  
 // Глобально
 $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
- 
-    $config = (new Settings())->get();
-    $template = $config['admin']['template'];
- 
     // Подключаем плагины
     $utility = new Utility();
- 
     // Получаем resource из url
     if ($request->getAttribute('resource')) {
         $resource = $utility->clean($request->getAttribute('resource'));
     } else {
         $resource = null;
     }
- 
     // Получаем id из url
     if ($request->getAttribute('id')) {
         $id = $utility->clean($request->getAttribute('id'));
     } else {
         $id = null;
     }
- 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
- 
-    // Получаем параметры из URL
-    $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
- 
-    $adminDatabase = new AdminDatabase();
-    $adminDd = $adminDatabase->list();
- 
-    $content = "";
-    $title = "";
-    $keywords = "";
-    $description = "";
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["814"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
  
     $control = new Control();
     $test = $control->test($resource);
     if ($test === true) {
-        
+ 
         $site = new Site();
         $site_config = $site->get();
         $site_template = $site->template();
-        
-        //$param = $request->getParsedBody();
+ 
         $param = $request->getQueryParams();
-        
-        $render = $resource;
+ 
         if (isset($session->authorize)) {
-            if ($session->role_id != 100) {
-                $render = "404";
-            } else {
+            if ($session->role_id == 100) {
+ 
+			    $render = $template['layouts'][$resource] ? $template['layouts'][$resource] : $resource.'.html';
+			
                 if(stristr($resource, '_') === FALSE) {
                     $resourceName = "\\ApiShop\\Admin\\".ucfirst($resource);
                 } else {
@@ -2010,33 +2220,47 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
             }
         } else {
             $session->authorize = null;
-            $render = "404";
         }
-    } else {
-        $render = "404";
     }
-    
+ 
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
     $view = [
-        "template" => $template,
-        "head" => [
-            "page" => $render,
-            "title" => $title,
-            "keywords" => $keywords,
-            "description" => $description,
-            "host" => $host,
-            "path" => $path
-        ],
+        "head" => $head,
+        "routers" => $routers,
         "config" => $config,
         "language" => $language,
+        "template" => $template,
         "token" => $session->token_admin,
         "session" => $sessionUser,
         "content" => $content
     ];
  
     // Запись в лог
-    $this->logger->info("admin - ".$render);
+    $this->logger->info("admin/".$render);
  
-    return $this->admin->render($render.'.html', $view);
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
  
 });
  

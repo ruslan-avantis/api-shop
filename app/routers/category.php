@@ -19,6 +19,7 @@ use RouterDb\Router;
  
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
+use ApiShop\Hooks\Hook;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
 use ApiShop\Resources\Template;
@@ -233,8 +234,14 @@ $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request,
     // Запись в лог
     $this->logger->info($render." - ".$alias);
  
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
     // Отдаем данные шаблонизатору
-    return $this->view->render($render, $view);
+    return $this->view->render($hookRender, $hookView);
  
 });
  

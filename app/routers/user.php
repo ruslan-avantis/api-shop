@@ -19,6 +19,7 @@ use RouterDb\Router;
  
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
+use ApiShop\Hooks\Hook;
 use ApiShop\Model\Security;
 use ApiShop\Model\SessionUser;
 use ApiShop\Resources\Language;
@@ -101,7 +102,14 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
     // Получаем название шаблона для рендера
     $render = $template['layouts']['sign_in'] ? $template['layouts']['sign_in'] : 'sign-in.html';
  
-    return $this->view->render($render, $view);
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->view->render($hookRender, $hookView);
  
 });
  
@@ -171,7 +179,14 @@ $app->get($sign_up_router, function (Request $request, Response $response, array
     // Получаем название шаблона для рендера
     $render = $template['layouts']['sign_up'] ? $template['layouts']['sign_up'] : 'sign-up.html';
  
-    return $this->view->render($render, $view);
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->view->render($hookRender, $hookView);
  
 });
  

@@ -14,14 +14,16 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
  
+use RouterDb\Db;
+use RouterDb\Router;
+ 
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
+use ApiShop\Hooks\Hook;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
 use ApiShop\Resources\Template;
 use ApiShop\Model\SessionUser;
-use RouterDb\Db;
-use RouterDb\Router;
  
 $config = (new Settings())->get();
 $article_category_router = $config['routers']['article_category'];
@@ -163,8 +165,14 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
     // Запись в лог
     $this->logger->info("article - ".$alias);
  
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
     // Отдаем данные шаблонизатору
-    return $this->view->render($render, $view);
+    return $this->view->render($hookRender, $hookView);
  
 });
 
@@ -304,7 +312,13 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
     // Запись в лог
     $this->logger->info($render." - ".$alias);
  
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+	$hook->setGet($request, $args, $view, $render);
+	$hookView = $hook->view();
+	$hookRender = $hook->render();
+ 
     // Отдаем данные шаблонизатору
-    return $this->view->render($render, $view);
+    return $this->view->render($hookRender, $hookView);
  
 });
