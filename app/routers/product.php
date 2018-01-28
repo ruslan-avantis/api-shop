@@ -13,16 +13,14 @@
 
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Adbar\Session;
-use Defuse\Crypto\Crypto;
-use Sinergi\BrowserDetector\Language as Langs;
+ 
 use RouterDb\Db;
 use RouterDb\Router;
+ 
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
-use ApiShop\Resources\Menu;
 use ApiShop\Resources\Template;
 use ApiShop\Model\SessionUser;
  
@@ -60,38 +58,22 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
     $templateConfig = new Template($site_template);
     $template = $templateConfig->get();
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Если запись об авторизации есть расшифровываем
     if (isset($session->authorize)) {
         $authorize = $session->authorize;
@@ -103,8 +85,8 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
     $sessionUser =(new SessionUser())->get();
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
-    // Меню
-    $menu = (new Menu())->get();
+    // Меню, берет название класса из конфигурации
+    $menu = (new $config['vendor']['menu']())->get();
     
     if ($alias != null) {
         
@@ -165,6 +147,8 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
         $product['i'] = date("i", $date);
         $product['s'] = date("s", $date);
         
+        
+        
         // Каждый товар может иметь свой уникальный шаблон
         // Если шаблон товара не установлен берем по умолчанию
         if (isset($response["body"]['items']['0']['item']['template'])){
@@ -173,12 +157,12 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
             $template_name = $config["settings"]["themes"]["template"];
             $templates_test = $themes_dir.'/'.$templates_dir.'/'.$template_name.'/layouts/'.$response["body"]['items']['0']['item']['template'].'.html';
             if (file_exists($templates_test)) {
-                $template_product = $response["body"]['items']['0']['item']['template'];
+                $render = $response["body"]['items']['0']['item']['template'] ? $response["body"]['items']['0']['item']['template'] : $template['layouts']['product'];
             } else {
-                $template_product = 'product';
+                $render = $template['layouts']['product'] ? $template['layouts']['product'] : 'product.html';
             }
         } else {
-            $template_product = 'product';
+            $render = $template['layouts']['product'] ? $template['layouts']['product'] : 'product.html';
         }
 
         // Запись в лог
@@ -194,8 +178,8 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
             "host" => $host,
             "path" => $path
         ];
- 
-        return $this->view->render($template_product.'.html', [
+        
+        $view = [
             "head" => $page,
             "routers" => $routers,
             "site" => $site_config,
@@ -208,10 +192,12 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
             "menu" => $menu,
             "product" => $product,
             "session_id" => $session->id
-        ]);
+        ];
+ 
+        return $this->view->render($render, $view);
     
     } else {
-        return $this->view->render('404.html', ["template" => $site->template(), "language" => $language]);
+        return $this->view->render('404.html', ["template" => $template, "language" => $language]);
     }
     
 });
@@ -242,23 +228,16 @@ $app->get($product_quick_view_router.''.$product_alias.''.$product_name, functio
     $templateConfig = new Template($site_template);
     $template = $templateConfig->get();
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
-    // Читаем ключи
-    $session_key = $config['key']['session'];
-    $token_key = $config['key']['token'];
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $site_config["language"];
-    }
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
+ 
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Если запись об авторизации есть расшифровываем
     if (isset($session->authorize)) {
         $authorize = $session->authorize;
@@ -345,8 +324,8 @@ $app->get($product_quick_view_router.''.$product_alias.''.$product_name, functio
             "host" => $host,
             "path" => $path
         ];
- 
-        return $this->view->render('product-quick-view.html', [
+        
+        $view = [
             "head" => $page,
             "site" => $site_config,
             "config" => $config['settings']['site'],
@@ -358,11 +337,15 @@ $app->get($product_quick_view_router.''.$product_alias.''.$product_name, functio
             "menu" => $menu,
             "product" => $product,
             "session_id" => $session->id
-        ]);
+        ];
+ 
+        $render = $template['layouts']['product-quick-view'] ? $template['layouts']['product-quick-view'] : 'product-quick-view.html';
+ 
+        return $this->view->render($render, $view);
     
     } else {
-        return $this->view->render('404.html', ["template" => $site->template(), "language" => $language]);
+        return $this->view->render('404.html', ["template" => $template, "language" => $language]);
     }
-    
+ 
 });
  

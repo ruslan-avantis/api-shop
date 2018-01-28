@@ -13,13 +13,10 @@
  
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Adbar\Session;
-use Defuse\Crypto\Crypto;
-use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException as CryptoEx;
-use Sinergi\BrowserDetector\Language as Langs;
-use GuzzleHttp\Client as Guzzle;
+ 
 use RouterDb\Db;
 use RouterDb\Router;
+ 
 use ApiShop\Config\Settings;
 use ApiShop\Resources\Language;
  
@@ -29,8 +26,8 @@ $cart_router = $config['routers']['cart'];
 $app->post($cart_router.'new-order', function (Request $request, Response $response, array $args) {
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $session_key = $config['key']['session'];
     $cookie_key = $config['key']['cookie'];
@@ -49,23 +46,14 @@ $app->post($cart_router.'new-order', function (Request $request, Response $respo
     $price = filter_var($post['price'], FILTER_SANITIZE_STRING);
     $num = filter_var($post['num'], FILTER_SANITIZE_STRING);
     $description = filter_var($post['description'], FILTER_SANITIZE_STRING);
-    $cookie = Crypto::decrypt($_COOKIE[$config['settings']['session']['name']], $cookie_key);
+    $cookie = $config['vendor']['crypto']::decrypt($_COOKIE[$config['settings']['session']['name']], $cookie_key);
     
-    // Получаем массив данных из таблицы language на языке из $session->language
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($session->language)) {
-        $lang = $session->language;
-    } elseif ($langs->getLanguage()) {
-        $lang = $langs->getLanguage();
-    } else {
-        $lang = $site_config["language"];
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language([]))->get();
 
     if ($session->authorize == 1) {
-        $user_id = Crypto::decrypt($session->user_id, $session_key);
+        $user_id = $config['vendor']['crypto']::decrypt($session->user_id, $session_key);
     } else {
  
         $userArr = [
@@ -90,7 +78,7 @@ $app->post($cart_router.'new-order', function (Request $request, Response $respo
         $user = $db->post($resource, $userArr);
  
         if (isset($user['response']['id'])) {
-            $session->user_id = Crypto::encrypt($user['response']['id'], $session_key);
+            $session->user_id = $config['vendor']['crypto']::encrypt($user['response']['id'], $session_key);
             $user_id = $user['response']['id'];
         }
     }
@@ -219,8 +207,8 @@ $app->post($cart_router.'new-order', function (Request $request, Response $respo
 $app->post($cart_router.'add-to-cart', function (Request $request, Response $response, array $args) {
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $session_key = $config['key']['session'];
     $cookie_key = $config['key']['cookie'];
@@ -230,23 +218,13 @@ $app->post($cart_router.'add-to-cart', function (Request $request, Response $res
     $product_id = filter_var($post['product_id'], FILTER_SANITIZE_STRING);
     $price = filter_var($post['price'], FILTER_SANITIZE_STRING);
     $num = filter_var($post['num'], FILTER_SANITIZE_STRING);
-    $cookie = Crypto::decrypt($_COOKIE[$config['settings']['session']['name']], $cookie_key);
-
-    // Получаем массив данных из таблицы language на языке из $session->language
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($session->language)) {
-        $lang = $session->language;
-    } elseif ($langs->getLanguage()) {
-        $lang = $langs->getLanguage();
-    } else {
-        $lang = $site_config["language"];
-    }
+    $cookie = $config['vendor']['crypto']::decrypt($_COOKIE[$config['settings']['session']['name']], $cookie_key);
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language([]))->get();
  
     if ($session->authorize == 1) {
-        $user_id = Crypto::decrypt($session->user_id, $session_key);
+        $user_id = $config['vendor']['crypto']::decrypt($session->user_id, $session_key);
     } else {
         $user_id = 0;
     }

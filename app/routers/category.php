@@ -13,16 +13,14 @@
  
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Adbar\Session;
-use Defuse\Crypto\Crypto;
-use Sinergi\BrowserDetector\Language as Langs;
+ 
 use RouterDb\Db;
 use RouterDb\Router;
+ 
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
-use ApiShop\Resources\Menu;
 use ApiShop\Resources\Template;
 use ApiShop\Model\SessionUser;
 use ApiShop\Model\Filter;
@@ -35,8 +33,7 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем параметры из URL
-    $getParams = $request->getQueryParams();
+
     // Подключаем плагины
     $utility = new Utility();
     // Получаем конфигурацию \ApiShop\Config\Settings
@@ -50,37 +47,23 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
     $templateConfig = new Template($site_template);
     $template = $templateConfig->get();
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
     // Подключаем мультиязычность
  
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Если запись об авторизации есть расшифровываем
     if (isset($session->authorize)) {
         $authorize = $session->authorize;
@@ -92,8 +75,8 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
     $sessionUser =(new SessionUser())->get();
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
-    // Меню
-    $menu = (new Menu())->get();
+    // Меню, берет название класса из конфигурации
+    $menu = (new $config['vendor']['menu']())->get();
  
     // Получаем category из url
     if ($request->getAttribute('category')) {
@@ -114,13 +97,11 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
     $og_url = $config['settings']['site']['og_url'];
  
     $category = '';
-    $render = 'category';
-    $products_template = 'helper/products.html';
-    $products_limit = 15;
-    $products_order = "ASC";
-    $products_sort = "price";
-    $image_width = 360;
-    $image_height = 360;
+    $render = $template['layouts']['category'] ? $template['layouts']['category'] : 'category.html';
+    $products_template = $template['layouts']['helper']['products'] ? $template['layouts']['helper']['products'] : 'helper/products.html';
+    $products_limit = $template['products']['category']['limit'];
+    $products_order = $template['products']['category']['order'];
+    $products_sort = $template['products']['category']['sort'];
  
     if (isset($category_alias)) {
         // Ресурс (таблица) к которому обращаемся
@@ -142,6 +123,7 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
                 } elseif (is_array($cat)) {
                     $category = $cat;
                 }
+ 
                 $title = $category['seo_title'] ? $category['seo_title'] : $category['title'];
                 $keywords = $category['seo_keywords'] ? $category['seo_keywords'] : $category['title'];
                 $description = $category['seo_description'] ? $category['seo_description'] : $category['title'];
@@ -150,13 +132,13 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
                 $og_image = $category['og_image'] ? $category['og_image'] : '';
                 $og_type = $category['og_type'] ? $category['og_type'] : '';
                 $robots = $category['robots'] ? $category['robots'] : 'index, follow';
-                $render = $category['categories_template'] ? $category['categories_template'] : 'category';
-                $products_template = $category['products_template'] ? 'helper/'.$category['products_template'].'.html' : 'helper/products.html';
-                $products_limit = $category['products_limit'] ? $category['products_limit'] : 15;
-                $products_order = $category['products_order'] ? $category['products_order'] : "ASC";
-                $products_sort = $category['products_sort'] ? $category['products_sort'] : "price";
-                $image_width = $category['image_width'] ? $category['image_width'] : 360;
-                $image_height = $category['image_height'] ? $category['image_height'] : 360;
+                $products_template = $category['products_template'] ? 'helper/'.$category['products_template'].'.html' : $template['layouts']['helper']['products'];
+                $products_limit = $category['products_limit'] ? $category['products_limit'] : $template['products']['category']['limit'];
+                $products_order = $category['products_order'] ? $category['products_order'] : $template['products']['category']['order'];
+                $products_sort = $category['products_sort'] ? $category['products_sort'] : $template['products']['category']['sort'];
+                if (isset($category['categories_template'])) {
+                    $render = $template['layouts']['category'] ? $category['categories_template'].'.html' : $template['layouts']['category'];
+                }
             }
         }
  
@@ -208,78 +190,20 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
     ];
     $sortArray = $filter->sort($sortArr);
 
-    // Ресурс (таблица) к которому обращаемся
-    $resource = "price";
-    // Отдаем роутеру RouterDb конфигурацию.
-    $router = new Router($config);
-    // Получаем название базы для указанного ресурса
-    $name_db = $router->ping($resource);
-    // Подключаемся к базе
-    $db = new Db($name_db, $config);
+
  
     if (isset($product_type)) {
         $arrPlus['type'] = $product_type;
     }
-    $arrPlus['relations'] = "image,description";
+    $arrPlus['relations'] = "image";
     $newArr = $arr + $arrPlus;
- 
-    // Отправляем запрос и получаем данные
-    $response = $db->get($resource, $newArr);
-
-    $count = 0;
-    if (isset($response["response"]['total'])) {
-        $count = $response["response"]['total'];
-    }
+    
+    // Получаем список товаров
+    $productsList = new $config['vendor']['products_category']();
+    $products = $productsList->get($newArr, $template);
+    // Даем пагинатору колличество
+    $count = $productsList->count();
     $paginator = $filter->paginator($count);
- 
-    // Если ответ не пустой
-    if (count($response["body"]['items']) >= 1) {
-        // Отдаем пагинатору колличество
-        foreach($response["body"]['items'] as $item)
-        {
-            // Обрабатываем картинки
-            $product['no_image'] = $utility->get_image(null, '/images/no_image.png', $image_width, $image_height);
-            $image_1 = '';
-            $image_1 = (isset($item['item']['image']['0']['image_path'])) ? $utility->clean($item['item']['image']['0']['image_path']) : null;
-            if (isset($image_1)) {$product['image']['1'] = $utility->get_image($item['item']['product_id'], $image_1, $image_width, $image_height);}
-            $image_2 = '';
-            $image_2 = (isset($item['item']['image']['1']['image_path'])) ? $utility->clean($item['item']['image']['1']['image_path']) : null;
-            if (isset($image_2)) {$product['image']['2'] = $utility->get_image($item['item']['product_id'], $image_2, $image_width, $image_height);}
-
-            $path_url = pathinfo($item['item']['url']);
-            $basename = $path_url['basename']; // lib.inc.php
-            $baseurl = str_replace('-'.$item['item']['product_id'].'.html', '', $basename);
-
-            $product['url'] = '/product/'.$item['item']['id'].'/'.$baseurl.'.html';
-            $product['name'] = (isset($item['item']['name'])) ? $utility->clean($item['item']['name']) : '';
-            $product['type'] = (isset($item['item']['type'])) ? $utility->clean($item['item']['type']) : '';
-            $product['brand'] = (isset($item['item']['brand'])) ? $utility->clean($item['item']['brand']) : '';
-            $product['serie'] = (isset($item['item']['serie'])) ? $utility->clean($item['item']['serie']) : '';
-            $product['articul'] = (isset($item['item']['articul'])) ? $utility->clean($item['item']['articul']) : '';
-            if ($item['item']['serie'] && $item['item']['articul']) {$product['name'] = $item['item']['serie'].' '.$item['item']['articul'];}
-            $product['oldprice'] = (isset($item['item']['oldprice'])) ? $utility->clean($item['item']['oldprice']) : '';
-            $product['price'] = (isset($item['item']['price'])) ? $utility->clean($item['item']['price']) : '';
-            $product['available'] = (isset($item['item']['available'])) ? $utility->clean($item['item']['available']) : '';
-            $product['product_id'] = (isset($item['item']['product_id'])) ? $utility->clean($item['item']['product_id']) : '';
-
-            $rand = rand(1000, 5000);
-            $date = date("Y-m-d H:i:s",strtotime(date("Y-m-d H:i:s")." +".$rand." minutes"));
-            $date = strtotime($date);
-            $product['y'] = date("Y", $date);
-            $product['m'] = date("m", $date);
-            $product['d'] = date("d", $date);
-            $product['h'] = date("H", $date);
-            $product['i'] = date("i", $date);
-            $product['s'] = date("s", $date);
-            // Отдаем данные шаблонизатору 
-            $products['product'][] = $product;
-        }
-    } else {
-        $products = null;
-    }
- 
-    // Запись в лог
-    $this->logger->info($render."");
  
     $head = [
         "page" => $render,
@@ -296,8 +220,8 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
         "host" => $host,
         "path" => $path
     ];
- 
-    return $this->view->render($render.'.html', [
+    
+    $view = [
         "template" => $template,
         "products_template" => $products_template,
         "head" => $head,
@@ -318,7 +242,12 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
         "total" => $count,
         "url_param" => $get_array,
         "url" => $url_path
-    ]);
+    ];
+ 
+    // Запись в лог
+    $this->logger->info($render);
+ 
+    return $this->view->render($render, $view);
  
 });
  

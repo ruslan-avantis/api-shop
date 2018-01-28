@@ -13,9 +13,10 @@
  
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Adbar\Session;
-use Defuse\Crypto\Crypto;
-use Sinergi\BrowserDetector\Language as Langs;
+ 
+use RouterDb\Db;
+use RouterDb\Router;
+ 
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Install;
@@ -25,8 +26,7 @@ use ApiShop\Resources\Template;
 use ApiShop\Model\SessionUser;
 use ApiShop\Model\Filter;
 use ApiShop\Model\Pagination;
-use RouterDb\Db;
-use RouterDb\Router;
+use ApiShop\Model\Security;
 use ApiShop\Admin\Control;
 use ApiShop\Admin\AdminDatabase;
 use ApiShop\Admin\Resources;
@@ -42,20 +42,19 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $admin_config = $config['admin'];
-    $template = $admin_config["template"];
+    $template = $config['admin']['template'];
     
     // Подключаем плагины
     $utility = new Utility();
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token_admin = Crypto::encrypt($token, $token_key);
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
     
@@ -64,25 +63,9 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     // Подключаем конфигурацию сайта
     $site = new Site();
@@ -112,8 +95,8 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
  
     // Запись в лог
     $this->logger->info("admin/".$render);
- 
-    return $this->admin->render($render.'.html', [
+    
+    $view = [
         "template" => $template,
         "site_template" => $site_template,
         "head" => [
@@ -130,7 +113,9 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
         "session" => $sessionUser,
         "db" => $adminDd,
         "content" => $content
-    ]);
+    ];
+ 
+    return $this->admin->render($render.'.html', $view);
  
 });
  
@@ -141,7 +126,7 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $template = $config['admin']["template"];
+    $template = $config['admin']['template'];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -160,38 +145,22 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
         $id = null;
     }
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token_admin = Crypto::encrypt($token, $token_key);
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     $content = '';
     $title = '';
@@ -253,11 +222,8 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
         $session->authorize = null;
         $render = "404";
     }
- 
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
-    return $this->admin->render($render.'.html', [
+    
+    $view = [
         "template" => $template,
         "head" => [
             "page" => $render,
@@ -276,7 +242,12 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
         "name_db" => $name_db,
         "resource" => $resource,
         "type" => $type
-    ]);
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    return $this->admin->render($render.'.html', $view);
  
 });
  
@@ -288,8 +259,8 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
     $config = (new Settings())->get();
     // Подключаем плагины
     $utility = new Utility();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
  
@@ -303,8 +274,8 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
  
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token_admin, $token_key);
-    } catch (CryptoEx $ex) {
+        $token = $config['vendor']['crypto']::decrypt($session->token_admin, $token_key);
+    } catch (\Exception $ex) {
         $token = 0;
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
@@ -319,10 +290,10 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
  
     try {
         // Получаем токен из POST
-        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
         $csrf = $utility->clean($post_csrf);
-    } catch (CryptoEx $ex) {
+    } catch (\Exception $ex) {
         $csrf = 1;
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
@@ -454,8 +425,8 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
     $config = (new Settings())->get();
     // Подключаем плагины
     $utility = new Utility();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
  
@@ -474,8 +445,8 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
  
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token_admin, $token_key);
-    } catch (CryptoEx $ex) {
+        $token = $config['vendor']['crypto']::decrypt($session->token_admin, $token_key);
+    } catch (\Exception $ex) {
         $token = 0;
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
@@ -490,10 +461,10 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
  
     try {
         // Получаем токен из POST
-        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
         $csrf = $utility->clean($post_csrf);
-    } catch (CryptoEx $ex) {
+    } catch (\Exception $ex) {
         $csrf = 1;
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
@@ -588,8 +559,8 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
     $config = (new Settings())->get();
     // Подключаем плагины
     $utility = new Utility();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
  
@@ -618,8 +589,8 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
  
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token_admin, $token_key);
-    } catch (CryptoEx $ex) {
+        $token = $config['vendor']['crypto']::decrypt($session->token_admin, $token_key);
+    } catch (\Exception $ex) {
         $token = 0;
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
@@ -634,10 +605,10 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
  
     try {
         // Получаем токен из POST
-        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
         $csrf = $utility->clean($post_csrf);
-    } catch (CryptoEx $ex) {
+    } catch (\Exception $ex) {
         $csrf = 1;
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
@@ -762,8 +733,8 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
 $app->post($admin_router.'order-activate', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
  
@@ -775,8 +746,8 @@ $app->post($admin_router.'order-activate', function (Request $request, Response 
 
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token_admin, $token_key);
-    } catch (CryptoEx $ex) {
+        $token = $config['vendor']['crypto']::decrypt($session->token_admin, $token_key);
+    } catch (\Exception $ex) {
         $token = 0;
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
@@ -791,10 +762,10 @@ $app->post($admin_router.'order-activate', function (Request $request, Response 
  
     try {
         // Получаем токен из POST
-        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
         $csrf = $utility->clean($post_csrf);
-    } catch (CryptoEx $ex) {
+    } catch (\Exception $ex) {
         $csrf = 1;
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
@@ -862,15 +833,15 @@ $app->post($admin_router.'order-activate', function (Request $request, Response 
 $app->post($admin_router.'template-buy', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token_admin, $token_key);
-    } catch (CryptoEx $ex) {
+        $token = $config['vendor']['crypto']::decrypt($session->token_admin, $token_key);
+    } catch (\Exception $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
     }
@@ -878,8 +849,8 @@ $app->post($admin_router.'template-buy', function (Request $request, Response $r
     $post = $request->getParsedBody();
     try {
         // Получаем токен из POST
-        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
-    } catch (CryptoEx $ex) {
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+    } catch (\Exception $ex) {
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
     }
@@ -930,38 +901,56 @@ $app->post($admin_router.'template-buy', function (Request $request, Response $r
 $app->post($admin_router.'template-install', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
-    // Читаем ключи
-    $token_key = $config['key']['token'];
-    
-    try {
-        // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token_admin, $token_key);
-    } catch (CryptoEx $ex) {
-        (new Security())->token();
-        // Сообщение об Атаке или подборе токена
-    }
-    // Получаем данные отправленные нам через POST
-    $post = $request->getParsedBody();
-    try {
-        // Получаем токен из POST
-        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
-    } catch (CryptoEx $ex) {
-        (new Security())->csrf();
-        // Сообщение об Атаке или подборе csrf
-    }
     // Подключаем плагины
     $utility = new Utility();
-    // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
+ 
+    try {
+        // Получаем токен из сессии
+        $token = $config['vendor']['crypto']::decrypt($session->token_admin, $token_key);
+    } catch (\Exception $ex) {
+        $token = 0;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе токена
+                (new Security())->token();
+            }
+        } else {
+            // Сообщение об Атаке или подборе токена
+            (new Security())->token();
+        }
+    }
+ 
+    try {
+        // Получаем токен из POST
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        // Чистим данные на всякий случай пришедшие через POST
+        $csrf = $utility->clean($post_csrf);
+    } catch (\Exception $ex) {
+        $csrf = 1;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе csrf
+                (new Security())->csrf();
+            }
+        } else {
+            // Сообщение об Атаке или подборе csrf
+            (new Security())->csrf();
+        }
+    }
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         if (isset($post['alias'])) {
  
-            $dir = '';
-            $uri = '';
-            $name = '';
+            $dir = null;
+            $uri = null;
+            $name = null;
  
             $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
  
@@ -971,53 +960,35 @@ $app->post($admin_router.'template-install', function (Request $request, Respons
                 foreach($templates_list as $value)
                 {
                     if ($value['item']["alias"] == $alias) {
+ 
                         $dir = $value['item']['dir'];
                         $uri = $value['item']['uri'];
                         $name = $value['item']['dir'];
  
-                        if(isset($dir) && isset($uri)) {
-                            $template_dir = $config["settings"]["themes"]["dir"].'/'.$config["settings"]["themes"]["templates"].'/'.$dir;
-                            if (!file_exists($template_dir)) {
-                                mkdir($template_dir, 0777, true);
-                                file_put_contents($template_dir.'/template.zip', file_get_contents($uri));
-                                $zip = new ZipArchive;
-                                if ($zip->open($template_dir.'/template.zip') === true) {
-                                    $zip->extractTo($template_dir);
-                                    $zip->close();
-                                    
-                                    if (file_exists($template_dir."/template.zip")) {
-                                        unlink($template_dir."/template.zip");
-                                    }
- 
-                                    // Активируем шаблон
-                                    // Подключаем класс
-                                    $settings = new \ApiShop\Admin\Config();
-                                    // Получаем массив
-                                    $arrJson = $settings->get();
-                                    $paramPost['settings']['themes']['template'] = $name;
-                                    // Соеденяем массивы
-                                    $newArr = array_replace_recursive($arrJson, $paramPost);
-                                    // Сохраняем в файл
-                                    $settings->put($newArr);
-                                }
+                        if(isset($dir) && isset($uri) && isset($name)) {
+                            // Подключаем глобальную конфигурацию
+                            $glob_config = new \ApiShop\Admin\Config();
+                            // Устанавливаем шаблон
+                            $template_install = $glob_config->template_install($name, $dir, $uri);
+                            
+                            if ($template_install === true) {
                                 $callback = array('status' => 200);
- 
-                            } else {
+                            }  else {
                                 $callback = array(
                                     'status' => 400,
                                     'title' => "Соообщение системы",
-                                    'text' => "Папка шаблона уже существует. Удалите или переименуйте папку."
+                                    'text' => "Не могу установить шаблон"
                                 );
                             }
+ 
                         } else {
                             $callback = array(
                                 'status' => 400,
                                 'title' => "Соообщение системы",
-                                'text' => "Шаблон не найден"
+                                'text' => "Папка шаблона уже существует. Удалите или переименуйте папку."
                             );
                         }
                     }
-
                 }
             }
         } else {
@@ -1033,6 +1004,7 @@ $app->post($admin_router.'template-install', function (Request $request, Respons
         $response->withHeader('Content-type', 'application/json');
         // Выводим json
         echo json_encode($callback);
+ 
     } else {
         $callback = array(
             'status' => 400,
@@ -1051,59 +1023,82 @@ $app->post($admin_router.'template-install', function (Request $request, Respons
 $app->post($admin_router.'template-activate', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
-    // Читаем ключи
-    $token_key = $config['key']['token'];
-    
-    try {
-        // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token_admin, $token_key);
-    } catch (CryptoEx $ex) {
-        (new Security())->token();
-        // Сообщение об Атаке или подборе токена
-    }
-    // Получаем данные отправленные нам через POST
-    $post = $request->getParsedBody();
-    try {
-        // Получаем токен из POST
-        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
-    } catch (CryptoEx $ex) {
-        (new Security())->csrf();
-        // Сообщение об Атаке или подборе csrf
-    }
     // Подключаем плагины
     $utility = new Utility();
-    // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
+ 
+    try {
+        // Получаем токен из сессии
+        $token = $config['vendor']['crypto']::decrypt($session->token_admin, $token_key);
+    } catch (\Exception $ex) {
+        $token = 0;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе токена
+                (new Security())->token();
+            }
+        } else {
+            // Сообщение об Атаке или подборе токена
+            (new Security())->token();
+        }
+    }
+ 
+    try {
+        // Получаем токен из POST
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        // Чистим данные на всякий случай пришедшие через POST
+        $csrf = $utility->clean($post_csrf);
+    } catch (\Exception $ex) {
+        $csrf = 1;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе csrf
+                (new Security())->csrf();
+            }
+        } else {
+            // Сообщение об Атаке или подборе csrf
+            (new Security())->csrf();
+        }
+    }
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
-        
-        if (isset($post['name'])) {
-            $name = filter_var($post['name'], FILTER_SANITIZE_STRING);
-            $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
+        if (isset($session->authorize)) {
+            if ($session->authorize == 1 && $session->role_id == 100) {
+                if (isset($post['name'])) {
  
-            // Подключаем класс
-            $settings = new \ApiShop\Admin\Config();
-            // Получаем массив
-            $arrJson = $settings->get();
-            //print_r($content);
-            $paramPost['settings']['themes']['template'] = $name;
-            // Соеденяем массивы
-            $newArr = array_replace_recursive($arrJson, $paramPost);
-            // Сохраняем в файл
-            $settings->put($newArr);
+                    $name = filter_var($post['name'], FILTER_SANITIZE_STRING);
+                    $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
  
-            $callback = array(
-                'status' => 200,
-                'title' => "Информация",
-                'text' => "Все ок"
-            );
+                    // Активируем шаблон
+                    (new \ApiShop\Admin\Config())->template_activate($name);
+ 
+                    $callback = array('status' => 200);
+ 
+                } else {
+                    $callback = array(
+                        'status' => 400,
+                        'title' => "Соообщение системы",
+                        'text' => "Не определено название шаблона"
+                    );
+                }
+            } else {
+                $callback = array(
+                    'status' => 400,
+                    'title' => "Соообщение системы",
+                    'text' => "Вы не являетесь администратором"
+                );
+            }
         } else {
             $callback = array(
                 'status' => 400,
                 'title' => "Соообщение системы",
-                'text' => "Не определено название шаблона"
+                'text' => "Вы не авторизованы"
             );
         }
  
@@ -1112,6 +1107,7 @@ $app->post($admin_router.'template-activate', function (Request $request, Respon
         $response->withHeader('Content-type', 'application/json');
         // Выводим json
         echo json_encode($callback);
+ 
     } else {
         $callback = array(
             'status' => 400,
@@ -1130,15 +1126,15 @@ $app->post($admin_router.'template-activate', function (Request $request, Respon
 $app->post($admin_router.'template-delete', function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token_admin, $token_key);
-    } catch (CryptoEx $ex) {
+        $token = $config['vendor']['crypto']::decrypt($session->token_admin, $token_key);
+    } catch (\Exception $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
     }
@@ -1146,8 +1142,8 @@ $app->post($admin_router.'template-delete', function (Request $request, Response
     $post = $request->getParsedBody();
     try {
         // Получаем токен из POST
-        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
-    } catch (CryptoEx $ex) {
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+    } catch (\Exception $ex) {
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
     }
@@ -1204,44 +1200,27 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $admin_config = $config['admin'];
-    $template = $admin_config["template"];
+    $template = $config['admin']['template'];
  
     // Подключаем плагины
     $utility = new Utility();
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token_admin = Crypto::encrypt($token, $token_key);
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     // Подключаем конфигурацию сайта
     $site = new Site();
@@ -1270,11 +1249,8 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
         $session->authorize = null;
         $render = "404";
     }
- 
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
-    return $this->admin->render($render.'.html', [
+    
+    $view = [
         "template" => $template,
         "site_template" => $site_template,
         "head" => [
@@ -1292,7 +1268,12 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
         "db" => $adminDd,
         "content" => $content,
         "api" => $api
-    ]);
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    return $this->admin->render($render.'.html', $view);
  
 });
  
@@ -1303,7 +1284,7 @@ $app->get($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $reques
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $template = $config['admin']["template"];
+    $template = $config['admin']['template'];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1315,38 +1296,22 @@ $app->get($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $reques
         $name = null;
     }
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token_admin = Crypto::encrypt($token, $token_key);
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     $adminDatabase = new AdminDatabase();
     $adminDd = $adminDatabase->list();
@@ -1366,11 +1331,8 @@ $app->get($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $reques
         $session->authorize = null;
         $render = "404";
     }
- 
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
-    return $this->admin->render($render.'.html', [
+    
+    $view = [
         "template" => $template,
         "head" => [
             "page" => $render,
@@ -1386,7 +1348,12 @@ $app->get($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $reques
         "session" => $sessionUser,
         "db" => $adminDd,
         "content" => $content
-    ]);
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    return $this->admin->render($render.'.html', $view);
  
 });
  
@@ -1397,8 +1364,7 @@ $app->post($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $reque
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $admin_config = $config['admin'];
-    $template = $admin_config["template"];
+    $template = $config['admin']['template'];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1410,38 +1376,22 @@ $app->post($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $reque
         $name = null;
     }
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token_admin = Crypto::encrypt($token, $token_key);
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     $adminDatabase = new AdminDatabase();
     $adminDd = $adminDatabase->list();
@@ -1486,7 +1436,7 @@ $app->post($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $reque
             "host" => $host,
             "path" => $path
         ],
-        "config" => $admin_config,
+        "config" => $config,
         "language" => $language,
         "token" => $session->token_admin,
         "session" => $sessionUser,
@@ -1497,59 +1447,43 @@ $app->post($admin_router.'template/{name:[a-z0-9_-]+}', function (Request $reque
 });
  
 // Список пакетов
-$app->get($admin_router.'plugins', function (Request $request, Response $response, array $args) {
+$app->get($admin_router.'packages', function (Request $request, Response $response, array $args) {
  
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $template = $config['admin']["template"];
+    $template = $config['admin']['template'];
  
     // Подключаем плагины
     $utility = new Utility();
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token_admin = Crypto::encrypt($token, $token_key);
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     $content = "";
-    $render = "plugins";
+    $render = "packages";
  
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $plugins = new \ApiShop\Admin\Plugins();
+            $packages = new \ApiShop\Admin\Packages();
             // Получаем массив
-            $content = $plugins->get();
+            $content = $packages->get();
             //print_r($content);
             
         } else {
@@ -1559,11 +1493,8 @@ $app->get($admin_router.'plugins', function (Request $request, Response $respons
         $session->authorize = null;
         $render = "404";
     }
- 
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
-    return $this->admin->render($render.'.html', [
+    
+    $view = [
         "template" => $template,
         "head" => [
             "page" => $render,
@@ -1578,7 +1509,12 @@ $app->get($admin_router.'plugins', function (Request $request, Response $respons
         "token" => $session->token_admin,
         "session" => $sessionUser,
         "content" => $content
-    ]);
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    return $this->admin->render($render.'.html', $view);
  
 });
  
@@ -1589,34 +1525,28 @@ $app->get($admin_router.'config', function (Request $request, Response $response
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $admin_config = $config['admin'];
-    $template = $admin_config["template"];
+    $template = $config['admin']['template'];
  
     // Подключаем плагины
     $utility = new Utility();
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token_admin = Crypto::encrypt($token, $token_key);
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($session->language)) {
-        $lang = $session->language;
-    } elseif ($langs->getLanguage()) {
-        $lang = $langs->getLanguage();
-    } else {
-        $lang = $admin_config["language"];
-    }
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
+    
     // Подключаем конфигурацию сайта
     $site = new Site();
     $site->get();
@@ -1643,11 +1573,8 @@ $app->get($admin_router.'config', function (Request $request, Response $response
         $session->authorize = null;
         $render = "404";
     }
- 
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
-    return $this->admin->render($render.'.html', [
+    
+    $view = [
         "template" => $template,
         "head" => [
             "page" => $render,
@@ -1663,7 +1590,12 @@ $app->get($admin_router.'config', function (Request $request, Response $response
         "session" => $sessionUser,
         "db" => $adminDd,
         "content" => $content
-    ]);
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    return $this->admin->render($render.'.html', $view);
  
 });
  
@@ -1674,44 +1606,27 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $admin_config = $config['admin'];
-    $template = $admin_config["template"];
+    $template = $config['admin']['template'];
  
     // Подключаем плагины
     $utility = new Utility();
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token_admin = Crypto::encrypt($token, $token_key);
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     // Подключаем конфигурацию сайта
     $site = new Site();
@@ -1729,15 +1644,11 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
         if ($session->role_id == 100) {
             // Подключаем класс
             $settings = new \ApiShop\Admin\Config();
-            // Получаем массив
-            $arrJson = $settings->get();
-            //print_r($content);
             // Массив из POST
             $paramPost = $request->getParsedBody();
-            // Соеденяем массивы
-            $newArr = array_replace_recursive($arrJson, $paramPost);
             // Сохраняем в файл
-            $settings->put($newArr);
+            $settings->put($paramPost);
+            // Получаем обновленные данные
             $content = $settings->get();
         } else {
             $render = "404";
@@ -1777,44 +1688,27 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $admin_config = $config['admin'];
-    $template = $admin_config["template"];
+    $template = $config['admin']['template'];
  
     // Подключаем плагины
     $utility = new Utility();
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token_admin = Crypto::encrypt($token, $token_key);
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     $content = '';
     $render = "db";
@@ -1830,11 +1724,8 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
         $session->authorize = null;
         $render = "404";
     }
- 
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
-    return $this->admin->render($render.'.html', [
+    
+    $view = [
         "template" => $template,
         "head" => [
             "page" => $render,
@@ -1849,7 +1740,12 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
         "token" => $session->token_admin,
         "session" => $sessionUser,
         "content" => $content
-    ]);
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    return $this->admin->render($render.'.html', $view);
  
 });
  
@@ -1860,8 +1756,7 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $admin_config = $config['admin'];
-    $template = $admin_config["template"];
+    $template = $config['admin']['template'];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1880,38 +1775,22 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
         $id = null;
     }
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token_admin = Crypto::encrypt($token, $token_key);
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     $adminDatabase = new AdminDatabase();
     $adminDd = $adminDatabase->list();
@@ -2008,11 +1887,8 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
         $session->authorize = null;
         $render = "404";
     }
- 
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
-    return $this->admin->render($render.'.html', [
+    
+    $view = [
         "template" => $template,
         "resource" => $resource,
         "head" => [
@@ -2039,7 +1915,12 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
         "total" => $count,
         "url_param" => $get_array,
         "url" => $url_path
-    ]);
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    return $this->admin->render($render.'.html', $view);
  
 });
  
@@ -2050,8 +1931,7 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
     $path = $request->getUri()->getPath();
  
     $config = (new Settings())->get();
-    $admin_config = $config['admin'];
-    $template = $admin_config["template"];
+    $template = $config['admin']['template'];
  
     // Подключаем плагины
     $utility = new Utility();
@@ -2070,38 +1950,22 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
         $id = null;
     }
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token_admin = Crypto::encrypt($token, $token_key);
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser())->get();
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     $adminDatabase = new AdminDatabase();
     $adminDd = $adminDatabase->list();
@@ -2151,11 +2015,8 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
     } else {
         $render = "404";
     }
- 
-    // Запись в лог
-    $this->logger->info("admin - ".$render);
- 
-    return $this->admin->render($render.'.html', [
+    
+    $view = [
         "template" => $template,
         "head" => [
             "page" => $render,
@@ -2170,7 +2031,12 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
         "token" => $session->token_admin,
         "session" => $sessionUser,
         "content" => $content
-    ]);
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("admin - ".$render);
+ 
+    return $this->admin->render($render.'.html', $view);
  
 });
  

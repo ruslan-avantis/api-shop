@@ -1,13 +1,22 @@
-<?php 
+<?php
+/**
+* This file is part of the REST API SHOP library
+*
+* @license http://opensource.org/licenses/MIT
+* @link https://github.com/API-Shop/api-shop
+* @version 1.0
+* @package api-shop.api-shop
+*
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
  
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Adbar\Session;
-use Defuse\Crypto\Crypto;
-use Defuse\Crypto\Exception\WrongKeyOrModifiedCiphertextException as CryptoEx;
-use Sinergi\BrowserDetector\Language as Langs;
+ 
 use RouterDb\Db;
 use RouterDb\Router;
+ 
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Model\Security;
@@ -32,32 +41,31 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
     $routers = $config['routers'];
     $site = new Site();
     $site_config = $site->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    $site_template = $site->template();
+ 
+    $templateConfig = new Template($site_template);
+    $template = $templateConfig->get();
+ 
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Подключаем временное хранилище
-    $session_temp = new Session("_temp");
+    $session_temp = new $config['vendor']['session']("_temp");
     // Читаем ключи
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
-    // Получаем массив данных из таблицы language на языке из $session->language
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($session->language)) {
-        $lang = $session->language;
-    } elseif ($langs->getLanguage()) {
-        $lang = $langs->getLanguage();
-    } else {
-        $lang = $site_config["language"];
-    }
+ 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
-    //print_r($language);
+    $language = (new Language($getParams))->get();
+ 
     // Подключаем плагины
     $utility = new Utility();
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Если запись об авторизации есть расшифровываем
     if (isset($session->authorize)) {
         $authorize = $session->authorize;
@@ -84,8 +92,8 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
         "host" => $host,
         "path" => $path
     ];
- 
-    return $this->view->render('sign-in.html', [
+    
+    $view = [
         "head" => $head,
         "template" => $site->template(),
         "pages" => $page,
@@ -93,11 +101,16 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
         "routers" => $routers,
         "config" => $config['settings']['site'],
         "language" => $language,
+        "template" => $template,
         "token" => $session->token,
         "session" => $session_user_data,
         "session_temp" => $session_temp,
         "content" => $content
-    ]);
+    ];
+    
+    $render = $template['layouts']['sign-in'] ? $template['layouts']['sign-in'] : 'sign-in.html';
+ 
+    return $this->view->render($render, $view);
 });
  
 // Страница регистрации
@@ -109,32 +122,31 @@ $app->get($sign_up_router, function (Request $request, Response $response, array
     $routers = $config['routers'];
     $site = new Site();
     $site_config = $site->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    $site_template = $site->template();
+ 
+    $templateConfig = new Template($site_template);
+    $template = $templateConfig->get();
+ 
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Подключаем временное хранилище
-    $session_temp = new Session("_temp");
+    $session_temp = new $config['vendor']['session']("_temp");
     // Читаем ключи
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
-    // Получаем массив данных из таблицы language на языке из $session->language
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($session->language)) {
-        $lang = $session->language;
-    } elseif ($langs->getLanguage()) {
-        $lang = $langs->getLanguage();
-    } else {
-        $lang = $site_config["language"];
-    }
+ 
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
-    //print_r($language);
+    $language = (new Language($getParams))->get();
+ 
     // Подключаем плагины
     $utility = new Utility();
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Если запись об авторизации есть расшифровываем
     if (isset($session->authorize)) {
         $authorize = $session->authorize;
@@ -162,35 +174,40 @@ $app->get($sign_up_router, function (Request $request, Response $response, array
         "host" => $host,
         "path" => $path
     ];
- 
-    return $this->view->render('sign-up.html', [
+    
+    $view = [
         "head" => $head,
         "template" => $site->template(),
         "pages" => $page,
         "site" => $site_config,
         "routers" => $routers,
         "config" => $config['settings']['site'],
+        "template" => $template,
         "language" => $language,
         "token" => $session->token,
         "session" => $session_user_data,
         "session_temp" => $session_temp,
         "content" => $content
-    ]);
+    ];
+    
+    $render = $template['layouts']['sign-up'] ? $template['layouts']['sign-in'] : 'sign-up.html';
+ 
+    return $this->view->render($render, $view);
 });
  
 // Выйти
 $app->post($logout_router, function (Request $request, Response $response, array $args) {
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token, $token_key);
-    } catch (CryptoEx $ex) {
+        $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+    } catch (\Exception $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
     }
@@ -198,8 +215,8 @@ $app->post($logout_router, function (Request $request, Response $response, array
     $post = $request->getParsedBody();
     try {
         // Получаем токен из POST
-        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
-    } catch (CryptoEx $ex) {
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+    } catch (\Exception $ex) {
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
     }
@@ -254,12 +271,12 @@ $app->post($login_router, function (Request $request, Response $response, array 
     $session_key = $config['key']['session'];
     $cookie_key = $config['key']['cookie'];
     $token_key = $config['key']['token'];
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token, $token_key);
-    } catch (CryptoEx $ex) {
+        $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+    } catch (\Exception $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подмене сессии
         $callback = array(
@@ -280,8 +297,8 @@ $app->post($login_router, function (Request $request, Response $response, array 
     $post_password = filter_var($post['password'], FILTER_SANITIZE_STRING);
     try {
         // Получаем токен из POST
-        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
-    } catch (CryptoEx $ex) {
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+    } catch (\Exception $ex) {
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
     }
@@ -346,10 +363,10 @@ $app->post($login_router, function (Request $request, Response $response, array 
                                     $session->authorize = 1;
                                     $session->role_id = $user["role_id"];
                                     $session->user_id = $user["id"];
-                                    $session->iname = Crypto::encrypt($user["iname"], $session_key);
-                                    $session->fname = Crypto::encrypt($user["fname"], $session_key);
-                                    $session->phone = Crypto::encrypt($user["phone"], $session_key);
-                                    $session->email = Crypto::encrypt($user["email"], $session_key);
+                                    $session->iname = $config['vendor']['crypto']::encrypt($user["iname"], $session_key);
+                                    $session->fname = $config['vendor']['crypto']::encrypt($user["fname"], $session_key);
+                                    $session->phone = $config['vendor']['crypto']::encrypt($user["phone"], $session_key);
+                                    $session->email = $config['vendor']['crypto']::encrypt($user["email"], $session_key);
                             
                                     $callback = array('status' => 200);
  
@@ -445,12 +462,12 @@ $app->post($check_in_router, function (Request $request, Response $response, arr
     $session_key = $config['key']['session'];
     $cookie_key = $config['key']['cookie'];
     $token_key = $config['key']['token'];
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     try {
         // Получаем токен из сессии
-        $token = Crypto::decrypt($session->token, $token_key);
-    } catch (CryptoEx $ex) {
+        $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+    } catch (\Exception $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подмене сессии
         $callback = array(
@@ -473,8 +490,8 @@ $app->post($check_in_router, function (Request $request, Response $response, arr
     $post_fname = filter_var($post['fname'], FILTER_SANITIZE_STRING);
     try {
         // Получаем токен из POST
-        $post_csrf = Crypto::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
-    } catch (CryptoEx $ex) {
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+    } catch (\Exception $ex) {
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
     }
@@ -518,7 +535,7 @@ $app->post($check_in_router, function (Request $request, Response $response, arr
                     $cookie = $utility->random_token();
 
                     // Генерируем identificator
-                    $identificator = Crypto::encrypt($cookie, $cookie_key);
+                    $identificator = $config['vendor']['crypto']::encrypt($cookie, $cookie_key);
  
                     $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
                     // Записываем пользователю новый cookie
@@ -561,10 +578,10 @@ $app->post($check_in_router, function (Request $request, Response $response, arr
                         $session->authorize = 1;
                         $session->cookie = $identificator;
                         $session->user_id = $user_id;
-                        $session->phone = Crypto::encrypt($phone, $session_key);
-                        $session->email = Crypto::encrypt($email, $session_key);
-                        $session->iname = Crypto::encrypt($iname, $session_key);
-                        $session->fname = Crypto::encrypt($fname, $session_key);
+                        $session->phone = $config['vendor']['crypto']::encrypt($phone, $session_key);
+                        $session->email = $config['vendor']['crypto']::encrypt($email, $session_key);
+                        $session->iname = $config['vendor']['crypto']::encrypt($iname, $session_key);
+                        $session->fname = $config['vendor']['crypto']::encrypt($fname, $session_key);
 
                         $callback = array('status' => 200);
                         // Выводим заголовки

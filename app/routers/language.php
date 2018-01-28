@@ -13,8 +13,7 @@
  
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Adbar\Session;
-use Sinergi\BrowserDetector\Language as Langs;
+
 use ApiShop\Config\Settings;
 use ApiShop\Resources\Language;
  
@@ -25,9 +24,9 @@ $language_router = $config['routers']['language'];
 $app->post($language_router, function (Request $request, Response $response, array $args) {
     // Подключаем конфигурацию
     $config = (new Settings())->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
-    $langs = new Langs();
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    $langs = new $config['vendor']['language_detector']();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($session->language)) {
         $lang = $session->language;
@@ -47,6 +46,7 @@ $app->post($language_router, function (Request $request, Response $response, arr
         if ($lg == 4) {$session->language = "de";}
     }
     $language = (new Language())->get($session->language);
+    
     foreach($language as $key => $value)
     {
         $arr["id"] = $key;
@@ -70,9 +70,9 @@ $app->post($language_router, function (Request $request, Response $response, arr
 $app->get($language_router, function (Request $request, Response $response, array $args) {
     // Подключаем конфигурацию
     $config = (new Settings())->get();
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
-    $langs = new Langs();
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    $langs = new $config['vendor']['language_detector']();
     // Получаем массив данных из таблицы language на языке из $session->language
     if (isset($session->language)) {
         $lang = $session->language;

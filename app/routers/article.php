@@ -13,14 +13,11 @@
  
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Adbar\Session;
-use Defuse\Crypto\Crypto;
-use Sinergi\BrowserDetector\Language as Langs;
+ 
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
-use ApiShop\Resources\Menu;
 use ApiShop\Resources\Template;
 use ApiShop\Model\SessionUser;
 use RouterDb\Db;
@@ -55,33 +52,17 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
     $templateConfig = new Template($site_template);
     $template = $templateConfig->get();
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     //print_r($language);
     // Подключаем плагины
@@ -89,7 +70,7 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Если запись об авторизации есть расшифровываем
     if (isset($session->authorize)) {
         $authorize = $session->authorize;
@@ -107,11 +88,12 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
     $og_title = "";
     $og_description = "";
  
-    $render = "404";
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    
     $content = "";
     
-    // Меню
-    $menu = (new Menu())->get();
+    // Меню, берет название класса из конфигурации
+    $menu = (new $config['vendor']['menu']())->get();
  
     // Ресурс (таблица) к которому обращаемся
     $resource = "article";
@@ -147,19 +129,16 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
             $og_title = $content["og_title"];
             $og_description = $content["og_description"];
  
-            $render = "article";
+            $render = $template['layouts']['article'] ? $template['layouts']['article'] : 'article.html';
  
         } else {
-            $render = "404";
+            $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
         }
     } else {
-        $render = "404";
+        $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     }
- 
-    // Запись в лог
-    $this->logger->info("article - ".$alias);
- 
-    return $this->view->render($render.'.html', [
+    
+    $view = [
         "template" => $template,
         "head" => [
             "page" => "article",
@@ -180,7 +159,12 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
         "session" => $sessionUser,
         "content" => $content,
         "menu" => $menu,
-    ]);
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("article - ".$alias);
+ 
+    return $this->view->render($render, $view);
  
 });
 
@@ -209,33 +193,17 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
     $templateConfig = new Template($site_template);
     $template = $templateConfig->get();
  
-    // Подключаем сессию
-    $session = new Session($config['settings']['session']['name']);
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $session_key = $config['key']['session'];
     $token_key = $config['key']['token'];
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
-    // Подключаем определение языка в браузере
-    $langs = new Langs();
-    // Получаем массив данных из таблицы language на языке из $session->language
-    if (isset($getParams['lang'])) {
-        if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {
-            $lang = $getParams['lang'];
-            $session->language = $getParams['lang'];
-        } elseif (isset($session->language)) {
-            $lang = $session->language;
-        } else {
-            $lang = $langs->getLanguage();
-        }
-    } elseif (isset($session->language)) {
-        $lang = $session->language;
-    } else {
-        $lang = $langs->getLanguage();
-    }
+ 
     // Подключаем мультиязычность
-    $language = (new Language())->get($lang);
+    $language = (new Language($getParams))->get();
  
     //print_r($language);
     // Подключаем плагины
@@ -243,7 +211,7 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
-    $session->token = Crypto::encrypt($token, $token_key);
+    $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Если запись об авторизации есть расшифровываем
     if (isset($session->authorize)) {
         $authorize = $session->authorize;
@@ -261,11 +229,11 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
     $og_title = "";
     $og_description = "";
  
-    $render = "404";
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     $content = "";
     
-    // Меню
-    $menu = (new Menu())->get();
+    // Меню, берет название класса из конфигурации
+    $menu = (new $config['vendor']['menu']())->get();
  
     // Ресурс (таблица) к которому обращаемся
     $resource = "article";
@@ -301,19 +269,16 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
             $og_title = $content["og_title"];
             $og_description = $content["og_description"];
  
-            $render = "article";
+            $render = $template['layouts']['article'] ? $template['layouts']['article'] : 'article.html';
  
         } else {
-            $render = "404";
+            $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
         }
     } else {
-        $render = "404";
+        $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     }
- 
-    // Запись в лог
-    $this->logger->info("article - ".$alias);
- 
-    return $this->view->render($render.'.html', [
+    
+    $view = [
         "template" => $template,
         "head" => [
             "page" => "article",
@@ -334,6 +299,11 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
         "session" => $sessionUser,
         "content" => $content,
         "menu" => $menu,
-    ]);
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("article - ".$alias);
+ 
+    return $this->view->render($render, $view);
  
 });
