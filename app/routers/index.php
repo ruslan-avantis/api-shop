@@ -57,7 +57,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $user_data =(new SessionUser())->get();
+    $sessionUser =(new SessionUser())->get();
     // Подключаем временное хранилище
     $session_temp = new $config['vendor']['session']("_temp");
     // Читаем ключи
@@ -128,7 +128,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
             "language" => $language,
             "template" => $template,
             "token" => $session->token,
-            "session" => $user_data,
+            "session" => $sessionUser,
             "menu" => $menu,
             "content" => $content
         ];

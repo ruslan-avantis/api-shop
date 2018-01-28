@@ -54,7 +54,7 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $user_data =(new SessionUser())->get();
+    $sessionUser =(new SessionUser())->get();
     // Подключаем временное хранилище
     $session_temp = new $config['vendor']['session']("_temp");
     // Читаем ключи
@@ -122,10 +122,10 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
                 $og_title = $content["og_title"];
                 $og_description = $content["og_description"];
  
-                if (isset($resp["headers"]["code"])) {
-					$render = $content['layouts'] ? $content['layouts'] : $template['layouts']['article_category'];
+                if (isset($content['layouts'])) {
+					$render = $content['layouts'] ? $content['layouts'] : $template['layouts']['article'];
 				} else {
-				    $render = $template['layouts']['article_category'] ? $template['layouts']['article_category'] : 'article-category.html';
+				    $render = $template['layouts']['article'] ? $template['layouts']['article'] : 'article.html';
 				}
  
             }
@@ -156,7 +156,7 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
         "language" => $language,
         "template" => $template,
         "token" => $session->token,
-        "session" => $user_data,
+        "session" => $sessionUser,
         "menu" => $menu,
         "content" => $content
     ];
@@ -264,7 +264,7 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
                 $og_title = $content["og_title"];
                 $og_description = $content["og_description"];
  
-                if (isset($resp["headers"]["code"])) {
+                if (isset($content['layouts'])) {
 					$render = $content['layouts'] ? $content['layouts'] : $template['layouts']['article'];
 				} else {
 				    $render = $template['layouts']['article'] ? $template['layouts']['article'] : 'article.html';
@@ -298,7 +298,7 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
         "language" => $language,
         "template" => $template,
         "token" => $session->token,
-        "session" => $user_data,
+        "session" => $sessionUser,
         "menu" => $menu,
         "content" => $content
     ];
