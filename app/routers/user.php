@@ -22,6 +22,7 @@ use ApiShop\Utilities\Utility;
 use ApiShop\Model\Security;
 use ApiShop\Model\SessionUser;
 use ApiShop\Resources\Language;
+use ApiShop\Resources\Template;
 use ApiShop\Resources\Site;
 use ApiShop\Resources\User;
  
@@ -34,54 +35,43 @@ $check_in_router = $config['routers']['check_in'];
  
 // Страница авторизации
 $app->get($sign_in_router, function (Request $request, Response $response, array $args) {
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
-    // Получаем конфигурацию \ApiShop\Config\Settings
-    $config = (new Settings())->get();
-    $routers = $config['routers'];
-    $site = new Site();
-    $site_config = $site->get();
-    $site_template = $site->template();
- 
-    $templateConfig = new Template($site_template);
-    $template = $templateConfig->get();
- 
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
-    // Подключаем временное хранилище
-    $session_temp = new $config['vendor']['session']("_temp");
-    // Читаем ключи
-    $session_key = $config['key']['session'];
-    $token_key = $config['key']['token'];
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
- 
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers'];
     // Подключаем плагины
     $utility = new Utility();
+    // Настройки сайта
+    $site = new Site();
+    $site_config = $site->get();
+    // Получаем название шаблона
+    $site_template = $site->template();
+    // Конфигурация шаблона
+    $templateConfig = new Template($site_template);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $user_data =(new SessionUser())->get();
+    // Подключаем временное хранилище
+    $session_temp = new $config['vendor']['session']("_temp");
+    // Читаем ключи
+    $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Если запись об авторизации есть расшифровываем
-    if (isset($session->authorize)) {
-        $authorize = $session->authorize;
-    } else {
-        $session->authorize = 0;
-        $authorize = 0;
-    }
-    // Отдаем информацию для шаблонизатора
-    // Информацию о странице
-    $page = ["page" => 'sign-in'];
-    // Данные пользователя из сессии
-    $session_user_data =(new SessionUser())->get();
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
-    // print_r($content);
-    
+ 
+    // Заголовки
     $head = [
         "page" => 'sign-in',
         "title" => "",
@@ -92,77 +82,66 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
         "host" => $host,
         "path" => $path
     ];
-    
+ 
+    // Контент и конфигурации
     $view = [
         "head" => $head,
-        "template" => $site->template(),
-        "pages" => $page,
+        "pages" => ["page" => 'sign-in'],
         "site" => $site_config,
         "routers" => $routers,
         "config" => $config['settings']['site'],
         "language" => $language,
         "template" => $template,
         "token" => $session->token,
-        "session" => $session_user_data,
+        "session" => $user_data,
         "session_temp" => $session_temp,
         "content" => $content
     ];
-    
-    $render = $template['layouts']['sign-in'] ? $template['layouts']['sign-in'] : 'sign-in.html';
+ 
+    // Получаем название шаблона для рендера
+    $render = $template['layouts']['sign_in'] ? $template['layouts']['sign_in'] : 'sign-in.html';
  
     return $this->view->render($render, $view);
+ 
 });
  
 // Страница регистрации
 $app->get($sign_up_router, function (Request $request, Response $response, array $args) {
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
-    // Получаем конфигурацию \ApiShop\Config\Settings
-    $config = (new Settings())->get();
-    $routers = $config['routers'];
-    $site = new Site();
-    $site_config = $site->get();
-    $site_template = $site->template();
- 
-    $templateConfig = new Template($site_template);
-    $template = $templateConfig->get();
- 
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
-    // Подключаем временное хранилище
-    $session_temp = new $config['vendor']['session']("_temp");
-    // Читаем ключи
-    $session_key = $config['key']['session'];
-    $token_key = $config['key']['token'];
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
- 
-    // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
- 
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers'];
     // Подключаем плагины
     $utility = new Utility();
+    // Настройки сайта
+    $site = new Site();
+    $site_config = $site->get();
+    // Получаем название шаблона
+    $site_template = $site->template();
+    // Конфигурация шаблона
+    $templateConfig = new Template($site_template);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $user_data =(new SessionUser())->get();
+    // Подключаем временное хранилище
+    $session_temp = new $config['vendor']['session']("_temp");
+    // Читаем ключи
+    $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Если запись об авторизации есть расшифровываем
-    if (isset($session->authorize)) {
-        $authorize = $session->authorize;
-    } else {
-        $session->authorize = 0;
-        $authorize = 0;
-    }
-    // Отдаем информацию для шаблонизатора
-    // Информацию о странице
-    $page = ["page" => 'sign-up'];
-    // Данные пользователя из сессии
-    $session_user_data =(new SessionUser())->get();
-    //print_r($session_user_data);
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
-    // print_r($content);
     
     $head = [
         "page" => 'sign-in',
@@ -177,22 +156,23 @@ $app->get($sign_up_router, function (Request $request, Response $response, array
     
     $view = [
         "head" => $head,
-        "template" => $site->template(),
-        "pages" => $page,
+        "pages" => ["page" => 'sign-up'],
         "site" => $site_config,
         "routers" => $routers,
         "config" => $config['settings']['site'],
         "template" => $template,
         "language" => $language,
         "token" => $session->token,
-        "session" => $session_user_data,
+        "session" => $user_data,
         "session_temp" => $session_temp,
         "content" => $content
     ];
-    
-    $render = $template['layouts']['sign-up'] ? $template['layouts']['sign-in'] : 'sign-up.html';
+ 
+    // Получаем название шаблона для рендера
+    $render = $template['layouts']['sign_up'] ? $template['layouts']['sign_up'] : 'sign-up.html';
  
     return $this->view->render($render, $view);
+ 
 });
  
 // Выйти
@@ -652,4 +632,3 @@ $app->post($check_in_router, function (Request $request, Response $response, arr
     } 
 });
  
-    
