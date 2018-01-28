@@ -7,9 +7,7 @@
 			"displayErrorDetails": 0,
 			"addContentLengthHeader": 0,
 			"determineRouteBeforeAppMiddleware": 0,
-			"cookies.httponly": 1,
-			"phpSettings.session.cookie_httponly": 1,
-			"rebodys.session.cookie_httponly": 1
+			"cookies.httponly": 1
 		}
 	},
 	"seller": {
@@ -133,7 +131,7 @@
 			"og_locale": "",
 			"og_type": "site",
 			"og_url": "",
-			"cookie_httponly": 0
+			"cookie_httponly": 1
 		},
 		"themes": {
 			"template": "mini-mo",
