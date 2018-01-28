@@ -29,62 +29,53 @@ use ApiShop\Model\Pagination;
 $config = (new Settings())->get();
 $category_router = $config['routers']['category'];
  
-$app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
+$app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
  
-    $host = $request->getUri()->getHost();
-    $path = $request->getUri()->getPath();
-
-    // Подключаем плагины
-    $utility = new Utility();
-    // Получаем конфигурацию \ApiShop\Config\Settings
-    $config = (new Settings())->get();
-    $routers = $config['routers'];
-    
-    $site = new Site();
-    $site_config = $site->get();
-    $site_template = $site->template();
- 
-    $templateConfig = new Template($site_template);
-    $template = $templateConfig->get();
- 
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
-    // Читаем ключи
-    $session_key = $config['key']['session'];
-    $token_key = $config['key']['token'];
-    // Подключаем мультиязычность
- 
+    // Получаем alias из url
+    if ($request->getAttribute('alias')) {
+        $alias = $utility->clean($request->getAttribute('alias'));
+    } else {
+        $alias = null;
+    }
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
- 
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers'];
+    // Подключаем плагины
+    $utility = new Utility();
+    // Настройки сайта
+    $site = new Site();
+    $site_config = $site->get();
+    // Получаем название шаблона
+    $site_template = $site->template();
+    // Конфигурация шаблона
+    $templateConfig = new Template($site_template);
+    $template = $templateConfig->get();
+    // Меню, берет название класса из конфигурации
+    $menu = (new $config['vendor']['menu']())->get();
     // Подключаем мультиязычность
     $language = (new Language($getParams))->get();
- 
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
+    // Подключаем временное хранилище
+    $session_temp = new $config['vendor']['session']("_temp");
+    // Читаем ключи
+    $token_key = $config['key']['token'];
     // Генерируем токен
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
-    // Если запись об авторизации есть расшифровываем
-    if (isset($session->authorize)) {
-        $authorize = $session->authorize;
-    } else {
-        $session->authorize = 0;
-        $authorize = 0;
-    }
-    // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
-    // Что бы не давало ошибку присваиваем пустое значение
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
     $content = '';
-    // Меню, берет название класса из конфигурации
-    $menu = (new $config['vendor']['menu']())->get();
- 
-    // Получаем category из url
-    if ($request->getAttribute('category')) {
-        $category_alias = $utility->clean($request->getAttribute('category'));
-    } else {
-        $category_alias = null;
-    }
- 
+    // Заголовки по умолчанию из конфигурации
     $title = $language['402'];
     $keywords = $language['402'];
     $description = $language['402'];
@@ -103,7 +94,7 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
     $products_order = $template['products']['category']['order'];
     $products_sort = $template['products']['category']['sort'];
  
-    if (isset($category_alias)) {
+    if (isset($alias)) {
         // Ресурс (таблица) к которому обращаемся
         $category_resource = "category";
         // Отдаем роутеру RouterDb конфигурацию.
@@ -113,7 +104,7 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
         // Подключаемся к базе
         $db = new Db($category_db, $config);
         // Отправляем запрос и получаем данные
-        $resp = $db->get($category_resource, ['alias' => $category_alias]);
+        $resp = $db->get($category_resource, ['alias' => $alias]);
  
         if (isset($resp["headers"]["code"])) {
             if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == '200') {
@@ -151,8 +142,6 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
     
     }
  
-
-
     // Получаем массив параметров uri
     $queryParams = $request->getQueryParams();
     $arr = array();
@@ -189,18 +178,16 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
         "price" => $language["112"]
     ];
     $sortArray = $filter->sort($sortArr);
-
-
  
     if (isset($product_type)) {
         $arrPlus['type'] = $product_type;
     }
     $arrPlus['relations'] = "image";
     $newArr = $arr + $arrPlus;
-    
+ 
     // Получаем список товаров
     $productsList = new $config['vendor']['products_category']();
-    $products = $productsList->get($newArr, $template);
+    $content = $productsList->get($newArr, $template);
     // Даем пагинатору колличество
     $count = $productsList->count();
     $paginator = $filter->paginator($count);
@@ -220,20 +207,19 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
         "host" => $host,
         "path" => $path
     ];
-    
+ 
     $view = [
-        "template" => $template,
-        "products_template" => $products_template,
         "head" => $head,
-        "site" => $site_config,
         "routers" => $routers,
+        "site" => $site_config,
         "config" => $config['settings']['site'],
         "language" => $language,
+        "template" => $template,
         "token" => $session->token,
         "session" => $sessionUser,
-        "content" => $content,
         "menu" => $menu,
-        "products" => $products,
+        "content" => $content,
+		"products_template" => $products_template,
         "paginator" => $paginator,
         "order" => $orderArray,
         "sort" => $sortArray,
@@ -245,8 +231,9 @@ $app->get($category_router.'[/{category:[a-z0-9_-]+}]', function (Request $reque
     ];
  
     // Запись в лог
-    $this->logger->info($render);
+    $this->logger->info($render." - ".$alias);
  
+    // Отдаем данные шаблонизатору
     return $this->view->render($render, $view);
  
 });

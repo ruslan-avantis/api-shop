@@ -29,6 +29,12 @@ $article_router = $config['routers']['article'];
  
 $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request $request, Response $response, array $args) {
  
+    // Получаем alias из url
+    if ($request->getAttribute('alias')) {
+        $alias = $utility->clean($request->getAttribute('alias'));
+    } else {
+        $alias = null;
+    }
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
@@ -79,13 +85,6 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
     $og_locale = $config['settings']['site']['og_locale'];
     $og_url = $config['settings']['site']['og_url'];
  
-    // Получаем alias из url
-    if ($request->getAttribute('alias')) {
-        $alias = $utility->clean($request->getAttribute('alias'));
-    } else {
-        $alias = null;
-    }
-	
 	if (isset($alias)) {
         // Ресурс (таблица) к которому обращаемся
         $resource = "article_category";
@@ -133,7 +132,7 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
 	}
     
     $head = [
-        "page" => 'home',
+        "page" => $render,
         "title" => $title,
         "keywords" => $keywords,
         "description" => $description,
@@ -171,6 +170,12 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
 
 $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request, Response $response, array $args) {
  
+    // Получаем alias из url
+    if ($request->getAttribute('alias')) {
+        $alias = $utility->clean($request->getAttribute('alias'));
+    } else {
+        $alias = null;
+    }
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
@@ -220,13 +225,6 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
     $og_type = $config['settings']['site']['og_type'];
     $og_locale = $config['settings']['site']['og_locale'];
     $og_url = $config['settings']['site']['og_url'];
- 
-    // Получаем alias из url
-    if ($request->getAttribute('alias')) {
-        $alias = $utility->clean($request->getAttribute('alias'));
-    } else {
-        $alias = null;
-    }
  
 	if (isset($alias)) {
         // Ресурс (таблица) к которому обращаемся
@@ -275,7 +273,7 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
 	}
  
     $head = [
-        "page" => 'home',
+        "page" => $render,
         "title" => $title,
         "keywords" => $keywords,
         "description" => $description,
