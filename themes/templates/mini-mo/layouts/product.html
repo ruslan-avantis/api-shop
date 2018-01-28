@@ -1,5 +1,5 @@
-{{ include ('helper/header.html') }}
-{{ include ('helper/nav.html') }}
+{% if template.layouts.helper.header %}{{ include (template.layouts.helper.header) }}{% endif %}
+{% if template.layouts.helper.nav %}{{ include (template.layouts.helper.nav) }}{% endif %}
 {% if product != null%}
 <div id="product" class="" itemscope="" itemtype="http://schema.org/Product">
 <section id="h1-description">
@@ -52,7 +52,7 @@
 <span class="control-button-3 btn-red">
 <span class="control-link-a a-white a-hover-light-grey-md">
 <a class="fancybox btn btn-lg btn-hover-effects btn-red" href="#block_order_{{ product.product_id }}"><i class="fa fa-cart-plus" aria-hidden="true"></i> {{ language.1 }}</a>
-{{ include ('helper/order.html') }}
+{% if template.layouts.helper.order %}{{ include (template.layouts.helper.order) }}{% endif %}
 </span>
 </span>
 <span class="control-button-2 btn-black">
@@ -72,7 +72,7 @@
 <div class="row justify-content-center padding_14">
 <div class="col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 control-background bg-white control-text-3 text-black">
 {% autoescape false %}
-   {{ product.description }}{# product.description won't be escaped #}
+{{ product.description }}
 {% endautoescape %}
 </div>
 </div>
@@ -99,5 +99,5 @@
 </section>
 </div>
 {% endif %}
-{{ include ('helper/newsletter.html') }}
-{{ include ('helper/footer.html') }}
+{% if template.layouts.helper.newsletter %}{{ include (template.layouts.helper.newsletter) }}{% endif %}
+{% if template.layouts.helper.footer %}{{ include (template.layouts.helper.footer) }}{% endif %}

@@ -1,5 +1,5 @@
-{{ include ('helper/header.html') }}
-{{ include ('helper/nav.html') }}
+{% if template.layouts.helper.header %}{{ include (template.layouts.helper.header) }}{% endif %}
+{% if template.layouts.helper.nav %}{{ include (template.layouts.helper.nav) }}{% endif %}
 <div class="control-background-2 bg-black">
 <div class="control-text-3 text-white">
 <div class="container">
@@ -25,5 +25,5 @@
 </div>
 </div>
 </div>
-{{ include ('helper/newsletter.html') }}
-{{ include ('helper/footer.html') }}
+{% if template.layouts.helper.newsletter %}{{ include (template.layouts.helper.newsletter) }}{% endif %}
+{% if template.layouts.helper.footer %}{{ include (template.layouts.helper.footer) }}{% endif %}

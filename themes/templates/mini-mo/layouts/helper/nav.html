@@ -17,9 +17,7 @@
 </div>
 <div class="nav-nav a-white a-hover-light-grey-md">
 <ul class="nav justify-content-end animated bounceInRight" role="tablist">
-
-{{ include ('helper/menu.html') }}
-
+{% if template.layouts.helper.menu %}{{ include (template.layouts.helper.menu) }}{% endif %}
 <li class="nav-item"> 
 <div class="btn-group btn-red">
 <button type="button" class="btn btn-md btn-hover-effects text-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -48,7 +46,7 @@
 {% if session.authorize == 1 %}
 <div class="btn-group btn-red">
 <a href="#" class="btn btn-md btn-hover-effects text-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	{{ session.iname }} {{ session.fname }}
+{{ session.iname }} {{ session.fname }}
 </a>
 <div class="dropdown-menu a-grey-xxxl a-hover-red-lg">
 {% if session.role_id == 100 %}
