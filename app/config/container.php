@@ -21,7 +21,8 @@ $container = $app->getContainer();
 
 // monolog
 $container['logger'] = function ($logger) {
-    $settings = $logger->get('settings')['logger'];
+    $config = (new Settings())->get();
+    $settings = $config['settings']['logger'];
     $logger = new \Monolog\Logger($settings['name']);
     $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
     $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
@@ -30,19 +31,19 @@ $container['logger'] = function ($logger) {
 
 // Register Original Twig View
 $container['view'] = function ($conf) {
+    $config = (new Settings())->get();
+    $themes = $config['settings']['themes'];
  
-    $config = $conf->get('settings')['themes'];
- 
-    if ($conf->get('settings')["install"]["status"] != null) {
+    if ($config['settings']["install"]["status"] != null) {
         // Получаем название шаблона
-        $template = $config["template"]; // По умолчанию mini-mo
+        $template = $themes["template"]; // По умолчанию mini-mo
         $site = new Site();
         $site->get();
         if ($site->template()) {
             $template = $site->template();
         }
  
-        $loader = new \Twig_Loader_Filesystem($config['dir']."/".$config['templates']."/".$template."/layouts");
+        $loader = new \Twig_Loader_Filesystem($themes['dir']."/".$themes['templates']."/".$template."/layouts");
         $view = new \Twig_Environment($loader, array(
             'cache' => false,
             'strict_variables' => false
@@ -50,7 +51,7 @@ $container['view'] = function ($conf) {
  
     } else {
  
-        $loader = new \Twig_Loader_Filesystem($config['dir']."/".$config['templates']."/install");
+        $loader = new \Twig_Loader_Filesystem($themes['dir']."/".$themes['templates']."/install");
         $view = new \Twig_Environment($loader, array(
             'cache' => false,
             'strict_variables' => false

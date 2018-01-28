@@ -13,8 +13,6 @@
  
 namespace ApiShop\Config;
  
-use Defuse\Crypto\Key;
- 
 class Settings {
  
     public static function get() {
@@ -31,9 +29,12 @@ class Settings {
                 $config = $config + $json;
             }
         }
-		
-		$config["admin"]["vendor"] = __DIR__ .''.$json["admin"]["vendor_dir"];
-		$config["admin"]["plugins"] = __DIR__ .''.$json["admin"]["plugins_dir"];
+ 
+        $config["dir"]["config"] = __DIR__ .'/../..'.$json["dir"]["config_dir"];
+        $config["dir"]["routers"] = __DIR__ .'/../..'.$json["dir"]["routers_dir"];
+        $config["dir"]["vendor"] = __DIR__ .'/../..'.$json["dir"]["vendor_dir"];
+        $config["dir"]["plugins"] = __DIR__ .'/../..'.$json["dir"]["plugins_dir"];
+        $config["dir"]["images"] = __DIR__ .'/../..'.$json["dir"]["images_dir"];
  
         $config["settings"]["json"] = $settings;
  
@@ -75,36 +76,36 @@ class Settings {
  
         // Генерируем ключи шифрования, если их нет
         if (!file_exists($key_session)) {
-            file_put_contents($key_session, (Key::createNewRandomKey())->saveToAsciiSafeString());
+            file_put_contents($key_session, ($json["vendor"]["crypto_key"]::createNewRandomKey())->saveToAsciiSafeString());
         }
         if (!file_exists($key_cookie)) {
-            file_put_contents($key_cookie, (Key::createNewRandomKey())->saveToAsciiSafeString());
+            file_put_contents($key_cookie, ($json["vendor"]["crypto_key"]::createNewRandomKey())->saveToAsciiSafeString());
         }
         if (!file_exists($key_token)) {
-            file_put_contents($key_token, (Key::createNewRandomKey())->saveToAsciiSafeString());
+            file_put_contents($key_token, ($json["vendor"]["crypto_key"]::createNewRandomKey())->saveToAsciiSafeString());
         }
         if (!file_exists($key_password)) {
-            file_put_contents($key_password, (Key::createNewRandomKey())->saveToAsciiSafeString());
+            file_put_contents($key_password, ($json["vendor"]["crypto_key"]::createNewRandomKey())->saveToAsciiSafeString());
         }
         if (!file_exists($key_user)) {
-            file_put_contents($key_user, (Key::createNewRandomKey())->saveToAsciiSafeString());
+            file_put_contents($key_user, ($json["vendor"]["crypto_key"]::createNewRandomKey())->saveToAsciiSafeString());
         }
         if (!file_exists($key_card)) {
-            file_put_contents($key_card, (Key::createNewRandomKey())->saveToAsciiSafeString());
+            file_put_contents($key_card, ($json["vendor"]["crypto_key"]::createNewRandomKey())->saveToAsciiSafeString());
         }
  
-        $config["key"]["session"] = Key::loadFromAsciiSafeString(file_get_contents($key_session, true));
-        $config["key"]["token"] = Key::loadFromAsciiSafeString(file_get_contents($key_token, true));
-        $config["key"]["cookie"] = Key::loadFromAsciiSafeString(file_get_contents($key_cookie, true));
-        $config["key"]["password"] = Key::loadFromAsciiSafeString(file_get_contents($key_password, true));
-        $config["key"]["user"] = Key::loadFromAsciiSafeString(file_get_contents($key_user, true));
-        $config["key"]["card"] = Key::loadFromAsciiSafeString(file_get_contents($key_card, true));
+        $config["key"]["session"] = $json["vendor"]["crypto_key"]::loadFromAsciiSafeString(file_get_contents($key_session, true));
+        $config["key"]["token"] = $json["vendor"]["crypto_key"]::loadFromAsciiSafeString(file_get_contents($key_token, true));
+        $config["key"]["cookie"] = $json["vendor"]["crypto_key"]::loadFromAsciiSafeString(file_get_contents($key_cookie, true));
+        $config["key"]["password"] = $json["vendor"]["crypto_key"]::loadFromAsciiSafeString(file_get_contents($key_password, true));
+        $config["key"]["user"] = $json["vendor"]["crypto_key"]::loadFromAsciiSafeString(file_get_contents($key_user, true));
+        $config["key"]["card"] = $json["vendor"]["crypto_key"]::loadFromAsciiSafeString(file_get_contents($key_card, true));
         // Динамический ключ шифрования для ajax
-        $config["key"]["ajax"] = (Key::createNewRandomKey())->saveToAsciiSafeString();
+        $config["key"]["ajax"] = ($json["vendor"]["crypto_key"]::createNewRandomKey())->saveToAsciiSafeString();
     
         $key_db = $key."/db.txt";
         if (!file_exists($key_db)) {
-            file_put_contents($key_db, (Key::createNewRandomKey())->saveToAsciiSafeString());
+            file_put_contents($key_db, ($json["vendor"]["crypto_key"]::createNewRandomKey())->saveToAsciiSafeString());
         }
         // Ключ шифрования в базах данных. Отдаем в чистом виде.
         $config["db"]["key"] = file_get_contents($key_db, true);
