@@ -1,0 +1,49 @@
+{
+    "alias": "admin",
+    "name": "admin",
+    "dir": "admin",
+    "version": "1.0.1",
+    "url": null,
+    "logo": null,
+    "demo": null,
+	"home": {
+		"logo": null
+	},
+    "layouts": {
+        "name": "layouts",
+        "404": "404.html",
+        "blank": "blank.html",
+        "index": "index.html",
+        "article": "article.html",
+		"article_id": "article_id.html",
+        "article_category": "article_category.html",
+        "article_category_id": "article_category_id.html",
+        "category": "category.html",
+        "category_id": "category_id.html",
+        "db": "db.html",
+        "db_id": "db_id.html",
+        "db_item": "db_item.html",
+        "packages": "packages.html",
+        "template": "template.html",
+        "templates": "templates.html",
+		"user": "user.html",
+		"user_id": "user_id.html",
+        "config": "config.html",
+        "helper": {
+            "editor": "helper/editor.html",
+            "footer": "helper/footer.html",
+            "header": "helper/header.html",
+            "navbar": "helper/navbar.html",
+            "nav": "helper/nav.html"
+        },
+        "widget": {
+            "article": "widget/article.html",
+			"orders": "widget/orders.html",
+			"templates": "widget/templates.html",
+			"user": "widget/user.html"
+        },
+        "panel": {
+            "settings": "panel/settings.html"
+        }
+    }
+}
