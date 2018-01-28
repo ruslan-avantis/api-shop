@@ -58,15 +58,23 @@ if (file_exists(__DIR__ . '/../../vendor/_autoload.php')) {
 $loader = new \AutoRequire\Autoloader;
 $loader->register();
 $loader->addNamespace('ApiShop\\Api\\Services', __DIR__ . '/services');
-
+ 
 require __DIR__ . '/../app/config/settings.php';
 // Подключаем файл конфигурации системы
 // Получаем конфигурацию
 $settings = new \ApiShop\Config\Settings();
 $config = $settings->get();
-
+$slimArr = '';
+// На всякий случай, конвертируем конфигурацию в правильный формат
+foreach ($config['slim']['settings'] as $key => $value) {
+	$value = str_replace(array("1", '1', 1), true, $value);
+	$value = str_replace(array("0", '0', 0), false, $value);
+	$slimArr[$key] = $value;
+}
+$slim['settings'] = $slimArr;
+// Подключаем Slim и отдаем ему конфигурацию
 // Подключаем Slim и отдаем ему Конфиг
-$app = new \Slim\App($config);
+$app = new \Slim\App($slim);
 
 // Automatically register routers
 // Автоматическое подключение роутеров
@@ -78,3 +86,4 @@ require $router;
 // Slim Run
 $app->run();
  
+	
