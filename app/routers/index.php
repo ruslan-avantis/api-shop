@@ -32,6 +32,8 @@ $index_router = $config['routers']['index'];
  
 $app->get($index_router, function (Request $request, Response $response, array $args) {
  
+    // Подключаем плагины
+    $utility = new Utility();
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
@@ -40,8 +42,6 @@ $app->get($index_router, function (Request $request, Response $response, array $
     $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers'];
-    // Подключаем плагины
-    $utility = new Utility();
     // Настройки сайта
     $site = new Site();
     $site_config = $site->get();

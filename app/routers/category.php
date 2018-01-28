@@ -31,6 +31,8 @@ $category_router = $config['routers']['category'];
  
 $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
  
+    // Подключаем плагины
+    $utility = new Utility();
     // Получаем alias из url
     if ($request->getAttribute('alias')) {
         $alias = $utility->clean($request->getAttribute('alias'));
@@ -45,8 +47,6 @@ $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request,
     $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers'];
-    // Подключаем плагины
-    $utility = new Utility();
     // Настройки сайта
     $site = new Site();
     $site_config = $site->get();
