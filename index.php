@@ -61,9 +61,16 @@ require __DIR__ . '/app/config/settings.php';
 // Получаем конфигурацию
 $settings = new \ApiShop\Config\Settings();
 $config = $settings->get();
- 
+$slimArr = '';
+// На всякий случай, конвертируем конфигурацию в правильный формат
+foreach ($config['slim']['settings'] as $key => $value) {
+	$value = str_replace(array("1", '1', 1), true, $value);
+	$value = str_replace(array("0", '0', 0), false, $value);
+	$slimArr[$key] = $value;
+}
+$slim['settings'] = $slimArr;
 // Подключаем Slim и отдаем ему конфигурацию
-$app = new \Slim\App($config);
+$app = new \Slim\App($slim);
  
 // Подключаем Slim Container
 require __DIR__ . '/app/config/container.php';
