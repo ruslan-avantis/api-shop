@@ -212,7 +212,7 @@ $app->post($logout_router, function (Request $request, Response $response, array
         unset($session->id); // удаляем сесию
         unset($session->cookie); // удаляем сесию
         $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
-        if ($config['settings']['site']['cookie_httponly'] === true){
+        if ($config['settings']['site']['cookie_httponly'] == '1'){
             setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain, 1, true);
         } else {
             setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain);
@@ -519,7 +519,7 @@ $app->post($check_in_router, function (Request $request, Response $response, arr
  
                     $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
                     // Записываем пользователю новый cookie
-                    if ($config['settings']['site']['cookie_httponly'] === true){
+                    if ($config['settings']['site']['cookie_httponly'] == '1'){
                         setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain, 1, true);
                     } else {
                         setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain);
