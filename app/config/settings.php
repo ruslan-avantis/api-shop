@@ -114,10 +114,15 @@ class Settings {
         $config["settings"]["install"]["strlen"] = 64;
  
         if(isset($json["seller"]["public_key"])) {
-            $public_key = $json["seller"]["public_key"];
+            if($json["seller"]["public_key"] != '' && $json["seller"]["public_key"] != 'null') {
+                $public_key = $json["seller"]["public_key"];
+            } else {
+                $public_key = null;
+            }
         } else {
             $public_key = null;
         }
+ 
         // Статус активации сайта null или public_key
         $config["settings"]["install"]["status"] = $public_key;
  
