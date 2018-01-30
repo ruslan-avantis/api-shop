@@ -37,6 +37,12 @@ $check_in_router = $config['routers']['check_in'];
 // Страница авторизации
 $app->get($sign_in_router, function (Request $request, Response $response, array $args) {
  
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
@@ -103,10 +109,9 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
     $render = $template['layouts']['sign_in'] ? $template['layouts']['sign_in'] : 'sign-in.html';
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->view->render($hookRender, $hookView);
@@ -115,6 +120,12 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
  
 // Страница регистрации
 $app->get($sign_up_router, function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
@@ -180,10 +191,9 @@ $app->get($sign_up_router, function (Request $request, Response $response, array
     $render = $template['layouts']['sign_up'] ? $template['layouts']['sign_up'] : 'sign-up.html';
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->view->render($hookRender, $hookView);
@@ -192,6 +202,13 @@ $app->get($sign_up_router, function (Request $request, Response $response, array
  
 // Выйти
 $app->post($logout_router, function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
@@ -259,6 +276,13 @@ $app->post($logout_router, function (Request $request, Response $response, array
   
 // Авторизация
 $app->post($login_router, function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     $today = date("Y-m-d H:i:s");
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -450,6 +474,13 @@ $app->post($login_router, function (Request $request, Response $response, array 
  
 // Регистрация
 $app->post($check_in_router, function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     $today = date("Y-m-d H:i:s");
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();

@@ -31,6 +31,12 @@ $article_router = $config['routers']['article'];
  
 $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request $request, Response $response, array $args) {
  
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Подключаем плагины
     $utility = new Utility();
     // Получаем alias из url
@@ -87,7 +93,7 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
     $og_locale = $config['settings']['site']['og_locale'];
     $og_url = $config['settings']['site']['og_url'];
  
-	if (isset($alias)) {
+    if (isset($alias)) {
         // Ресурс (таблица) к которому обращаемся
         $resource = "article_category";
         // Отдаем роутеру RouterDb конфигурацию.
@@ -124,14 +130,14 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
                 $og_description = $content["og_description"];
  
                 if (isset($content['layouts'])) {
-					$render = $content['layouts'] ? $content['layouts'] : $template['layouts']['article'];
-				} else {
-				    $render = $template['layouts']['article'] ? $template['layouts']['article'] : 'article.html';
-				}
+                    $render = $content['layouts'] ? $content['layouts'] : $template['layouts']['article'];
+                } else {
+                    $render = $template['layouts']['article'] ? $template['layouts']['article'] : 'article.html';
+                }
  
             }
         }
-	}
+    }
     
     $head = [
         "page" => $render,
@@ -166,10 +172,9 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
     $this->logger->info("article - ".$alias);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->view->render($hookRender, $hookView);
@@ -177,6 +182,12 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
 });
 
 $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -234,7 +245,7 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
     $og_locale = $config['settings']['site']['og_locale'];
     $og_url = $config['settings']['site']['og_url'];
  
-	if (isset($alias)) {
+    if (isset($alias)) {
         // Ресурс (таблица) к которому обращаемся
         $resource = "article";
         // Отдаем роутеру RouterDb конфигурацию.
@@ -271,14 +282,14 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
                 $og_description = $content["og_description"];
  
                 if (isset($content['layouts'])) {
-					$render = $content['layouts'] ? $content['layouts'] : $template['layouts']['article'];
-				} else {
-				    $render = $template['layouts']['article'] ? $template['layouts']['article'] : 'article.html';
-				}
+                    $render = $content['layouts'] ? $content['layouts'] : $template['layouts']['article'];
+                } else {
+                    $render = $template['layouts']['article'] ? $template['layouts']['article'] : 'article.html';
+                }
  
             }
         }
-	}
+    }
  
     $head = [
         "page" => $render,
@@ -313,10 +324,9 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
     $this->logger->info($render." - ".$alias);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->view->render($hookRender, $hookView);

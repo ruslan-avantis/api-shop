@@ -16,7 +16,7 @@ use Slim\Http\Response;
  
 use RouterDb\Db;
 use RouterDb\Router;
- 
+    
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Hooks\Hook;
@@ -32,6 +32,12 @@ $config = (new Settings())->get();
 $index_router = $config['routers']['index'];
  
 $app->get($index_router, function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -116,7 +122,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
  
         // Получаем список товаров
         $productsList = new $config['vendor']['products_home']();
-        $content = $productsList->get($arr, $template);
+        $content = $productsList->get($arr, $template, $host);
         
         if (count($content) >= 1) {
             $render = $template['layouts']['index'] ? $template['layouts']['index'] : 'index.html';
@@ -180,9 +186,8 @@ $app->get($index_router, function (Request $request, Response $response, array $
     // Запись в лог
     $this->logger->info($render);
  
-    // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-    $hook->setGet($request, $args, $view, $render);
+    // Отдаем данные Hooks для передачи ожидающим пакетам
+    $hook->setResponse($request, $response, $args, $view, $render);
     $hookView = $hook->view();
     $hookRender = $hook->render();
  

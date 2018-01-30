@@ -31,6 +31,7 @@ use ApiShop\Model\Security;
 use ApiShop\Admin\Control;
 use ApiShop\Admin\AdminDatabase;
 use ApiShop\Admin\Resources;
+use ApiShop\Admin\Packages;
  
 $config = (new Settings())->get();
 $admin_router = $config['routers']['admin'];
@@ -38,6 +39,12 @@ $admin_index_router = $config['routers']['admin_index'];
  
 // Главная страница админ панели
 $app->get($admin_index_router.'', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -86,8 +93,8 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
             $index = new \ApiShop\Admin\Index();
             // Получаем массив с настройками шаблона
             $content = $index->get();
-			// Получаем название шаблона
-			$render = $template['layouts']['index'] ? $template['layouts']['index'] : 'index.html';
+            // Получаем название шаблона
+            $render = $template['layouts']['index'] ? $template['layouts']['index'] : 'index.html';
         }
     } else {
         $session->authorize = null;
@@ -124,10 +131,9 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
     $this->logger->info($render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->admin->render($hookRender, $hookView);
@@ -137,6 +143,12 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
  
 // Список items указанного resource
 $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -277,10 +289,9 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
  
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->admin->render($hookRender, $hookView);
@@ -290,8 +301,14 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
 // Содать запись в resource
 $app->post($admin_router.'resource-post', function (Request $request, Response $response, array $args) {
  
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     $today = date("Y-m-d H:i:s");
-	// Получаем данные отправленные нам через POST
+    // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
  
     // Подключаем конфиг Settings\Config
@@ -457,6 +474,12 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
 // Удалить запись в resource
 $app->post($admin_router.'resource-delete', function (Request $request, Response $response, array $args) {
  
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем плагины
@@ -590,6 +613,12 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
  
 // Редактируем запись в resource
 $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -767,7 +796,14 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
  
 // Активировать заказ
 $app->post($admin_router.'order-activate', function (Request $request, Response $response, array $args) {
-    // Подключаем конфиг Settings\Config
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
+// Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
@@ -867,7 +903,14 @@ $app->post($admin_router.'order-activate', function (Request $request, Response 
  
 // Купить и установить шаблон
 $app->post($admin_router.'template-buy', function (Request $request, Response $response, array $args) {
-    // Подключаем конфиг Settings\Config
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
+// Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
@@ -935,6 +978,13 @@ $app->post($admin_router.'template-buy', function (Request $request, Response $r
  
 // Установить шаблон
 $app->post($admin_router.'template-install', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем плагины
@@ -1057,6 +1107,13 @@ $app->post($admin_router.'template-install', function (Request $request, Respons
  
 // Активировать шаблон
 $app->post($admin_router.'template-activate', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем плагины
@@ -1160,6 +1217,13 @@ $app->post($admin_router.'template-activate', function (Request $request, Respon
  
 // Удалить шаблон
 $app->post($admin_router.'template-delete', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
@@ -1232,6 +1296,12 @@ $app->post($admin_router.'template-delete', function (Request $request, Response
 // Список шаблонов
 $app->get($admin_router.'template', function (Request $request, Response $response, array $args) {
  
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Подключаем плагины
     $utility = new Utility();
     // Получаем параметры из URL
@@ -1282,7 +1352,7 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
             // Получаем массив с настройками шаблона
             $content = $templates->get();
             $api = (new Install())->templates_list($config['seller']['store']);
-			$render = $template['layouts']['templates'] ? $template['layouts']['templates'] : 'templates.html';
+            $render = $template['layouts']['templates'] ? $template['layouts']['templates'] : 'templates.html';
         }
     } else {
         $session->authorize = null;
@@ -1322,10 +1392,9 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
  
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->admin->render($hookRender, $hookView);
@@ -1334,6 +1403,12 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
  
 // Страница шаблона
 $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1387,7 +1462,7 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
             // Подключаем класс
             $templates = new \ApiShop\Admin\Template($alias);
             $content = $templates->getOne();
-			$render = $template['layouts']['template'] ? $template['layouts']['template'] : 'template.html';
+            $render = $template['layouts']['template'] ? $template['layouts']['template'] : 'template.html';
         }
     } else {
         $session->authorize = null;
@@ -1424,10 +1499,9 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->admin->render($hookRender, $hookView);
@@ -1436,6 +1510,13 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
  
 // Редактируем настройки шаблона
 $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Подключаем плагины
     $utility = new Utility();
     // Получаем alias из url
@@ -1498,7 +1579,7 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
             $templates->put($newArr);
             $content = $templates->getOne();
  
-			$render = $template['layouts']['template'] ? $template['layouts']['template'] : 'template.html';
+            $render = $template['layouts']['template'] ? $template['layouts']['template'] : 'template.html';
  
         }
     } else {
@@ -1537,17 +1618,450 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->admin->render($hookRender, $hookView);
  
 });
  
+// Станица пакета
+$app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
+    // Подключаем плагины
+    $utility = new Utility();
+    // Получаем alias из url
+    if ($request->getAttribute('alias')) {
+        $alias = $utility->clean($request->getAttribute('alias'));
+    } else {
+        $alias = null;
+    }
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    // Генерируем токен
+    $token = $utility->random_token();
+    // Записываем токен в сессию
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
+ 
+    if (isset($session->authorize)) {
+        if ($session->role_id == 100) {
+            
+            if (isset($alias)) {
+                // Подключаем класс
+                $packages = new \ApiShop\Admin\Packages();
+                // Получаем массив
+                $content = $packages->getOne($alias);
+            }
+ 
+            $render = $template['layouts']['package'] ? $template['layouts']['package'] : 'package.html';
+ 
+        }
+    } else {
+        $session->authorize = null;
+    }
+ 
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
+    $view = [
+        "head" => $head,
+        "routers" => $routers,
+        "config" => $config,
+        "language" => $language,
+        "template" => $template,
+        "token" => $session->token_admin,
+        "session" => $sessionUser,
+        "content" => $content
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
+ 
+});
+
+// Редактируем или добавляем пакет
+$app->post($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
+    // Подключаем плагины
+    $utility = new Utility();
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+
+    // Получаем alias из url
+    if ($request->getAttribute('alias')) {
+        $alias = $utility->clean($request->getAttribute('alias'));
+    } else {
+        $alias = null;
+    }
+ 
+    try {
+        // Получаем токен из сессии
+        $token = $config['vendor']['crypto']::decrypt($session->token_admin, $token_key);
+    } catch (\Exception $ex) {
+        $token = 0;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе токена
+                (new Security())->token();
+            }
+        } else {
+            // Сообщение об Атаке или подборе токена
+            (new Security())->token();
+        }
+    }
+ 
+    try {
+        // Получаем токен из POST
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        // Чистим данные на всякий случай пришедшие через POST
+        $csrf = $utility->clean($post_csrf);
+    } catch (\Exception $ex) {
+        $csrf = 1;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе csrf
+                (new Security())->csrf();
+            }
+        } else {
+            // Сообщение об Атаке или подборе csrf
+            (new Security())->csrf();
+        }
+    }
+ 
+    // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
+    if ($csrf == $token) {
+        if (isset($session->authorize)) {
+            if ($session->authorize == 1 && $session->role_id == 100) {
+                if (isset($post['name']) && $post['name'] != '') {
+                    $arr = array();
+                    $param = array();
+                    
+                    if (isset($post['namespace'])) {if ($post['version'] != '') {
+                            $arr['namespace'] = $post['namespace'];
+                    }}
+                    if (isset($post['dir'])) {if ($post['dir'] != '') {
+                            $arr['dir'] = $post['dir'];
+                    }}
+                    if (isset($post['git'])) {if ($post['git'] != '') {
+                            $arr['git'] = $post['git'];
+                    }}
+                    if (isset($post['name'])) {
+                        if ($post['name'] != '') {
+                            $arr['name'] = $post['name'];
+                        } else {
+                            $arr['name'] = 'package-name';
+                        }
+                    } else {
+                        $arr['name'] = 'package-name';
+                    }
+                    if (isset($post['version'])) {
+                        if ($post['version'] != '') {
+                            $arr['version'] = $post['version'];
+                        } else {
+                            $arr['version'] = '1.0.1';
+                        }
+                    } else {
+                        $arr['version'] = '1.0.1';
+                    }
+                    if (isset($post['vendor'])) {
+                        if ($post['vendor'] != '') {
+                            $arr['vendor'] = $post['vendor'];
+                        } else {
+                            $arr['vendor'] = 'vendor-name';
+                        }
+                    } else {
+                        $arr['vendor'] = 'vendor-name';
+                    }
+                    if (isset($post['state'])) {
+                        if ($post['state'] != '') {
+                            $arr['state'] = $post['state'];
+                        } else {
+                            $arr['state'] = '0';
+                        }
+                    } else {
+                        $arr['state'] = '0';
+                    }
+                    if (isset($post['link'])) {if ($post['link'] != '') {
+                            $arr['link'] = $post['link'];
+                    }}
+                    if (isset($post['files'])) {if ($post['files'] != '') {
+                            $arr['files'] = $post['files'];
+                    }}
+ 
+                    $param[] = $arr;
+                    $packages = new Packages();
+                    $package = $packages->put($param);
+ 
+                    if($package == 'new') {
+                        $callback = array('status' => 201, 'url' => $config['routers']['admin'].'packages');
+                    } elseif($package == true) {
+                        $callback = array('status' => 200);
+                    } else {
+                        $callback = array(
+                            'status' => 400,
+                            'title' => "Соообщение системы",
+                            'text' => "Что то не так !"
+                        );
+                    }
+                
+                } else {
+                    $callback = array(
+                        'status' => 400,
+                        'title' => "Соообщение системы",
+                        'text' => "Что то не так !"
+                    );
+                }
+            } else {
+                $callback = array(
+                    'status' => 400,
+                    'title' => "Соообщение системы",
+                    'text' => "Вы не администратор"
+                );
+            }
+        } else {
+            $callback = array(
+                'status' => 400,
+                'title' => "Соообщение системы",
+                'text' => "Вы не авторизованы"
+            );
+        }
+ 
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+ 
+        // Выводим json
+        echo json_encode($callback);
+ 
+    } else {
+ 
+        $callback = array(
+            'status' => 400,
+            'title' => "Ошибка",
+            'text' => "Обновите страницу"
+        );
+ 
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
+ 
+    }
+ 
+});
+ 
+// Изменение статуса пакета
+$app->post($admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+ 
+    // Подключаем плагины
+    $utility = new Utility();
+    // Получаем query из url
+    if ($args['querys']) {
+        $query = $utility->clean($args['querys']);
+    } else {
+        $query = null;
+    }
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+ 
+    try {
+        // Получаем токен из сессии
+        $token = $config['vendor']['crypto']::decrypt($session->token_admin, $token_key);
+    } catch (\Exception $ex) {
+        $token = 0;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе токена
+                (new Security())->token();
+            }
+        } else {
+            // Сообщение об Атаке или подборе токена
+            (new Security())->token();
+        }
+    }
+ 
+    try {
+        // Получаем токен из POST
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        // Чистим данные на всякий случай пришедшие через POST
+        $csrf = $utility->clean($post_csrf);
+    } catch (\Exception $ex) {
+        $csrf = 1;
+        if (isset($session->authorize)) {
+            if ($session->authorize != 1 || $session->role_id != 100) {
+                // Сообщение об Атаке или подборе csrf
+                (new Security())->csrf();
+            }
+        } else {
+            // Сообщение об Атаке или подборе csrf
+            (new Security())->csrf();
+        }
+    }
+ 
+    // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
+    if ($csrf == $token) {
+        if (isset($session->authorize)) {
+            if ($session->authorize == 1 && $session->role_id == 100) {
+                if (isset($post['alias']) && isset($query)) {
+                    $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
+                    // Подключаем класс
+                    $packages = new \ApiShop\Admin\Packages();
+                     
+                    
+                    if($query == 'delete') {
+                        $content = $packages->del($alias);
+                    } elseif($query == 'activate'){
+                        $state = '1';
+                        $content = $packages->state($alias, $state);
+                    } else {
+                        $state = '0';
+                        $content = $packages->state($alias, $state);
+                    }
+ 
+                    if($content == true){
+                        $callback = array('status' => 200);
+                    } else {
+                        $callback = array(
+                            'status' => 400,
+                            'title' => "Соообщение системы",
+                            'text' => "Что то не так ! *******"
+                        );
+                    }
+                } else {
+                    $callback = array(
+                        'status' => 400,
+                        'title' => "Соообщение системы",
+                        'text' => "Что то не так ! ХХХХХХ"
+                    );
+                }
+            } else {
+                $callback = array(
+                    'status' => 400,
+                    'title' => "Соообщение системы",
+                    'text' => "Вы не администратор"
+                );
+            }
+        } else {
+            $callback = array(
+                'status' => 400,
+                'title' => "Соообщение системы",
+                'text' => "Вы не авторизованы"
+            );
+        }
+ 
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+ 
+        // Выводим json
+        echo json_encode($callback);
+ 
+    } else {
+ 
+        $callback = array(
+            'status' => 400,
+            'title' => "Ошибка",
+            'text' => "Обновите страницу"
+        );
+ 
+        // Выводим заголовки
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
+        // Выводим json
+        echo json_encode($callback);
+ 
+    }
+ 
+});
+ 
 // Список пакетов
 $app->get($admin_router.'packages', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1634,10 +2148,215 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
+ 
+});
+ 
+// Репозиторий
+$app->get($admin_router.'packages-install', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
+    // Подключаем плагины
+    $utility = new Utility();
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    // Генерируем токен
+    $token = $utility->random_token();
+    // Записываем токен в сессию
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
+ 
+    if (isset($session->authorize)) {
+        if ($session->role_id == 100) {
+            // Подключаем класс
+            $packages = new \ApiShop\Admin\Packages();
+            // Получаем массив
+            $content = $packages->get();
+            $render = $template['layouts']['packages'] ? $template['layouts']['packages'] : 'packages.html';
+            
+        }
+    } else {
+        $session->authorize = null;
+    }
+ 
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
+    $view = [
+        "head" => $head,
+        "routers" => $routers,
+        "config" => $config,
+        "language" => $language,
+        "template" => $template,
+        "token" => $session->token_admin,
+        "session" => $sessionUser,
+        "content" => $content
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
+ 
+    // Отдаем данные шаблонизатору
+    return $this->admin->render($hookRender, $hookView);
+ 
+});
+ 
+// Страница установки из json файла
+$app->get($admin_router.'packages-install-json', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
+    // Подключаем плагины
+    $utility = new Utility();
+    // Получаем параметры из URL
+    $getParams = $request->getQueryParams();
+    $host = $request->getUri()->getHost();
+    $path = $request->getUri()->getPath();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+    // Конфигурация роутинга
+    $routers = $config['routers']['admin'];
+    // Конфигурация шаблона
+    $templateConfig = new Template($config['admin']['template']);
+    $template = $templateConfig->get();
+    // Подключаем мультиязычность
+    $language = (new Language($getParams))->get();
+    // Подключаем сессию, берет название класса из конфигурации
+    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Данные пользователя из сессии
+    $sessionUser =(new SessionUser())->get();
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    // Генерируем токен
+    $token = $utility->random_token();
+    // Записываем токен в сессию
+    $session->token_admin = $config['vendor']['crypto']::encrypt($token, $token_key);
+    // Шаблон по умолчанию 404
+    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    // Контент по умолчанию
+    $content = '';
+    // Заголовки по умолчанию из конфигурации
+    $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
+    $keywords = $config['settings']['site']['keywords'];
+    $description = $config['settings']['site']['description'];
+    $robots = $config['settings']['site']['robots'];
+    $og_title = $config['settings']['site']['og_title'];
+    $og_description = $config['settings']['site']['og_description'];
+    $og_image = $config['settings']['site']['og_image'];
+    $og_type = $config['settings']['site']['og_type'];
+    $og_locale = $config['settings']['site']['og_locale'];
+    $og_url = $config['settings']['site']['og_url'];
+ 
+    if (isset($session->authorize)) {
+        if ($session->role_id == 100) {
+            // Подключаем класс
+            $packages = new \ApiShop\Admin\Packages();
+            // Получаем массив
+            $content = $packages->get();
+            $render = $template['layouts']['packages'] ? $template['layouts']['packages'] : 'packages.html';
+            
+        }
+    } else {
+        $session->authorize = null;
+    }
+ 
+    $head = [
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
+    ];
+ 
+    $view = [
+        "head" => $head,
+        "routers" => $routers,
+        "config" => $config,
+        "language" => $language,
+        "template" => $template,
+        "token" => $session->token_admin,
+        "session" => $sessionUser,
+        "content" => $content
+    ];
+ 
+    // Запись в лог
+    $this->logger->info("admin/".$render);
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->admin->render($hookRender, $hookView);
@@ -1646,6 +2365,12 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
  
 // Глобальные настройки
 $app->get($admin_router.'config', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1731,10 +2456,9 @@ $app->get($admin_router.'config', function (Request $request, Response $response
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->admin->render($hookRender, $hookView);
@@ -1743,6 +2467,12 @@ $app->get($admin_router.'config', function (Request $request, Response $response
  
 // Редактируем глобальные настройки
 $app->post($admin_router.'config', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1795,8 +2525,8 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
             $settings->put($paramPost);
             // Получаем обновленные данные
             $content = $settings->get();
-			
-			$render = $template['layouts']['config'] ? $template['layouts']['config'] : 'config.html';
+            
+            $render = $template['layouts']['config'] ? $template['layouts']['config'] : 'config.html';
         }
     } else {
         $session->authorize = null;
@@ -1834,9 +2564,9 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->admin->render($hookRender, $hookView);
@@ -1845,6 +2575,12 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
  
 // Список баз данных
 $app->get($admin_router.'db', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1891,7 +2627,7 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
         if ($session->role_id) {
             $adminDatabase = new AdminDatabase();
             $content = $adminDatabase->list();
-			$render = $template['layouts']['db'] ? $template['layouts']['db'] : 'db.html';
+            $render = $template['layouts']['db'] ? $template['layouts']['db'] : 'db.html';
         }
     } else {
         $session->authorize = null;
@@ -1928,10 +2664,9 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->admin->render($hookRender, $hookView);
@@ -1940,6 +2675,12 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
  
 // Страница таблицы (ресурса)
 $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1989,9 +2730,9 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
     $og_url = $config['settings']['site']['og_url'];
  
     if (isset($id)) {
-		$render = $template['layouts']['db_id'] ? $template['layouts']['db_id'] : 'db_id.html';
+        $render = $template['layouts']['db_id'] ? $template['layouts']['db_id'] : 'db_id.html';
     } else {
-	    $render = $template['layouts']['db_item'] ? $template['layouts']['db_item'] : 'db_item.html';
+        $render = $template['layouts']['db_item'] ? $template['layouts']['db_item'] : 'db_item.html';
     }
  
     $name_db = null;
@@ -2120,10 +2861,9 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->admin->render($hookRender, $hookView);
@@ -2132,6 +2872,12 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
  
 // Глобально
 $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -2199,8 +2945,8 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
         if (isset($session->authorize)) {
             if ($session->role_id == 100) {
  
-			    $render = $template['layouts'][$resource] ? $template['layouts'][$resource] : $resource.'.html';
-			
+                $render = $template['layouts'][$resource] ? $template['layouts'][$resource] : $resource.'.html';
+            
                 if(stristr($resource, '_') === FALSE) {
                     $resourceName = "\\ApiShop\\Admin\\".ucfirst($resource);
                 } else {
@@ -2254,10 +3000,9 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->admin->render($hookRender, $hookView);

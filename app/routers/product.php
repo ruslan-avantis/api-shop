@@ -20,6 +20,7 @@ use RouterDb\Router;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Hooks\Hook;
+use ApiShop\Images\Image;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
 use ApiShop\Resources\Template;
@@ -32,6 +33,12 @@ $product_name = $config['routers']['product_name'];
 $product_quick_view_router = $config['routers']['product_quick_view'];
  
 $app->get($product_router.''.$product_alias.''.$product_name, function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -78,6 +85,8 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
+    // Обработка картинок
+    $image = new Image();
  
     // Шаблон по умолчанию 404
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
@@ -106,41 +115,49 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
         // Подключаемся к базе
         $db = new Db($name_db, $config);
         // Отправляем запрос и получаем данные
-        $response = $db->get($resource, [], $alias);
+        $resp = $db->get($resource, [], $alias);
+ 
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+            $protocol_uri = 'https://'.$host;
+        } else {
+            $protocol_uri = 'http://'.$host;
+        }
  
         // Если ответ не пустой
         // Обрабатываем картинки
-        $product['image']['no_image'] = $utility->get_image(null, '/images/no_image.png', 800, 800);
- 
-        foreach($response["body"]['items']['0']['item']['image'] as $value)
+        foreach($resp["body"]['items']['0']['item']['image'] as $value)
         {
-            $image = '';
-            $image = (isset($value['image_path'])) ? $utility->clean($value['image_path']) : null;
-            if (isset($image)) {$images[]  = $utility->get_image($response["body"]['items']['0']['item']['product_id'], $image, 800, 800);}
+            $img = '';
+            $img = (isset($value['image_path'])) ? $value['image_path'] : null;
+            if (isset($img)) {
+                $images[] = $image->get($resp["body"]['items']['0']['item']['product_id'], $img, $template["products"]["image_big_width"], $template["products"]["image_big_height"]);
+            } else {
+                $product['images'] = $image->get(null, $protocol_uri.'/images/no_image.png', $template["products"]["image_big_width"], $template["products"]["image_big_height"]);
+            }
         }
-        $product['image'] = $images;
+        $product['images'] = $images;
  
         // Формируем URL страницы товара
-        $path_url = pathinfo($response["body"]['items']['0']['item']['url']);
+        $path_url = pathinfo($resp["body"]['items']['0']['item']['url']);
         $basename = $path_url['basename'];
-        $baseurl = str_replace('-'.$response["body"]['items']['0']['item']['product_id'].'.html', '', $basename);
-        $product['url'] = '/product/'.$response["body"]['items']['0']['item']['id'].'/'.$baseurl.'.html';
+        $baseurl = str_replace('-'.$resp["body"]['items']['0']['item']['product_id'].'.html', '', $basename);
+        $product['url'] = '/product/'.$resp["body"]['items']['0']['item']['id'].'/'.$baseurl.'.html';
  
-        $product['name'] = (isset($response["body"]['items']['0']['item']['name'])) ? $utility->clean($response["body"]['items']['0']['item']['name']) : '';
+        $product['name'] = (isset($resp["body"]['items']['0']['item']['name'])) ? $utility->clean($resp["body"]['items']['0']['item']['name']) : '';
         
-        $product['description'] = (isset($response["body"]['items']['0']['item']['description']['text'])) ? $utility->clean($response["body"]['items']['0']['item']['description']['text']) : '';
-        $product['type'] = (isset($response["body"]['items']['0']['item']['type'])) ? $utility->clean($response["body"]['items']['0']['item']['type']) : '';
-        $product['brand'] = (isset($response["body"]['items']['0']['item']['brand'])) ? $utility->clean($response["body"]['items']['0']['item']['brand']) : '';
-        $product['serie'] = (isset($response["body"]['items']['0']['item']['serie'])) ? $utility->clean($response["body"]['items']['0']['item']['serie']) : '';
-        $product['articul'] = (isset($response["body"]['items']['0']['item']['articul'])) ? $utility->clean($response["body"]['items']['0']['item']['articul']) : '';
-        if ($response["body"]['items']['0']['item']['serie'] && $response["body"]['items']['0']['item']['articul']) {$product['name'] = $response["body"]['items']['0']['item']['serie'].' '.$response["body"]['items']['0']['item']['articul'];}
-        $product['oldprice'] = (isset($response["body"]['items']['0']['item']['oldprice'])) ? $utility->clean($response["body"]['items']['0']['item']['oldprice']) : '';
-        $product['price'] = (isset($response["body"]['items']['0']['item']['price'])) ? $utility->clean($response["body"]['items']['0']['item']['price']) : '';
-        $product['available'] = (isset($response["body"]['items']['0']['item']['available'])) ? $utility->clean($response["body"]['items']['0']['item']['available']) : '';
-        $product['product_id'] = (isset($response["body"]['items']['0']['item']['product_id'])) ? $utility->clean($response["body"]['items']['0']['item']['product_id']) : '';
+        $product['description'] = (isset($resp["body"]['items']['0']['item']['description']['text'])) ? $utility->clean($resp["body"]['items']['0']['item']['description']['text']) : '';
+        $product['type'] = (isset($resp["body"]['items']['0']['item']['type'])) ? $utility->clean($resp["body"]['items']['0']['item']['type']) : '';
+        $product['brand'] = (isset($resp["body"]['items']['0']['item']['brand'])) ? $utility->clean($resp["body"]['items']['0']['item']['brand']) : '';
+        $product['serie'] = (isset($resp["body"]['items']['0']['item']['serie'])) ? $utility->clean($resp["body"]['items']['0']['item']['serie']) : '';
+        $product['articul'] = (isset($resp["body"]['items']['0']['item']['articul'])) ? $utility->clean($resp["body"]['items']['0']['item']['articul']) : '';
+        if ($resp["body"]['items']['0']['item']['serie'] && $resp["body"]['items']['0']['item']['articul']) {$product['name'] = $resp["body"]['items']['0']['item']['serie'].' '.$resp["body"]['items']['0']['item']['articul'];}
+        $product['oldprice'] = (isset($resp["body"]['items']['0']['item']['oldprice'])) ? $utility->clean($resp["body"]['items']['0']['item']['oldprice']) : '';
+        $product['price'] = (isset($resp["body"]['items']['0']['item']['price'])) ? $utility->clean($resp["body"]['items']['0']['item']['price']) : '';
+        $product['available'] = (isset($resp["body"]['items']['0']['item']['available'])) ? $utility->clean($resp["body"]['items']['0']['item']['available']) : '';
+        $product['product_id'] = (isset($resp["body"]['items']['0']['item']['product_id'])) ? $utility->clean($resp["body"]['items']['0']['item']['product_id']) : '';
  
-        if (isset($response["body"]['items']['0']['item']['action_date'])) {
-            $date = $response["body"]['items']['0']['item']['action_date'];
+        if (isset($resp["body"]['items']['0']['item']['action_date'])) {
+            $date = $resp["body"]['items']['0']['item']['action_date'];
         } else {
             $rand = rand(1000, 5000);
             $date = date("Y-m-d H:i:s",strtotime(date("Y-m-d H:i:s")." +".$rand." minutes"));
@@ -153,18 +170,16 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
         $product['h'] = date("H", $date);
         $product['i'] = date("i", $date);
         $product['s'] = date("s", $date);
-        
-        
-        
+ 
         // Каждый товар может иметь свой уникальный шаблон
         // Если шаблон товара не установлен берем по умолчанию
-        if (isset($response["body"]['items']['0']['item']['template'])){
+        if (isset($resp["body"]['items']['0']['item']['template'])){
             $themes_dir = $config["settings"]["themes"]["dir"];
             $templates_dir = $config["settings"]["themes"]["templates"];
             $template_name = $config["settings"]["themes"]["template"];
-            $templates_test = $themes_dir.'/'.$templates_dir.'/'.$template_name.'/layouts/'.$response["body"]['items']['0']['item']['template'].'.html';
+            $templates_test = $themes_dir.'/'.$templates_dir.'/'.$template_name.'/layouts/'.$resp["body"]['items']['0']['item']['template'].'.html';
             if (file_exists($templates_test)) {
-                $render = $response["body"]['items']['0']['item']['template'] ? $response["body"]['items']['0']['item']['template'] : $template['layouts']['product'];
+                $render = $resp["body"]['items']['0']['item']['template'] ? $resp["body"]['items']['0']['item']['template'] : $template['layouts']['product'];
             } else {
                 $render = $template['layouts']['product'] ? $template['layouts']['product'] : 'product.html';
             }
@@ -206,10 +221,9 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
     }
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->view->render($hookRender, $hookView);
@@ -217,6 +231,13 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
 });
  
 $app->get($product_quick_view_router.''.$product_alias.''.$product_name, function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Подключаем плагины
@@ -283,35 +304,35 @@ $app->get($product_quick_view_router.''.$product_alias.''.$product_name, functio
         // Обрабатываем картинки
         $product['image']['no_image'] = $utility->get_image(null, '/images/no_image.png', 800, 800);
  
-        foreach($response["body"]['items']['0']['item']['image'] as $value)
+        foreach($resp["body"]['items']['0']['item']['image'] as $value)
         {
             $image = '';
             $image = (isset($value['image_path'])) ? $utility->clean($value['image_path']) : null;
-            if (isset($image)) {$images[]  = $utility->get_image($response["body"]['items']['0']['item']['product_id'], $image, 800, 800);}
+            if (isset($image)) {$images[]  = $utility->get_image($resp["body"]['items']['0']['item']['product_id'], $image, 800, 800);}
         }
         $product['image'] = $images;
  
         // Формируем URL страницы товара
-        $path_url = pathinfo($response["body"]['items']['0']['item']['url']);
+        $path_url = pathinfo($resp["body"]['items']['0']['item']['url']);
         $basename = $path_url['basename'];
-        $baseurl = str_replace('-'.$response["body"]['items']['0']['item']['product_id'].'.html', '', $basename);
-        $product['url'] = '/product/'.$response["body"]['items']['0']['item']['id'].'/'.$baseurl.'.html';
+        $baseurl = str_replace('-'.$resp["body"]['items']['0']['item']['product_id'].'.html', '', $basename);
+        $product['url'] = '/product/'.$resp["body"]['items']['0']['item']['id'].'/'.$baseurl.'.html';
  
-        $product['name'] = (isset($response["body"]['items']['0']['item']['name'])) ? $utility->clean($response["body"]['items']['0']['item']['name']) : '';
+        $product['name'] = (isset($resp["body"]['items']['0']['item']['name'])) ? $utility->clean($resp["body"]['items']['0']['item']['name']) : '';
         
-        $product['description'] = (isset($response["body"]['items']['0']['item']['description']['text'])) ? $utility->clean($response["body"]['items']['0']['item']['description']['text']) : '';
-        $product['type'] = (isset($response["body"]['items']['0']['item']['type'])) ? $utility->clean($response["body"]['items']['0']['item']['type']) : '';
-        $product['brand'] = (isset($response["body"]['items']['0']['item']['brand'])) ? $utility->clean($response["body"]['items']['0']['item']['brand']) : '';
-        $product['serie'] = (isset($response["body"]['items']['0']['item']['serie'])) ? $utility->clean($response["body"]['items']['0']['item']['serie']) : '';
-        $product['articul'] = (isset($response["body"]['items']['0']['item']['articul'])) ? $utility->clean($response["body"]['items']['0']['item']['articul']) : '';
-        if ($response["body"]['items']['0']['item']['serie'] && $response["body"]['items']['0']['item']['articul']) {$product['name'] = $response["body"]['items']['0']['item']['serie'].' '.$response["body"]['items']['0']['item']['articul'];}
-        $product['oldprice'] = (isset($response["body"]['items']['0']['item']['oldprice'])) ? $utility->clean($response["body"]['items']['0']['item']['oldprice']) : '';
-        $product['price'] = (isset($response["body"]['items']['0']['item']['price'])) ? $utility->clean($response["body"]['items']['0']['item']['price']) : '';
-        $product['available'] = (isset($response["body"]['items']['0']['item']['available'])) ? $utility->clean($response["body"]['items']['0']['item']['available']) : '';
-        $product['product_id'] = (isset($response["body"]['items']['0']['item']['product_id'])) ? $utility->clean($response["body"]['items']['0']['item']['product_id']) : '';
+        $product['description'] = (isset($resp["body"]['items']['0']['item']['description']['text'])) ? $utility->clean($resp["body"]['items']['0']['item']['description']['text']) : '';
+        $product['type'] = (isset($resp["body"]['items']['0']['item']['type'])) ? $utility->clean($resp["body"]['items']['0']['item']['type']) : '';
+        $product['brand'] = (isset($resp["body"]['items']['0']['item']['brand'])) ? $utility->clean($resp["body"]['items']['0']['item']['brand']) : '';
+        $product['serie'] = (isset($resp["body"]['items']['0']['item']['serie'])) ? $utility->clean($resp["body"]['items']['0']['item']['serie']) : '';
+        $product['articul'] = (isset($resp["body"]['items']['0']['item']['articul'])) ? $utility->clean($resp["body"]['items']['0']['item']['articul']) : '';
+        if ($resp["body"]['items']['0']['item']['serie'] && $resp["body"]['items']['0']['item']['articul']) {$product['name'] = $resp["body"]['items']['0']['item']['serie'].' '.$resp["body"]['items']['0']['item']['articul'];}
+        $product['oldprice'] = (isset($resp["body"]['items']['0']['item']['oldprice'])) ? $utility->clean($resp["body"]['items']['0']['item']['oldprice']) : '';
+        $product['price'] = (isset($resp["body"]['items']['0']['item']['price'])) ? $utility->clean($resp["body"]['items']['0']['item']['price']) : '';
+        $product['available'] = (isset($resp["body"]['items']['0']['item']['available'])) ? $utility->clean($resp["body"]['items']['0']['item']['available']) : '';
+        $product['product_id'] = (isset($resp["body"]['items']['0']['item']['product_id'])) ? $utility->clean($resp["body"]['items']['0']['item']['product_id']) : '';
  
-        if (isset($response["body"]['items']['0']['item']['action_date'])) {
-            $date = $response["body"]['items']['0']['item']['action_date'];
+        if (isset($resp["body"]['items']['0']['item']['action_date'])) {
+            $date = $resp["body"]['items']['0']['item']['action_date'];
         } else {
             $rand = rand(1000, 5000);
             $date = date("Y-m-d H:i:s",strtotime(date("Y-m-d H:i:s")." +".$rand." minutes"));
@@ -358,10 +379,9 @@ $app->get($product_quick_view_router.''.$product_alias.''.$product_name, functio
     }
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->view->render($hookRender, $hookView);

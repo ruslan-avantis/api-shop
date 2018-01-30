@@ -32,6 +32,12 @@ $category_router = $config['routers']['category'];
  
 $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
  
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->setRequest($request, $response, $args);
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Подключаем плагины
     $utility = new Utility();
     // Получаем alias из url
@@ -188,7 +194,7 @@ $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request,
  
     // Получаем список товаров
     $productsList = new $config['vendor']['products_category']();
-    $content = $productsList->get($newArr, $template);
+    $content = $productsList->get($newArr, $template, $host);
     // Даем пагинатору колличество
     $count = $productsList->count();
     $paginator = $filter->paginator($count);
@@ -220,7 +226,7 @@ $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request,
         "session" => $sessionUser,
         "menu" => $menu,
         "content" => $content,
-		"products_template" => $products_template,
+        "products_template" => $products_template,
         "paginator" => $paginator,
         "order" => $orderArray,
         "sort" => $sortArray,
@@ -235,10 +241,9 @@ $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request,
     $this->logger->info($render." - ".$alias);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-	$hook->setGet($request, $args, $view, $render);
-	$hookView = $hook->view();
-	$hookRender = $hook->render();
+    $hook->setResponse($request, $response, $args, $view, $render);
+    $hookView = $hook->view();
+    $hookRender = $hook->render();
  
     // Отдаем данные шаблонизатору
     return $this->view->render($hookRender, $hookView);
