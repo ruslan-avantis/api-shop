@@ -1,0 +1,141 @@
+{{ include ('helper/header.html') }}
+{{ include ('helper/navbar.html') }}
+<h1 class="page-heading mb-4">{{ language.865 }} - {% if content.name %}{{ content.name }}{% else %}{{ language.864 }}{% endif %}</h1>
+<div class="row mb-2">
+<div class="col-lg-12">
+<div class="card">
+<div class="card-body">
+    
+<ul class="nav nav-tabs">
+<li class="nav-item">
+<a class="nav-link" href="{{ config.routers.admin }}packages"><span class="font_14">{{ language.837 }}</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="{{ config.routers.admin }}packages-install"><span class="font_14">{{ language.863 }}</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="{{ config.routers.admin }}packages-install-json"><span class="font_14">{{ language.867 }}</span></a>
+</li>
+<li class="nav-item">
+<a class="nav-link active" href="{{ config.routers.admin }}package/"><span class="font_14">{{ language.864 }}</span></a>
+</li>
+</ul>
+
+<div class="form-row padding_7">
+
+<div class="col-lg-6">
+<h4 class="padding_7">{{ language.865 }}</h4>    
+<div class="form-group col-lg-12">
+<label for="name">name</label>
+<input type="text" class="form-control form-control-xs" name="name" id="name" value="{{ content.name }}">
+</div>
+
+<div class="form-group col-lg-12">
+<label for="namespace">namespace</label>
+<input type="text" class="form-control form-control-xs" name="namespace" id="namespace" value="{{ content.namespace }}">
+</div>
+
+<div class="form-group col-lg-12">
+<label for="dir">dir</label>
+<input type="text" class="form-control form-control-xs" name="dir" id="dir" value="{{ content.dir }}">
+</div>
+ 
+<div class="form-group col-lg-12">
+<label for="link">link</label>
+<input type="text" class="form-control form-control-xs" name="link" id="link" value="{{ content.link }}">
+</div>
+ 
+<div class="form-group col-lg-12">
+<label for="git">git</label>
+<input type="text" class="form-control form-control-xs" name="git" id="git" value="{{ content.git }}">
+</div>
+ 
+<div class="form-group col-lg-12">
+<label for="version">version</label>
+<input type="text" class="form-control form-control-xs" name="version" id="version" value="{{ content.version }}">
+</div>
+ 
+<div class="form-group col-lg-12">
+<label for="vendor">vendor</label>
+<input type="text" class="form-control form-control-xs" name="vendor" id="vendor" value="{{ content.vendor }}">
+</div>
+
+<div class="form-group col-lg-12">
+<label for="files">files</label>
+<input type="text" class="form-control form-control-xs" name="files" id="files" value="{{ content.files }}">
+</div>
+ 
+<div class="form-group col-lg-12">
+<label for="state">state</label>
+<input type="text" class="form-control form-control-xs" name="state" id="state" value="{{ content.state }}">
+</div>
+
+</div>
+<div class="col-lg-6">
+{% if content.name %}
+<h4 class="padding_7">{{ content.name }} - auto_require.json</h4>
+{% else %}
+<h4 class="padding_7">{{ language.868 }} auto_require.json</h4>
+{% endif %}
+<pre>
+<code class="language-json" data-lang="json">
+{% if content.name %}
+{
+  "require": [{{ content|json_encode(constant('JSON_PRETTY_PRINT')) }}]
+}
+{% else %}
+{
+  "require": [{
+    "namespace": "Slim",
+    "dir": "/slim/Slim/Slim",
+    "link": "https://github.com/slimphp/Slim/archive/3.9.2.zip",
+    "git": "https://github.com/slimphp/Slim",
+    "name": "Slim",
+    "version": "3.9.2",
+    "vendor": "slim",
+    "state": "1",
+    "system_package": "1"
+  }, {
+    "namespace": "Twig",
+    "dir": "/twig/Twig/lib/Twig",
+    "link": "https://github.com/twigphp/Twig/archive/v2.4.4.zip",
+    "git": "https://github.com/twigphp/Twig",
+    "name": "Twig",
+    "version": "2.4.4",
+    "vendor": "twig",
+    "autoloading": "psr-0",
+    "replace_name": "Twig",
+    "state": "1",
+    "system_package": "1"
+  }, {
+    "namespace": "jsonDB",
+    "dir": "/pllano/json-db/src",
+    "link": "https://github.com/pllano/json-db/archive/master.zip",
+    "git": "https://github.com/pllano/json-db",
+    "name": "json-db",
+    "version": "master",
+    "vendor": "pllano",
+    "state": "1",
+    "system_package": "1"
+  }
+ ]
+}
+{% endif %}
+</code>
+</pre>
+</div>
+
+
+</div>
+
+<div class="col-lg-12">
+<div class="row padding_7">
+<button type="submit" onclick="packagePut('{{ content.name|lower }}');" class="btn btn-primary text-white">{{ language.240 }}</button>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+{{ include ('helper/footer.html') }}
