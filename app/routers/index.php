@@ -49,14 +49,6 @@ $app->get($index_router, function (Request $request, Response $response, array $
     $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers'];
-    // Настройки сайта
-    $site = new Site();
-    $site_config = $site->get();
-    // Получаем название шаблона
-    $site_template = $site->template();
-    // Конфигурация шаблона
-    $templateConfig = new Template($site_template);
-    $template = $templateConfig->get();
     // Подключаем мультиязычность
     $language = (new Language($getParams))->get();
     // Меню, берет название класса из конфигурации
@@ -73,11 +65,23 @@ $app->get($index_router, function (Request $request, Response $response, array $
     $token = $utility->random_token();
     // Записываем токен в сессию
     $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
- 
-    // Шаблон по умолчанию 404
-    $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+    $render = '';
+ 
+    if ($config["settings"]["install"]["status"] != null) {
+        // Настройки сайта
+        $site = new Site();
+        $site_config = $site->get();
+        // Получаем название шаблона
+        $site_template = $site->template();
+        // Конфигурация шаблона
+        $templateConfig = new Template($site_template);
+        $template = $templateConfig->get();
+        // Шаблон по умолчанию 404
+        $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -145,7 +149,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
     else {
         // Если ключа доступа у нет, значит сайт еще не активирован
         $content = '';
-        $render = 'index';
+        $render = 'index.html';
         //$session->install = null;
  
         if (isset($session->install)) {
