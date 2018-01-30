@@ -13,11 +13,12 @@
  
 namespace ApiShop\Resources;
  
-use ApiShop\Config\Settings;
-use ApiShop\Utilities\Utility;
- 
 use RouterDb\Db;
 use RouterDb\Router;
+
+use ApiShop\Config\Settings;
+use ApiShop\Utilities\Utility;
+use ApiShop\Images\Image;
  
 class Products {
  
@@ -31,11 +32,12 @@ class Products {
         $this->config = $config;
     }
  
-    public function get(array $arr = array(), array $template = array())
+    public function get(array $arr = array(), array $template = array(), $host)
     {
         // Подключаем плагины
         $utility = new Utility();
- 
+        // Обработка картинок
+        $image = new Image();
         // Ресурс (таблица) к которому обращаемся
         $resource = "price";
         // Отдаем роутеру RouterDb конфигурацию.
@@ -50,19 +52,25 @@ class Products {
         if (isset($response["response"]['total'])) {
             $this->count = $response["response"]['total'];
         }
+        
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+            $protocol_uri = 'https://'.$host;
+        } else {
+            $protocol_uri = 'http://'.$host;
+        }
  
         // Если ответ не пустой
         if (count($response['body']['items']) >= 1) {
             foreach($response['body']['items'] as $item)
             {
                 // Обрабатываем картинки
-                $product['no_image'] = $utility->get_image(null, '/images/no_image.png', $template["products"]["image_width"], $template["products"]["image_height"]);
+                $product['no_image'] = $image->get(null, $protocol_uri.'/images/no_image.png', $template["products"]["image_width"], $template["products"]["image_height"]);
                 $image_1 = '';
                 $image_1 = (isset($item['item']['image']['0']['image_path'])) ? $utility->clean($item['item']['image']['0']['image_path']) : null;
-                if (isset($image_1)) {$product['image']['1'] = $utility->get_image($item['item']['product_id'], $image_1, $template["products"]["image_width"], $template["products"]["image_height"]);}
+                if (isset($image_1)) {$product['image']['1'] = $image->get($item['item']['product_id'], $image_1, $template["products"]["image_width"], $template["products"]["image_height"]);}
                 $image_2 = '';
                 $image_2 = (isset($item['item']['image']['1']['image_path'])) ? $utility->clean($item['item']['image']['1']['image_path']) : null;
-                if (isset($image_2)) {$product['image']['2'] = $utility->get_image($item['item']['product_id'], $image_2, $template["products"]["image_width"], $template["products"]["image_height"]);}
+                if (isset($image_2)) {$product['image']['2'] = $image->get($item['item']['product_id'], $image_2, $template["products"]["image_width"], $template["products"]["image_height"]);}
  
                 $path_url = pathinfo($item['item']['url']);
                 $basename = $path_url['basename']; // lib.inc.php

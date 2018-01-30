@@ -13,13 +13,17 @@
  
 namespace ApiShop\Hooks;
  
+use Slim\Http\Request;
+use Slim\Http\Response;
+ 
 use ApiShop\Config\Settings;
  
 class HookPost {
  
     private $config;
     private $args = array();
-	private $request;
+    private $request;
+    private $response;
  
     function __construct()
     {
@@ -27,15 +31,26 @@ class HookPost {
         $this->config = $config;
     }
  
-    public function run($request, array $args)
+    public function run(Request $request, Response $response, array $args)
     {
         $this->args = $args;
         $this->request = $request;
+        $this->response = $response;
     }
  
     public function request()
     {
         return $this->request;
+    }
+ 
+    public function response()
+    {
+        return $this->response;
+    }
+ 
+    public function args()
+    {
+        return $this->args;
     }
  
 }

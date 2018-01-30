@@ -13,6 +13,9 @@
  
 namespace ApiShop\Hooks;
  
+use Slim\Http\Request;
+use Slim\Http\Response;
+ 
 use ApiShop\Config\Settings;
  
 class Hook {
@@ -21,7 +24,8 @@ class Hook {
     private $args = array();
     private $view;
     private $render;
-	private $request;
+    private $request;
+    private $response;
  
     function __construct()
     {
@@ -29,60 +33,63 @@ class Hook {
         $this->config = $config['hooks'];
     }
  
-    public function setGet($request, array $args, $view, $render)
+    public function setResponse(Request $request, Response $response, array $args, $view, $render)
     {
         $this->args = $args;
         $this->view = $view;
         $this->render = $render;
         $this->request = $request;
-        $this->runGet();
+        $this->response = $response;
+        $this->runResponse();
     }
  
-    public function runGet()
+    public function runResponse()
     {
-		$hooks = $this->getHooks('GET');
-		if(isset($hooks[0])) {
+        $hooks = $this->getHooks('GET');
+        if(isset($hooks[0])) {
             foreach($hooks as $value)
-		    {
-			    try {
-			        $vendor = $value['vendor'];
-			        $hook = new $vendor();
-				    $hook->run($this->request, $this->args, $this->view, $this->render);
-			        $this->view = $hook->view();
-			        $this->render = $hook->render();
-			    } catch (\Exception $ex) {
-			        return false;
-			    }
-		    }
-		    return true;
-		} else {
-		    return false;
-		}
+            {
+                try {
+                    $vendor = $value['vendor'];
+                    $hook = new $vendor();
+                    $hook->run($this->request, $this->response, $this->args, $this->view, $this->render);
+                    $this->view = $hook->view();
+                    $this->render = $hook->render();
+                } catch (\Exception $ex) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
  
-    public function setPost($request, array $args)
+    public function setRequest(Request $request, Response $response, array $args)
     {
         $this->args = $args;
         $this->request = $request;
-        $this->runPost();
+        $this->response = $response;
+        $this->runRequest();
     }
  
-    public function runPost()
+    public function runRequest()
     {
-		$hooks = $this->getHooks('POST');
-		foreach($hooks as $value)
-		{
-			try {
-			    $vendor = $value['vendor'];
-			    $hook = new $vendor();
-				$hook->run($this->request, $this->args);
-			    $this->request = $hook->request();
-			    $this->args = $hook->args();
-			} catch (\Exception $ex) {
-			    return false;
-			}
-		}
-		return true;
+        $hooks = $this->getHooks('POST');
+        foreach($hooks as $value)
+        {
+            try {
+                $vendor = $value['vendor'];
+                $hook = new $vendor();
+                $hook->run($this->request, $this->response, $this->args);
+                $this->request = $hook->request();
+                $this->response = $hook->response();
+                $this->args = $hook->args();
+            } catch (\Exception $ex) {
+                return false;
+            }
+        }
+        return true;
     }
  
     public function view()
@@ -100,32 +107,37 @@ class Hook {
         return $this->request;
     }
  
+    public function response()
+    {
+        return $this->response;
+    }
+ 
     public function args()
     {
         return $this->args;
     }
-	
+    
     public function getHooks($request)
     {
         $hooks = array();
-		$hook = null;
-		foreach($this->config as $key => $value)
-		{
-			if (isset($value['render'])) {
-				if($value['request'] == $request && $value['render'] == $this->render) {
-					$hook['vendor'] = $value['vendor'];
-				} elseif ($value['request'] == $request && $value['render'] == 'all') {
-				    $hook['vendor'] = $value['vendor'];
-				}
-			} else {
-				if($value['request'] == $request) {
-				    $hook['vendor'] = $value['vendor'];
-				}
-			}
-		}
-		$hooks[] = $hook;
+        $hook = null;
+        foreach($this->config as $key => $value)
+        {
+            if (isset($value['render'])) {
+                if($value['request'] == $request && $value['render'] == $this->render) {
+                    $hook['vendor'] = $value['vendor'];
+                } elseif ($value['request'] == $request && $value['render'] == 'all') {
+                    $hook['vendor'] = $value['vendor'];
+                }
+            } else {
+                if($value['request'] == $request) {
+                    $hook['vendor'] = $value['vendor'];
+                }
+            }
+        }
+        $hooks[] = $hook;
  
-		return $hooks;
+        return $hooks;
  
     }
  

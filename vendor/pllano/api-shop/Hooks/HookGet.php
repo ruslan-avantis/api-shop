@@ -13,6 +13,9 @@
  
 namespace ApiShop\Hooks;
  
+use Slim\Http\Request;
+use Slim\Http\Response;
+ 
 use ApiShop\Config\Settings;
  
 class HookGet {
@@ -21,7 +24,8 @@ class HookGet {
     private $args = array();
     private $view;
     private $render;
-	private $request;
+    private $request;
+    private $response;
  
     function __construct()
     {
@@ -29,7 +33,7 @@ class HookGet {
         $this->config = $config;
     }
  
-    public function run($request, array $args, $view, $render)
+    public function run(Request $request, Response $response, array $args, $view, $render)
     {
         $this->args = $args;
         $this->view = $view;
@@ -45,6 +49,21 @@ class HookGet {
     public function render()
     {
         return $this->render;
+    }
+ 
+    public function request()
+    {
+        return $this->request;
+    }
+ 
+    public function response()
+    {
+        return $this->response;
+    }
+ 
+    public function args()
+    {
+        return $this->args;
     }
  
 }

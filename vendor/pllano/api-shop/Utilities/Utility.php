@@ -12,10 +12,7 @@
  */
  
 namespace ApiShop\Utilities;
-
-use Imagine\Image\Box;
-use Imagine\Image\Point;
-
+ 
 // Здесь собраны основные полезные функции
 class Utility {
 
@@ -110,82 +107,7 @@ class Utility {
         return $value;
  
     }
-
-    // Функция контроля изображений если есть отдает локальный url, если нет загружает с платформы
-    public function get_image($product_id = null, $image_url, $width, $height)
-    {
-
-        $dir_size = $width.'x'.$height;
-        $subdir = 'default';
-        if ($product_id >= 1) {$subdir = ($product_id - ($product_id % 1000)) / 1000;}
-        if (file_exists('images/')) {} else {mkdir('images/');}
-        if (file_exists('images/'.$dir_size.'/')) {} else {mkdir('images/'.$dir_size.'/');}
-        if (file_exists('images/'.$dir_size.'/'.$subdir.'/')) {} else {mkdir('images/'.$dir_size.'/'.$subdir.'/');}
-        if (file_exists('images/temp/')) {} else {mkdir('images/temp/');}
-
-        $path_image = pathinfo($image_url);
-
-        if (isset($path_image["extension"])) {
-            // echo $path_image["extension"].'<br>';
-                if ($path_image["extension"] == 'jpg' || 
-                    $path_image["extension"] == 'png' || 
-                    $path_image["extension"] == 'jpeg') {
-                        $extension = $path_image["extension"];
-
-                    if (isset($path_image["basename"])) {
-                        $basename = $path_image["basename"];
-                        if (!file_exists('images/'.$dir_size.'/'.$subdir.'/'.$basename)) {
-                            $images_url = filter_var($image_url, FILTER_VALIDATE_URL);
-                            if ($images_url == true) {
-
-                                if (!file_exists('images/temp/'.$basename)) {
-                                    file_put_contents('images/temp/'.$basename, file_get_contents($image_url));
-                                }
-
-                                if (file_exists('images/temp/'.$basename)) {
-
-                                    //$optimizerChain = \Spatie\ImageOptimizer\OptimizerChainFactory::create();
-                                    //$optimizerChain->optimize('images/temp/'.$basename, 'images/temp/'.$basename);
-                                try {
-                                    $imagine = new \Imagine\Gd\Imagine();
-                                    $size = new \Imagine\Image\Box($width, $height);
-                                    $mode = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
  
-                                    $imagine->open('images/temp/'.$basename)
-                                        ->thumbnail($size, $mode)
-                                        ->save('images/'.$dir_size.'/'.$subdir.'/'.$basename);
- 
-                                } catch (\Imagine\Exception\Exception $e) {
-                                   // handle the exception
-                                }
-
-                                    unlink('images/temp/'.$basename);
-
-                                    if (file_exists('images/'.$dir_size.'/'.$subdir.'/'.$basename)) {
-                                        return 'images/'.$dir_size.'/'.$subdir.'/'.$basename;
-                                    } else {
-                                        return null;
-                                    }
-                                } else {
-                                    return null;
-                                }
- 
-                            }
-                        } else {
-                            return 'images/'.$dir_size.'/'.$subdir.'/'.$basename;
-                        }
-
-                    } else {
-                        return false;
-                    }
-
-                } else {
-                    return false;
-                }
-            }
- 
-    }
-
     // Функция генерации токена длиной 64 символа
     public function random_token($length = 32)
     {
