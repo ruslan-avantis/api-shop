@@ -1,6 +1,6 @@
 function resourcePut(resource, id) {
     var fields = $( ":input" || ":textarea" || ":checkbox" || ":radio" || "select").serializeArray();
-	//console.log( fields )
+    //console.log( fields )
     $.post(admin_dir + 'resource-put/' + resource + '/' + id, fields, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
@@ -98,6 +98,74 @@ function orderActivate(alias) {
         {
             window.location.reload()
             } else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }),"json"
+}
+
+
+function packageBuy(alias) {
+    var csrf = $("#csrf").val()
+    $.post(admin_dir + "package-buy", {alias: alias, csrf: csrf}, function (response) {
+        var data = JSON && JSON.parse(response) || $.parseJSON(response)
+        if(data.status == 200)
+        {
+            window.location.reload()
+            } else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }),"json"
+}
+
+function packageActivate(alias) {
+    var csrf = $("#csrf").val()
+    $.post(admin_dir + "package-activate", {alias: alias, csrf: csrf}, function (response) {
+        var data = JSON && JSON.parse(response) || $.parseJSON(response)
+        if(data.status == 200)
+        {
+            window.location.reload()
+            } else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }),"json"
+}
+
+function packageDeactivate(alias) {
+    var csrf = $("#csrf").val()
+    $.post(admin_dir + "package-deactivate", {alias: alias, csrf: csrf}, function (response) {
+        var data = JSON && JSON.parse(response) || $.parseJSON(response)
+        if(data.status == 200)
+        {
+            window.location.reload()
+            } else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }),"json"
+}
+
+function packageDelete(alias) {
+    var csrf = $("#csrf").val()
+    $.post(admin_dir + "package-delete", {alias: alias, csrf: csrf}, function (response) {
+        var data = JSON && JSON.parse(response) || $.parseJSON(response)
+        if(data.status == 200)
+        {
+            window.location.reload()
+            } else if(data.status == 400) {
+            OneNotify(data.title, data.text, data.color)
+        }
+    }),"json"
+}
+ 
+function packagePut(alias) {
+    var fields = $( ":input" || ":textarea" || ":checkbox" || ":radio" || "select").serializeArray();
+    $.post(admin_dir + 'package/' + alias, fields, function (response) {
+        var data = JSON && JSON.parse(response) || $.parseJSON(response)
+        if(data.status == 200)
+        {
+            window.location.reload()
+        } else if(data.status == 201) {
+            window.location = data.url
+        } else if(data.status == 400) {
             OneNotify(data.title, data.text, data.color)
         }
     }),"json"
