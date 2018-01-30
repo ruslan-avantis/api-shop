@@ -76,7 +76,7 @@
 		"language_detector": "\\Sinergi\\BrowserDetector\\Language",
 		"http_client": "\\GuzzleHttp\\Client",
 		"image_thumbnail": "\\Imagine\\Gd\\Imagine",
-		"image_thumbnail_mode": "\\Imagine\\Image\\ImageInterface::THUMBNAIL_INSET",
+		"image_thumbnail_mode": "THUMBNAIL_INSET",
 		"image_optimize": "",
 		"image_optimize_mode": "",
 		"crypto": "\\Defuse\\Crypto\\Crypto",
