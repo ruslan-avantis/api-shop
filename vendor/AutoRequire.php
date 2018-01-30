@@ -54,12 +54,11 @@
  *      <?php
  *      new \Foo\Bar\Qux\QuuxTest;
  */
-
+ 
 namespace AutoRequire;
-
+ 
 class Autoloader
 {
- 
     /**
      * An associative array where the key is a namespace prefix and the value
      * is an array of base directories for classes in that namespace.
@@ -67,60 +66,66 @@ class Autoloader
      * @var array
      */
     protected $prefixes = array();
-    
     protected $replace_name = null;
     protected $base_dir = null;
- 
     // Ссылка на резервный файл auto_require.json
     protected $json_get = "https://raw.githubusercontent.com/pllano/auto-require/master/auto_require.json";
+    protected $repository = "https://raw.githubusercontent.com/pllano/auto-require/master/repository";
+    private $dir = null;
+    private $json = null;
  
     public function run($dir = null, $json = null, $json_get = null)
     {
-        if ($dir != null && $json != null) {
-            
-            if (!file_exists($dir)) {
-                mkdir($dir, 0777, true);
+        if (isset($dir) && isset($json)) {
+ 
+            $this->dir = $dir;
+            $this->json = $json;
+ 
+            if (!file_exists($this->dir)) {
+                mkdir($this->dir, 0777, true);
             }
-            if ($json_get != null) {
+            if (isset($json_get)) {
                 $this->json_get = $json_get;
             }
-            if (!file_exists($json) && $this->json_get != null) {
-                file_put_contents($json, file_get_contents($this->json_get));
+            if (!file_exists($this->json) && isset($this->json_get)) {
+                file_put_contents($this->json, file_get_contents($this->json_get));
             }
  
             $require = array();
  
             // Открываем файл json с параметрами класов
-            $data = json_decode(file_get_contents($json), true);
+            $data = $this->get();
+ 
             if (count($data["require"]) >= 1) {
                 // Перебираем массив
                 foreach($data["require"] as $value)
                 {
                     if (isset($value["vendor"]) && isset($value["name"])) {
-                    // Если папки класса нет необходимо скачать файлы
-                    if (!file_exists($dir."/".$value["vendor"].'/'.$value["name"])) {
-                    // Если есть ссылка скачиваем архив
-                        if (isset($value["link"])) {
+                        if ($value["state"] != '0' && $value["state"] != '') {
+                        // Если папки класса нет необходимо скачать файлы
+                            if (!file_exists($this->dir."/".$value["vendor"].'/'.$value["name"])) {
+                            // Если есть ссылка скачиваем архив
+                                if (isset($value["link"])) {
  
-                            file_put_contents($dir.'/'.$value["name"].".zip", file_get_contents($value["link"]));
+                                    file_put_contents($this->dir.'/'.$value["name"].".zip", file_get_contents($value["link"]));
  
-                            $zip = new \ZipArchive;
-                            $res = $zip->open($dir.'/'.$value["name"].".zip");
-                            if ($res === TRUE) {
-                                //$zip->renameName('currentname.txt','newname.txt');
-                                $zip->extractTo($dir."/".$value["vendor"]);
-                                $zip->close();
+                                    $zip = new \ZipArchive;
+                                    $res = $zip->open($this->dir.'/'.$value["name"].".zip");
+                                    if ($res === TRUE) {
+                                        //$zip->renameName('currentname.txt','newname.txt');
+                                        $zip->extractTo($this->dir."/".$value["vendor"]);
+                                        $zip->close();
  
-                                rename($dir."/".$value["vendor"].'/'.$value["name"]."-".$value["version"],
-                                    $dir."/".$value["vendor"].'/'.$value["name"]);
-                                unlink($dir.'/'.$value["name"].".zip");
+                                        rename($this->dir."/".$value["vendor"].'/'.$value["name"]."-".$value["version"],
+                                            $this->dir."/".$value["vendor"].'/'.$value["name"]);
+                                        unlink($this->dir.'/'.$value["name"].".zip");
  
-                            } else {
-                                // echo 'failed';
+                                    } else {
+                                        // echo 'failed';
+                                    }
+                                }
                             }
                         }
-                    }
-                    
                     }
  
                     $require[] = $value;
@@ -128,37 +133,116 @@ class Autoloader
                 }
             }
  
-			// register the autoloader
-			$this->register();
+            // register the autoloader
+            $this->register();
  
             if (count($require) >= 1) {
                 foreach($require as $value)
                 {
-                    if (isset($value["files"]) && isset($value["dir"])) {
-                        // Подключаем файл если этого требует пакет
-                        require $dir.''.$value["dir"].'/'.$value["files"];
-                    }
-                    if (isset($value["autoloading"])&& isset($value["replace_name"]) && isset($value["dir"])) {
-                        if ($value["autoloading"] == "psr-0") {
-                            // Регистрируем базовый каталог и префикс пространства имен PSR-0
-                            $this->setAutoloading($value["replace_name"], $dir.''.$value["dir"]);
+                    if (isset($value["state"])) {
+                    if ($value["state"] != '0' && $value["state"] != '') {
+                        if (isset($value["files"]) && isset($value["dir"])) {
+                            // Подключаем файл если этого требует пакет
+                            require $this->dir.''.$value["dir"].'/'.$value["files"];
                         }
-                    } elseif (isset($value["namespace"]) && isset($value["dir"])) {
-                        // Регистрируем базовый каталог и префикс пространства имен PSR-4
-                        // register the base directories for the namespace prefix
-                        $this->addNamespace($value["namespace"], $dir.''.$value["dir"]);
+                        if (isset($value["autoloading"]) && isset($value["replace_name"]) && isset($value["dir"])) {
+                            if ($value["autoloading"] == "psr-0") {
+                                // Регистрируем базовый каталог и префикс пространства имен PSR-0
+                                $this->setAutoloading($value["replace_name"], $this->dir.''.$value["dir"]);
+                            }
+                        } elseif (isset($value["namespace"]) && isset($value["dir"])) {
+                            // Регистрируем базовый каталог и префикс пространства имен PSR-4
+                            // register the base directories for the namespace prefix
+                            $this->addNamespace($value["namespace"], $this->dir.''.$value["dir"]);
+                        }
+                    }
                     }
                 }
             }
  
+        } else {
+            return null;
         }
+    }
+ 
+    public function set_dir($dir = null)
+    {
+        if (isset($dir)) {
+            $this->dir = $dir;
+        }
+    }
+    
+    public function set_json($json = null)
+    {
+        if (isset($json)) {
+            $this->json = $json;
+        }
+    }
+    
+    public function set_json_get($json_get = null)
+    {
+        if (isset($json_get)) {
+            $this->json_get = $json_get;
+        }
+    }
+ 
+    // Загрузка и преобразование в массив файла auto_require.json
+    public function get()
+    {
+        if (file_exists($this->json)) {
+            return json_decode(file_get_contents($this->json), true);
+        } else {
+            return null;
+        }
+    }
+ 
+    // Проверяем существавание класса в файле
+    public function exists($name = null)
+    {
+        if (isset($name)) {
+            $data = $this->get();
+            foreach($data['require'] as $key => $val)
+            {
+                if (strtolower($val['name']) == strtolower($name)) {
+                    return $val['state'];
+                } else {
+                    return null;
+                }
+            }
+        } else {
+            return null;
+        }
+    }
+ 
+    public function state($name = null, $state = null)
+    {
+        $return = false;
+        if (isset($name) && isset($state)) {
+            $data = $this->get();
+            $param['require'] = array();
+            foreach($data['require'] as $key => $val)
+            {
+                if (strtolower($name) == strtolower($val['name'])) {
+                    $val['state'] = $state;
+                    $param['require'][$key] = $val;
+                    $return = true;
+                }
+            }
+ 
+            $arr = array_replace_recursive($data, $param);
+            $newArr = json_encode($arr);
+            file_put_contents($this->json, $newArr);
+        }
+ 
+        return $return;
+ 
     }
  
     /**
      * Register loader with SPL autoloader stack.
      *
      * @return void
-     */
+    */
     public function register()
     {
         //spl_autoload_register(array($this, 'autoload'));
