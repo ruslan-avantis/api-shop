@@ -24,6 +24,7 @@
         "db_id": "db_id.html",
         "db_item": "db_item.html",
         "packages": "packages.html",
+		"package": "package.html",
         "template": "template.html",
         "templates": "templates.html",
 		"user": "user.html",
