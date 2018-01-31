@@ -21,16 +21,18 @@ class HookIndexGet {
     private $args;
     private $request;
     private $response;
-    private $query;
+    private $query = null;
+	private $coverage = null;
     private $view;
     private $render;
  
-    public function http(Request $request, Response $response, array $args, $query = null)
+    public function http(Request $request, Response $response, array $args, $query = null, $coverage = null)
     {
         $this->args = $args;
         $this->request = $request;
         $this->response = $response;
         $this->query = $query;
+		$this->coverage = $coverage;
         $this->set();
     }
  
@@ -55,7 +57,7 @@ class HookIndexGet {
     public function run()
     {
         // Обрабатываем данные
-        // $this->render = '404.html';
+        $this->render = '404.html';
     }
  
     public function request()
@@ -87,6 +89,11 @@ class HookIndexGet {
     {
         return $this->render;
     }
+ 
+    public function coverage()
+    {
+        return $this->coverage;
+	}
  
 }
  

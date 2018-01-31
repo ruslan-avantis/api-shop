@@ -29,6 +29,7 @@ class Hook {
     private $resource = null;
     private $name_db = null;
     private $query = null;
+	private $coverage = null;
     private $postArr = array();
     private $postQuery = null;
     private $id = null;
@@ -41,12 +42,13 @@ class Hook {
         $this->config = $config['hooks'];
     }
  
-    public function http(Request $request, Response $response, array $args, $query = null)
+    public function http(Request $request, Response $response, array $args, $query = null, $coverage = null)
     {
         $this->args = $args;
         $this->request = $request;
         $this->response = $response;
         $this->query = $query;
+		$this->coverage = $coverage;
         $this->set();
     }
  
@@ -119,27 +121,31 @@ class Hook {
         $hook = null;
         foreach($this->config as $key => $value)
         {
-            if (isset($value['render']) && $value['render'] != '' && $value['render'] != ' ') {
-                if($value['query'] == $query && $value['render'] == $this->render) {
-                    $hook['vendor'] = $value['vendor'];
-                    $hooks[] = $hook;
-                } elseif ($value['query'] == $query && $value['render'] == 'all') {
-                    $hook['vendor'] = $value['vendor'];
-                    $hooks[] = $hook;
-                } elseif ($value['query'] == 'all' && $value['render'] == 'all') {
-                    $hook['vendor'] = $value['vendor'];
-                    $hooks[] = $hook;
+            if (isset($value['state']) && $value['state'] == '1') {
+				if ($value['coverage'] == $this->coverage || $value['coverage'] == 'all') {
+			        if (isset($value['render']) && $value['render'] != '' && $value['render'] != ' ') {
+                        if($value['query'] == $query && $value['render'] == $this->render) {
+                            $hook['vendor'] = $value['vendor'];
+                            $hooks[] = $hook;
+                        } elseif ($value['query'] == $query && $value['render'] == 'all') {
+                            $hook['vendor'] = $value['vendor'];
+                            $hooks[] = $hook;
+                        } elseif ($value['query'] == 'all' && $value['render'] == 'all') {
+                            $hook['vendor'] = $value['vendor'];
+                            $hooks[] = $hook;
+                        }
+                    } else {
+                        if($value['query'] == $query) {
+                            $hook['vendor'] = $value['vendor'];
+                            $hooks[] = $hook;
+                        } elseif ($value['query'] == 'all') {
+                            $hook['vendor'] = $value['vendor'];
+                            $hooks[] = $hook;
+                        }
+                    }
                 }
-            } else {
-                if($value['query'] == $query) {
-                    $hook['vendor'] = $value['vendor'];
-                    $hooks[] = $hook;
-                } elseif ($value['query'] == 'all') {
-                    $hook['vendor'] = $value['vendor'];
-                    $hooks[] = $hook;
-                }
-            }
-        }
+			}
+		}
  
         return $hooks;
  
@@ -164,6 +170,11 @@ class Hook {
     {
         return $this->query;
     }
+ 
+    public function coverage()
+    {
+        return $this->coverage;
+	}
  
     public function view()
     {
