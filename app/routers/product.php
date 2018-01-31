@@ -36,7 +36,7 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -221,12 +221,9 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
     }
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->view->render($hookRender, $hookView);
+    return $this->view->render($hook->render(), $hook->view());
  
 });
  
@@ -234,7 +231,7 @@ $app->get($product_quick_view_router.''.$product_alias.''.$product_name, functio
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -379,12 +376,9 @@ $app->get($product_quick_view_router.''.$product_alias.''.$product_name, functio
     }
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->view->render($hookRender, $hookView);
+    return $this->view->render($hook->render(), $hook->view());
  
 });
  

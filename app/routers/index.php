@@ -35,7 +35,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -131,7 +131,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
         if (count($content) >= 1) {
             $render = $template['layouts']['index'] ? $template['layouts']['index'] : 'index.html';
         }
- 
+        
         $view = [
             "head" => $head,
             "routers" => $routers,
@@ -190,13 +190,10 @@ $app->get($index_router, function (Request $request, Response $response, array $
     // Запись в лог
     $this->logger->info($render);
  
-    // Отдаем данные Hooks для передачи ожидающим пакетам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->view->render($hookRender, $hookView);
+    return $this->view->render($hook->render(), $hook->view());
  
 });
  

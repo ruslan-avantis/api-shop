@@ -39,7 +39,7 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -109,12 +109,9 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
     $render = $template['layouts']['sign_in'] ? $template['layouts']['sign_in'] : 'sign-in.html';
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->view->render($hookRender, $hookView);
+    return $this->view->render($hook->render(), $hook->view());
  
 });
  
@@ -123,7 +120,7 @@ $app->get($sign_up_router, function (Request $request, Response $response, array
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -191,12 +188,9 @@ $app->get($sign_up_router, function (Request $request, Response $response, array
     $render = $template['layouts']['sign_up'] ? $template['layouts']['sign_up'] : 'sign-up.html';
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->view->render($hookRender, $hookView);
+    return $this->view->render($hook->render(), $hook->view());
  
 });
  
@@ -205,7 +199,7 @@ $app->post($logout_router, function (Request $request, Response $response, array
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -279,7 +273,7 @@ $app->post($login_router, function (Request $request, Response $response, array 
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -477,7 +471,7 @@ $app->post($check_in_router, function (Request $request, Response $response, arr
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  

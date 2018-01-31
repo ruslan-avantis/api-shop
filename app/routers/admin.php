@@ -42,7 +42,7 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -131,13 +131,9 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
     $this->logger->info($render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
- 
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  
@@ -146,7 +142,7 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -289,12 +285,9 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
  
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  
@@ -303,14 +296,13 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
     $today = date("Y-m-d H:i:s");
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
- 
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем плагины
@@ -358,6 +350,10 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
             (new Security())->csrf();
         }
     }
+ 
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
  
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
@@ -412,62 +408,50 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
                         $name_db = $router->ping($resource);
                         // Подключаемся к базе
                         $db = new Db($name_db, $config);
-                        // Обновляем данные
-                        $db->post($resource, $postArr);
  
-                        $callback = array('status' => 200);
+                        // Передаем данные Hooks для обработки ожидающим классам
+                        $hook->post($resource, $name_db, 'POST', $postArr, null);
+                        $hookState = $hook->state();
+                        // Если Hook вернул true
+                        if ($hookState == true) {
+                            // Обновленные Hooks данные
+                            $hookResource = $hook->resource();
+                            $hookPostArr = $hook->postArr();
+                            // Отправляем запрос в базу
+                            $dbState = $db->post($hookResource, $hookPostArr);
+                            if ($dbState == true) {
+                                // Ответ
+                                $callbackStatus = 200;
+                            } else {
+                                $callbackText = 'Действие заблокировано';
+                            }
+                        }
  
                     } else {
-                        $callback = array(
-                            'status' => 400,
-                            'title' => "Соообщение системы",
-                            'text' => "Действие заблокировано"
-                        );
+                        $callbackText = 'Действие заблокировано';
                     }
                 } else {
-                    $callback = array(
-                        'status' => 400,
-                        'title' => "Соообщение системы",
-                        'text' => "Что то не так !"
-                    );
+                    $callbackText = 'Что то не так !';
                 }
             } else {
-                $callback = array(
-                    'status' => 400,
-                    'title' => "Соообщение системы",
-                    'text' => "Вы не администратор"
-                );
+                $callbackText = 'Вы не администратор';
             }
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Соообщение системы",
-                'text' => "Вы не авторизованы"
-            );
+            $callbackText = 'Вы не авторизованы';
         }
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
- 
-        // Выводим json
-        echo json_encode($callback);
- 
     } else {
- 
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Обновите страницу"
-        );
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
- 
+        $callbackText = 'Обновите страницу';
     }
+ 
+    $callback = array('status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText);
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+ 
+    $response = $hook->response();
+ 
+    // Выводим json
+    echo json_encode($hook->callback($callback));
  
 });
  
@@ -476,7 +460,7 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -488,6 +472,8 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
+    
+    $security = new Security();
  
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
@@ -510,11 +496,11 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                (new Security())->token();
+                $security->token();
             }
         } else {
             // Сообщение об Атаке или подборе токена
-            (new Security())->token();
+            $security->token();
         }
     }
  
@@ -528,11 +514,11 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                (new Security())->csrf();
+                $security->csrf();
             }
         } else {
             // Сообщение об Атаке или подборе csrf
-            (new Security())->csrf();
+            $security->csrf();
         }
     }
  
@@ -544,8 +530,6 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
                     $resource_list = explode(',', str_replace(array('"', "'", " "), '', $config['admin']['resource_list']));
                     if (array_key_exists($resource, array_flip($resource_list))) {
  
-                        $postArr = array();
- 
                         // Отдаем роутеру RouterDb конфигурацию.
                         $router = new Router($config);
                         // Получаем название базы для указанного ресурса
@@ -553,7 +537,7 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
                         // Подключаемся к базе
                         $db = new Db($name_db, $config);
                         // Обновляем данные
-                        $db->delete($resource, [], $id);
+                        $view = $db->delete($resource, [], $id);
  
                         $callback = array('status' => 200);
                     
@@ -585,14 +569,6 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
                 'text' => "Вы не авторизованы"
             );
         }
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
- 
-        // Выводим json
-        echo json_encode($callback);
- 
     } else {
  
         $callback = array(
@@ -600,14 +576,17 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
             'title' => "Ошибка",
             'text' => "Обновите страницу"
         );
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
- 
     }
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook->responsePost($callback, $resource, $name_db, 'delete', [], $id);
+    $hookCallback = $hook->callback();
+ 
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Выводим json
+    echo json_encode($hookCallback);
  
 });
  
@@ -616,7 +595,7 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -799,7 +778,7 @@ $app->post($admin_router.'order-activate', function (Request $request, Response 
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -906,7 +885,7 @@ $app->post($admin_router.'template-buy', function (Request $request, Response $r
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -981,7 +960,7 @@ $app->post($admin_router.'template-install', function (Request $request, Respons
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1110,7 +1089,7 @@ $app->post($admin_router.'template-activate', function (Request $request, Respon
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1220,7 +1199,7 @@ $app->post($admin_router.'template-delete', function (Request $request, Response
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1298,7 +1277,7 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1390,14 +1369,10 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
     // Запись в лог
     $this->logger->info("admin/".$render);
  
- 
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  
@@ -1406,7 +1381,7 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1499,12 +1474,9 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  
@@ -1513,7 +1485,7 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1617,13 +1589,9 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  
@@ -1632,7 +1600,7 @@ $app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $requ
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1731,12 +1699,9 @@ $app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $requ
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
 
@@ -1745,7 +1710,7 @@ $app->post($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $req
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1927,6 +1892,12 @@ $app->post($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $req
 // Изменение статуса пакета
 $app->post($admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->http($request, $response, $args, 'POST');
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Подключаем плагины
     $utility = new Utility();
     // Получаем query из url
@@ -2059,7 +2030,7 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2148,12 +2119,9 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  
@@ -2162,7 +2130,7 @@ $app->get($admin_router.'packages-install', function (Request $request, Response
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2251,12 +2219,9 @@ $app->get($admin_router.'packages-install', function (Request $request, Response
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  
@@ -2265,7 +2230,7 @@ $app->get($admin_router.'packages-install-json', function (Request $request, Res
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2354,12 +2319,9 @@ $app->get($admin_router.'packages-install-json', function (Request $request, Res
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  
@@ -2368,7 +2330,7 @@ $app->get($admin_router.'config', function (Request $request, Response $response
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2456,12 +2418,9 @@ $app->get($admin_router.'config', function (Request $request, Response $response
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  
@@ -2470,7 +2429,7 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'POST');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2563,13 +2522,9 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  
@@ -2578,7 +2533,7 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2664,12 +2619,9 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  
@@ -2678,7 +2630,7 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2861,12 +2813,9 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  
@@ -2875,7 +2824,7 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -3000,12 +2949,9 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
     $this->logger->info("admin/".$render);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hookRender, $hookView);
+    return $this->admin->render($hook->render(), $hook->view());
  
 });
  

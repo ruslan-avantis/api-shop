@@ -33,7 +33,7 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -172,12 +172,9 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
     $this->logger->info("article - ".$alias);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->view->render($hookRender, $hookView);
+    return $this->view->render($hook->render(), $hook->view());
  
 });
 
@@ -185,7 +182,7 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->setRequest($request, $response, $args);
+    $hook->http($request, $response, $args, 'GET');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -324,11 +321,8 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
     $this->logger->info($render." - ".$alias);
  
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook->setResponse($request, $response, $args, $view, $render);
-    $hookView = $hook->view();
-    $hookRender = $hook->render();
- 
+    $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->view->render($hookRender, $hookView);
+    return $this->view->render($hook->render(), $hook->view());
  
 });
