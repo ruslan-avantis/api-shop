@@ -103,15 +103,19 @@
 		"check_in": "\/check-in"
 	},
 	"hooks": {
-		"HookIndexGet": {
+		"demo-hook-index-get": {
+			"vendor": "\\ApiShop\\Hooks\\HookIndexGet",
 			"query": "GET",
 			"render": "index.html",
-			"vendor": "\\ApiShop\\Hooks\\HookIndexGet"
+			"coverage": "site",
+			"state": "0"
 		},
-		"HookAll": {
+		"demo-hook-all": {
+			"vendor": "\\ApiShop\\Hooks\\HookAll",
 			"query": "all",
 			"render": "all",
-			"vendor": "\\ApiShop\\Hooks\\HookAll"
+			"coverage": "site",
+			"state": "0"
 		}
 	},
 	"admin": {
