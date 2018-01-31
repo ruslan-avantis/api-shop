@@ -103,15 +103,15 @@
 		"check_in": "\/check-in"
 	},
 	"hooks": {
-		"hook_get": {
-			"request": "GET",
+		"HookIndexGet": {
+			"query": "GET",
 			"render": "index.html",
-			"vendor": "\\ApiShop\\Hooks\\HookGet"
+			"vendor": "\\ApiShop\\Hooks\\HookIndexGet"
 		},
-		"hook_post": {
-			"request": "POST",
+		"HookAll": {
+			"query": "all",
 			"render": "all",
-			"vendor": "\\ApiShop\\Hooks\\HookPost"
+			"vendor": "\\ApiShop\\Hooks\\HookAll"
 		}
 	},
 	"admin": {
