@@ -42,7 +42,7 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -142,7 +142,7 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -296,7 +296,7 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST');
+    $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -460,7 +460,7 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST');
+    $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -595,7 +595,7 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST');
+    $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -778,7 +778,7 @@ $app->post($admin_router.'order-activate', function (Request $request, Response 
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST');
+    $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -885,7 +885,7 @@ $app->post($admin_router.'template-buy', function (Request $request, Response $r
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST');
+    $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -960,7 +960,7 @@ $app->post($admin_router.'template-install', function (Request $request, Respons
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST');
+    $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1089,7 +1089,7 @@ $app->post($admin_router.'template-activate', function (Request $request, Respon
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST');
+    $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1199,7 +1199,7 @@ $app->post($admin_router.'template-delete', function (Request $request, Response
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST');
+    $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1277,7 +1277,7 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1381,7 +1381,7 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1485,7 +1485,7 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST');
+    $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1600,7 +1600,7 @@ $app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $requ
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1710,7 +1710,7 @@ $app->post($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $req
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST');
+    $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -1894,7 +1894,7 @@ $app->post($admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $requ
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST');
+    $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2030,7 +2030,7 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2130,7 +2130,7 @@ $app->get($admin_router.'packages-install', function (Request $request, Response
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2230,7 +2230,7 @@ $app->get($admin_router.'packages-install-json', function (Request $request, Res
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2330,7 +2330,7 @@ $app->get($admin_router.'config', function (Request $request, Response $response
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2429,7 +2429,7 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST');
+    $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2533,7 +2533,7 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2630,7 +2630,7 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -2824,7 +2824,7 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  

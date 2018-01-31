@@ -35,7 +35,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'site');
     $request = $hook->request();
     $args = $hook->args();
  

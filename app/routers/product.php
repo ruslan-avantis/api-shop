@@ -36,7 +36,7 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'site');
     $request = $hook->request();
     $args = $hook->args();
  
@@ -231,7 +231,7 @@ $app->get($product_quick_view_router.''.$product_alias.''.$product_name, functio
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
-    $hook->http($request, $response, $args, 'GET');
+    $hook->http($request, $response, $args, 'GET', 'site');
     $request = $hook->request();
     $args = $hook->args();
  
