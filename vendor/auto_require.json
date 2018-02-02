@@ -59,6 +59,26 @@
             "state": "1",
             "system_package": "1"
         }, {
+            "namespace": "Psr\\Cache",
+            "dir": "/psr/cache/src",
+            "link": "https://github.com/php-fig/cache/archive/1.0.1.zip",
+            "git": "https://github.com/php-fig/cache",
+            "name": "cache",
+            "version": "1.0.1",
+            "vendor": "psr",
+            "state": "1",
+            "system_package": "1"
+        }, {
+            "namespace": "Psr\\SimpleCache",
+            "dir": "/psr/simple-cache/src",
+            "link": "https://github.com/php-fig/simple-cache/archive/1.0.0.zip",
+            "git": "https://github.com/php-fig/simple-cache",
+            "name": "simple-cache",
+            "version": "1.0.0",
+            "vendor": "psr",
+            "state": "1",
+            "system_package": "1"
+        }, {
             "namespace": "Defuse\\Crypto",
             "dir": "/defuse/php-encryption/src",
             "link": "https://github.com/defuse/php-encryption/archive/v2.0.3.zip",
@@ -118,6 +138,16 @@
             "git": "https://github.com/doctrine/instantiator",
             "name": "instantiator",
             "version": "1.1.0",
+            "vendor": "doctrine",
+            "state": "1",
+            "system_package": "1"
+        }, {
+            "namespace": "Doctrine\\Common\\Cache",
+            "dir": "/doctrine/cache/lib/Doctrine/Common/Cache",
+            "link": "https://github.com/doctrine/cache/archive/v1.6.2.zip",
+            "git": "https://github.com/doctrine/cache",
+            "name": "cache",
+            "version": "1.6.2",
             "vendor": "doctrine",
             "state": "1",
             "system_package": "1"
@@ -403,7 +433,47 @@
             "vendor": "adbario",
             "state": "1",
             "system_package": "0"
-        }
+        }, {
+            "namespace": "League\\Flysystem",
+            "dir": "/league/flysystem/src",
+            "link": "https://github.com/thephpleague/flysystem/archive/1.0.42.zip",
+            "git": "https://github.com/thephpleague/flysystem",
+            "name": "flysystem",
+            "version": "1.0.42",
+            "vendor": "league",
+            "state": "1",
+            "system_package": "0"
+        }, {
+            "namespace": "Cache",
+            "dir": "/cache/cache/src",
+            "link": "https://github.com/php-cache/cache/archive/1.0.0.zip",
+            "git": "https://github.com/php-cache/cache",
+            "name": "cache",
+            "version": "1.0.0",
+            "vendor": "cache",
+            "state": "1",
+            "system_package": "0"
+	}, {
+            "namespace": "Predis",
+            "dir": "/predis/predis/src",
+            "link": "https://github.com/nrk/predis/archive/v1.1.1.zip",
+            "git": "https://github.com/nrk/predis",
+            "name": "predis",
+            "version": "1.1.1",
+            "vendor": "predis",
+            "state": "1",
+            "system_package": "0"
+	}, {
+            "namespace": "MongoDB",
+            "dir": "/mongodb/mongo-php-library/src",
+            "link": "https://github.com/mongodb/mongo-php-library/archive/1.2.0.zip",
+            "git": "https://github.com/mongodb/mongo-php-library",
+            "name": "mongo-php-library",
+            "version": "1.2.0",
+            "vendor": "mongodb",
+            "state": "1",
+            "system_package": "0"
+	}
     ]
 
 }

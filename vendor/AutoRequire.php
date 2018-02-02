@@ -9,8 +9,7 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- */
-/**
+ *
  * An example of a general-purpose implementation that includes the optional
  * functionality of allowing multiple base directories for a single namespace
  * prefix.
@@ -92,44 +91,58 @@ class Autoloader
             }
  
             $require = array();
- 
             // Открываем файл json с параметрами класов
             $data = $this->get();
  
-            if (count($data["require"]) >= 1) {
-                // Перебираем массив
-                foreach($data["require"] as $value)
-                {
-                    if (isset($value["vendor"]) && isset($value["name"])) {
-                        if ($value["state"] != '0' && $value["state"] != '') {
-                        // Если папки класса нет необходимо скачать файлы
+            // Обновляем пакеты
+            if (isset($data["update"])) {
+                if (count($data["update"]) >= 1) {
+                    // Перебираем массив
+                    foreach($data["update"] as $value)
+                    {
+                        if (isset($value["vendor"]) && isset($value["name"])) {
+                            // Если папки пакета нет необходимо скачать файлы
                             if (!file_exists($this->dir."/".$value["vendor"].'/'.$value["name"])) {
-                            // Если есть ссылка скачиваем архив
+                                // Если есть ссылка скачиваем архив
                                 if (isset($value["link"])) {
+                                    $this->load($value["link"], $this->dir, $value["name"], $value["vendor"], $value["version"]);
+                                }
+                            } else {
+                                // Если папка пакета есть - перезаписываем
+                                if (isset($value["link"])) {
+                                     // Получаем данные существующего пакета
+                                     $one = getOne($name);
+                                     // Сравниваем версию, если у нас версия выше, удаляем старые файлы и скачиваем новые
+                                     if (version_compare($one["version"], $value["version"], '<')) {
+                                        $this->delete($this->dir."/".$value["vendor"].'/'.$value["name"]);
+                                        $this->load($value["link"], $this->dir, $value["name"], $value["vendor"], $value["version"]);
+                                     }
+                                 }
+                            }
+                        }
+                    }
+                }
+            }
  
-                                    file_put_contents($this->dir.'/'.$value["name"].".zip", file_get_contents($value["link"]));
- 
-                                    $zip = new \ZipArchive;
-                                    $res = $zip->open($this->dir.'/'.$value["name"].".zip");
-                                    if ($res === TRUE) {
-                                        //$zip->renameName('currentname.txt','newname.txt');
-                                        $zip->extractTo($this->dir."/".$value["vendor"]);
-                                        $zip->close();
- 
-                                        rename($this->dir."/".$value["vendor"].'/'.$value["name"]."-".$value["version"],
-                                            $this->dir."/".$value["vendor"].'/'.$value["name"]);
-                                        unlink($this->dir.'/'.$value["name"].".zip");
- 
-                                    } else {
-                                        // echo 'failed';
+            // Устанавливаем пакеты
+            if (isset($data["require"])) {
+                if (count($data["require"]) >= 1) {
+                    // Перебираем массив
+                    foreach($data["require"] as $value)
+                    {
+                        if (isset($value["vendor"]) && isset($value["name"])) {
+                            if ($value["state"] != '0' && $value["state"] != '') {
+                                // Если папки класса нет необходимо скачать файлы
+                                if (!file_exists($this->dir."/".$value["vendor"].'/'.$value["name"])) {
+                                // Если есть ссылка скачиваем архив
+                                    if (isset($value["link"])) {
+                                        $this->load($value["link"], $this->dir, $value["name"], $value["vendor"], $value["version"]);
                                     }
                                 }
                             }
                         }
+                        $require[] = $value;
                     }
- 
-                    $require[] = $value;
- 
                 }
             }
  
@@ -165,6 +178,30 @@ class Autoloader
         }
     }
  
+    public function load($link, $dir, $name, $vendor, $version)
+    {
+        file_put_contents($dir.'/'.$name.".zip", file_get_contents($link));
+		// Подключаем архиватор
+        $zip = new \ZipArchive;
+        $res = $zip->open($dir.'/'.$name.".zip");
+        if ($res === TRUE) {
+            $zip->extractTo($dir."/".$vendor);
+            $zip->close();
+            rename($dir."/".$vendor.'/'.$name."-".$version,
+            $dir."/".$vendor.'/'.$name);
+            unlink($dir.'/'.$name.".zip");
+        }
+    }
+ 
+    public function delete($dir)
+    {
+       $files = array_diff(scandir($dir), array('.','..'));
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? $this->delete("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
+    }
+ 
     public function set_dir($dir = null)
     {
         if (isset($dir)) {
@@ -194,6 +231,22 @@ class Autoloader
         } else {
             return null;
         }
+    }
+ 
+    public function getOne($name = null)
+    {
+        $return = null;
+        if (isset($name)) {
+            $data = $this->get();
+            $param['require'] = array();
+            foreach($data['require'] as $key => $val)
+            {
+                if (strtolower($name) == strtolower($val['name'])) {
+                    $return = $val;
+                }
+            }
+        }
+        return $return;
     }
  
     // Проверяем существавание класса в файле
