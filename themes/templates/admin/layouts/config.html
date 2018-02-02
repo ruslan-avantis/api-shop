@@ -58,6 +58,12 @@
 </li>
 {% endif %}
 
+{% if content.cache %}
+<li class="nav-item">
+<a class="nav-link" href="#cache" data-toggle="tab">Cache</a>
+</li>
+{% endif %}
+
 {% if content.routers %}
 <li class="nav-item">
 <a class="nav-link" href="#routers" data-toggle="tab">Routers</a>
@@ -124,7 +130,6 @@
 {% endif %}
 </div>
 {% endif %}
-
 
 {% if content.slim %}
 <div role="tabpanel" class="tab-pane fade in" id="slim">
@@ -443,6 +448,57 @@
 <div class="form-group col-xl-6">
 <label for="{{ key }}">{{ key }}</label>
 <input type="text" class="form-control form-control-xs" name="vendor[{{ key }}]" aria-describedby="{{ value }}" value="{{ value }}">
+</div>
+{% endif %}
+
+{% endif %}
+{% endfor %}
+{# -------------- #}
+</div>
+{% endif %}
+</div>
+{% endif %}
+
+{% if content.cache %}
+<div role="tabpanel" class="tab-pane fade in" id="cache">
+{% if content.cache %}
+<div class="col-lg-12"><h4 class="padding_top_14">{% if content.cache.name %}{{ content.cache.name }}{% endif %}</h4></div>
+<div class="form-row">
+{# -------------- #}
+{% for key, value in content.cache %}
+{% if key != 'name' %}
+
+{% if value is iterable %}
+<div class="col-lg-12"><h5 class="padding_top_14">{% if key %}{{ key }}{% endif %}</h5></div>
+
+{# ------ #}
+{% for key_two, value_two in value %}
+
+{% if value_two is iterable %}
+<div class="col-lg-12"><h6 class="padding_top_14">{% if key_two %}{{ key_two }}{% endif %}</h6></div>
+{# --- #}
+{% for key_three, value_three in value_two %}
+<div class="form-group col-xl-6">
+<label for="{{ key_three }}">{{ key_three }}</label>
+<input type="text" class="form-control form-control-xs" name="cache[{{ key }}][{{ key_two }}][{{ key_three }}]" aria-describedby="{{ value_three }}" value="{{ value_three }}">
+</div>
+{% endfor %}
+{# --- #}
+
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key_two }}">{{ key_two }}</label>
+<input type="text" class="form-control form-control-xs" name="cache[{{ key }}][{{ key_two }}]" aria-describedby="{{ value_two }}" value="{{ value_two }}">
+</div>
+{% endif %}
+
+{% endfor %}
+{# ------ #}
+
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key }}">{{ key }}</label>
+<input type="text" class="form-control form-control-xs" name="cache[{{ key }}]" aria-describedby="{{ value }}" value="{{ value }}">
 </div>
 {% endif %}
 
