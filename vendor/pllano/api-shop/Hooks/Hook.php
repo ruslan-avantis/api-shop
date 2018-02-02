@@ -17,29 +17,36 @@ use Slim\Http\Request;
 use Slim\Http\Response;
  
 use ApiShop\Config\Settings;
+use ApiShop\Adapter\Cache;
  
 class Hook {
  
     private $config;
     private $request;
     private $response;
-    private $args = array();
-    private $view = array();
+    private $args = [];
+    private $view = [];
     private $render = null;
     private $resource = null;
     private $name_db = null;
     private $query = null;
-	private $coverage = null;
-    private $postArr = array();
+    private $coverage = null;
+    private $postArr = [];
     private $postQuery = null;
     private $id = null;
     private $callback = null;
     private $hooks = null;
+    private $logger = null;
+    private $cache = null;
+    private $content = null;
+    private $cache_state = null;
+    private $cache_url = null;
+    private $cache_lifetime = null;
+    private $cached;
  
     function __construct()
     {
-        $config = (new Settings())->get();
-        $this->config = $config['hooks'];
+        $this->config = (new Settings())->get();
     }
  
     public function http(Request $request, Response $response, array $args, $query = null, $coverage = null)
@@ -48,7 +55,7 @@ class Hook {
         $this->request = $request;
         $this->response = $response;
         $this->query = $query;
-		$this->coverage = $coverage;
+        $this->coverage = $coverage;
         $this->set();
     }
  
@@ -77,10 +84,11 @@ class Hook {
     {
         $this->view = $view;
         $this->render = $render;
+        $this->logger = $this->render;
         $this->run();
     }
  
-    public function post($resource = null, $name_db = null, $postQuery = null, array $postArr = array(), $id = null)
+    public function post($resource = null, $name_db = null, $postQuery = null, array $postArr = [], $id = null)
     {
         $this->resource = $resource;
         $this->name_db = $name_db;
@@ -111,19 +119,60 @@ class Hook {
             }
             return true;
         } else {
+            $this->logger = $this->render;
             return false;
         }
     }
  
+    public function cache($cache_url = null, $cache_lifetime = null)
+    {
+        if(isset($cache_url)) {
+            $this->cache_url = $cache_url;
+        }
+        $this->cached = new Cache($this->request, $this->response, $this->args, $this->config);
+        $this->cache = $this->cached->run($this->cache_url, $this->cache_lifetime);
+        $this->cache_state = $this->cached->state();
+        if($this->cache === true) {
+            $this->content = $this->cached->content();
+        }
+ 
+        return $this->cache;
+    }
+ 
+    public function cache_state()
+    {
+        return $this->cache_state;
+    }
+ 
+    public function cache_set($content)
+    {
+        $this->cached->set($content);
+    }
+ 
+    public function cache_vendor()
+    {
+        return $this->cached->vendor();
+    }
+ 
+    public function cache_driver()
+    {
+        return $this->cached->driver();
+    }
+ 
+    public function content()
+    {
+        return $this->content;
+    }
+ 
     public function hooks($query = null)
     {
-        $hooks = array();
+        $hooks = [];
         $hook = null;
-        foreach($this->config as $key => $value)
+        foreach($this->config['hooks'] as $key => $value)
         {
             if (isset($value['state']) && $value['state'] == '1') {
-				if ($value['coverage'] == $this->coverage || $value['coverage'] == 'all') {
-			        if (isset($value['render']) && $value['render'] != '' && $value['render'] != ' ') {
+                if ($value['coverage'] == $this->coverage || $value['coverage'] == 'all') {
+                    if (isset($value['render']) && $value['render'] != '' && $value['render'] != ' ') {
                         if($value['query'] == $query && $value['render'] == $this->render) {
                             $hook['vendor'] = $value['vendor'];
                             $hooks[] = $hook;
@@ -144,8 +193,8 @@ class Hook {
                         }
                     }
                 }
-			}
-		}
+            }
+        }
  
         return $hooks;
  
@@ -174,7 +223,7 @@ class Hook {
     public function coverage()
     {
         return $this->coverage;
-	}
+    }
  
     public function view()
     {
@@ -218,6 +267,11 @@ class Hook {
         } else {
             return $callback;
         }
+    }
+ 
+    public function logger()
+    {
+        return $this->logger;
     }
  
 }

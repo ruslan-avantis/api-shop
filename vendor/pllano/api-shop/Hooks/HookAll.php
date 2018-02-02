@@ -20,14 +20,14 @@ class HookAll {
  
     private $request;
     private $response;
-    private $args = array();
-    private $view = array();
+    private $args = [];
+    private $view = [];
     private $render = null;
     private $resource = null;
     private $name_db = null;
     private $query = null;
-	private $coverage = null;
-    private $postArr = array();
+    private $coverage = null;
+    private $postArr = [];
     private $postQuery = null;
     private $id = null;
     private $callback = null;
@@ -38,18 +38,18 @@ class HookAll {
         $this->request = $request;
         $this->response = $response;
         $this->query = $query;
-		$this->coverage = $coverage;
-		$this->set();
+        $this->coverage = $coverage;
+        $this->set();
     }
  
     public function set()
     {
         // Обрабатываем данные
         // Получаем GET параметры
-        // $getParams = $this->request->getQueryParams();
+        $getParams = $this->request->getQueryParams();
         // print_r($getParams);
         // Получаем данные отправленные нам через POST
-        // $postParams = $this->request->getParsedBody();
+        $postParams = $this->request->getParsedBody();
     }
  
     public function get($view = null, $render = null)
@@ -59,7 +59,7 @@ class HookAll {
         $this->run();
     }
  
-    public function post($resource = null, $name_db = null, $postQuery = null, array $postArr = array(), $id = null)
+    public function post($resource = null, $name_db = null, $postQuery = null, array $postArr = [], $id = null)
     {
         $this->resource = $resource;
         $this->name_db = $name_db;
@@ -73,6 +73,11 @@ class HookAll {
     {
         // Обрабатываем данные
         $this->render = '404.html';
+    }
+ 
+    public function state()
+    {
+        return true;
     }
  
     public function request()
@@ -98,7 +103,7 @@ class HookAll {
     public function coverage()
     {
         return $this->coverage;
-	}
+    }
  
     public function view()
     {

@@ -22,7 +22,7 @@ class HookIndexGet {
     private $request;
     private $response;
     private $query = null;
-	private $coverage = null;
+    private $coverage = null;
     private $view;
     private $render;
  
@@ -32,7 +32,7 @@ class HookIndexGet {
         $this->request = $request;
         $this->response = $response;
         $this->query = $query;
-		$this->coverage = $coverage;
+        $this->coverage = $coverage;
         $this->set();
     }
  
@@ -80,6 +80,11 @@ class HookIndexGet {
         return $this->query;
     }
  
+    public function coverage()
+    {
+        return $this->coverage;
+    }
+ 
     public function view()
     {
         return $this->view;
@@ -89,11 +94,6 @@ class HookIndexGet {
     {
         return $this->render;
     }
- 
-    public function coverage()
-    {
-        return $this->coverage;
-	}
  
 }
  

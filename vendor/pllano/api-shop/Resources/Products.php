@@ -15,10 +15,10 @@ namespace ApiShop\Resources;
  
 use RouterDb\Db;
 use RouterDb\Router;
-
+ 
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
-use ApiShop\Images\Image;
+use ApiShop\Adapter\Image;
  
 class Products {
  

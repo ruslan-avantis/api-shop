@@ -13,25 +13,34 @@
  
 namespace ApiShop\Model;
  
+use Slim\Http\Request;
+use Slim\Http\Response;
+ 
 use ApiShop\Config\Settings;
-
+ 
 class Security {
  
-    // Сообщение об Атаке или подборе токена
-    public function token()
+    function __construct()
     {
         $config = (new Settings())->get();
+        $this->config = $config['hooks'];
+    }
+ 
+    // Сообщение об Атаке или подборе токена
+    public function token(Request $request, Response $response)
+    {
         // Подключаем сессию, берет название класса из конфигурации
-        $session = new $config['vendor']['session']($config['settings']['session']['name']);
+        $session = new $this->config['vendor']['session']($this->config['settings']['session']['name']);
+ 
         // Отправляем сообщение администратору
     }
  
     // Сообщение об Атаке или подборе csrf
-    public function csrf()
+    public function csrf(Request $request, Response $response)
     {
-        $config = (new Settings())->get();
         // Подключаем сессию, берет название класса из конфигурации
-        $session = new $config['vendor']['session']($config['settings']['session']['name']);
+        $session = new $this->config['vendor']['session']($this->config['settings']['session']['name']);
+ 
         // Отправляем сообщение администратору
     }
  
