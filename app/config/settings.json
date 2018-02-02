@@ -9,6 +9,87 @@
 			"determineRouteBeforeAppMiddleware": 0
 		}
 	},
+	"cache": {
+		"state": "1",
+		"dynamic": "0",
+		"print": "0",
+		"cache_lifetime": "3600",
+		"cpu": "80",
+		"memory": "80",
+		"vendor": "cache",
+		"driver": "filesystem",
+		"adapter": "apishop",
+		"twig": {
+			"state": "1",
+			"strict_variables": "0",
+			"cache_dir": "/../_twig_cache"
+		},
+		"memcached": {
+			"pool": "\\Cache\\Adapter\\Memcached\\MemcachedCachePool",
+			"host": "127.0.0.1",
+			"port": "11211"
+		},
+		"memcache": {
+			"pool": "\\Cache\\Adapter\\Memcache\\MemcacheCachePool",
+			"host": "127.0.0.1",
+			"port": "11211"
+		},
+		"filesystem": {
+			"pool": "\\Cache\\Adapter\\Filesystem\\FilesystemCachePool",
+			"filesystem_adapter": "\\League\\Flysystem\\Adapter\\Local",
+			"filesystem": "\\League\\Flysystem\\Filesystem",
+			"path": "app/_cache"
+		},
+		"elasticsearch": {
+			"pool": "\\ApiShop\\Adapter\\Cache\\Elasticsearch",
+			"host": "localhost",
+			"port": "9200",
+			"type": "api_shop",
+			"index": "cache",
+			"auth": 0,
+			"user": "elastic",
+			"password": "elastic_password"
+		},
+		"mongodb": {
+			"pool": "\\Cache\\Adapter\\MongoDB\\MongoDBCachePool",
+			"manager": "\\MongoDB\\Driver\\Manager",
+			"host": "localhost",
+			"port": "9200",
+			"name": "cache"
+		},
+		"redis": {
+			"pool": "\\Cache\\Adapter\\Redis\\RedisCachePool",
+			"host": "127.0.0.1",
+			"port": "11211"
+		},
+		"predis": {
+			"pool": "\\Cache\\Adapter\\Predis\\PredisCachePool",
+			"host": "127.0.0.1",
+			"port": "6379"
+		},
+		"doctrine": {
+			"pool": "\\Cache\\Adapter\\Doctrine\\DoctrineCachePool",
+			"memcached": "\\Doctrine\\Common\\Cache\\MemcachedCache",
+			"host": "127.0.0.1",
+			"port": "11211"
+		},
+		"array": {
+			"pool": "\\Cache\\Adapter\\PHPArray\\ArrayCachePool"
+		},
+		"apcu": {
+			"pool": "\\Cache\\Adapter\\Apcu\\ApcuCachePool"
+		},
+		"apc": {
+			"pool": "\\Cache\\Adapter\\Apc\\ApcCachePool"
+		},
+		"void": {
+			"pool": "\\Cache\\Adapter\\Void\\VoidCachePool"
+		},
+		"illuminate": {
+			"pool": "\\Cache\\Adapter\\Illuminate\\IlluminateCachePool",
+			"store": "\\Illuminate\\Cache\\ArrayStore"
+		}
+	},
 	"seller": {
 		"name": "seller",
 		"public_key": "",
@@ -108,14 +189,16 @@
 			"query": "GET",
 			"render": "index.html",
 			"coverage": "site",
-			"state": "0"
+			"state": "0",
+			"config": "none"
 		},
 		"demo-hook-all": {
 			"vendor": "\\ApiShop\\Hooks\\HookAll",
 			"query": "all",
 			"render": "all",
 			"coverage": "site",
-			"state": "0"
+			"state": "0",
+			"config": "none"
 		}
 	},
 	"admin": {

@@ -35,6 +35,7 @@ class Settings {
         $config["dir"]["vendor"] = __DIR__ .'/../..'.$json["dir"]["vendor_dir"];
         $config["dir"]["plugins"] = __DIR__ .'/../..'.$json["dir"]["plugins_dir"];
         $config["dir"]["images"] = __DIR__ .'/../..'.$json["dir"]["images_dir"];
+		$config["dir"]["www"] = __DIR__ .'/../..';
  
         $config["settings"]["json"] = $settings;
  

@@ -42,20 +42,21 @@ $container['view'] = function ($conf) {
         if ($site->template()) {
             $template = $site->template();
         }
- 
+        $cache = false;
+        $strict_variables = false;
         $loader = new \Twig_Loader_Filesystem($themes['dir']."/".$themes['templates']."/".$template."/layouts");
-        $view = new \Twig_Environment($loader, array(
-            'cache' => false,
-            'strict_variables' => false
-        ));
+		if (isset($config['cache']['twig']['state'])) {
+			if ((int)$config['cache']['twig']['state'] == 1) {
+			    $cache = __DIR__ .''.$config['cache']['twig']['cache_dir'];
+			    $strict_variables = $config['cache']['twig']['strict_variables'];
+			}
+		}
+        $view = new \Twig_Environment($loader, ['cache' => $cache, 'strict_variables' => $strict_variables]);
  
     } else {
  
         $loader = new \Twig_Loader_Filesystem($themes['dir']."/".$themes['templates']."/install");
-        $view = new \Twig_Environment($loader, array(
-            'cache' => false,
-            'strict_variables' => false
-        ));
+        $view = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
     }
  
     return $view;
@@ -70,10 +71,7 @@ $container['admin'] = function () {
     $template = $config['admin']["template"];
  
     $loader = new \Twig_Loader_Filesystem($config['settings']['themes']['dir']."/".$config['settings']['themes']['templates']."/".$template."/layouts");
-    $admin = new \Twig_Environment($loader, array(
-        'cache' => false,
-        'strict_variables' => false
-    ));
+    $admin = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
  
     return $admin;
  
