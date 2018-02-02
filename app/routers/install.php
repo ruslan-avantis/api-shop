@@ -114,7 +114,7 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
             // Сохраняем
             $settingsAdmin->put($newArr);
  
-            $callback = array('status' => 200);
+            $callback = ['status' => 200];
  
         } else {
             $callback = array(
@@ -133,7 +133,7 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
         $callback = array(
             'status' => 400,
             'title' => "Ошибка",
-            'text' => "Что то не так"
+            'text' => "Ошибка"
         );
         // Выводим заголовки
         $response->withStatus(200);
@@ -191,7 +191,7 @@ $app->post('/install-key', function (Request $request, Response $response, array
         $callback = array(
             'status' => 200,
             'title' => "Ошибка",
-            'text' => "Что то не так"
+            'text' => "Ошибка"
         );
         // Выводим заголовки
         $response->withStatus(200);
@@ -249,7 +249,7 @@ $app->post('/install-no-key', function (Request $request, Response $response, ar
         $callback = array(
             'status' => 200,
             'title' => "Ошибка",
-            'text' => "Что то не так"
+            'text' => "Ошибка"
         );
         // Выводим заголовки
         $response->withStatus(200);
@@ -310,7 +310,7 @@ $app->post('/install-store', function (Request $request, Response $response, arr
         $callback = array(
             'status' => 200,
             'title' => "Ошибка",
-            'text' => "Что то не так"
+            'text' => "Ошибка"
         );
         // Выводим заголовки
         $response->withStatus(200);
@@ -443,7 +443,7 @@ $app->post('/install-template', function (Request $request, Response $response, 
             $callback = array(
                 'status' => 400,
                 'title' => "Информация",
-                'text' => "Что то не так"
+                'text' => "Ошибка"
             );
         }
  
@@ -456,7 +456,7 @@ $app->post('/install-template', function (Request $request, Response $response, 
         $callback = array(
             'status' => 400,
             'title' => "Ошибка",
-            'text' => "Что то не так"
+            'text' => "Ошибка"
         );
         // Выводим заголовки
         $response->withStatus(200);
@@ -648,7 +648,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                                             $session->iname = $config['vendor']['crypto']::encrypt($iname, $session_key);
                                             $session->fname = $config['vendor']['crypto']::encrypt($fname, $session_key);
  
-                                            $callback = array('status' => 200);
+                                            $callback = ['status' => 200];
                                             // Выводим заголовки
                                             $response->withStatus(200);
                                             $response->withHeader('Content-type', 'application/json');
@@ -896,7 +896,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     $session->public_key = null;
                     $session->platform_user_id = null;
  
-                    $callback = array('status' => 200);
+                    $callback = ['status' => 200];
  
                     // Выводим заголовки
                     $response->withStatus(200);
@@ -909,7 +909,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     $callback = array(
                         'status' => 400,
                         'title' => "Ошибка",
-                        'text' => "Что то не так"
+                        'text' => "Ошибка"
                     );
                     // Выводим заголовки
                     $response->withStatus(200);
@@ -922,7 +922,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                 $callback = array(
                     'status' => 400,
                     'title' => "Ошибка",
-                    'text' => "Что то не так"
+                    'text' => "Ошибка"
                 );
                 // Выводим заголовки
                 $response->withStatus(200);
@@ -935,7 +935,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
             $callback = array(
                 'status' => 400,
                 'title' => "Ошибка",
-                'text' => "Что то не так"
+                'text' => "Ошибка"
             );
             // Выводим заголовки
             $response->withStatus(200);
@@ -948,7 +948,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
         $callback = array(
             'status' => 400,
             'title' => "Ошибка",
-            'text' => "Что то не так"
+            'text' => "Ошибка"
         );
         // Выводим заголовки
         $response->withStatus(200);

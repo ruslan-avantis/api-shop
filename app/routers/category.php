@@ -65,7 +65,15 @@ $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request,
     // Меню, берет название класса из конфигурации
     $menu = (new $config['vendor']['menu']())->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    if (isset($getParams['lang'])) {$lang = $getParams['lang'];} elseif (isset($session->language)){$lang = $session->language;} else {$lang = '';}
+    if ($hook->cache('language/'.$lang, 30*24*60*60) === null) {
+        $language = (new Language($getParams))->get();
+        if ($hook->cache_state() == '1') {
+            $hook->cache_set($language);
+        }
+    } else {
+            $language = $hook->content();
+    }
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -94,110 +102,146 @@ $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request,
     $og_locale = $config['settings']['site']['og_locale'];
     $og_url = $config['settings']['site']['og_url'];
  
-    $category = '';
-    $render = $template['layouts']['category'] ? $template['layouts']['category'] : 'category.html';
-    $products_template = $template['layouts']['helper']['products'] ? $template['layouts']['helper']['products'] : 'helper/products.html';
-    $products_limit = $template['products']['category']['limit'];
-    $products_order = $template['products']['category']['order'];
-    $products_sort = $template['products']['category']['sort'];
+    // Если hook->cache дает null работаем без кеша
+    $params_query = "?".http_build_query($getParams);
+    if ($hook->cache($host.'/site'.$path.''.$params_query) === null) {
  
-    if (isset($alias)) {
-        // Ресурс (таблица) к которому обращаемся
-        $category_resource = "category";
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($config);
-        // Получаем название базы для указанного ресурса
-        $category_db = $router->ping($category_resource);
-        // Подключаемся к базе
-        $db = new Db($category_db, $config);
-        // Отправляем запрос и получаем данные
-        $resp = $db->get($category_resource, ['alias' => $alias]);
+        $category = '';
+        $render = $template['layouts']['category'] ? $template['layouts']['category'] : 'category.html';
+        $products_template = $template['layouts']['helper']['products'] ? $template['layouts']['helper']['products'] : 'helper/products.html';
+        $products_limit = $template['products']['category']['limit'];
+        $products_order = $template['products']['category']['order'];
+        $products_sort = $template['products']['category']['sort'];
  
-        if (isset($resp["headers"]["code"])) {
-            if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == '200') {
-                $cat = $resp['body']['items']['0']['item'];
-                if(is_object($cat)) {
-                    $category = (array)$cat;
-                } elseif (is_array($cat)) {
-                    $category = $cat;
-                }
+        if (isset($alias)) {
+            // Ресурс (таблица) к которому обращаемся
+            $category_resource = "category";
+            // Отдаем роутеру RouterDb конфигурацию.
+            $router = new Router($config);
+            // Получаем название базы для указанного ресурса
+            $category_db = $router->ping($category_resource);
+            // Подключаемся к базе
+            $db = new Db($category_db, $config);
+            // Отправляем запрос и получаем данные
+            $resp = $db->get($category_resource, ['alias' => $alias]);
  
-                $title = $category['seo_title'] ? $category['seo_title'] : $category['title'];
-                $keywords = $category['seo_keywords'] ? $category['seo_keywords'] : $category['title'];
-                $description = $category['seo_description'] ? $category['seo_description'] : $category['title'];
-                $og_title = $category['og_title'] ? $category['og_title'] : $category['title'];
-                $og_description = $category['og_description'] ? $category['og_description'] : $category['title'];
-                $og_image = $category['og_image'] ? $category['og_image'] : '';
-                $og_type = $category['og_type'] ? $category['og_type'] : '';
-                $robots = $category['robots'] ? $category['robots'] : 'index, follow';
-                $products_template = $category['products_template'] ? 'helper/'.$category['products_template'].'.html' : $template['layouts']['helper']['products'];
-                $products_limit = $category['products_limit'] ? $category['products_limit'] : $template['products']['category']['limit'];
-                $products_order = $category['products_order'] ? $category['products_order'] : $template['products']['category']['order'];
-                $products_sort = $category['products_sort'] ? $category['products_sort'] : $template['products']['category']['sort'];
-                if (isset($category['categories_template'])) {
-                    $render = $template['layouts']['category'] ? $category['categories_template'].'.html' : $template['layouts']['category'];
+            if (isset($resp["headers"]["code"])) {
+                if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == '200') {
+                    $cat = $resp['body']['items']['0']['item'];
+                    if(is_object($cat)) {
+                        $category = (array)$cat;
+                    } elseif (is_array($cat)) {
+                        $category = $cat;
+                    }
+ 
+                    $title = $category['seo_title'] ? $category['seo_title'] : $category['title'];
+                    $keywords = $category['seo_keywords'] ? $category['seo_keywords'] : $category['title'];
+                    $description = $category['seo_description'] ? $category['seo_description'] : $category['title'];
+                    $og_title = $category['og_title'] ? $category['og_title'] : $category['title'];
+                    $og_description = $category['og_description'] ? $category['og_description'] : $category['title'];
+                    $og_image = $category['og_image'] ? $category['og_image'] : '';
+                    $og_type = $category['og_type'] ? $category['og_type'] : '';
+                    $robots = $category['robots'] ? $category['robots'] : 'index, follow';
+                    $products_template = $category['products_template'] ? 'helper/'.$category['products_template'].'.html' : $template['layouts']['helper']['products'];
+                    $products_limit = $category['products_limit'] ? $category['products_limit'] : $template['products']['category']['limit'];
+                    $products_order = $category['products_order'] ? $category['products_order'] : $template['products']['category']['order'];
+                    $products_sort = $category['products_sort'] ? $category['products_sort'] : $template['products']['category']['sort'];
+                    if (isset($category['categories_template'])) {
+                        $render = $template['layouts']['category'] ? $category['categories_template'].'.html' : $template['layouts']['category'];
+                    }
                 }
             }
-        }
  
-        if (isset($category['product_type'])) {
-            //$product_type = explode(',', str_replace(array('"', "'", " "), '', $category['product_type']));
-            $product_type = $category['product_type'];
-        } else {
-            $product_type = null;
-        }
+            if (isset($category['product_type'])) {
+                //$product_type = explode(',', str_replace(['"', "'", " "], '', $category['product_type']));
+                $product_type = $category['product_type'];
+            } else {
+                $product_type = null;
+            }
     
-    }
+        }
  
-    // Получаем массив параметров uri
-    $queryParams = $request->getQueryParams();
-    $arr = array();
-    $arr['state'] = 1;
-    $arr['offset'] = 0;
-    $arr['limit'] = $products_limit;
-    $arr['order'] = $products_order;
-    $arr['sort'] = $products_sort;
-    if (count($queryParams) >= 1) {
-        foreach($queryParams as $key => $value)
-        {
-            if (isset($key) && isset($value)) {
-                $arr[$key] = $utility->clean($value);
+        // Получаем массив параметров uri
+        $queryParams = $request->getQueryParams();
+        $arr = [];
+        $arr['state'] = 1;
+        $arr['offset'] = 0;
+        $arr['limit'] = $products_limit;
+        $arr['order'] = $products_order;
+        $arr['sort'] = $products_sort;
+        if (count($queryParams) >= 1) {
+            foreach($queryParams as $key => $value)
+            {
+                if (isset($key) && isset($value)) {
+                    $arr[$key] = $utility->clean($value);
+                }
             }
         }
+ 
+        // Собираем полученные параметры в url и отдаем шаблону
+        $get_array = http_build_query($arr);
+        // Вытягиваем URL_PATH для правильного формирования юрл
+        //$url_path = parse_url($request->getUri(), PHP_URL_PATH);
+        $url_path = $path;
+        // Подключаем сортировки
+        $filter = new Filter($url_path, $arr);
+        $orderArray = $filter->order();
+        $limitArray = $filter->limit();
+        // Формируем массив по которому будем сортировать
+        $sortArr = [
+            "name" => $language["51"],
+            "type" => $language["46"],
+            "brand" => $language["47"],
+            "serie" => $language["48"],
+            "articul" => $language["49"],
+            "price" => $language["112"]
+        ];
+        $sortArray = $filter->sort($sortArr);
+ 
+        if (isset($product_type)) {
+            $arrPlus['type'] = $product_type;
+        }
+        $arrPlus['relations'] = "image";
+        $newArr = $arr + $arrPlus;
+ 
+        // Получаем список товаров
+        $productsList = new $config['vendor']['products_category']();
+        $content = $productsList->get($newArr, $template, $host);
+        // Даем пагинатору колличество
+        $count = $productsList->count();
+        $paginator = $filter->paginator($count);
+    
+        if ($hook->cache_state() == '1') {
+            $cache['content'] = $content;
+            $cache['products_template'] = $products_template;
+            $cache['paginator'] = $paginator;
+            $cache['orderArray'] = $orderArray;
+            $cache['sortArray'] = $sortArray;
+            $cache['limitArray'] = $limitArray;
+            $cache['param'] = $arr;
+            $cache['count'] = $count;
+            $cache['get_array'] = $get_array;
+            $cache['url_path'] = $url_path;
+            $cache['render'] = $render;
+            $cache['template'] = $template;
+            // Сохраняем кеш
+            $hook->cache_set($cache);
+        }
+    } else {
+        $cache = $hook->content();
+        $content = $cache['content'];
+        $products_template = $cache['products_template'];
+        $paginator = $cache['paginator'];
+        $orderArray = $cache['orderArray'];
+        $sortArray = $cache['sortArray'];
+        $limitArray = $cache['limitArray'];
+        $arr = $cache['param'];
+        $count = $cache['count'];
+        $get_array = $cache['get_array'];
+        $url_path = $cache['url_path'];
+        $render = $cache['render'];
+        $template = $cache['template'];
     }
- 
-    // Собираем полученные параметры в url и отдаем шаблону
-    $get_array = http_build_query($arr);
-    // Вытягиваем URL_PATH для правильного формирования юрл
-    //$url_path = parse_url($request->getUri(), PHP_URL_PATH);
-    $url_path = $path;
-    // Подключаем сортировки
-    $filter = new Filter($url_path, $arr);
-    $orderArray = $filter->order();
-    $limitArray = $filter->limit();
-    // Формируем массив по которому будем сортировать
-    $sortArr = [
-        "name" => $language["51"],
-        "type" => $language["46"],
-        "brand" => $language["47"],
-        "serie" => $language["48"],
-        "articul" => $language["49"],
-        "price" => $language["112"]
-    ];
-    $sortArray = $filter->sort($sortArr);
- 
-    if (isset($product_type)) {
-        $arrPlus['type'] = $product_type;
-    }
-    $arrPlus['relations'] = "image";
-    $newArr = $arr + $arrPlus;
- 
-    // Получаем список товаров
-    $productsList = new $config['vendor']['products_category']();
-    $content = $productsList->get($newArr, $template, $host);
-    // Даем пагинатору колличество
-    $count = $productsList->count();
-    $paginator = $filter->paginator($count);
  
     $head = [
         "page" => $render,
@@ -237,11 +281,10 @@ $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request,
         "url" => $url_path
     ];
  
-    // Запись в лог
-    $this->logger->info($render." - ".$alias);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->view->render($hook->render(), $hook->view());
  

@@ -127,11 +127,10 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
         "content" => $content
     ];
  
-    // Запись в лог
-    $this->logger->info($render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -207,7 +206,7 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
     if (isset($session->authorize) && isset($resource)) {
         if ($session->role_id == 100) {
  
-            $resource_list = explode(',', str_replace(array('"', "'", " "), '', $config['admin']['resource_list']));
+            $resource_list = explode(',', str_replace(['"', "'", " "], '', $config['admin']['resource_list']));
  
             if (array_key_exists($resource, array_flip($resource_list))) {
  
@@ -280,12 +279,10 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
         "type" => $type
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -311,6 +308,8 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
+    // Подключаем систему безопасности
+    $security = new Security();
  
     $resource = null;
     if (isset($post['resource'])) {
@@ -325,11 +324,11 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                (new Security())->token();
+                $security->token($request, $response);
             }
         } else {
             // Сообщение об Атаке или подборе токена
-            (new Security())->token();
+            $security->token($request, $response);
         }
     }
  
@@ -343,11 +342,11 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                (new Security())->csrf();
+                $security->csrf($request, $response);
             }
         } else {
             // Сообщение об Атаке или подборе csrf
-            (new Security())->csrf();
+            $security->csrf($request, $response);
         }
     }
  
@@ -360,10 +359,10 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
         if (isset($session->authorize)) {
             if ($session->authorize == 1 || $session->role_id == 100) {
                 if (isset($resource)) {
-                    $resource_list = explode(',', str_replace(array('"', "'", " "), '', $config['admin']['resource_list']));
+                    $resource_list = explode(',', str_replace(['"', "'", " "], '', $config['admin']['resource_list']));
                     if (array_key_exists($resource, array_flip($resource_list))) {
  
-                        $postArr = array();
+                        $postArr = [];
                         $random_alias_id = $utility->random_alias_id();
  
                         if ($resource == 'article') {
@@ -431,7 +430,7 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
                         $callbackText = 'Действие заблокировано';
                     }
                 } else {
-                    $callbackText = 'Что то не так !';
+                    $callbackText = 'Ошибка !';
                 }
             } else {
                 $callbackText = 'Вы не администратор';
@@ -443,13 +442,12 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
         $callbackText = 'Обновите страницу';
     }
  
-    $callback = array('status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText);
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
- 
+    // Подменяем заголовки
     $response = $hook->response();
- 
     // Выводим json
     echo json_encode($hook->callback($callback));
  
@@ -472,7 +470,7 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
-    
+    // Подключаем систему безопасности
     $security = new Security();
  
     // Получаем данные отправленные нам через POST
@@ -496,11 +494,11 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                $security->token();
+                $security->token($request, $response);
             }
         } else {
             // Сообщение об Атаке или подборе токена
-            $security->token();
+            $security->token($request, $response);
         }
     }
  
@@ -514,20 +512,24 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                $security->csrf();
+                $security->csrf($request, $response);
             }
         } else {
             // Сообщение об Атаке или подборе csrf
-            $security->csrf();
+            $security->csrf($request, $response);
         }
     }
+ 
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
  
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         if (isset($session->authorize)) {
             if ($session->authorize == 1 || $session->role_id == 100) {
                 if (isset($resource) && isset($id)) {
-                    $resource_list = explode(',', str_replace(array('"', "'", " "), '', $config['admin']['resource_list']));
+                    $resource_list = explode(',', str_replace(['"', "'", " "], '', $config['admin']['resource_list']));
                     if (array_key_exists($resource, array_flip($resource_list))) {
  
                         // Отдаем роутеру RouterDb конфигурацию.
@@ -536,57 +538,48 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
                         $name_db = $router->ping($resource);
                         // Подключаемся к базе
                         $db = new Db($name_db, $config);
-                        // Обновляем данные
-                        $view = $db->delete($resource, [], $id);
  
-                        $callback = array('status' => 200);
-                    
+                        // Передаем данные Hooks для обработки ожидающим классам
+                        $hook->post($resource, $name_db, 'DELETE', [], $id);
+                        $hookState = $hook->state();
+                        // Если Hook вернул true
+                        if ($hookState == true) {
+                            // Обновленные Hooks данные
+                            $hookResource = $hook->resource();
+                            $hookId = $hook->id();
+                            // Отправляем запрос в базу
+                            $dbState = $db->delete($hookResource, [], $hookId);
+                            if ($dbState == true) {
+                                // Ответ
+                                $callbackStatus = 200;
+                            } else {
+                                $callbackText = 'Действие заблокировано';
+                            }
+                        }
                     } else {
-                        $callback = array(
-                            'status' => 400,
-                            'title' => "Соообщение системы",
-                            'text' => "Действие заблокировано"
-                        );
+                        $callbackText = 'Действие заблокировано';
                     }
                 } else {
-                    $callback = array(
-                        'status' => 400,
-                        'title' => "Соообщение системы",
-                        'text' => "Что то не так !"
-                    );
+                    $callbackText = 'Ошибка !';
                 }
             } else {
-                $callback = array(
-                    'status' => 400,
-                    'title' => "Соообщение системы",
-                    'text' => "Вы не администратор"
-                );
+                $callbackText = 'Вы не администратор';
             }
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Соообщение системы",
-                'text' => "Вы не авторизованы"
-            );
+            $callbackText = 'Вы не авторизованы';
         }
     } else {
- 
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Обновите страницу"
-        );
+        $callbackText = 'Обновите страницу';
     }
  
-    // Передаем данные Hooks для обработки ожидающим классам
-    $hook->responsePost($callback, $resource, $name_db, 'delete', [], $id);
-    $hookCallback = $hook->callback();
- 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
     // Выводим json
-    echo json_encode($hookCallback);
+    echo json_encode($hook->callback($callback));
  
 });
  
@@ -610,7 +603,7 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
  
     // Получаем resource из url
     if ($request->getAttribute('resource')) {
-        $resource_list = explode(',', str_replace(array('"', "'", " "), '', $config['admin']['resource_list']));
+        $resource_list = explode(',', str_replace(['"', "'", " "], '', $config['admin']['resource_list']));
         $resource = $utility->clean($request->getAttribute('resource'));
         if (array_key_exists($resource, array_flip($resource_list))) {
             $table = json_decode(file_get_contents($config["db"]["json"]["dir"].'/'.$resource.'.config.json'), true);
@@ -665,13 +658,17 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
         }
     }
  
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         if (isset($session->authorize)) {
             if ($session->authorize == 1 && $session->role_id == 100) {
                 if (isset($resource) && isset($id)) {
                     if (array_key_exists($resource, array_flip($resource_list))) {
-                        $saveArr = array();
+                        $saveArr = [];
                         $resource_id = $resource."_id";
  
                             foreach($post as $key => $value)
@@ -680,10 +677,10 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
                                     if($key == "text" || $key == "text_ru" || $key == "text_ua" || $key == "text_de" || $key == "text_en") {
                                         $saveArr[$key] = $utility->cleanText($value);
                                     } elseif ($key == $resource_id) {
-                                        $value = str_replace(array('"', "'", " "), '', $value);
+                                        $value = str_replace(['"', "'", " "], '', $value);
                                         $saveArr[$key] = intval($utility->clean($value));
                                     } elseif ($key == "phone") {
-                                        $value = str_replace(array('"', "'", " "), '', $value);
+                                        $value = str_replace(['"', "'", " "], '', $value);
                                         $saveArr[$key] = strval($utility->clean($value));
                                     } elseif ($key == "password") {
                                         if(strlen($value) >= 55 && strlen($value) <= 65) {
@@ -693,13 +690,13 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
                                         }
                                     } else {
                                         if (is_numeric($utility->clean($value))) {
-                                            $value = str_replace(array('"', "'", " "), '', $value);
+                                            $value = str_replace(['"', "'", " "], '', $value);
                                             $saveArr[$key] = intval($utility->clean($value));
                                         } elseif (is_float($utility->clean($value))) {
-                                            $value = str_replace(array('"', "'", " "), '', $value);
+                                            $value = str_replace(['"', "'", " "], '', $value);
                                             $saveArr[$key] = float($utility->clean($value));
                                         } elseif (is_bool($utility->clean($value))) {
-                                            $value = str_replace(array('"', "'", " "), '', $value);
+                                            $value = str_replace(['"', "'", " "], '', $value);
                                             $saveArr[$key] = boolval($utility->clean($value));
                                         } elseif (is_string($utility->clean($value))) {
                                             $saveArr[$key] = filter_var(strval($value), FILTER_SANITIZE_STRING);
@@ -715,61 +712,38 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
                             // Подключаемся к базе
                             $db = new Db($name_db, $config);
                             // Обновляем данные
-                            $db->put($resource, $saveArr, $id);
+                            $requestDb = $db->put($resource, $saveArr, $id);
  
-                            $callback = array('status' => 200);
-
+                        if ($requestDb == true) {
+                            // Ответ
+                            $callbackStatus = 200;
+                        } else {
+                            $callbackText = 'Действие заблокировано';
+                        }
                     } else {
-                        $callback = array(
-                            'status' => 400,
-                            'title' => "Соообщение системы",
-                            'text' => "Действие заблокировано"
-                        );
+                        $callbackText = 'Действие заблокировано';
                     }
                 } else {
-                    $callback = array(
-                        'status' => 400,
-                        'title' => "Соообщение системы",
-                        'text' => "Что то не так !"
-                    );
+                    $callbackText = 'Ошибка !';
                 }
             } else {
-                $callback = array(
-                    'status' => 400,
-                    'title' => "Соообщение системы",
-                    'text' => "Вы не администратор"
-                );
+                $callbackText = 'Вы не администратор';
             }
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Соообщение системы",
-                'text' => "Вы не авторизованы"
-            );
+            $callbackText = 'Вы не авторизованы';
         }
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
- 
-        // Выводим json
-        echo json_encode($callback);
- 
     } else {
- 
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Обновите страницу"
-        );
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
- 
+        $callbackText = 'Обновите страницу';
     }
+ 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
  
 });
  
@@ -829,55 +803,45 @@ $app->post($admin_router.'order-activate', function (Request $request, Response 
         }
     }
  
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         if (isset($session->authorize)) {
             if ($session->authorize == 1 || $session->role_id == 100) {
                 if (isset($post['alias'])) {
                     $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
-                    $callback = array('status' => 200);
+                    
+                    if ($alias == true) {
+                        // Ответ
+                        $callbackStatus = 200;
+                    } else {
+                        $callbackText = 'Действие заблокировано';
+                    }
                 } else {
-                    $callback = array(
-                        'status' => 400,
-                        'title' => "Соообщение системы",
-                        'text' => "Не определен alias заказа"
-                    );
+                    $callbackText = 'Не определен alias заказа';
                 }
             } else {
-                $callback = array(
-                    'status' => 400,
-                    'title' => "Соообщение системы",
-                    'text' => "Вы не являетесь администратором"
-                );
+                $callbackText = 'Вы не являетесь администратором';
             }
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Соообщение системы",
-                'text' => "Вы не авторизованы"
-            );
+            $callbackText = 'Вы не авторизованы';
         }
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
- 
     } else {
- 
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Что то не так"
-        );
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        $callbackText = 'Ошибка';
     }
+ 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
+ 
 });
  
 // Купить и установить шаблон
@@ -916,43 +880,33 @@ $app->post($admin_router.'template-buy', function (Request $request, Response $r
     $utility = new Utility();
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = $utility->clean($post_csrf);
+ 
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         
         if (isset($post['alias'])) {
             $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
-
- 
-            $callback = array(
-                'status' => 200,
-                'title' => "Информация",
-                'text' => "Все ок"
-            );
+            $callbackStatus = 200;
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Соообщение системы",
-                'text' => "Не определен alias шаблона"
-            );
+            $callbackText = 'Ошибка !';
         }
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
     } else {
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Что то не так"
-        );
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        $callbackText = 'Ошибка !';
     }
+ 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
+ 
 });
  
 // Установить шаблон
@@ -1009,6 +963,10 @@ $app->post($admin_router.'template-install', function (Request $request, Respons
         }
     }
  
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         if (isset($post['alias'])) {
@@ -1037,51 +995,33 @@ $app->post($admin_router.'template-install', function (Request $request, Respons
                             $template_install = $glob_config->template_install($name, $dir, $uri);
                             
                             if ($template_install === true) {
-                                $callback = array('status' => 200);
+                                $callbackStatus = 200;
                             }  else {
-                                $callback = array(
-                                    'status' => 400,
-                                    'title' => "Соообщение системы",
-                                    'text' => "Не могу установить шаблон"
-                                );
+                                $callbackText = 'Ошибка !';
                             }
  
                         } else {
-                            $callback = array(
-                                'status' => 400,
-                                'title' => "Соообщение системы",
-                                'text' => "Папка шаблона уже существует. Удалите или переименуйте папку."
-                            );
+                            $callbackText = 'Ошибка !';
                         }
                     }
                 }
             }
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Соообщение системы",
-                'text' => "Не определен alias шаблона"
-            );
+            $callbackText = 'Ошибка !';
         }
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
- 
     } else {
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Что то не так"
-        );
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        $callbackText = 'Ошибка !';
     }
+ 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
+ 
 });
  
 // Активировать шаблон
@@ -1093,7 +1033,7 @@ $app->post($admin_router.'template-activate', function (Request $request, Respon
     $request = $hook->request();
     $args = $hook->args();
  
-    // Подключаем конфиг Settings\Config
+ // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
     // Подключаем плагины
     $utility = new Utility();
@@ -1138,6 +1078,10 @@ $app->post($admin_router.'template-activate', function (Request $request, Respon
         }
     }
  
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         if (isset($session->authorize)) {
@@ -1150,48 +1094,30 @@ $app->post($admin_router.'template-activate', function (Request $request, Respon
                     // Активируем шаблон
                     (new \ApiShop\Admin\Config())->template_activate($name);
  
-                    $callback = array('status' => 200);
+                    $callbackStatus = 200;
  
                 } else {
-                    $callback = array(
-                        'status' => 400,
-                        'title' => "Соообщение системы",
-                        'text' => "Не определено название шаблона"
-                    );
+                    $callbackText = 'Не определено название шаблона';
                 }
             } else {
-                $callback = array(
-                    'status' => 400,
-                    'title' => "Соообщение системы",
-                    'text' => "Вы не являетесь администратором"
-                );
+                $callbackText = 'Вы не являетесь администратором';
             }
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Соообщение системы",
-                'text' => "Вы не авторизованы"
-            );
+            $callbackText = 'Вы не авторизованы';
         }
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
- 
     } else {
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Что то не так"
-        );
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        $callbackText = 'Ошибка !';
     }
+ 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
+ 
 });
  
 // Удалить шаблон
@@ -1230,6 +1156,11 @@ $app->post($admin_router.'template-delete', function (Request $request, Response
     $utility = new Utility();
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = $utility->clean($post_csrf);
+ 
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         
@@ -1242,34 +1173,24 @@ $app->post($admin_router.'template-delete', function (Request $request, Response
             // Получаем массив
             $admin->delete($directory);
  
-            $callback = array('status' => 200);
+            $callbackStatus = 200;
  
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Соообщение системы",
-                'text' => "Не определено название шаблона"
-            );
+            $callbackText = 'Ошибка !';
         }
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
- 
     } else {
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Что то не так"
-        );
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        $callbackText = 'Ошибка !';
     }
+ 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
+ 
 });
  
 // Список шаблонов
@@ -1281,7 +1202,7 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
     $request = $hook->request();
     $args = $hook->args();
  
-    // Подключаем плагины
+ // Подключаем плагины
     $utility = new Utility();
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
@@ -1366,11 +1287,10 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
         "api" => $api
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -1470,11 +1390,10 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
         "content" => $content
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -1585,11 +1504,10 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
         "content" => $content
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -1695,11 +1613,10 @@ $app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $requ
         "content" => $content
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -1766,13 +1683,18 @@ $app->post($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $req
         }
     }
  
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+    $callbackUrl = '';
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         if (isset($session->authorize)) {
             if ($session->authorize == 1 && $session->role_id == 100) {
                 if (isset($post['name']) && $post['name'] != '') {
-                    $arr = array();
-                    $param = array();
+                    $arr = [];
+                    $param = [];
                     
                     if (isset($post['namespace'])) {if ($post['version'] != '') {
                             $arr['namespace'] = $post['namespace'];
@@ -1831,61 +1753,34 @@ $app->post($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $req
                     $package = $packages->put($param);
  
                     if($package == 'new') {
-                        $callback = array('status' => 201, 'url' => $config['routers']['admin'].'packages');
+                        $callbackStatus = 201;
+                        $callbackUrl = $config['routers']['admin'].'packages';
                     } elseif($package == true) {
-                        $callback = array('status' => 200);
+                        $callbackStatus = 200;
                     } else {
-                        $callback = array(
-                            'status' => 400,
-                            'title' => "Соообщение системы",
-                            'text' => "Что то не так !"
-                        );
+                        $callbackText = 'Ошибка !';
                     }
-                
                 } else {
-                    $callback = array(
-                        'status' => 400,
-                        'title' => "Соообщение системы",
-                        'text' => "Что то не так !"
-                    );
+                    $callbackText = 'Ошибка !';
                 }
             } else {
-                $callback = array(
-                    'status' => 400,
-                    'title' => "Соообщение системы",
-                    'text' => "Вы не администратор"
-                );
+                $callbackText = 'Вы не администратор';
             }
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Соообщение системы",
-                'text' => "Вы не авторизованы"
-            );
+            $callbackText = 'Вы не авторизованы';
         }
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
- 
-        // Выводим json
-        echo json_encode($callback);
- 
     } else {
- 
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Обновите страницу"
-        );
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
- 
+        $callbackText = 'Обновите страницу';
     }
+ 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText, 'url' => $callbackUrl];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
  
 });
  
@@ -1949,6 +1844,10 @@ $app->post($admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $requ
         }
     }
  
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         if (isset($session->authorize)) {
@@ -1970,58 +1869,31 @@ $app->post($admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $requ
                     }
  
                     if($content == true){
-                        $callback = array('status' => 200);
+                        $callbackStatus = 200;
                     } else {
-                        $callback = array(
-                            'status' => 400,
-                            'title' => "Соообщение системы",
-                            'text' => "Что то не так ! *******"
-                        );
+                        $callbackText = 'Ошибка !';
                     }
                 } else {
-                    $callback = array(
-                        'status' => 400,
-                        'title' => "Соообщение системы",
-                        'text' => "Что то не так ! ХХХХХХ"
-                    );
+                    $callbackText = 'Ошибка !';
                 }
             } else {
-                $callback = array(
-                    'status' => 400,
-                    'title' => "Соообщение системы",
-                    'text' => "Вы не администратор"
-                );
+                $callbackText = 'Вы не администратор';
             }
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Соообщение системы",
-                'text' => "Вы не авторизованы"
-            );
+            $callbackText = 'Вы не авторизованы';
         }
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
- 
-        // Выводим json
-        echo json_encode($callback);
- 
     } else {
- 
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Обновите страницу"
-        );
- 
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
- 
+        $callbackText = 'Обновите страницу';
     }
+ 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
  
 });
  
@@ -2115,11 +1987,10 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
         "content" => $content
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -2215,11 +2086,10 @@ $app->get($admin_router.'packages-install', function (Request $request, Response
         "content" => $content
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -2315,11 +2185,10 @@ $app->get($admin_router.'packages-install-json', function (Request $request, Res
         "content" => $content
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -2414,11 +2283,10 @@ $app->get($admin_router.'config', function (Request $request, Response $response
         "content" => $content
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -2518,11 +2386,10 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
         "content" => $content
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -2615,11 +2482,10 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
         "content" => $content
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -2694,7 +2560,7 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
  
             // Получаем массив параметров uri
             $queryParams = $request->getQueryParams();
-            $arr = array();
+            $arr = [];
             $arr['state'] = 1;
             $arr['offset'] = 0;
             $arr['limit'] = 30;
@@ -2809,11 +2675,10 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
         "url" => $url_path
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  
@@ -2945,11 +2810,10 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
         "content" => $content
     ];
  
-    // Запись в лог
-    $this->logger->info("admin/".$render);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->admin->render($hook->render(), $hook->view());
  

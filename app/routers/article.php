@@ -64,7 +64,15 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
     // Меню, берет название класса из конфигурации
     $menu = (new $config['vendor']['menu']())->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    if (isset($getParams['lang'])) {$lang = $getParams['lang'];} elseif (isset($session->language)){$lang = $session->language;} else {$lang = '';}
+    if ($hook->cache('language/'.$lang, 30*24*60*60) === null) {
+        $language = (new Language($getParams))->get();
+        if ($hook->cache_state() == '1') {
+            $hook->cache_set($language);
+        }
+    } else {
+            $language = $hook->content();
+    }
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -243,48 +251,53 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
     $og_url = $config['settings']['site']['og_url'];
  
     if (isset($alias)) {
-        // Ресурс (таблица) к которому обращаемся
-        $resource = "article";
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($config);
-        // Получаем название базы для указанного ресурса
-        $name_db = $router->ping($resource);
-        // Подключаемся к базе
-        $db = new Db($name_db, $config);
-
-        // Отправляем запрос и получаем данные
-        $resp = $db->get($resource, ["alias" => $alias]);
+        $render = $template['layouts']['article'] ? $template['layouts']['article'] : 'article.html';
+        // Если hook->cache дает null работаем без кеша
+        if ($hook->cache() == null) {
+            // Ресурс (таблица) к которому обращаемся
+            $resource = "article";
+            // Отдаем роутеру RouterDb конфигурацию.
+            $router = new Router($config);
+            // Получаем название базы для указанного ресурса
+            $name_db = $router->ping($resource);
+            // Подключаемся к базе
+            $db = new Db($name_db, $config);
+            // Отправляем запрос и получаем данные
+            $resp = $db->get($resource, ["alias" => $alias]);
  
-        if (isset($resp["headers"]["code"])) {
-            if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == "200") {
+            if (isset($resp["headers"]["code"])) {
+                if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == "200") {
+                    // Если данные в виде объекта переводим в массив
+                    if(is_object($resp["body"]["items"]["0"]["item"])) {
+                        $content = (array)$resp["body"]["items"]["0"]["item"];
+                    } elseif (is_array($resp["body"]["items"]["0"]["item"])) {
+                        $content = $resp["body"]["items"]["0"]["item"];
+                    }
  
-                // Если данные в виде объекта переводим в массив
-                if(is_object($resp["body"]["items"]["0"]["item"])) {
-                    $content = (array)$resp["body"]["items"]["0"]["item"];
-                } elseif (is_array($resp["body"]["items"]["0"]["item"])) {
-                    $content = $resp["body"]["items"]["0"]["item"];
+                    $content["text"] = htmlspecialchars_decode($content["text"]);
+                    $content["text_ru"] = htmlspecialchars_decode($content["text_ru"]);
+                    $content["text_ua"] = htmlspecialchars_decode($content["text_ua"]);
+                    $content["text_en"] = htmlspecialchars_decode($content["text_en"]);
+                    $content["text_de"] = htmlspecialchars_decode($content["text_de"]);
+ 
+                    $title = $content["seo_title"];
+                    $keywords = $content["seo_keywords"];
+                    $description = $content["seo_description"];
+                    $og_url = $content["og_url"];
+                    $og_title = $content["og_title"];
+                    $og_description = $content["og_description"];
+ 
+                    if (isset($content['layouts'])) {
+                        $render = $content['layouts'] ? $content['layouts'] : $template['layouts']['article'];
+                    }
                 }
- 
-                $content["text"] = htmlspecialchars_decode($content["text"]);
-                $content["text_ru"] = htmlspecialchars_decode($content["text_ru"]);
-                $content["text_ua"] = htmlspecialchars_decode($content["text_ua"]);
-                $content["text_en"] = htmlspecialchars_decode($content["text_en"]);
-                $content["text_de"] = htmlspecialchars_decode($content["text_de"]);
- 
-                $title = $content["seo_title"];
-                $keywords = $content["seo_keywords"];
-                $description = $content["seo_description"];
-                $og_url = $content["og_url"];
-                $og_title = $content["og_title"];
-                $og_description = $content["og_description"];
- 
-                if (isset($content['layouts'])) {
-                    $render = $content['layouts'] ? $content['layouts'] : $template['layouts']['article'];
-                } else {
-                    $render = $template['layouts']['article'] ? $template['layouts']['article'] : 'article.html';
-                }
- 
             }
+            if ($hook->cache_state() == '1') {
+                // Сохраняем кеш
+                $hook->cache_set($content);
+            }
+        } else {
+            $content = $hook->content();
         }
     }
  
@@ -317,11 +330,10 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
         "content" => $content
     ];
  
-    // Запись в лог
-    $this->logger->info($render." - ".$alias);
- 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->view->render($hook->render(), $hook->view());
  

@@ -203,69 +203,77 @@ $app->post($logout_router, function (Request $request, Response $response, array
     $request = $hook->request();
     $args = $hook->args();
  
+    $today = date("Y-m-d H:i:s");
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
+    // Подключаем плагины
+    $utility = new Utility();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
-    
+    // Подключаем систему безопасности
+    $security = new Security();
+ 
     try {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security())->token();
+        $token = 0;
         // Сообщение об Атаке или подборе токена
+        $security->token($request, $response);
     }
-    // Получаем данные отправленные нам через POST
-    $post = $request->getParsedBody();
     try {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        // Чистим данные на всякий случай пришедшие через POST
+        $csrf = $utility->clean($post_csrf);
     } catch (\Exception $ex) {
-        (new Security())->csrf();
+        $csrf = 1;
         // Сообщение об Атаке или подборе csrf
+        $security->csrf($request, $response);
     }
-    // Подключаем плагины
-    $utility = new Utility();
-    // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+ 
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
+ 
         $session->authorize = null;
         $session->cookie = '';
         unset($session->authorize); // удаляем сесию
         unset($session->id); // удаляем сесию
         unset($session->cookie); // удаляем сесию
+        $session->destroy();
+ 
         $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
         if ($config['settings']['site']['cookie_httponly'] == '1'){
             setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain, 1, true);
         } else {
             setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain);
         }
-        $session->destroy();
-        $callback = array(
-            'status' => 200,
-            'title' => "Информация",
-            'text' => "Вы вышли из системы"
-        );
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+ 
+        $callbackStatus = 200;
+        $callbackTitle = 'Информация';
+        $callbackText = 'Вы вышли из системы';
+ 
     } else {
-        $callback = array(
-            'status' => 200,
-            'title' => "Ошибка",
-            'text' => "Что то не так"
-        );
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        $callbackText = 'Действие заблокировано';
     }
+ 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
+ 
 });
   
 // Авторизация
@@ -278,67 +286,54 @@ $app->post($login_router, function (Request $request, Response $response, array 
     $args = $hook->args();
  
     $today = date("Y-m-d H:i:s");
+    // Получаем данные отправленные нам через POST
+    $post = $request->getParsedBody();
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
-    // Читаем ключи
-    $session_key = $config['key']['session'];
-    $cookie_key = $config['key']['cookie'];
-    $token_key = $config['key']['token'];
+    // Подключаем плагины
+    $utility = new Utility();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    // Читаем ключи
+    $token_key = $config['key']['token'];
+    $session_key = $config['key']['session'];
+    // Подключаем систему безопасности
+    $security = new Security();
+ 
     try {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security())->token();
-        // Сообщение об Атаке или подмене сессии
-        $callback = array(
-            'status' => 400,
-            'title' => "Сообщение системы",
-            'text' => "Вы не прошли проверку системы безопасности !<br>У вас осталась одна попытка :)"
-        );
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
-    } 
-    // Получаем данные отправленные нам через POST
-    $post = $request->getParsedBody();
-    $post_email = filter_var($post['email'], FILTER_SANITIZE_STRING);
-    $post_phone = filter_var($post['phone'], FILTER_SANITIZE_STRING);
-    $post_password = filter_var($post['password'], FILTER_SANITIZE_STRING);
+        $token = 0;
+        // Сообщение об Атаке или подборе токена
+        $security->token($request, $response);
+    }
     try {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        // Чистим данные на всякий случай пришедшие через POST
+        $csrf = $utility->clean($post_csrf);
     } catch (\Exception $ex) {
-        (new Security())->csrf();
+        $csrf = 1;
         // Сообщение об Атаке или подборе csrf
+        $security->csrf($request, $response);
     }
-    // Подключаем плагины
-    $utility = new Utility();
+ 
     // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
-    $email = $utility->clean($post_email);
-    $new_phone = $utility->phone_clean($post_phone);
-    $password = $utility->clean($post_password);
+    $email = filter_var($utility->clean($post['email']), FILTER_SANITIZE_STRING);
+    $new_phone = filter_var($utility->phone_clean($post['phone']), FILTER_SANITIZE_STRING);
+    $password = filter_var($utility->clean($post['password']), FILTER_SANITIZE_STRING);
+ 
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         $pattern = "/^[\+0-9\-\(\)\s]*$/";
         if(preg_match($pattern, $new_phone)) {
             $phone = $new_phone;
-        } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Сообщение системы",
-                'text' => "Номер телефона не валиден"
-            );
-            // Выводим заголовки
-            $response->withStatus(200);
-            $response->withHeader('Content-type', 'application/json');
-            // Выводим json
-            echo json_encode($callback);
-        }
+        
         if(!empty($phone) && !empty($email)) {
             $email_validate = filter_var($email, FILTER_VALIDATE_EMAIL);
             if($utility->check_length($phone, 8, 25) && $email_validate) {
@@ -381,9 +376,10 @@ $app->post($login_router, function (Request $request, Response $response, array 
                                     $session->phone = $config['vendor']['crypto']::encrypt($user["phone"], $session_key);
                                     $session->email = $config['vendor']['crypto']::encrypt($user["email"], $session_key);
                             
-                                    $callback = array('status' => 200);
+                                    $callbackStatus = 200;
  
                                 } else {
+ 
                                     $session->authorize = null;
                                     $session->role_id = null;
                                     $session->user_id = null;
@@ -391,116 +387,44 @@ $app->post($login_router, function (Request $request, Response $response, array 
                                     unset($session->role_id); // удаляем role_id
                                     unset($session->user_id); // удаляем role_id
  
-                                    $callback = array(
-                                        'status' => 400,
-                                        'title' => "Сообщение системы",
-                                        'text' => "Ваш аккаунт заблокирован"
-                                    );
+                                    $callbackText = 'Ваш аккаунт заблокирован';
  
                                 }
                             }
                         }
- 
                     } else {
-                        $callback = array(
-                           'status' => 400,
-                           'title' => "Сообщение системы",
-                           'text' => "Ошибка cookie"
-                        );
+                        $callbackText = 'Ошибка cookie';
                     }
- 
-                    // Выводим заголовки
-                    $response->withStatus(200);
-                    $response->withHeader('Content-type', 'application/json');
-                    // Выводим json
-                    echo json_encode($callback);
- 
                 } else {
-                    $callback = array(
-                        'status' => 400,
-                        'title' => "Сообщение системы",
-                        'text' => "Login failed. Incorrect credentials"
-                    );
-                    // Выводим заголовки
-                    $response->withStatus(200);
-                    $response->withHeader('Content-type', 'application/json');
-                    // Выводим json
-                    echo json_encode($callback);
+                    $callbackText = 'Login failed. Incorrect credentials';
                 }
             } else {
-                $callback = array(
-                    'status' => 400,
-                    'title' => "Сообщение системы",
-                    'text' => "Введите правильные данные !"
-                );
-                // Выводим заголовки
-                $response->withStatus(200);
-                $response->withHeader('Content-type', 'application/json');
-                // Выводим json
-                echo json_encode($callback);
+                $callbackText = 'Введите правильные данные !';
             }
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Сообщение системы",
-                'text' => "Заполните пустые поля"
-            );
-            // Выводим заголовки
-            $response->withStatus(200);
-            $response->withHeader('Content-type', 'application/json');
-            // Выводим json
-            echo json_encode($callback);
+            $callbackText = 'Заполните пустые поля';
         }
-        //print_r($callback);
+        } else {
+            $callbackText = 'Номер телефона не валиден';
+        }
     } else {
-        $callback = array(
-            'status' => 400,
-            'title' => "Сообщение системы безопасности",
-            'text' => "Перегрузите страницу"
-        );
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        $callbackText = 'Перегрузите страницу';
     }
+ 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
+ 
 });
  
 // Регистрация
 $app->post($check_in_router, function (Request $request, Response $response, array $args) {
  
-    // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST', 'site');
-    $request = $hook->request();
-    $args = $hook->args();
- 
-    $today = date("Y-m-d H:i:s");
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
-    // Читаем ключи
-    $session_key = $config['key']['session'];
-    $cookie_key = $config['key']['cookie'];
-    $token_key = $config['key']['token'];
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
-    try {
-        // Получаем токен из сессии
-        $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
-    } catch (\Exception $ex) {
-        (new Security())->token();
-        // Сообщение об Атаке или подмене сессии
-        $callback = array(
-            'status' => 400,
-            'title' => "Сообщение системы",
-            'text' => "Вы не прошли проверку системы безопасности !<br>У вас осталась одна попытка :)"
-        );
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
-    }
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
     $post_email = filter_var($post['email'], FILTER_SANITIZE_STRING);
@@ -508,17 +432,11 @@ $app->post($check_in_router, function (Request $request, Response $response, arr
     $post_password = filter_var($post['password'], FILTER_SANITIZE_STRING);
     $post_iname = filter_var($post['iname'], FILTER_SANITIZE_STRING);
     $post_fname = filter_var($post['fname'], FILTER_SANITIZE_STRING);
-    try {
-        // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
-    } catch (\Exception $ex) {
-        (new Security())->csrf();
-        // Сообщение об Атаке или подборе csrf
-    }
-    // Подключаем плагины
-    $utility = new Utility();
-    // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+ 
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         $email = $utility->clean($post_email);
@@ -603,7 +521,7 @@ $app->post($check_in_router, function (Request $request, Response $response, arr
                         $session->iname = $config['vendor']['crypto']::encrypt($iname, $session_key);
                         $session->fname = $config['vendor']['crypto']::encrypt($fname, $session_key);
 
-                        $callback = array('status' => 200);
+                        $callback = ['status' => 200];
                         // Выводим заголовки
                         $response->withStatus(200);
                         $response->withHeader('Content-type', 'application/json');
@@ -613,7 +531,7 @@ $app->post($check_in_router, function (Request $request, Response $response, arr
                         $callback = array(
                             'status' => 400,
                             'title' => "Сообщение системы",
-                            'text' => "Что то не так"
+                            'text' => "Ошибка"
                         );
                         // Выводим заголовки
                         $response->withStatus(200);
@@ -669,6 +587,16 @@ $app->post($check_in_router, function (Request $request, Response $response, arr
         $response->withHeader('Content-type', 'application/json');
         // Выводим json
         echo json_encode($callback);
-    } 
+    }
+ 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
+ 
 });
  

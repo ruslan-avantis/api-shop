@@ -50,7 +50,15 @@ $app->get($index_router, function (Request $request, Response $response, array $
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    if (isset($getParams['lang'])) {$lang = $getParams['lang'];} elseif (isset($session->language)){$lang = $session->language;} else {$lang = '';}
+    if ($hook->cache('language/'.$lang, 30*24*60*60) === null) {
+        $language = (new Language($getParams))->get();
+        if ($hook->cache_state() == '1') {
+            $hook->cache_set($language);
+        }
+    } else {
+            $language = $hook->content();
+    }
     // Меню, берет название класса из конфигурации
     $menu = (new $config['vendor']['menu']())->get();
     // Подключаем сессию, берет название класса из конфигурации
@@ -116,22 +124,32 @@ $app->get($index_router, function (Request $request, Response $response, array $
         $template = $templateConfig->get();
  
         // Эти параметры должны браться из конфигурации шаблона
-        $arr = array(
+        $arr = [
             "limit" => $template['products']['home']['limit'],
             "sort" => $template['products']['home']['sort'],
             "order" => $template['products']['home']['order'],
             "relations" => $template['products']['home']['relations'],
             "state_seller" => 1
-        );
+        ];
  
-        // Получаем список товаров
-        $productsList = new $config['vendor']['products_home']();
-        $content = $productsList->get($arr, $template, $host);
-        
+        // Встроенный адаптер кеша
+        if ($hook->cache('site/index') === null) {
+            // Получаем список товаров
+            $productsList = new $config['vendor']['products_home']();
+            $content = $productsList->get($arr, $template, $host);
+            if ($hook->cache_state() == '1') {
+                //print('index - 1<br>');
+                $hook->cache_set($content);
+            }
+        } else {
+            $content = $hook->content();
+            //print('index - 2<br>');
+        }
+ 
         if (count($content) >= 1) {
             $render = $template['layouts']['index'] ? $template['layouts']['index'] : 'index.html';
         }
-        
+ 
         $view = [
             "head" => $head,
             "routers" => $routers,
@@ -145,8 +163,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
             "content" => $content
         ];
  
-    }
-    else {
+    } else {
         // Если ключа доступа у нет, значит сайт еще не активирован
         $content = '';
         $render = 'index.html';
@@ -175,23 +192,21 @@ $app->get($index_router, function (Request $request, Response $response, array $
         }
  
         $view = [
-            "head" => $head,
-            "template" => "install",
-            "routers" => $routers,
-            "config" => $config['settings']['site'],
-            "language" => $language,
-            "token" => $session->token,
-            "session" => $sessionUser,
-            "content" => $content
+                "head" => $head,
+                "template" => "install",
+                "routers" => $routers,
+                "config" => $config['settings']['site'],
+               "language" => $language,
+                "token" => $session->token,
+                "session" => $sessionUser,
+                "content" => $content
         ];
- 
     }
- 
-    // Запись в лог
-    $this->logger->info($render);
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
+    // Запись в лог
+    $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
     return $this->view->render($hook->render(), $hook->view());
  

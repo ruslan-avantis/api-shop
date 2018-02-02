@@ -24,6 +24,13 @@ $config = (new Settings())->get();
 $cart_router = $config['routers']['cart'];
  
 $app->post($cart_router.'new-order', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->http($request, $response, $args, 'POST', 'site');
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
@@ -31,8 +38,32 @@ $app->post($cart_router.'new-order', function (Request $request, Response $respo
     // Читаем ключи
     $session_key = $config['key']['session'];
     $cookie_key = $config['key']['cookie'];
+    // Подключаем мультиязычность
+    $language = (new Language([]))->get();
     // Разбираем post
     $post = $request->getParsedBody();
+    // Подключаем систему безопасности
+    $security = new Security();
+ 
+    try {
+        // Получаем токен из сессии
+        $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+    } catch (\Exception $ex) {
+        $token = 0;
+        // Сообщение об Атаке или подборе токена
+        $security->token($request, $response);
+    }
+    try {
+        // Получаем токен из POST
+        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        // Чистим данные на всякий случай пришедшие через POST
+        $csrf = $utility->clean($post_csrf);
+    } catch (\Exception $ex) {
+        $csrf = 1;
+        // Сообщение об Атаке или подборе csrf
+        $security->csrf($request, $response);
+    }
+ 
     $id = filter_var($post['id'], FILTER_SANITIZE_STRING);
     $iname = filter_var($post['iname'], FILTER_SANITIZE_STRING);
     $fname = filter_var($post['fname'], FILTER_SANITIZE_STRING);
@@ -47,11 +78,7 @@ $app->post($cart_router.'new-order', function (Request $request, Response $respo
     $num = filter_var($post['num'], FILTER_SANITIZE_STRING);
     $description = filter_var($post['description'], FILTER_SANITIZE_STRING);
     $cookie = $config['vendor']['crypto']::decrypt($_COOKIE[$config['settings']['session']['name']], $cookie_key);
-    
  
-    // Подключаем мультиязычность
-    $language = (new Language([]))->get();
-
     if ($session->authorize == 1) {
         $user_id = $config['vendor']['crypto']::decrypt($session->user_id, $session_key);
     } else {
@@ -82,7 +109,11 @@ $app->post($cart_router.'new-order', function (Request $request, Response $respo
             $user_id = $user['response']['id'];
         }
     }
-
+ 
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     if ($user_id >= 1) {
  
         $addressArr = [
@@ -154,57 +185,39 @@ $app->post($cart_router.'new-order', function (Request $request, Response $respo
                 $cart = $db->post($resource, $cartArr);
  
                 if ($cart >= 1) {
-                $callback = array(
-                    'status' => 200,
-                    'title' => '<div class="text-center">Спасибо за заказ. Копию заказа мы отправили вам на почту.</div>',
-                    'text' => ''
-                );
-                // Выводим заголовки
-                $response->withStatus(200);
-                $response->withHeader('Content-type', 'application/json');
-                // Выводим json
-                echo json_encode($callback);
+                    $callbackStatus = 200;
+                    $callbackTitle = 'Спасибо за заказ';
+                    $callbackText = '<div class="text-center">Копию заказа мы отправили вам на почту.</div>';
                 }
             } else {
-                $callback = array(
-                    'status' => 400,
-                    'title' => "Сообщение системы",
-                    'text' => "3"
-                );
-                // Выводим заголовки
-                $response->withStatus(200);
-                $response->withHeader('Content-type', 'application/json');
-                // Выводим json
-                echo json_encode($callback);
+                $callbackText = 'Ошибка !';
             }
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Сообщение системы",
-                'text' => "2"
-            );
-            // Выводим заголовки
-            $response->withStatus(200);
-            $response->withHeader('Content-type', 'application/json');
-            // Выводим json
-            echo json_encode($callback);
+            $callbackText = 'Ошибка !';
         }
     } else {
-        $callback = [
-            'status' => 400,
-            'title' => "Сообщение системы",
-            'text' => "1"
-        ];
-        // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        $callbackText = 'Ошибка !';
     }
  
-    });
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
+ 
+});
  
 $app->post($cart_router.'add-to-cart', function (Request $request, Response $response, array $args) {
+ 
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook();
+    $hook->http($request, $response, $args, 'POST', 'site');
+    $request = $hook->request();
+    $args = $hook->args();
+ 
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
@@ -212,6 +225,8 @@ $app->post($cart_router.'add-to-cart', function (Request $request, Response $res
     // Читаем ключи
     $session_key = $config['key']['session'];
     $cookie_key = $config['key']['cookie'];
+    // Подключаем мультиязычность
+    $language = (new Language([]))->get();
     // Разбираем post
     $post = $request->getParsedBody();
     $id = filter_var($post['id'], FILTER_SANITIZE_STRING);
@@ -220,8 +235,9 @@ $app->post($cart_router.'add-to-cart', function (Request $request, Response $res
     $num = filter_var($post['num'], FILTER_SANITIZE_STRING);
     $cookie = $config['vendor']['crypto']::decrypt($_COOKIE[$config['settings']['session']['name']], $cookie_key);
  
-    // Подключаем мультиязычность
-    $language = (new Language([]))->get();
+    $callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
  
     if ($session->authorize == 1) {
         $user_id = $config['vendor']['crypto']::decrypt($session->user_id, $session_key);
@@ -249,18 +265,34 @@ $app->post($cart_router.'add-to-cart', function (Request $request, Response $res
     $name_db = $router->ping($resource);
     // Подключаемся к базе
     $db = new Db($name_db, $config);
-    // Отправляем запрос и получаем данные
-    $cart = $db->post($resource, $cartArr);
  
-    if ($cart >= 1) {
-        $callback = [
-            'status' => 200,
-            'title' => $language["23"],
-            'text' => $language["126"]." ".$language["124"]."<br>".$language["194"]." ".$price
-        ];
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        echo json_encode($callback);
+    // Передаем данные Hooks для обработки ожидающим классам
+    $hook->post($resource, $name_db, 'POST', $cartArr, null);
+    $hookState = $hook->state();
+    // Если Hook вернул true
+    if ($hookState == true) {
+            // Обновленные Hooks данные
+            $hookResource = $hook->resource();
+            $hookPostArr = $hook->postArr();
+            // Отправляем запрос в базу
+            $dbState = $db->post($hookResource, $hookPostArr);
+        if ($dbState >= 1) {
+            // Ответ
+            $callbackStatus = 200;
+            $callbackTitle = $language["23"];
+            $callbackText = $language["126"]." ".$language["124"]."<br>".$language["194"]." ".$price;
+        } else {
+            $callbackText = 'Действие заблокировано';
+        }
     }
+ 
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    // Выводим заголовки
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    // Подменяем заголовки
+    $response = $hook->response();
+    // Выводим json
+    echo json_encode($hook->callback($callback));
  
 });
