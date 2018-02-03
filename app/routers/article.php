@@ -20,16 +20,18 @@ use RouterDb\Router;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Hooks\Hook;
+use ApiShop\Adapter\Cache;
+use ApiShop\Adapter\Menu;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
 use ApiShop\Resources\Template;
 use ApiShop\Model\SessionUser;
  
 $config = (new Settings())->get();
-$article_category_router = $config['routers']['article_category'];
-$article_router = $config['routers']['article'];
+$category = $config['routers']['article_category'];
+$article = $config['routers']['article'];
  
-$app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request $request, Response $response, array $args) {
+$app->get($category.'{alias:[a-z0-9_-]+}.html', function (Request $request, Response $response, array $args) {
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
@@ -62,17 +64,10 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
     $templateConfig = new Template($site_template);
     $template = $templateConfig->get();
     // Меню, берет название класса из конфигурации
-    $menu = (new $config['vendor']['menu']())->get();
+    $menu = (new Menu())->get();
     // Подключаем мультиязычность
-    if (isset($getParams['lang'])) {$lang = $getParams['lang'];} elseif (isset($session->language)){$lang = $session->language;} else {$lang = '';}
-    if ($hook->cache('language/'.$lang, 30*24*60*60) === null) {
-        $language = (new Language($getParams))->get();
-        if ($hook->cache_state() == '1') {
-            $hook->cache_set($language);
-        }
-    } else {
-            $language = $hook->content();
-    }
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -186,7 +181,7 @@ $app->get($article_category_router.'{alias:[a-z0-9_-]+}.html', function (Request
  
 });
 
-$app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request, Response $response, array $args) {
+$app->get($article.'{alias:[a-z0-9_-]+}.html', function (Request $request, Response $response, array $args) {
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
@@ -219,9 +214,10 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
     $templateConfig = new Template($site_template);
     $template = $templateConfig->get();
     // Меню, берет название класса из конфигурации
-    $menu = (new $config['vendor']['menu']())->get();
+    $menu = (new Menu())->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -252,8 +248,9 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
  
     if (isset($alias)) {
         $render = $template['layouts']['article'] ? $template['layouts']['article'] : 'article.html';
-        // Если hook->cache дает null работаем без кеша
-        if ($hook->cache() == null) {
+        // Если cache->run дает null работаем без кеша
+        $cache = new Cache($config);
+        if ($cache->run($host.'/site'.$path.'/'.$languages->lang()) === null) {
             // Ресурс (таблица) к которому обращаемся
             $resource = "article";
             // Отдаем роутеру RouterDb конфигурацию.
@@ -292,12 +289,11 @@ $app->get($article_router.'{alias:[a-z0-9_-]+}.html', function (Request $request
                     }
                 }
             }
-            if ($hook->cache_state() == '1') {
-                // Сохраняем кеш
-                $hook->cache_set($content);
+            if ($cache->state() == '1') {
+                $cache->set($content);
             }
         } else {
-            $content = $hook->content();
+            $content = $cache->get();
         }
     }
  

@@ -16,10 +16,12 @@ use Slim\Http\Response;
  
 use RouterDb\Db;
 use RouterDb\Router;
-    
+ 
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Hooks\Hook;
+use ApiShop\Adapter\Cache;
+use ApiShop\Adapter\Menu;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
 use ApiShop\Resources\Template;
@@ -29,9 +31,9 @@ use ApiShop\Resources\Products;
 use ApiShop\Model\SessionUser;
  
 $config = (new Settings())->get();
-$index_router = $config['routers']['index'];
+$index = $config['routers']['index'];
  
-$app->get($index_router, function (Request $request, Response $response, array $args) {
+$app->get($index, function (Request $request, Response $response, array $args) {
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
@@ -50,17 +52,10 @@ $app->get($index_router, function (Request $request, Response $response, array $
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Подключаем мультиязычность
-    if (isset($getParams['lang'])) {$lang = $getParams['lang'];} elseif (isset($session->language)){$lang = $session->language;} else {$lang = '';}
-    if ($hook->cache('language/'.$lang, 30*24*60*60) === null) {
-        $language = (new Language($getParams))->get();
-        if ($hook->cache_state() == '1') {
-            $hook->cache_set($language);
-        }
-    } else {
-            $language = $hook->content();
-    }
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Меню, берет название класса из конфигурации
-    $menu = (new $config['vendor']['menu']())->get();
+    $menu = (new Menu())->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -74,7 +69,7 @@ $app->get($index_router, function (Request $request, Response $response, array $
     // Записываем токен в сессию
     $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Контент по умолчанию
-    $content = '';
+    $content = [];
     $render = '';
  
     if ($config["settings"]["install"]["status"] != null) {
@@ -133,20 +128,19 @@ $app->get($index_router, function (Request $request, Response $response, array $
         ];
  
         // Встроенный адаптер кеша
-        if ($hook->cache('site/index') === null) {
+        $cache = new Cache($config);
+        if ($cache->run('site/index/products/'.$languages->lang()) === null) {
             // Получаем список товаров
             $productsList = new $config['vendor']['products_home']();
-            $content = $productsList->get($arr, $template, $host);
-            if ($hook->cache_state() == '1') {
-                //print('index - 1<br>');
-                $hook->cache_set($content);
+            $content['products'] = $productsList->get($arr, $template, $host);
+            if ($cache->state() == '1') {
+                $cache->set($content['products']);
             }
         } else {
-            $content = $hook->content();
-            //print('index - 2<br>');
+            $content['products'] = $cache->get();
         }
  
-        if (count($content) >= 1) {
+        if (count($content['products']) >= 1) {
             $render = $template['layouts']['index'] ? $template['layouts']['index'] : 'index.html';
         }
  
@@ -163,7 +157,8 @@ $app->get($index_router, function (Request $request, Response $response, array $
             "content" => $content
         ];
  
-    } else {
+    } 
+    else {
         // Если ключа доступа у нет, значит сайт еще не активирован
         $content = '';
         $render = 'index.html';

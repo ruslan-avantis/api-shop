@@ -13,18 +13,18 @@
  
 use Slim\Http\Request;
 use Slim\Http\Response;
-
 use ApiShop\Config\Settings;
 use ApiShop\Resources\Language;
  
 $config = (new Settings())->get();
-$language_router = $config['routers']['language'];
-
+$language = $config['routers']['language'];
+ 
 // Меняем язык отображения в session пользователя
-$app->post($language_router, function (Request $request, Response $response, array $args) {
+$app->post($language, function (Request $request, Response $response, array $args) {
     // Подключаем конфигурацию
     $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
+    //    $session = new Session();
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     $langs = new $config['vendor']['language_detector']();
     // Получаем массив данных из таблицы language на языке из $session->language
@@ -45,8 +45,9 @@ $app->post($language_router, function (Request $request, Response $response, arr
         if ($lg == 3) {$session->language = "en";}
         if ($lg == 4) {$session->language = "de";}
     }
-    $language = (new Language())->get($session->language);
-    
+    $languageGet = new Language($request, $config);
+    $language = $languageGet->get();
+ 
     foreach($language as $key => $value)
     {
         $arr["id"] = $key;
@@ -67,10 +68,11 @@ $app->post($language_router, function (Request $request, Response $response, arr
 });
 
 // Меняем язык отображения в session пользователя
-$app->get($language_router, function (Request $request, Response $response, array $args) {
+$app->get($language, function (Request $request, Response $response, array $args) {
     // Подключаем конфигурацию
     $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
+    //    $session = new Session();
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     $langs = new $config['vendor']['language_detector']();
     // Получаем массив данных из таблицы language на языке из $session->language
@@ -81,7 +83,8 @@ $app->get($language_router, function (Request $request, Response $response, arra
     } else {
         $lang = $site_config["language"];
     }
-    $language = (new Language())->get($lang);
+    $languageGet = new Language($request, $config);
+    $language = $languageGet->get();
     foreach($language as $key => $value)
     {
         $arr["id"] = $key;

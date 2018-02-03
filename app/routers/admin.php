@@ -20,6 +20,7 @@ use RouterDb\Router;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Hooks\Hook;
+ 
 use ApiShop\Resources\Install;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
@@ -60,7 +61,8 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -173,7 +175,8 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -1216,7 +1219,8 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -1325,7 +1329,8 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -1428,7 +1433,8 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -1542,7 +1548,8 @@ $app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $requ
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -1920,7 +1927,8 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -2019,7 +2027,8 @@ $app->get($admin_router.'packages-install', function (Request $request, Response
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -2118,7 +2127,8 @@ $app->get($admin_router.'packages-install-json', function (Request $request, Res
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -2217,7 +2227,8 @@ $app->get($admin_router.'config', function (Request $request, Response $response
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -2315,7 +2326,8 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -2418,7 +2430,8 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -2520,7 +2533,8 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -2719,7 +2733,8 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии

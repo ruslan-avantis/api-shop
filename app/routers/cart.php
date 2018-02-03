@@ -21,9 +21,9 @@ use ApiShop\Config\Settings;
 use ApiShop\Resources\Language;
  
 $config = (new Settings())->get();
-$cart_router = $config['routers']['cart'];
+$cart = $config['routers']['cart'];
  
-$app->post($cart_router.'new-order', function (Request $request, Response $response, array $args) {
+$app->post($cart.'new-order', function (Request $request, Response $response, array $args) {
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
@@ -39,7 +39,8 @@ $app->post($cart_router.'new-order', function (Request $request, Response $respo
     $session_key = $config['key']['session'];
     $cookie_key = $config['key']['cookie'];
     // Подключаем мультиязычность
-    $language = (new Language([]))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Разбираем post
     $post = $request->getParsedBody();
     // Подключаем систему безопасности
@@ -210,7 +211,7 @@ $app->post($cart_router.'new-order', function (Request $request, Response $respo
  
 });
  
-$app->post($cart_router.'add-to-cart', function (Request $request, Response $response, array $args) {
+$app->post($cart.'add-to-cart', function (Request $request, Response $response, array $args) {
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
@@ -226,7 +227,8 @@ $app->post($cart_router.'add-to-cart', function (Request $request, Response $res
     $session_key = $config['key']['session'];
     $cookie_key = $config['key']['cookie'];
     // Подключаем мультиязычность
-    $language = (new Language([]))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Разбираем post
     $post = $request->getParsedBody();
     $id = filter_var($post['id'], FILTER_SANITIZE_STRING);

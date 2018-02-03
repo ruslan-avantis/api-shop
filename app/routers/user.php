@@ -20,6 +20,7 @@ use RouterDb\Router;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Hooks\Hook;
+ 
 use ApiShop\Model\Security;
 use ApiShop\Model\SessionUser;
 use ApiShop\Resources\Language;
@@ -28,14 +29,14 @@ use ApiShop\Resources\Site;
 use ApiShop\Resources\User;
  
 $config = (new Settings())->get();
-$sign_in_router = $config['routers']['sign_in'];
-$sign_up_router = $config['routers']['sign_up'];
-$logout_router = $config['routers']['logout'];
-$login_router = $config['routers']['login'];
-$check_in_router = $config['routers']['check_in'];
+$sign_in = $config['routers']['sign_in'];
+$sign_up = $config['routers']['sign_up'];
+$logout = $config['routers']['logout'];
+$login = $config['routers']['login'];
+$check_in = $config['routers']['check_in'];
  
 // Страница авторизации
-$app->get($sign_in_router, function (Request $request, Response $response, array $args) {
+$app->get($sign_in, function (Request $request, Response $response, array $args) {
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
@@ -62,7 +63,8 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
     $templateConfig = new Template($site_template);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -116,7 +118,7 @@ $app->get($sign_in_router, function (Request $request, Response $response, array
 });
  
 // Страница регистрации
-$app->get($sign_up_router, function (Request $request, Response $response, array $args) {
+$app->get($sign_up, function (Request $request, Response $response, array $args) {
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
@@ -143,7 +145,8 @@ $app->get($sign_up_router, function (Request $request, Response $response, array
     $templateConfig = new Template($site_template);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -195,7 +198,7 @@ $app->get($sign_up_router, function (Request $request, Response $response, array
 });
  
 // Выйти
-$app->post($logout_router, function (Request $request, Response $response, array $args) {
+$app->post($logout, function (Request $request, Response $response, array $args) {
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
@@ -277,7 +280,7 @@ $app->post($logout_router, function (Request $request, Response $response, array
 });
   
 // Авторизация
-$app->post($login_router, function (Request $request, Response $response, array $args) {
+$app->post($login, function (Request $request, Response $response, array $args) {
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
@@ -423,7 +426,7 @@ $app->post($login_router, function (Request $request, Response $response, array 
 });
  
 // Регистрация
-$app->post($check_in_router, function (Request $request, Response $response, array $args) {
+$app->post($check_in, function (Request $request, Response $response, array $args) {
  
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();

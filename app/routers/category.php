@@ -20,6 +20,8 @@ use RouterDb\Router;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Hooks\Hook;
+use ApiShop\Adapter\Cache;
+use ApiShop\Adapter\Menu;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
 use ApiShop\Resources\Template;
@@ -28,9 +30,9 @@ use ApiShop\Model\Filter;
 use ApiShop\Model\Pagination;
  
 $config = (new Settings())->get();
-$category_router = $config['routers']['category'];
+$category = $config['routers']['category'];
  
-$app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
+$app->get($category.'[/{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
@@ -63,17 +65,10 @@ $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request,
     $templateConfig = new Template($site_template);
     $template = $templateConfig->get();
     // Меню, берет название класса из конфигурации
-    $menu = (new $config['vendor']['menu']())->get();
+    $menu = (new Menu())->get();
     // Подключаем мультиязычность
-    if (isset($getParams['lang'])) {$lang = $getParams['lang'];} elseif (isset($session->language)){$lang = $session->language;} else {$lang = '';}
-    if ($hook->cache('language/'.$lang, 30*24*60*60) === null) {
-        $language = (new Language($getParams))->get();
-        if ($hook->cache_state() == '1') {
-            $hook->cache_set($language);
-        }
-    } else {
-            $language = $hook->content();
-    }
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -102,9 +97,10 @@ $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request,
     $og_locale = $config['settings']['site']['og_locale'];
     $og_url = $config['settings']['site']['og_url'];
  
-    // Если hook->cache дает null работаем без кеша
+    // Если cache->run дает null работаем без кеша
     $params_query = "?".http_build_query($getParams);
-    if ($hook->cache($host.'/site'.$path.''.$params_query) === null) {
+    $cache = new Cache($config);
+    if ($cache->run($host.'/site'.$path.''.$params_query.'/'.$languages->lang()) === null) {
  
         $category = '';
         $render = $template['layouts']['category'] ? $template['layouts']['category'] : 'category.html';
@@ -211,36 +207,36 @@ $app->get($category_router.'[/{alias:[a-z0-9_-]+}]', function (Request $request,
         $count = $productsList->count();
         $paginator = $filter->paginator($count);
     
-        if ($hook->cache_state() == '1') {
-            $cache['content'] = $content;
-            $cache['products_template'] = $products_template;
-            $cache['paginator'] = $paginator;
-            $cache['orderArray'] = $orderArray;
-            $cache['sortArray'] = $sortArray;
-            $cache['limitArray'] = $limitArray;
-            $cache['param'] = $arr;
-            $cache['count'] = $count;
-            $cache['get_array'] = $get_array;
-            $cache['url_path'] = $url_path;
-            $cache['render'] = $render;
-            $cache['template'] = $template;
+        if ($cache->state() == '1') {
+            $cacheArr['content'] = $content;
+            $cacheArr['products_template'] = $products_template;
+            $cacheArr['paginator'] = $paginator;
+            $cacheArr['orderArray'] = $orderArray;
+            $cacheArr['sortArray'] = $sortArray;
+            $cacheArr['limitArray'] = $limitArray;
+            $cacheArr['param'] = $arr;
+            $cacheArr['count'] = $count;
+            $cacheArr['get_array'] = $get_array;
+            $cacheArr['url_path'] = $url_path;
+            $cacheArr['render'] = $render;
+            $cacheArr['template'] = $template;
             // Сохраняем кеш
-            $hook->cache_set($cache);
+            $cache->set($cacheArr);
         }
     } else {
-        $cache = $hook->content();
-        $content = $cache['content'];
-        $products_template = $cache['products_template'];
-        $paginator = $cache['paginator'];
-        $orderArray = $cache['orderArray'];
-        $sortArray = $cache['sortArray'];
-        $limitArray = $cache['limitArray'];
-        $arr = $cache['param'];
-        $count = $cache['count'];
-        $get_array = $cache['get_array'];
-        $url_path = $cache['url_path'];
-        $render = $cache['render'];
-        $template = $cache['template'];
+        $cacheArr = $cache->get();
+        $content = $cacheArr['content'];
+        $products_template = $cacheArr['products_template'];
+        $paginator = $cacheArr['paginator'];
+        $orderArray = $cacheArr['orderArray'];
+        $sortArray = $cacheArr['sortArray'];
+        $limitArray = $cacheArr['limitArray'];
+        $arr = $cacheArr['param'];
+        $count = $cacheArr['count'];
+        $get_array = $cacheArr['get_array'];
+        $url_path = $cacheArr['url_path'];
+        $render = $cacheArr['render'];
+        $template = $cacheArr['template'];
     }
  
     $head = [

@@ -20,6 +20,8 @@ use RouterDb\Router;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Hooks\Hook;
+use ApiShop\Adapter\Cache;
+use ApiShop\Adapter\Menu;
 use ApiShop\Adapter\Image;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
@@ -27,12 +29,12 @@ use ApiShop\Resources\Template;
 use ApiShop\Model\SessionUser;
  
 $config = (new Settings())->get();
-$product_router = $config['routers']['product'];
-$product_alias = $config['routers']['product_alias'];
-$product_name = $config['routers']['product_name'];
-$product_quick_view_router = $config['routers']['product_quick_view'];
+$product = $config['routers']['product'];
+$alias = $config['routers']['product_alias'];
+$name = $config['routers']['product_name'];
+$quick_view = $config['routers']['product_quick_view'];
  
-$app->get($product_router.''.$product_alias.''.$product_name, function (Request $request, Response $response, array $args) {
+$app->get($product.''.$alias.''.$name, function (Request $request, Response $response, array $args) {
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
@@ -70,17 +72,10 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
     $templateConfig = new Template($site_template);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    if (isset($getParams['lang'])) {$lang = $getParams['lang'];} elseif (isset($session->language)){$lang = $session->language;} else {$lang = '';}
-    if ($hook->cache('language/'.$lang, 30*24*60*60) === null) {
-        $language = (new Language($getParams))->get();
-        if ($hook->cache_state() == '1') {
-            $hook->cache_set($language);
-        }
-    } else {
-            $language = $hook->content();
-    }
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     // Меню, берет название класса из конфигурации
-    $menu = (new $config['vendor']['menu']())->get();
+    $menu = (new Menu())->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
@@ -113,8 +108,8 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
     $og_url = $config['settings']['site']['og_url'];
  
     if ($alias != null) {
-        $params_query = "?".http_build_query($getParams);
-        if ($hook->cache($host.'/site'.$path) === null) {
+        $cache = new Cache($config);
+        if ($cache->run($host.'/site'.$path.'/'.$languages->lang()) === null) {
             // Ресурс (таблица) к которому обращаемся
             $resource = "price";
             // Отдаем роутеру RouterDb конфигурацию.
@@ -197,15 +192,15 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
                 $render = $template['layouts']['product'] ? $template['layouts']['product'] : 'product.html';
             }
 
-            if ($hook->cache_state($host.'/site/product/'.$path) == '1') {
-                $cache['render'] = $render;
-                $cache['content'] = $content;
-                $hook->cache_set($cache);
+            if ($cache->state($host.'/site/product/'.$path) == '1') {
+                $cacheArr['render'] = $render;
+                $cacheArr['content'] = $content;
+                $cache->set($cacheArr);
             }
         } else {
-            $cache = $hook->content();
-            $content = $cache['content'];
-            $render = $cache['render'];
+            $cacheArr = $cache->get();
+            $content = $cacheArr['content'];
+            $render = $cacheArr['render'];
         }
  
         // Информация для head
@@ -219,7 +214,7 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
             "host" => $host,
             "path" => $path
         ];
-        
+ 
         $view = [
             "head" => $page,
             "routers" => $routers,
@@ -234,8 +229,6 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
             "session_id" => $session->id
         ];
  
-        
-    
     }
  
     // Передаем данные Hooks для обработки ожидающим классам
@@ -247,7 +240,7 @@ $app->get($product_router.''.$product_alias.''.$product_name, function (Request 
  
 });
  
-$app->get($product_quick_view_router.''.$product_alias.''.$product_name, function (Request $request, Response $response, array $args) {
+$app->get($quick_view.''.$alias.''.$name, function (Request $request, Response $response, array $args) {
  
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook();
@@ -284,7 +277,8 @@ $app->get($product_quick_view_router.''.$product_alias.''.$product_name, functio
     $getParams = $request->getQueryParams();
  
     // Подключаем мультиязычность
-    $language = (new Language($getParams))->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
  
     // Генерируем токен
     $token = $utility->random_token();
