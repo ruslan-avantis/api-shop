@@ -22,7 +22,7 @@
 		"twig": {
 			"state": "1",
 			"strict_variables": "0",
-			"cache_dir": "/../_twig_cache"
+			"cache_dir": "/../../cache/_twig_cache"
 		},
 		"memcached": {
 			"pool": "\\Cache\\Adapter\\Memcached\\MemcachedCachePool",
@@ -38,7 +38,7 @@
 			"pool": "\\Cache\\Adapter\\Filesystem\\FilesystemCachePool",
 			"filesystem_adapter": "\\League\\Flysystem\\Adapter\\Local",
 			"filesystem": "\\League\\Flysystem\\Filesystem",
-			"path": "app/_cache"
+			"path": "cache/_file_cache"
 		},
 		"elasticsearch": {
 			"pool": "\\ApiShop\\Adapter\\Cache\\Elasticsearch",
