@@ -13,16 +13,10 @@
  
 namespace ApiShop\Adapter;
  
-use Slim\Http\Request;
-use Slim\Http\Response;
- 
 use ApiShop\Utilities\Server;
  
-class Cache {
- 
-    private $args;
-    private $request;
-    private $response;
+class Cache
+{
     private $config;
     private $content = '';
     private $state = '0';
@@ -42,11 +36,8 @@ class Cache {
     private $nproc;
     private $url = null;
  
-    public function __construct(Request $request, Response $response, array $args, $config)
+    public function __construct($config)
     {
-        $this->request = $request;
-        $this->response = $response;
-        $this->args = $args;
         $this->state = $config['cache']['state'];
         $this->dynamic = $config['cache']['dynamic'];
         $this->vendor = $config['cache']['vendor'];
@@ -119,29 +110,7 @@ class Cache {
         }
     }
  
-    public function cacheKey()
-    {
-        if(isset($this->url)) {
-            $url = $this->url;
-        } else {
-            $request = $this->request;
-            $host = $request->getUri()->getHost();
-            $path = $request->getUri()->getPath();
-            $query = isset($_SERVER['QUERY_STRING']) ? "?" . $_SERVER['QUERY_STRING'] : "";
-            //$scheme = $request->getUri()->getScheme();
-            //$params = $request->getQueryParams();
-            $url = '//'.$host.$path.$query;
-        }
-        $key = hash('md5', $url);
-        //$key = sha1($_SERVER['REQUEST_URI']);
-        if ((int)$this->print == 1) {
-            print('<br>url: '.$url);
-            print('<br>key: '.$key);
-        }
-        return $key;
-    }
- 
-    public function content()
+    public function get()
     {
          $content = json_decode($this->content, true);
          return $content;
@@ -150,7 +119,6 @@ class Cache {
     public function set($content)
     {
         $this->content = json_encode($content);
-        //$this->item = $this->pool->getItem($this->cacheKey());
         $this->item->set($this->content);
         $this->item->expiresAfter((int)$this->cache_lifetime);
         $this->pool->save($this->item);
@@ -208,6 +176,25 @@ class Cache {
         }
  
         return $driver;
+    }
+ 
+    public function cacheKey()
+    {
+        if(isset($this->url)) {
+            $url = $this->url;
+        } else {
+            $path = isset($_SERVER['PHP_SELF']) ? "?" . $_SERVER['PHP_SELF'] : ""; 
+            $host = isset($_SERVER['SERVER_NAME']) ? "?" . $_SERVER['SERVER_NAME'] : "";
+            $query = isset($_SERVER['QUERY_STRING']) ? "?" . $_SERVER['QUERY_STRING'] : "";
+            //$url = "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+            $url = '//'.$host.$path.$query;
+        }
+        $key = hash('md5', $url);
+        if ((int)$this->print == 1) {
+            print('<br>url: '.$url);
+            print('<br>key: '.$key);
+        }
+        return $key;
     }
  
 }

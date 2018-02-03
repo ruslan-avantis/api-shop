@@ -13,9 +13,12 @@
  
 namespace ApiShop\Resources;
  
+use Slim\Http\Request;
+use Slim\Http\Response;
 use RouterDb\Db;
 use RouterDb\Router;
- 
+use ApiShop\Hooks\Hook;
+use ApiShop\Adapter\Cache;
 use ApiShop\Config\Settings;
  
 class Language {
@@ -24,13 +27,14 @@ class Language {
     private $language = "en";
     private $resource = "language";
     private $config;
+    private $request;
  
-    function __construct(array $getParams = array())
+    function __construct(Request $request, $config)
     {
-        // Подключаем конфиг Settings\Config
-        $config = (new Settings())->get();
+        $this->request = $request;
         $this->config = $config;
- 
+        
+        $getParams = $request->getQueryParams();
         // Подключаем сессию, берет название класса из конфигурации
         $session = new $this->config['vendor']['session']($this->config['settings']['session']['name']);
  
@@ -61,21 +65,36 @@ class Language {
     // Ресурс language доступен только на чтение
     public function get()
     {
-        // Подключаемся к базе
-        $db = new Db($this->db_name, $this->config);
-        // Отправляем запрос и получаем данные
-        $response = $db->get($this->resource);
+        $cache = new Cache($this->config);
+        if ($cache->run('language/'.$this->language, 30*24*60*60) === null) {
+            // Подключаемся к базе
+            $db = new Db($this->db_name, $this->config);
+            // Отправляем запрос и получаем данные
+            $resp = $db->get($this->resource);
+            if ($resp != null) {
+                foreach($resp['body']['items'] as $value)
+                {
+                    $array = (array)$value['item'];
+                    $arr[$array["id"]] = $array[$this->language];
+                }
+                if ($cache->state() == '1') {
+                    $cache->set($arr);
+                }
  
-        if ($response != null) {
-            foreach($response['body']['items'] as $value)
-            {
-                $array = (array)$value['item'];
-                $arr[$array["id"]] = $array[$this->language];
+                return $arr;
+ 
+            } else {
+                return null;
             }
-            return $arr;
         } else {
-            return null;
+            return $cache->get();
         }
+ 
+    }
+    
+    public function lang()
+    {
+        return $this->language;
     }
  
 }

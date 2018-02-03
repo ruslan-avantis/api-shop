@@ -15,34 +15,26 @@ namespace ApiShop\Hooks;
  
 use Slim\Http\Request;
 use Slim\Http\Response;
- 
 use ApiShop\Config\Settings;
-use ApiShop\Adapter\Cache;
  
-class Hook {
- 
+class Hook
+{
     private $config;
-    private $request;
-    private $response;
-    private $args = [];
-    private $view = [];
-    private $render = null;
-    private $resource = null;
-    private $name_db = null;
-    private $query = null;
-    private $coverage = null;
-    private $postArr = [];
-    private $postQuery = null;
-    private $id = null;
-    private $callback = null;
-    private $hooks = null;
-    private $logger = null;
-    private $cache = null;
-    private $content = null;
-    private $cache_state = null;
-    private $cache_url = null;
-    private $cache_lifetime = null;
-    private $cached;
+    protected $request;
+    protected $response;
+    protected $args = [];
+    protected $view = [];
+    protected $render = null;
+    protected $resource = null;
+    protected $name_db = null;
+    protected $query = null;
+    protected $coverage = null;
+    protected $postArr = [];
+    protected $postQuery = null;
+    protected $id = null;
+    protected $callback = null;
+    protected $hooks = null;
+    protected $logger = null;
  
     function __construct()
     {
@@ -122,46 +114,6 @@ class Hook {
             $this->logger = $this->render;
             return false;
         }
-    }
- 
-    public function cache($cache_url = null, $cache_lifetime = null)
-    {
-        if(isset($cache_url)) {
-            $this->cache_url = $cache_url;
-        }
-        $this->cached = new Cache($this->request, $this->response, $this->args, $this->config);
-        $this->cache = $this->cached->run($this->cache_url, $this->cache_lifetime);
-        $this->cache_state = $this->cached->state();
-        if($this->cache === true) {
-            $this->content = $this->cached->content();
-        }
- 
-        return $this->cache;
-    }
- 
-    public function cache_state()
-    {
-        return $this->cache_state;
-    }
- 
-    public function cache_set($content)
-    {
-        $this->cached->set($content);
-    }
- 
-    public function cache_vendor()
-    {
-        return $this->cached->vendor();
-    }
- 
-    public function cache_driver()
-    {
-        return $this->cached->driver();
-    }
- 
-    public function content()
-    {
-        return $this->content;
     }
  
     public function hooks($query = null)
