@@ -13,7 +13,7 @@
 		"state": "1",
 		"dynamic": "0",
 		"print": "0",
-		"cache_lifetime": "3600",
+		"cache_lifetime": "360",
 		"cpu": "80",
 		"memory": "80",
 		"vendor": "cache",
