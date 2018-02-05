@@ -33,7 +33,7 @@ $app->post($language, function (Request $request, Response $response, array $arg
     } elseif ($langs->getLanguage()) {
         $lang = $langs->getLanguage();
     } else {
-        $lang = $site_config["language"];
+        $lang = $config['settings']['language'];
     }
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
@@ -45,19 +45,18 @@ $app->post($language, function (Request $request, Response $response, array $arg
         if ($lg == 3) {$session->language = "en";}
         if ($lg == 4) {$session->language = "de";}
     }
-    $languageGet = new Language($request, $config);
-    $language = $languageGet->get();
- 
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     foreach($language as $key => $value)
     {
         $arr["id"] = $key;
         $arr["name"] = $value;
-        $languages[] = $arr;
+        $langArr[] = $arr;
     }
     // callback - Даем ответ в виде json о результате
     $callback = array(
         'language' => $session->language,
-        'languages' => $languages,
+        'languages' => $langArr,
         'status' => 200
     );
     // Выводим заголовки
@@ -81,20 +80,20 @@ $app->get($language, function (Request $request, Response $response, array $args
     } elseif ($langs->getLanguage()) {
         $lang = $langs->getLanguage();
     } else {
-        $lang = $site_config["language"];
+        $lang = $config['settings']['language'];
     }
-    $languageGet = new Language($request, $config);
-    $language = $languageGet->get();
+    $languages = new Language($request, $config);
+    $language = $languages->get();
     foreach($language as $key => $value)
     {
         $arr["id"] = $key;
         $arr["name"] = $value;
-        $languages[] = $arr;
+        $langArr[] = $arr;
     }
     // callback - Даем ответ в виде json о результате
     $callback = array(
         'language' => $lang,
-        'languages' => $languages,
+        'languages' => $langArr,
         'status' => 200
     );
     // Выводим заголовки

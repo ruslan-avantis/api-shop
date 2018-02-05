@@ -13,14 +13,11 @@
  
 use Slim\Http\Request;
 use Slim\Http\Response;
- 
-use RouterDb\Db;
-use RouterDb\Router;
- 
+use Pllano\RouterDb\Db;
+use Pllano\RouterDb\Router;
+use Pllano\Hooks\Hook;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
-use ApiShop\Hooks\Hook;
- 
 use ApiShop\Resources\Install;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
@@ -41,8 +38,10 @@ $admin_index_router = $config['routers']['admin_index'];
 // Главная страница админ панели
 $app->get($admin_index_router.'', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -53,8 +52,6 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -66,7 +63,7 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -141,8 +138,10 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
 // Список items указанного resource
 $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -167,8 +166,6 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -180,7 +177,7 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -294,8 +291,10 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
 // Содать запись в resource
 $app->post($admin_router.'resource-post', function (Request $request, Response $response, array $args) {
  
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -303,8 +302,6 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
     $today = date("Y-m-d H:i:s");
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
     // Подключаем плагины
     $utility = new Utility();
     // Подключаем сессию, берет название класса из конфигурации
@@ -459,14 +456,14 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
 // Удалить запись в resource
 $app->post($admin_router.'resource-delete', function (Request $request, Response $response, array $args) {
  
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
     // Подключаем плагины
     $utility = new Utility();
     // Подключаем сессию, берет название класса из конфигурации
@@ -589,14 +586,14 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
 // Редактируем запись в resource
 $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
     // Подключаем плагины
     $utility = new Utility();
     // Подключаем сессию, берет название класса из конфигурации
@@ -753,14 +750,14 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
 // Активировать заказ
 $app->post($admin_router.'order-activate', function (Request $request, Response $response, array $args) {
  
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
-// Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
@@ -850,14 +847,14 @@ $app->post($admin_router.'order-activate', function (Request $request, Response 
 // Купить и установить шаблон
 $app->post($admin_router.'template-buy', function (Request $request, Response $response, array $args) {
  
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
-// Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
@@ -915,14 +912,14 @@ $app->post($admin_router.'template-buy', function (Request $request, Response $r
 // Установить шаблон
 $app->post($admin_router.'template-install', function (Request $request, Response $response, array $args) {
  
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
     // Подключаем плагины
     $utility = new Utility();
     // Подключаем сессию, берет название класса из конфигурации
@@ -1030,14 +1027,14 @@ $app->post($admin_router.'template-install', function (Request $request, Respons
 // Активировать шаблон
 $app->post($admin_router.'template-activate', function (Request $request, Response $response, array $args) {
  
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
- // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
     // Подключаем плагины
     $utility = new Utility();
     // Подключаем сессию, берет название класса из конфигурации
@@ -1126,14 +1123,14 @@ $app->post($admin_router.'template-activate', function (Request $request, Respon
 // Удалить шаблон
 $app->post($admin_router.'template-delete', function (Request $request, Response $response, array $args) {
  
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
@@ -1199,20 +1196,20 @@ $app->post($admin_router.'template-delete', function (Request $request, Response
 // Список шаблонов
 $app->get($admin_router.'template', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
- // Подключаем плагины
+    // Подключаем плагины
     $utility = new Utility();
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -1224,7 +1221,7 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -1303,8 +1300,10 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
 // Страница шаблона
 $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -1321,8 +1320,6 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -1334,7 +1331,7 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -1407,8 +1404,10 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
 // Редактируем настройки шаблона
 $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -1425,8 +1424,6 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -1438,7 +1435,7 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -1522,8 +1519,10 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
 // Станица пакета
 $app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -1540,8 +1539,6 @@ $app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $requ
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -1553,7 +1550,7 @@ $app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $requ
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -1632,16 +1629,16 @@ $app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $requ
 // Редактируем или добавляем пакет
 $app->post($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
  
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
  
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
     // Подключаем плагины
     $utility = new Utility();
     // Подключаем сессию, берет название класса из конфигурации
@@ -1794,8 +1791,10 @@ $app->post($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $req
 // Изменение статуса пакета
 $app->post($admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -1810,8 +1809,6 @@ $app->post($admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $requ
     }
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Читаем ключи
@@ -1907,8 +1904,10 @@ $app->post($admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $requ
 // Список пакетов
 $app->get($admin_router.'packages', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -1919,8 +1918,6 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -1932,7 +1929,7 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2007,8 +2004,10 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
 // Репозиторий
 $app->get($admin_router.'packages-install', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -2019,8 +2018,6 @@ $app->get($admin_router.'packages-install', function (Request $request, Response
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -2032,7 +2029,7 @@ $app->get($admin_router.'packages-install', function (Request $request, Response
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2107,8 +2104,10 @@ $app->get($admin_router.'packages-install', function (Request $request, Response
 // Страница установки из json файла
 $app->get($admin_router.'packages-install-json', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -2119,8 +2118,6 @@ $app->get($admin_router.'packages-install-json', function (Request $request, Res
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -2132,7 +2129,7 @@ $app->get($admin_router.'packages-install-json', function (Request $request, Res
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2207,8 +2204,10 @@ $app->get($admin_router.'packages-install-json', function (Request $request, Res
 // Глобальные настройки
 $app->get($admin_router.'config', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -2219,8 +2218,6 @@ $app->get($admin_router.'config', function (Request $request, Response $response
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -2232,7 +2229,7 @@ $app->get($admin_router.'config', function (Request $request, Response $response
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2306,8 +2303,10 @@ $app->get($admin_router.'config', function (Request $request, Response $response
 // Редактируем глобальные настройки
 $app->post($admin_router.'config', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -2318,8 +2317,6 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -2331,7 +2328,7 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2410,8 +2407,10 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
 // Список баз данных
 $app->get($admin_router.'db', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -2422,8 +2421,6 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -2435,7 +2432,7 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2507,8 +2504,10 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
 // Страница таблицы (ресурса)
 $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -2525,8 +2524,6 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -2538,7 +2535,7 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2701,8 +2698,10 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
 // Глобально
 $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'admin');
     $request = $hook->request();
     $args = $hook->args();
@@ -2725,8 +2724,6 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers']['admin'];
     // Конфигурация шаблона
@@ -2738,7 +2735,7 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2765,7 +2762,7 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
     $test = $control->test($resource);
     if ($test === true) {
  
-        $site = new Site();
+        $site = new Site($config);
         $site_config = $site->get();
         $site_template = $site->template();
  

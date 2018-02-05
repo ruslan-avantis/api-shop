@@ -14,13 +14,14 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
  
-use RouterDb\Db;
-use RouterDb\Router;
+use Pllano\RouterDb\Db;
+use Pllano\RouterDb\Router;
+ 
+use Pllano\Hooks\Hook;
+use Pllano\Caching\Cache;
  
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
-use ApiShop\Hooks\Hook;
-use ApiShop\Adapter\Cache;
 use ApiShop\Adapter\Menu;
 use ApiShop\Adapter\Image;
 use ApiShop\Resources\Language;
@@ -36,8 +37,10 @@ $quick_view = $config['routers']['product_quick_view'];
  
 $app->get($product.''.$alias.''.$name, function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'site');
     $request = $hook->request();
     $args = $hook->args();
@@ -59,12 +62,10 @@ $app->get($product.''.$alias.''.$name, function (Request $request, Response $res
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Настройки сайта
-    $site = new Site();
+    $site = new Site($config);
     $site_config = $site->get();
     // Получаем название шаблона
     $site_template = $site->template();
@@ -79,7 +80,7 @@ $app->get($product.''.$alias.''.$name, function (Request $request, Response $res
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Подключаем временное хранилище
     $session_temp = new $config['vendor']['session']("_temp");
     // Читаем ключи
@@ -242,8 +243,10 @@ $app->get($product.''.$alias.''.$name, function (Request $request, Response $res
  
 $app->get($quick_view.''.$alias.''.$name, function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию \ApiShop\Config\Settings
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'site');
     $request = $hook->request();
     $args = $hook->args();
@@ -263,10 +266,8 @@ $app->get($quick_view.''.$alias.''.$name, function (Request $request, Response $
     if ($request->getAttribute('name')) {
         $name = $utility->clean($request->getAttribute('name'));
     }
-    // Получаем конфигурацию \ApiShop\Config\Settings
-    $config = (new Settings())->get();
  
-    $site = new Site();
+    $site = new Site($config);
     $site_config = $site->get();
     $site_template = $site->template();
  
@@ -292,7 +293,7 @@ $app->get($quick_view.''.$alias.''.$name, function (Request $request, Response $
         $authorize = 0;
     }
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
     // Меню

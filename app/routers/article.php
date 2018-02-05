@@ -14,13 +14,14 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
  
-use RouterDb\Db;
-use RouterDb\Router;
+use Pllano\RouterDb\Db;
+use Pllano\RouterDb\Router;
+ 
+use Pllano\Hooks\Hook;
+use Pllano\Caching\Cache;
  
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
-use ApiShop\Hooks\Hook;
-use ApiShop\Adapter\Cache;
 use ApiShop\Adapter\Menu;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
@@ -33,8 +34,10 @@ $article = $config['routers']['article'];
  
 $app->get($category.'{alias:[a-z0-9_-]+}.html', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'site');
     $request = $hook->request();
     $args = $hook->args();
@@ -51,12 +54,10 @@ $app->get($category.'{alias:[a-z0-9_-]+}.html', function (Request $request, Resp
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Настройки сайта
-    $site = new Site();
+    $site = new Site($config);
     $site_config = $site->get();
     // Получаем название шаблона
     $site_template = $site->template();
@@ -71,7 +72,7 @@ $app->get($category.'{alias:[a-z0-9_-]+}.html', function (Request $request, Resp
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Подключаем временное хранилище
     $session_temp = new $config['vendor']['session']("_temp");
     // Читаем ключи
@@ -183,8 +184,10 @@ $app->get($category.'{alias:[a-z0-9_-]+}.html', function (Request $request, Resp
 
 $app->get($article.'{alias:[a-z0-9_-]+}.html', function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'site');
     $request = $hook->request();
     $args = $hook->args();
@@ -201,12 +204,10 @@ $app->get($article.'{alias:[a-z0-9_-]+}.html', function (Request $request, Respo
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Настройки сайта
-    $site = new Site();
+    $site = new Site($config);
     $site_config = $site->get();
     // Получаем название шаблона
     $site_template = $site->template();
@@ -221,7 +222,7 @@ $app->get($article.'{alias:[a-z0-9_-]+}.html', function (Request $request, Respo
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Подключаем временное хранилище
     $session_temp = new $config['vendor']['session']("_temp");
     // Читаем ключи

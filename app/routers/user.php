@@ -14,13 +14,13 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
  
-use RouterDb\Db;
-use RouterDb\Router;
+use Pllano\RouterDb\Db;
+use Pllano\RouterDb\Router;
+ 
+use Pllano\Hooks\Hook;
  
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
-use ApiShop\Hooks\Hook;
- 
 use ApiShop\Model\Security;
 use ApiShop\Model\SessionUser;
 use ApiShop\Resources\Language;
@@ -38,8 +38,10 @@ $check_in = $config['routers']['check_in'];
 // Страница авторизации
 $app->get($sign_in, function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'site');
     $request = $hook->request();
     $args = $hook->args();
@@ -48,14 +50,12 @@ $app->get($sign_in, function (Request $request, Response $response, array $args)
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Подключаем плагины
     $utility = new Utility();
     // Настройки сайта
-    $site = new Site();
+    $site = new Site($config);
     $site_config = $site->get();
     // Получаем название шаблона
     $site_template = $site->template();
@@ -68,7 +68,7 @@ $app->get($sign_in, function (Request $request, Response $response, array $args)
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $user_data =(new SessionUser())->get();
+    $user_data = (new SessionUser($config))->get();
     // Подключаем временное хранилище
     $session_temp = new $config['vendor']['session']("_temp");
     // Читаем ключи
@@ -120,8 +120,10 @@ $app->get($sign_in, function (Request $request, Response $response, array $args)
 // Страница регистрации
 $app->get($sign_up, function (Request $request, Response $response, array $args) {
  
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'site');
     $request = $hook->request();
     $args = $hook->args();
@@ -130,14 +132,12 @@ $app->get($sign_up, function (Request $request, Response $response, array $args)
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Подключаем плагины
     $utility = new Utility();
     // Настройки сайта
-    $site = new Site();
+    $site = new Site($config);
     $site_config = $site->get();
     // Получаем название шаблона
     $site_template = $site->template();
@@ -150,7 +150,7 @@ $app->get($sign_up, function (Request $request, Response $response, array $args)
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $user_data =(new SessionUser())->get();
+    $user_data = (new SessionUser($config))->get();
     // Подключаем временное хранилище
     $session_temp = new $config['vendor']['session']("_temp");
     // Читаем ключи
@@ -200,8 +200,10 @@ $app->get($sign_up, function (Request $request, Response $response, array $args)
 // Выйти
 $app->post($logout, function (Request $request, Response $response, array $args) {
  
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'site');
     $request = $hook->request();
     $args = $hook->args();
@@ -209,8 +211,6 @@ $app->post($logout, function (Request $request, Response $response, array $args)
     $today = date("Y-m-d H:i:s");
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
     // Подключаем плагины
     $utility = new Utility();
     // Подключаем сессию, берет название класса из конфигурации
@@ -282,8 +282,10 @@ $app->post($logout, function (Request $request, Response $response, array $args)
 // Авторизация
 $app->post($login, function (Request $request, Response $response, array $args) {
  
+    // Подключаем конфиг Settings\Config
+    $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'POST', 'site');
     $request = $hook->request();
     $args = $hook->args();
@@ -291,8 +293,6 @@ $app->post($login, function (Request $request, Response $response, array $args) 
     $today = date("Y-m-d H:i:s");
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
     // Подключаем плагины
     $utility = new Utility();
     // Подключаем сессию, берет название класса из конфигурации

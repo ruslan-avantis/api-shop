@@ -14,8 +14,8 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
  
-use RouterDb\Db;
-use RouterDb\Router;
+use Pllano\RouterDb\Db;
+use Pllano\RouterDb\Router;
  
 use ApiShop\Config\Settings;
 use ApiShop\Resources\Language;
@@ -24,12 +24,6 @@ $config = (new Settings())->get();
 $cart = $config['routers']['cart'];
  
 $app->post($cart.'new-order', function (Request $request, Response $response, array $args) {
- 
-    // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST', 'site');
-    $request = $hook->request();
-    $args = $hook->args();
  
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
@@ -204,20 +198,12 @@ $app->post($cart.'new-order', function (Request $request, Response $response, ar
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
-    // Подменяем заголовки
-    $response = $hook->response();
     // Выводим json
-    echo json_encode($hook->callback($callback));
+    echo json_encode($callback);
  
 });
  
 $app->post($cart.'add-to-cart', function (Request $request, Response $response, array $args) {
- 
-    // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
-    $hook->http($request, $response, $args, 'POST', 'site');
-    $request = $hook->request();
-    $args = $hook->args();
  
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
@@ -242,7 +228,7 @@ $app->post($cart.'add-to-cart', function (Request $request, Response $response, 
     $callbackText = '';
  
     if ($session->authorize == 1) {
-        $user_id = $config['vendor']['crypto']::decrypt($session->user_id, $session_key);
+        $user_id = $session->user_id;
     } else {
         $user_id = 0;
     }
@@ -253,7 +239,7 @@ $app->post($cart.'add-to-cart', function (Request $request, Response $response, 
         'product_id' => $product_id,
         'num' => $num,
         'price' => $price,
-        'currency_id' => $config['settings']['site']['currency_id'],
+        'currency_id' => $config['seller']['currency_id'],
         'order_id' => null,
         'status_id' => 1,
         'state' => 1
@@ -267,34 +253,21 @@ $app->post($cart.'add-to-cart', function (Request $request, Response $response, 
     $name_db = $router->ping($resource);
     // Подключаемся к базе
     $db = new Db($name_db, $config);
- 
-    // Передаем данные Hooks для обработки ожидающим классам
-    $hook->post($resource, $name_db, 'POST', $cartArr, null);
-    $hookState = $hook->state();
-    // Если Hook вернул true
-    if ($hookState == true) {
-            // Обновленные Hooks данные
-            $hookResource = $hook->resource();
-            $hookPostArr = $hook->postArr();
-            // Отправляем запрос в базу
-            $dbState = $db->post($hookResource, $hookPostArr);
-        if ($dbState >= 1) {
-            // Ответ
-            $callbackStatus = 200;
-            $callbackTitle = $language["23"];
-            $callbackText = $language["126"]." ".$language["124"]."<br>".$language["194"]." ".$price;
-        } else {
+    // Отправляем запрос в базу
+    $dbState = $db->post($resource, $cartArr);
+    if ($dbState >= 1) {
+        $callbackStatus = 200;
+        $callbackTitle = $language["23"];
+        $callbackText = $language["126"]." ".$language["124"]."<br>".$language["194"]." ".$price;
+    } else {
             $callbackText = 'Действие заблокировано';
-        }
     }
  
     $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
-    // Подменяем заголовки
-    $response = $hook->response();
     // Выводим json
-    echo json_encode($hook->callback($callback));
+    echo json_encode($callback);
  
 });

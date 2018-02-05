@@ -14,13 +14,14 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
  
-use RouterDb\Db;
-use RouterDb\Router;
+use Pllano\RouterDb\Db;
+use Pllano\RouterDb\Router;
+ 
+use Pllano\Caching\Cache;
+use Pllano\Hooks\Hook;
  
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
-use ApiShop\Hooks\Hook;
-use ApiShop\Adapter\Cache;
 use ApiShop\Adapter\Menu;
 use ApiShop\Resources\Language;
 use ApiShop\Resources\Site;
@@ -35,20 +36,19 @@ $index = $config['routers']['index'];
  
 $app->get($index, function (Request $request, Response $response, array $args) {
  
-    // Передаем данные Hooks для обработки ожидающим классам
-    $hook = new Hook();
+    // Получаем конфигурацию
+    $config = (new Settings())->get();
+	// Передаем данные Hooks для обработки ожидающим классам
+    $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'site');
     $request = $hook->request();
     $args = $hook->args();
- 
     // Подключаем плагины
     $utility = new Utility();
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Получаем конфигурацию
-    $config = (new Settings())->get();
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Подключаем мультиязычность
@@ -59,7 +59,7 @@ $app->get($index, function (Request $request, Response $response, array $args) {
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']($config['settings']['session']['name']);
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser())->get();
+    $sessionUser =(new SessionUser($config))->get();
     // Подключаем временное хранилище
     $session_temp = new $config['vendor']['session']("_temp");
     // Читаем ключи
@@ -74,7 +74,7 @@ $app->get($index, function (Request $request, Response $response, array $args) {
  
     if ($config["settings"]["install"]["status"] != null) {
         // Настройки сайта
-        $site = new Site();
+        $site = new Site($config);
         $site_config = $site->get();
         // Получаем название шаблона
         $site_template = $site->template();
@@ -118,22 +118,21 @@ $app->get($index, function (Request $request, Response $response, array $args) {
         $templateConfig = new Template($config["settings"]["themes"]["template"]);
         $template = $templateConfig->get();
  
-        // Эти параметры должны браться из конфигурации шаблона
-        $arr = [
-            "limit" => $template['products']['home']['limit'],
-            "sort" => $template['products']['home']['sort'],
-            "order" => $template['products']['home']['order'],
-            "relations" => $template['products']['home']['relations'],
-            "state_seller" => 1
-        ];
- 
-        // Встроенный адаптер кеша
         $cache = new Cache($config);
         if ($cache->run('site/index/products/'.$languages->lang()) === null) {
+ 
+            // Эти параметры должны браться из конфигурации шаблона
+            $arr = [
+                "limit" => $template['products']['home']['limit'],
+                "sort" => $template['products']['home']['sort'],
+                "order" => $template['products']['home']['order'],
+                "relations" => $template['products']['home']['relations'],
+                "state_seller" => 1
+            ];
             // Получаем список товаров
             $productsList = new $config['vendor']['products_home']();
             $content['products'] = $productsList->get($arr, $template, $host);
-            if ($cache->state() == '1') {
+            if ((int)$cache->state() == 1) {
                 $cache->set($content['products']);
             }
         } else {
@@ -162,8 +161,7 @@ $app->get($index, function (Request $request, Response $response, array $args) {
         // Если ключа доступа у нет, значит сайт еще не активирован
         $content = '';
         $render = 'index.html';
-        //$session->install = null;
- 
+        // $session->install = null;
         if (isset($session->install)) {
             if ($session->install == 1) {
                 $render = "stores.html";
