@@ -30,14 +30,14 @@ $container['logger'] = function ($logger) {
 };
 
 // Register Original Twig View
-$container['view'] = function ($conf) {
+$container['view'] = function () {
     $config = (new Settings())->get();
     $themes = $config['settings']['themes'];
  
     if ($config['settings']["install"]["status"] != null) {
         // Получаем название шаблона
         $template = $themes["template"]; // По умолчанию mini-mo
-        $site = new Site();
+        $site = new Site($config);
         $site->get();
         if ($site->template()) {
             $template = $site->template();

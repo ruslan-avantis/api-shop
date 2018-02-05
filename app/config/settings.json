@@ -1,473 +1,478 @@
 {
-	"date_time": "2018-01-27 23:59:59",
-	"update": "pllano",
-	"slim": {
-		"settings": {
-			"debug": 0,
-			"displayErrorDetails": 0,
-			"addContentLengthHeader": 0,
-			"determineRouteBeforeAppMiddleware": 0
-		}
-	},
-	"cache": {
-		"state": "1",
-		"dynamic": "0",
-		"print": "0",
-		"cache_lifetime": "360",
-		"cpu": "80",
-		"memory": "80",
-		"vendor": "cache",
-		"driver": "filesystem",
-		"adapter": "apishop",
-		"twig": {
-			"state": "1",
-			"strict_variables": "0",
-			"cache_dir": "/../../cache/_twig_cache"
-		},
-		"memcached": {
-			"pool": "\\Cache\\Adapter\\Memcached\\MemcachedCachePool",
-			"host": "127.0.0.1",
-			"port": "11211"
-		},
-		"memcache": {
-			"pool": "\\Cache\\Adapter\\Memcache\\MemcacheCachePool",
-			"host": "127.0.0.1",
-			"port": "11211"
-		},
-		"filesystem": {
-			"pool": "\\Cache\\Adapter\\Filesystem\\FilesystemCachePool",
-			"filesystem_adapter": "\\League\\Flysystem\\Adapter\\Local",
-			"filesystem": "\\League\\Flysystem\\Filesystem",
-			"path": "cache/_file_cache"
-		},
-		"elasticsearch": {
-			"pool": "\\ApiShop\\Adapter\\Cache\\Elasticsearch",
-			"host": "localhost",
-			"port": "9200",
-			"type": "api_shop",
-			"index": "cache",
-			"auth": 0,
-			"user": "elastic",
-			"password": "elastic_password"
-		},
-		"mongodb": {
-			"pool": "\\Cache\\Adapter\\MongoDB\\MongoDBCachePool",
-			"manager": "\\MongoDB\\Driver\\Manager",
-			"host": "localhost",
-			"port": "9200",
-			"name": "cache"
-		},
-		"redis": {
-			"pool": "\\Cache\\Adapter\\Redis\\RedisCachePool",
-			"host": "127.0.0.1",
-			"port": "11211"
-		},
-		"predis": {
-			"pool": "\\Cache\\Adapter\\Predis\\PredisCachePool",
-			"host": "127.0.0.1",
-			"port": "6379"
-		},
-		"doctrine": {
-			"pool": "\\Cache\\Adapter\\Doctrine\\DoctrineCachePool",
-			"memcached": "\\Doctrine\\Common\\Cache\\MemcachedCache",
-			"host": "127.0.0.1",
-			"port": "11211"
-		},
-		"array": {
-			"pool": "\\Cache\\Adapter\\PHPArray\\ArrayCachePool"
-		},
-		"apcu": {
-			"pool": "\\Cache\\Adapter\\Apcu\\ApcuCachePool"
-		},
-		"apc": {
-			"pool": "\\Cache\\Adapter\\Apc\\ApcCachePool"
-		},
-		"void": {
-			"pool": "\\Cache\\Adapter\\Void\\VoidCachePool"
-		},
-		"illuminate": {
-			"pool": "\\Cache\\Adapter\\Illuminate\\IlluminateCachePool",
-			"store": "\\Illuminate\\Cache\\ArrayStore"
-		}
-	},
-	"seller": {
-		"name": "seller",
-		"public_key": "",
-		"private_key": "",
-		"alias": "",
-		"download_dir": "",
-		"download_alias": "",
-		"terms_of_delivery": 1,
-		"currency_code": "UAH",
-		"currency_id": 1,
-		"store": 1,
-		"marketplace": {
-			"url": "https:\/\/ru.pllano.com",
-			"seller": "\/seller\/",
-			"price": "\/price",
-			"supplier": "\/supplier",
-			"orders": "\/orders",
-			"microservices": "\/microservices"
-		},
-		"itemprop": {
-			"address": "Маршала Тимошенко 21",
-			"city": "Киев",
-			"postal_code": "01234",
-			"telephone": "380670000001",
-			"email": "info@example.com",
-			"logo": "",
-			"url": "",
-			"text": "",
-			"about": ""
-		}
-	},
-	"payments": {
-		"payments": {
-			"state": 0,
-			"company": "Название компании",
-			"director": "ФИО директора",
-			"director_phone": "Телефон директора",
-			"director_email": "email директора",
-			"company_type": "Тип получателя: ТОВ или ФОП",
-			"identification_code": "Идентификационный код",
-			"edrpou_code": "Код ЄДРПОУ",
-			"vat_id": "Номер свидетельства НДС",
-			"bank_name": "Название банка",
-			"bank_code": "Код банка или МФО",
-			"account_number": "Номер счета"
-		},
-		"liqpay": {
-			"public_key": "Публичный ключ - идентификатор магазина. Получить ключ можно в настройках магазина",
-			"private_key": "Приватный ключ мерчанта",
-			"state": 0
-		}
-	},
-	"dir": {
-		"config_dir": "\/app\/config",
-		"routers_dir": "\/app\/routers",
-		"images_dir": "\/images",
-		"vendor_dir": "\/vendor",
-		"plugins_dir": "\/plugins"
-	},
-	"vendor": {
-		"menu": "\\ApiShop\\Resources\\Menu",
-		"session": "\\Adbar\\Session",
-		"products_home": "\\ApiShop\\Resources\\Products",
-		"products_category": "\\ApiShop\\Resources\\Products",
-		"language_detector": "\\Sinergi\\BrowserDetector\\Language",
-		"http_client": "\\GuzzleHttp\\Client",
-		"image_thumbnail": "\\Imagine\\Gd\\Imagine",
-		"image_thumbnail_mode": "THUMBNAIL_INSET",
-		"image_optimize": "",
-		"image_optimize_mode": "",
-		"crypto": "\\Defuse\\Crypto\\Crypto",
-		"crypto_key_create": "\\Defuse\\Crypto\\Key::createNewRandomKey",
-		"crypto_key_load": "\\Defuse\\Crypto\\Key::loadFromAsciiSafeString"
-	},
-	"routers": {
-		"admin": "\/admin\/",
-		"admin_index": "\/admin",
-		"index": "\/",
-		"article": "\/",
-		"article_category": "\/content\/",
-		"category": "\/category",
-		"cart": "\/cart\/",
-		"language": "\/language",
-		"product": "\/product\/",
-		"product_quick_view": "\/quick-view\/product\/",
-		"product_alias": "{alias:[a-z0-9_]+}\/",
-		"product_name": "{name}.html",
-		"sign_in": "\/sign-in",
-		"sign_up": "\/sign-up",
-		"logout": "\/logout",
-		"login": "\/login",
-		"check_in": "\/check-in"
-	},
-	"hooks": {
-		"demo-hook-index-get": {
-			"vendor": "\\ApiShop\\Hooks\\HookIndexGet",
-			"query": "GET",
-			"render": "index.html",
-			"coverage": "site",
-			"state": "0",
-			"config": "none"
-		},
-		"demo-hook-all": {
-			"vendor": "\\ApiShop\\Hooks\\HookAll",
-			"query": "all",
-			"render": "all",
-			"coverage": "site",
-			"state": "0",
-			"config": "none"
-		}
-	},
-	"admin": {
-		"name": "admin",
-		"language": "ru",
-		"index_widget": "article,user,templates",
-		"editor": "summernote",
-		"template": "admin",
-		"resource_list": "user,role,article,article_category,category,currency,address,contact",
-		"resource": {
-			"index": 1,
-			"article": 1,
-			"user": 1,
-			"template": 1,
-			"settings": 1
-		}
-	},
-	"settings": {
-		"name": "settings",
-		"language": "ru",
-		"site": {
-			"demo_panel": 1,
-			"title": "API Shop",
-			"description": "\u0420\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u0447\u0435\u0440\u0435\u0437 RESTful API",
-			"keywords": "API Shop",
-			"robots": "index, follow",
-			"og_title": "API Shop",
-			"og_description": "API Shop",
-			"og_image": "",
-			"og_locale": "",
-			"og_type": "site",
-			"og_url": "",
-			"cookie_httponly": 1
-		},
-		"themes": {
-			"template": "mini-mo",
-			"templates": "templates",
-			"dir_name": "\/..\/..\/themes"
-		},
-		"session": {
-			"name": "_session",
-			"lifetime": "48",
-			"path": "\/",
-			"domain": "",
-			"secure": 0,
-			"httponly": 1,
-			"cookie_autoset": 1,
-			"save_path": 0,
-			"cache_limiter": "nocache",
-			"autorefresh": 1,
-			"encryption_key": 0,
-			"namespace": "_session"
-		},
-		"http-codes": "https:\/\/github.com\/pllano\/APIS-2018\/tree\/master\/http-codes\/"
-	},
-	"db": {
-		"name": "db",
-		"master": "pllanoapi",
-		"slave": "json",
-		"router": 0,
-		"synchronize": 0,
-		"http-codes": "https:\/\/github.com\/pllano\/APIS-2018\/tree\/master\/http-codes\/",
-		"pllanoapi": {
-			"config": 1,
-			"url": "https:\/\/api.pllano.com\/",
-			"auth": "QueryKeyAuth",
-			"public_key": null,
-			"private_key": null
-		},
-		"api": {
-			"url": "https:\/\/ua.pllano.com\/api\/v1\/json\/",
-			"auth": "QueryKeyAuth",
-			"public_key": null,
-			"private_key": null,
-			"config": 1
-		},
-		"json": {
-			"dir_name": "\/_json_db_\/",
-			"cached": 0,
-			"cache_lifetime": "60",
-			"temp": 0,
-			"api": 0,
-			"crypt": 0
-		},
-		"mysql": {
-			"host": "localhost",
-			"dbname": "",
-			"port": "",
-			"charset": "utf8",
-			"connect_timeout": "15",
-			"user": "",
-			"password": ""
-		},
-		"elasticsearch": {
-			"host": "localhost",
-			"port": "9200",
-			"type": 1,
-			"index": "apishop",
-			"auth": 0,
-			"user": "elastic",
-			"password": "elastic_password"
-		},
-		"queue": {
-			"status": 0,
-			"limit": "5"
-		},
-		"resource": {
-			"install": {
-				"db": "pllanoapi",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"stores_list": {
-				"db": "pllanoapi",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"templates_list": {
-				"db": "pllanoapi",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"site": {
-				"db": "pllanoapi",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 1
-			},
-			"language": {
-				"db": "pllanoapi",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"price": {
-				"db": "pllanoapi",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 1
-			},
-			"user": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"cart": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"order": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"address": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"pay": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"product": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"type": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"brand": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"serie": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"image": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"seo": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"description": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"contact": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"category": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"role": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"currency": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"article": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"article_category": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"queue": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"cached": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			},
-			"db": {
-				"db": "json",
-				"synchronize": 0,
-				"auth": 0,
-				"authorization": 0
-			}
-		}
-	}
+    "date_time": "2018-01-27 23:59:59",
+    "update": "pllano",
+    "slim": {
+        "settings": {
+            "debug": 0,
+            "displayErrorDetails": 0,
+            "addContentLengthHeader": 0,
+            "determineRouteBeforeAppMiddleware": 0
+        }
+    },
+    "cache": {
+        "state": "1",
+        "dynamic": "0",
+        "print": "0",
+        "cache_lifetime": "360",
+        "cpu": "80",
+        "memory": "80",
+        "vendor": "cache",
+        "driver": "filesystem",
+        "adapter": "apishop",
+        "clear": "0",
+        "twig": {
+            "state": "1",
+            "strict_variables": "0",
+            "cache_dir": "/../../cache/_twig_cache"
+        },
+        "memcached": {
+            "pool": "\\Cache\\Adapter\\Memcached\\MemcachedCachePool",
+            "host": "127.0.0.1",
+            "port": "11211"
+        },
+        "memcache": {
+            "pool": "\\Cache\\Adapter\\Memcache\\MemcacheCachePool",
+            "host": "127.0.0.1",
+            "port": "11211"
+        },
+        "filesystem": {
+            "pool": "\\Cache\\Adapter\\Filesystem\\FilesystemCachePool",
+            "filesystem_adapter": "\\League\\Flysystem\\Adapter\\Local",
+            "filesystem": "\\League\\Flysystem\\Filesystem",
+            "path": "cache/_file_cache"
+        },
+        "json": {
+            "pool": "\\ApiShop\\Adapter\\Cache\\JsonCache",
+            "path": "cache\/json_cache"
+        },
+        "elasticsearch": {
+            "pool": "\\ApiShop\\Adapter\\Cache\\Elasticsearch",
+            "host": "localhost",
+            "port": "9200",
+            "type": "api_shop",
+            "index": "cache",
+            "auth": 0,
+            "user": "elastic",
+            "password": "elastic_password"
+        },
+        "mongodb": {
+            "pool": "\\Cache\\Adapter\\MongoDB\\MongoDBCachePool",
+            "manager": "\\MongoDB\\Driver\\Manager",
+            "host": "localhost",
+            "port": "9200",
+            "name": "cache"
+        },
+        "redis": {
+            "pool": "\\Cache\\Adapter\\Redis\\RedisCachePool",
+            "host": "127.0.0.1",
+            "port": "11211"
+        },
+        "predis": {
+            "pool": "\\Cache\\Adapter\\Predis\\PredisCachePool",
+            "host": "127.0.0.1",
+            "port": "6379"
+        },
+        "doctrine": {
+            "pool": "\\Cache\\Adapter\\Doctrine\\DoctrineCachePool",
+            "memcached": "\\Doctrine\\Common\\Cache\\MemcachedCache",
+            "host": "127.0.0.1",
+            "port": "11211"
+        },
+        "array": {
+            "pool": "\\Cache\\Adapter\\PHPArray\\ArrayCachePool"
+        },
+        "apcu": {
+            "pool": "\\Cache\\Adapter\\Apcu\\ApcuCachePool"
+        },
+        "apc": {
+            "pool": "\\Cache\\Adapter\\Apc\\ApcCachePool"
+        },
+        "void": {
+            "pool": "\\Cache\\Adapter\\Void\\VoidCachePool"
+        },
+        "illuminate": {
+            "pool": "\\Cache\\Adapter\\Illuminate\\IlluminateCachePool",
+            "store": "\\Illuminate\\Cache\\ArrayStore"
+        }
+    },
+    "seller": {
+        "name": "seller",
+        "public_key": "",
+        "private_key": "",
+        "alias": "",
+        "download_dir": "",
+        "download_alias": "",
+        "terms_of_delivery": 1,
+        "currency_code": "UAH",
+        "currency_id": 1,
+        "store": 1,
+        "marketplace": {
+            "url": "https:\/\/ru.pllano.com",
+            "seller": "\/seller\/",
+            "price": "\/price",
+            "supplier": "\/supplier",
+            "orders": "\/orders",
+            "microservices": "\/microservices"
+        },
+        "itemprop": {
+            "address": "Маршала Тимошенко 21",
+            "city": "Киев",
+            "postal_code": "01234",
+            "telephone": "380670000001",
+            "email": "info@example.com",
+            "logo": "",
+            "url": "",
+            "text": "",
+            "about": ""
+        }
+    },
+    "payments": {
+        "payments": {
+            "state": 0,
+            "company": "Название компании",
+            "director": "ФИО директора",
+            "director_phone": "Телефон директора",
+            "director_email": "email директора",
+            "company_type": "Тип получателя: ТОВ или ФОП",
+            "identification_code": "Идентификационный код",
+            "edrpou_code": "Код ЄДРПОУ",
+            "vat_id": "Номер свидетельства НДС",
+            "bank_name": "Название банка",
+            "bank_code": "Код банка или МФО",
+            "account_number": "Номер счета"
+        },
+        "liqpay": {
+            "public_key": "Публичный ключ - идентификатор магазина. Получить ключ можно в настройках магазина",
+            "private_key": "Приватный ключ мерчанта",
+            "state": 0
+        }
+    },
+    "dir": {
+        "config_dir": "\/app\/config",
+        "routers_dir": "\/app\/routers",
+        "images_dir": "\/images",
+        "vendor_dir": "\/vendor",
+        "plugins_dir": "\/plugins"
+    },
+    "vendor": {
+        "menu": "\\ApiShop\\Resources\\Menu",
+        "session": "\\Adbar\\Session",
+        "products_home": "\\ApiShop\\Resources\\Products",
+        "products_category": "\\ApiShop\\Resources\\Products",
+        "language_detector": "\\Sinergi\\BrowserDetector\\Language",
+        "http_client": "\\GuzzleHttp\\Client",
+        "image_thumbnail": "\\Imagine\\Gd\\Imagine",
+        "image_thumbnail_mode": "THUMBNAIL_INSET",
+        "image_optimize": "",
+        "image_optimize_mode": "",
+        "crypto": "\\Defuse\\Crypto\\Crypto",
+        "crypto_key_create": "\\Defuse\\Crypto\\Key::createNewRandomKey",
+        "crypto_key_load": "\\Defuse\\Crypto\\Key::loadFromAsciiSafeString"
+    },
+    "routers": {
+        "admin": "\/admin\/",
+        "admin_index": "\/admin",
+        "index": "\/",
+        "article": "\/",
+        "article_category": "\/content\/",
+        "category": "\/category",
+        "cart": "\/cart\/",
+        "language": "\/language",
+        "product": "\/product\/",
+        "product_quick_view": "\/quick-view\/product\/",
+        "product_alias": "{alias:[a-z0-9_]+}\/",
+        "product_name": "{name}.html",
+        "sign_in": "\/sign-in",
+        "sign_up": "\/sign-up",
+        "logout": "\/logout",
+        "login": "\/login",
+        "check_in": "\/check-in"
+    },
+    "hooks": {
+        "demo-hook-index-get": {
+            "vendor": "\\ApiShop\\Hooks\\HookIndexGet",
+            "query": "GET",
+            "render": "index.html",
+            "coverage": "site",
+            "state": "0",
+            "config": "none"
+        },
+        "demo-hook-all": {
+            "vendor": "\\ApiShop\\Hooks\\HookAll",
+            "query": "all",
+            "render": "all",
+            "coverage": "site",
+            "state": "0",
+            "config": "none"
+        }
+    },
+    "admin": {
+        "name": "admin",
+        "language": "ru",
+        "index_widget": "article,user,templates",
+        "editor": "summernote",
+        "template": "admin",
+        "resource_list": "user,role,article,article_category,category,currency,address,contact",
+        "resource": {
+            "index": 1,
+            "article": 1,
+            "user": 1,
+            "template": 1,
+            "settings": 1
+        }
+    },
+    "settings": {
+        "name": "settings",
+        "language": "ru",
+        "site": {
+            "demo_panel": 1,
+            "title": "API Shop",
+            "description": "\u0420\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u0447\u0435\u0440\u0435\u0437 RESTful API",
+            "keywords": "API Shop",
+            "robots": "index, follow",
+            "og_title": "API Shop",
+            "og_description": "API Shop",
+            "og_image": "",
+            "og_locale": "",
+            "og_type": "site",
+            "og_url": "",
+            "cookie_httponly": 1
+        },
+        "themes": {
+            "template": "mini-mo",
+            "templates": "templates",
+            "dir_name": "\/..\/..\/themes"
+        },
+        "session": {
+            "name": "_session",
+            "lifetime": "48",
+            "path": "\/",
+            "domain": "",
+            "secure": 0,
+            "httponly": 1,
+            "cookie_autoset": 1,
+            "save_path": 0,
+            "cache_limiter": "nocache",
+            "autorefresh": 1,
+            "encryption_key": 0,
+            "namespace": "_session"
+        },
+        "http-codes": "https:\/\/github.com\/pllano\/APIS-2018\/tree\/master\/http-codes\/"
+    },
+    "db": {
+        "name": "db",
+        "master": "pllanoapi",
+        "slave": "json",
+        "router": 0,
+        "synchronize": 0,
+        "http-codes": "https:\/\/github.com\/pllano\/APIS-2018\/tree\/master\/http-codes\/",
+        "pllanoapi": {
+            "config": 1,
+            "url": "https:\/\/api.pllano.com\/",
+            "auth": "QueryKeyAuth",
+            "public_key": null,
+            "private_key": null
+        },
+        "api": {
+            "url": "https:\/\/ua.pllano.com\/api\/v1\/json\/",
+            "auth": "QueryKeyAuth",
+            "public_key": null,
+            "private_key": null,
+            "config": 1
+        },
+        "json": {
+            "dir_name": "\/_json_db_\/",
+            "cached": 0,
+            "cache_lifetime": "60",
+            "temp": 0,
+            "api": 0,
+            "crypt": 0
+        },
+        "mysql": {
+            "host": "localhost",
+            "dbname": "",
+            "port": "",
+            "charset": "utf8",
+            "connect_timeout": "15",
+            "user": "",
+            "password": ""
+        },
+        "elasticsearch": {
+            "host": "localhost",
+            "port": "9200",
+            "type": 1,
+            "index": "apishop",
+            "auth": 0,
+            "user": "elastic",
+            "password": "elastic_password"
+        },
+        "queue": {
+            "status": 0,
+            "limit": "5"
+        },
+        "resource": {
+            "install": {
+                "db": "pllanoapi",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "stores_list": {
+                "db": "pllanoapi",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "templates_list": {
+                "db": "pllanoapi",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "site": {
+                "db": "pllanoapi",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 1
+            },
+            "language": {
+                "db": "pllanoapi",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "price": {
+                "db": "pllanoapi",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 1
+            },
+            "user": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "cart": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "order": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "address": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "pay": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "product": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "type": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "brand": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "serie": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "image": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "seo": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "description": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "contact": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "category": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "role": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "currency": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "article": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "article_category": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "queue": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "cached": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            },
+            "db": {
+                "db": "json",
+                "synchronize": 0,
+                "auth": 0,
+                "authorization": 0
+            }
+        }
+    }
 }
