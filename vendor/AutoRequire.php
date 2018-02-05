@@ -54,7 +54,7 @@
  *      new \Foo\Bar\Qux\QuuxTest;
  */
  
-namespace AutoRequire;
+namespace Pllano\AutoRequire;
  
 class Autoloader
 {
