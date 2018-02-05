@@ -14,27 +14,23 @@
 namespace ApiShop\Resources;
  
 use Slim\Http\Request;
-use Slim\Http\Response;
-use RouterDb\Db;
-use RouterDb\Router;
-use ApiShop\Hooks\Hook;
-use ApiShop\Adapter\Cache;
-use ApiShop\Config\Settings;
+use Pllano\RouterDb\Db;
+use Pllano\RouterDb\Router;
+use Pllano\Caching\Cache;
  
-class Language {
-
-    private $db_name;
+class Language
+{
     private $language = "en";
     private $resource = "language";
     private $config;
-    private $request;
+    protected $request;
+    private $cache_lifetime = 30*24*60*60;
  
     function __construct(Request $request, $config)
     {
-        $this->request = $request;
         $this->config = $config;
-        
-        $getParams = $request->getQueryParams();
+        $this->request = $request;
+        $getParams = $this->request->getQueryParams();
         // Подключаем сессию, берет название класса из конфигурации
         $session = new $this->config['vendor']['session']($this->config['settings']['session']['name']);
  
@@ -55,20 +51,20 @@ class Language {
         } else {
             $this->language = $langs->getLanguage();
         }
- 
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($this->config);
-        // Получаем название базы для указанного ресурса
-        $this->db_name = $router->ping($this->resource);
     }
  
     // Ресурс language доступен только на чтение
     public function get()
     {
         $cache = new Cache($this->config);
-        if ($cache->run('language/'.$this->language, 30*24*60*60) === null) {
+        $cache_run = $cache->run($this->resource.'/'.$this->language, $this->cache_lifetime);
+        if ($cache_run === null) {
+            // Отдаем роутеру RouterDb конфигурацию.
+            $router = new Router($this->config);
+            // Получаем название базы для указанного ресурса
+            $db_name = $router->ping($this->resource);
             // Подключаемся к базе
-            $db = new Db($this->db_name, $this->config);
+            $db = new Db($db_name, $this->config);
             // Отправляем запрос и получаем данные
             $resp = $db->get($this->resource);
             if ($resp != null) {
@@ -77,14 +73,14 @@ class Language {
                     $array = (array)$value['item'];
                     $arr[$array["id"]] = $array[$this->language];
                 }
-                if ($cache->state() == '1') {
+                if ($cache->state() == 1) {
                     $cache->set($arr);
                 }
  
                 return $arr;
  
             } else {
-                return null;
+                return $cache->get();
             }
         } else {
             return $cache->get();
@@ -95,6 +91,21 @@ class Language {
     public function lang()
     {
         return $this->language;
+    }
+ 
+    public function setResource($resource)
+    {
+        $this->resource = $resource;
+    }
+ 
+    public function setLanguage($language)
+    {
+        $this->language = $language;
+    }
+ 
+    public function cache_lifetime($cache_lifetime)
+    {
+        $this->cache_lifetime = $cache_lifetime;
     }
  
 }

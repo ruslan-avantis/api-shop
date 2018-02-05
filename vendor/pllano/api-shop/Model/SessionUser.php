@@ -4,18 +4,25 @@ namespace ApiShop\Model;
  
 use ApiShop\Config\Settings;
  
-class SessionUser {
+class SessionUser
+{
+    private $config;
+ 
+    function __construct($config)
+    {
+        $this->config = $config;
+    }
  
     // Получаем данные из session
-    public function get() {
-        $config = (new Settings())->get();
+    public function get()
+    {
         // Подключаем сессию, берет название класса из конфигурации
-        $session = new $config['vendor']['session']($config['settings']['session']['name']);
+        $session = new $this->config['vendor']['session']($this->config['settings']['session']['name']);
         // Определяем язык интерфейса пользователя
  
-        $langs = new $config['vendor']['language_detector']();
+        $langs = new $this->config['vendor']['language_detector']();
         // Получаем массив данных из таблицы language на языке из $session->language
-        $lang = $config["settings"]["language"];
+        $lang = $this->config["settings"]["language"];
         if (isset($session->language)) {
             $lang = $session->language;
         } elseif ($langs->getLanguage()) {
@@ -30,7 +37,7 @@ class SessionUser {
         if (isset($session->authorize)) {
             if ($session->authorize == 1) {
                 // Читаем ключи
-                $session_key = $config['key']['session'];
+                $session_key = $this->config['key']['session'];
                 // Формируем массив данных сессии который отдаем шаблонизатору
  
                 $response['language'] = $lang;
@@ -40,10 +47,10 @@ class SessionUser {
  
                     if (isset($session->role_id)) {$response["role_id"] = $session->role_id;}
                     if (isset($session->user_id)) {$response["user_id"] = $session->user_id;}
-                    if (isset($session->iname)) {$response["iname"] = $config['vendor']['crypto']::decrypt($session->iname, $session_key);}
-                    if (isset($session->fname)) {$response["fname"] = $config['vendor']['crypto']::decrypt($session->fname, $session_key);}
-                    if (isset($session->phone)) {$response['phone'] = $config['vendor']['crypto']::decrypt($session->phone, $session_key);}
-                    if (isset($session->email)) {$response['email'] = $config['vendor']['crypto']::decrypt($session->email, $session_key);}
+                    if (isset($session->iname)) {$response["iname"] = $this->config['vendor']['crypto']::decrypt($session->iname, $session_key);}
+                    if (isset($session->fname)) {$response["fname"] = $this->config['vendor']['crypto']::decrypt($session->fname, $session_key);}
+                    if (isset($session->phone)) {$response['phone'] = $this->config['vendor']['crypto']::decrypt($session->phone, $session_key);}
+                    if (isset($session->email)) {$response['email'] = $this->config['vendor']['crypto']::decrypt($session->email, $session_key);}
  
                 } catch (\Exception $ex) {
  

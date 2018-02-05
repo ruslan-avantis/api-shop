@@ -15,8 +15,8 @@ namespace ApiShop\Admin;
  
 use ApiShop\Config\Settings;
  
-use RouterDb\Db;
-use RouterDb\Router;
+use Pllano\RouterDb\Db;
+use Pllano\RouterDb\Router;
  
 class Index {
  
