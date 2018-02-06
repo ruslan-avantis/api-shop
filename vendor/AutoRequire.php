@@ -181,7 +181,7 @@ class Autoloader
     public function load($link, $dir, $name, $vendor, $version)
     {
         file_put_contents($dir.'/'.$name.".zip", file_get_contents($link));
-		// Подключаем архиватор
+        // Подключаем архиватор
         $zip = new \ZipArchive;
         $res = $zip->open($dir.'/'.$name.".zip");
         if ($res === TRUE) {
