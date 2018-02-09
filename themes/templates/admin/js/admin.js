@@ -1,7 +1,7 @@
 function resourcePut(resource, id) {
     var fields = $( ":input" || ":textarea" || ":checkbox" || ":radio" || "select").serializeArray();
     //console.log( fields )
-    $.post(admin_dir + 'resource-put/' + resource + '/' + id, fields, function (response) {
+    $.post(post_id + admin_dir + 'resource-put/' + resource + '/' + id, fields, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -14,7 +14,7 @@ function resourcePut(resource, id) {
  
 function resourcePost(resource) {
     var csrf = $("#csrf").val()
-    $.post(admin_dir + "resource-post", {resource: resource, csrf: csrf}, function (response) {
+    $.post(post_id + admin_dir + "resource-post", {resource: resource, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -27,7 +27,7 @@ function resourcePost(resource) {
  
 function resourceDelete(resource, id) {
     var csrf = $("#csrf").val()
-    $.post(admin_dir + "resource-delete", {id: id, resource: resource, csrf: csrf}, function (response) {
+    $.post(post_id + admin_dir + "resource-delete", {id: id, resource: resource, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -40,7 +40,7 @@ function resourceDelete(resource, id) {
  
 function templateInstall(alias) {
     var csrf = $("#csrf").val()
-    $.post(admin_dir + "template-install", {alias: alias, csrf: csrf}, function (response) {
+    $.post(post_id + admin_dir + "template-install", {alias: alias, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -53,7 +53,7 @@ function templateInstall(alias) {
  
 function templateBuy(alias) {
     var csrf = $("#csrf").val()
-    $.post(admin_dir + "template-buy", {alias: alias, csrf: csrf}, function (response) {
+    $.post(post_id + admin_dir + "template-buy", {alias: alias, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -66,7 +66,7 @@ function templateBuy(alias) {
 
 function templateActivate(alias, name) {
     var csrf = $("#csrf").val()
-    $.post(admin_dir + "template-activate", {alias: alias, name: name, csrf: csrf}, function (response) {
+    $.post(post_id + admin_dir + "template-activate", {alias: alias, name: name, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -79,7 +79,7 @@ function templateActivate(alias, name) {
 
 function templateDelete(alias, name) {
     var csrf = $("#csrf").val()
-    $.post(admin_dir + "template-delete", {alias: alias, name: name, csrf: csrf}, function (response) {
+    $.post(post_id + admin_dir + "template-delete", {alias: alias, name: name, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -92,7 +92,7 @@ function templateDelete(alias, name) {
 
 function orderActivate(alias) {
     var csrf = $("#csrf").val()
-    $.post(admin_dir + "order-activate", {alias: alias, csrf: csrf}, function (response) {
+    $.post(post_id + admin_dir + "order-activate", {alias: alias, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -106,7 +106,7 @@ function orderActivate(alias) {
 
 function packageBuy(alias) {
     var csrf = $("#csrf").val()
-    $.post(admin_dir + "package-buy", {alias: alias, csrf: csrf}, function (response) {
+    $.post(post_id + admin_dir + "package-buy", {alias: alias, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -119,7 +119,7 @@ function packageBuy(alias) {
 
 function packageActivate(alias) {
     var csrf = $("#csrf").val()
-    $.post(admin_dir + "package-activate", {alias: alias, csrf: csrf}, function (response) {
+    $.post(post_id + admin_dir + "package-activate", {alias: alias, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -132,7 +132,7 @@ function packageActivate(alias) {
 
 function packageDeactivate(alias) {
     var csrf = $("#csrf").val()
-    $.post(admin_dir + "package-deactivate", {alias: alias, csrf: csrf}, function (response) {
+    $.post(post_id + admin_dir + "package-deactivate", {alias: alias, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -145,7 +145,7 @@ function packageDeactivate(alias) {
 
 function packageDelete(alias) {
     var csrf = $("#csrf").val()
-    $.post(admin_dir + "package-delete", {alias: alias, csrf: csrf}, function (response) {
+    $.post(post_id + admin_dir + "package-delete", {alias: alias, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -158,7 +158,7 @@ function packageDelete(alias) {
  
 function packagePut(alias) {
     var fields = $( ":input" || ":textarea" || ":checkbox" || ":radio" || "select").serializeArray();
-    $.post(admin_dir + 'package/' + alias, fields, function (response) {
+    $.post(post_id + admin_dir + 'package/' + alias, fields, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
