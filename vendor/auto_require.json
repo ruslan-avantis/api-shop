@@ -49,6 +49,16 @@
             "state": "1",
             "system_package": "1"
         }, {
+            "namespace": "Pllano\\Adapter",
+            "dir": "/pllano/template-engine/src",
+            "link": "https://github.com/pllano/template-engine/archive/master.zip",
+            "git": "https://github.com/pllano/template-engine",
+            "name": "template-engine",
+            "version": "master",
+            "vendor": "pllano",
+            "state": "1",
+            "system_package": "1"
+        }, {
             "namespace": "Psr\\Http\\Message",
             "dir": "/psr/http-message/src",
             "link": "https://github.com/php-fig/http-message/archive/1.0.zip",
