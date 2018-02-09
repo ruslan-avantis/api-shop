@@ -6,12 +6,13 @@
 
 Не важно какой шаблонизатор, систему кеширования или базу данных хотите использовать.
 ## API Shop — из коробки будет поддерживать:
-- Автозагрузчики и управление пакетами: `Composer` и `AutoRequire` + `PackageManager` + `PackageRouter`
+- Автозагрузчики и управление пакетами: `Composer` и [`AutoRequire`](https://github.com/pllano/auto-require) + `PackageManager` + `PackageRouter`
 - Шаблонизаторы: `Twig`, `Smarty`, `Blade`, `Mustache`, `PhpRenderer`
-- Кеширование: `Memcached`, `Memcache`, `Redis`, `Predis`, `Filesystem`, `JsonCache`, `MongoDB`, `Elasticsearch`, `Array`, `Apcu`, `Apc` + `illuminate`, `Doctrine`
-- Хранение данных: `RESTful API`, `JsonDB`, `MySQL`, `PostgreSQL`, `MongoDB`, `SQLite`, `MariaDB`, `Redis`, `Elasticsearch` (каждая таблица может работать с любой из поддерживаемых баз данных благодаря routerDb который дает один интерфейс для работы со всеми базами данных).
+- [Кеширование](https://github.com/pllano/cache): `Memcached`, `Memcache`, `Redis`, `Predis`, `Filesystem`, `JsonCache`, `MongoDB`, `Elasticsearch`, `Array`, `Apcu`, `Apc` + `illuminate`, `Doctrine`
+- [Хранение данных](https://github.com/pllano/router-db): `RESTful API`, [`JsonDB`](https://github.com/pllano/json-db), `MySQL`, `PostgreSQL`, `MongoDB`, `SQLite`, `MariaDB`, `Redis`, `Elasticsearch` (каждая таблица может работать с любой из поддерживаемых баз данных благодаря routerDb который дает один интерфейс для работы со всеми базами данных).
 - HTTP клиенты: `Guzzle`, `Buzz`, `Httplug`, `Httpful`, `Requests`, `Yii2 Httpclient`, `Unirest PHP`
-- Обработчики изображений: `Imagine`, `Intervention`, `Spatie`
+- [Обработчики изображений](https://github.com/pllano/router-image): `Imagine`, `Intervention`, `Spatie`
+- Имеет свои систему [Hooks](https://github.com/pllano/hooks)
 
 ## Требования к хостингу
 ### Для работы API Shop необходим хостинг, который поддерживает:
