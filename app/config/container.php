@@ -13,12 +13,12 @@
  
 use ApiShop\Resources\Site;
 use ApiShop\Config\Settings;
-
+ 
 //use Twig_Loader_Filesystem;
 //use Twig_Environment;
  
 $container = $app->getContainer();
-
+ 
 // monolog
 $container['logger'] = function ($logger) {
     $config = (new Settings())->get();
@@ -28,9 +28,22 @@ $container['logger'] = function ($logger) {
     $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
     return $logger;
 };
-
-// Register Original Twig View
+ 
+// Register \Pllano\Adapter\TemplateEngine
 $container['view'] = function () {
+    $config = (new Settings())->get();
+    // Получаем название шаблона
+    $template = $config['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
+    $site = new Site($config);
+    $site->get();
+    if ($site->template()) {
+        $template = $site->template();
+    }
+    return new $config['vendor']['template_engine']($config, $template);
+};
+ 
+// Register Original Twig View
+$container['twig'] = function () {
     $config = (new Settings())->get();
     $themes = $config['settings']['themes'];
  
@@ -45,24 +58,24 @@ $container['view'] = function () {
         $cache = false;
         $strict_variables = false;
         $loader = new \Twig_Loader_Filesystem($themes['dir']."/".$themes['templates']."/".$template."/layouts");
-		if (isset($config['cache']['twig']['state'])) {
-			if ((int)$config['cache']['twig']['state'] == 1) {
-			    $cache = __DIR__ .''.$config['cache']['twig']['cache_dir'];
-			    $strict_variables = $config['cache']['twig']['strict_variables'];
-			}
-		}
-        $view = new \Twig_Environment($loader, ['cache' => $cache, 'strict_variables' => $strict_variables]);
+        if (isset($config['cache']['twig']['state'])) {
+            if ((int)$config['cache']['twig']['state'] == 1) {
+                $cache = __DIR__ .''.$config['cache']['twig']['cache_dir'];
+                $strict_variables = $config['cache']['twig']['strict_variables'];
+            }
+        }
+        $twig = new \Twig_Environment($loader, ['cache' => $cache, 'strict_variables' => $strict_variables]);
  
     } else {
  
         $loader = new \Twig_Loader_Filesystem($themes['dir']."/".$themes['templates']."/install");
-        $view = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
+        $twig = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
     }
  
-    return $view;
+    return $twig;
  
 };
-
+ 
 // Register Original Twig View Admin Panel
 $container['admin'] = function () {
  

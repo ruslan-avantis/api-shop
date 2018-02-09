@@ -35,7 +35,7 @@ class Settings {
         $config["dir"]["vendor"] = __DIR__ .'/../..'.$json["dir"]["vendor_dir"];
         $config["dir"]["plugins"] = __DIR__ .'/../..'.$json["dir"]["plugins_dir"];
         $config["dir"]["images"] = __DIR__ .'/../..'.$json["dir"]["images_dir"];
-		$config["dir"]["www"] = __DIR__ .'/../..';
+        $config["dir"]["www"] = __DIR__ .'/../..';
  
         $config["settings"]["json"] = $settings;
  
@@ -52,7 +52,9 @@ class Settings {
         $config["settings"]["cache"] =  __DIR__ . "/../_cache/";
  
         // Папка с шаблонами
-        $config["settings"]["themes"]["dir"] = __DIR__ .''.$json["settings"]["themes"]["dir_name"];
+        $config["settings"]["themes"]["dir"] = __DIR__ .''.$json['template']['front_end']['themes']["dir_name"];
+		$config["settings"]["themes"]["back_end_dir"] = __DIR__ .''.$json['template']['back_end']['themes']["dir_name"];
+		$config["settings"]["themes"]["front_end_dir"] = __DIR__ .''.$json['template']['front_end']['themes']["dir_name"];
         // Директория хранения файлов базы данных json
         $config["db"]["json"]["dir"] = __DIR__ .''.$json["db"]["json"]["dir_name"];
         // Если директории нет создать
@@ -122,6 +124,11 @@ class Settings {
             }
         } else {
             $public_key = null;
+        }
+ 
+        if(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'){
+            $_SERVER['HTTPS'] = 'on';
+			$config["server"]["scheme"] = 'https';
         }
  
         // Статус активации сайта null или public_key
