@@ -9,12 +9,13 @@
 Не важно какой шаблонизатор, кеширование или базу данных хотите использовать.
 ## API Shop — из коробки будет поддерживать:
 - Автозагрузчики и управление пакетами: `Composer` и [`AutoRequire`](https://github.com/pllano/auto-require) + `PackageManager` + `PackageRouter`
+- Поддерживает подключение сторонних классов через [Hooks](https://github.com/pllano/hooks) без внесения изменений в код API Shop
 - Шаблонизаторы: `Twig`, `Smarty`, `Blade`, `Mustache`, `PhpRenderer`
 - [Кеширование](https://github.com/pllano/cache): `Memcached`, `Memcache`, `Redis`, `Predis`, `Filesystem`, `JsonCache`, `MongoDB`, `Elasticsearch`, `Array`, `Apcu`, `Apc` + `illuminate`, `Doctrine`
 - [Хранение данных](https://github.com/pllano/router-db): `RESTful API`, [`JsonDB`](https://github.com/pllano/json-db), `MySQL`, `PostgreSQL`, `MongoDB`, `SQLite`, `MariaDB`, `Redis`, `Elasticsearch` (каждая таблица может работать с любой из поддерживаемых баз данных благодаря routerDb который дает один интерфейс для работы со всеми базами данных).
 - HTTP клиенты: `Guzzle`, `Buzz`, `Httplug`, `Httpful`, `Requests`, `Yii2 Httpclient`, `Unirest PHP`
 - [Обработчики изображений](https://github.com/pllano/router-image): `Imagine`, `Intervention`, `Spatie`
-- Поддерживает подключение сторонних классов через [Hooks](https://github.com/pllano/hooks)
+
 
 ## Требования к хостингу
 ### Для работы API Shop необходим хостинг, который поддерживает:
