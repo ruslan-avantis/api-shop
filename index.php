@@ -12,10 +12,9 @@
  * file that was distributed with this source code.
  */
  
-// Вывод ошибок. Что бы выключить закоментируйте эти строки
-// ini_set('error_reporting', E_ALL);
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
  
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
@@ -27,11 +26,10 @@ if (PHP_SAPI == 'cli-server') {
         return false;
     }
 }
- 
-// Connect \AutoRequire\Autoloader
+// Connect \Pllano\AutoRequire\Autoloader
 require __DIR__ . '/vendor/AutoRequire.php';
 // instantiate the loader
-$require = new \AutoRequire\Autoloader;
+$require = new \Pllano\AutoRequire\Autoloader();
 // Указываем путь к папке vendor для AutoRequire
 $vendor_dir = __DIR__ . '/vendor';
 // Указываем путь к auto_require.json
@@ -83,12 +81,6 @@ foreach ($routers as $router) {
 if ($config["db"]["master"] == "json" || $config["db"]["slave"] == "json") {
     // Запускаем jsonDB\Db
     $jsonDb = new \jsonDB\Db($config['db']['json']['dir']);
-    $jsonDb->setCached($config['db']['json']['cached']);
-    $jsonDb->setCacheLifetime($config['db']['json']['cache_lifetime']);
-    $jsonDb->setTemp($config['db']['json']['temp']);
-    $jsonDb->setApi($config['db']['json']['api']);
-    $jsonDb->setCrypt($config['db']['json']['crypt']);
-    $jsonDb->setKey($config["db"]["key"]);
     $jsonDb->run();
 }
  
