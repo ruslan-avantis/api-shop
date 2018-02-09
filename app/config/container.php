@@ -30,7 +30,7 @@ $container['logger'] = function ($logger) {
 };
  
 // Register \Pllano\Adapter\TemplateEngine
-$container['view'] = function () {
+$container['view'] = function ($view) {
     $config = (new Settings())->get();
     // Получаем название шаблона
     $template = $config['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
@@ -39,7 +39,8 @@ $container['view'] = function () {
     if ($site->template()) {
         $template = $site->template();
     }
-    return new $config['vendor']['template_engine']($config, $template);
+	$view = new $config['vendor']['template_engine']($config, $template);
+    return $view;
 };
  
 // Register Original Twig View
