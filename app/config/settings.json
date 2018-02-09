@@ -10,19 +10,19 @@
 		}
 	},
 	"cache": {
-		"state": "1",
-		"dynamic": "0",
-		"print": "0",
-		"cache_lifetime": "360",
-		"cpu": "80",
-		"memory": "80",
+		"state": 1,
+		"dynamic": 0,
+		"print": 0,
+		"cache_lifetime": 3600,
+		"cpu": 80,
+		"memory": 80,
 		"vendor": "cache",
 		"driver": "filesystem",
 		"adapter": "apishop",
-		"clear": "0",
+		"clear": 0,
 		"twig": {
-			"state": "1",
-			"strict_variables": "0",
+			"state": 1,
+			"strict_variables": 0,
 			"cache_dir": "/../../cache/_twig_cache"
 		},
 		"memcached": {
