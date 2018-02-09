@@ -11,13 +11,13 @@
 <a class="nav-link active" href="#"><span class="font_14">{{ language.837 }}</span></a>
 </li>
 <li class="nav-item">
-<a class="nav-link" href="{{ config.routers.admin }}packages-install"><span class="font_14">{{ language.863 }}</span></a>
+<a class="nav-link" href="{{ post_id }}{{ config.routers.admin }}packages-install"><span class="font_14">{{ language.863 }}</span></a>
 </li>
 <li class="nav-item">
-<a class="nav-link" href="{{ config.routers.admin }}packages-install-json"><span class="font_14">{{ language.867 }}</span></a>
+<a class="nav-link" href="{{ post_id }}{{ config.routers.admin }}packages-install-json"><span class="font_14">{{ language.867 }}</span></a>
 </li>
 <li class="nav-item">
-<a class="nav-link" href="{{ config.routers.admin }}package/"><span class="font_14">{{ language.864 }}</span></a>
+<a class="nav-link" href="{{ post_id }}{{ config.routers.admin }}package/"><span class="font_14">{{ language.864 }}</span></a>
 </li>
 </ul>
 <div class="padding_height_10">
@@ -38,7 +38,7 @@
 {% for item in content.require %}
 <tr class="">
 <td>{{ item.name }}</td>
-<td><a href="{{ config.routers.admin }}package/{{ item.name|lower }}">{{ item.namespace }}</a></td>
+<td><a href="{{ post_id }}{{ config.routers.admin }}package/{{ item.name|lower }}">{{ item.namespace }}</a></td>
 <td class="text-center"><a target="_blank" href="{{ item.link }}" class="btn btn-sm bg-green-xl btn-hover-effects text-white">{{ item.version }}</a></td>
 <td class="text-center">
 {% if item.git %}
@@ -56,7 +56,7 @@
 </td>
 <td class="text-center">
 {% if item.system_package != '1' %}
-<a href="{{ config.routers.admin }}package/{{ item.name|lower }}" class="text-primary-xxl"><i class="fa fa-pencil-square-o font_20" aria-hidden="true"></i></a>
+<a href="{{ post_id }}{{ config.routers.admin }}package/{{ item.name|lower }}" class="text-primary-xxl"><i class="fa fa-pencil-square-o font_20" aria-hidden="true"></i></a>
 {% endif %}
 </td>
 <td class="text-center">

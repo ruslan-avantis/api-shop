@@ -18,11 +18,11 @@
 {% for items in content.article %}
 <tr class="">
 <td>{{ items.item.id }}</td>
-<td><a href="{{ config.routers.admin }}resource/article/{{ items.item.id }}" class="">{{ items.item.title }}</a></td>
+<td><a href="{{ post_id }}{{ config.routers.admin }}resource/article/{{ items.item.id }}" class="">{{ items.item.title }}</a></td>
 <td>{{ items.item.alias }}</td>
 <td>{{ items.item.category_id }}</td>
 <td class="text-center">
-<a href="{{ config.routers.admin }}resource/article/{{ items.item.id }}" class="text-grey"><i class="fa fa-cogs font_20" aria-hidden="true"></i></a>
+<a href="{{ post_id }}{{ config.routers.admin }}resource/article/{{ items.item.id }}" class="text-grey"><i class="fa fa-cogs font_20" aria-hidden="true"></i></a>
 </td>
 <td class="text-center">
 <a href="#" onclick="resourceDelete('{{ resource }}', {{ items.item.id }});" class="text-red"><i class="fa fa-times font_20" aria-hidden="true"></i></a>
@@ -34,7 +34,7 @@
 </div>
 
 <div class="text-left padding_width_14">
-<a class="btn btn-md bg-orange-md btn-hover-effects text-white" href="{{ config.routers.admin }}resource/article">
+<a class="btn btn-md bg-orange-md btn-hover-effects text-white" href="{{ post_id }}{{ config.routers.admin }}resource/article">
 {{ language.856 }}
 </a>
 </div>

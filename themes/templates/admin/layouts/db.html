@@ -19,7 +19,7 @@
 {% for table in content.table %}
 <tr class="">
 <td>
-<a href="{{ config.routers.admin }}db/{{ table.name }}">{{ table.name }}</a>
+<a href="{{ post_id }}{{ config.routers.admin }}db/{{ table.name }}">{{ table.name }}</a>
 </td>
 <td>
 {% for key, value in table.schema %}

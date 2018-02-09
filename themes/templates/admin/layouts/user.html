@@ -21,11 +21,11 @@
 {% for items in content %}
 <tr class="">
 <td>{{ items.item.id }}</td>
-<td><a href="{{ config.routers.admin }}resource/user/{{ items.item.id }}" class="">{{ items.item.iname }} {{ items.item.fname }}</a></td>
+<td><a href="{{ post_id }}{{ config.routers.admin }}resource/user/{{ items.item.id }}" class="">{{ items.item.iname }} {{ items.item.fname }}</a></td>
 <td>{{ items.item.email }}</td>
 <td>{{ items.item.phone }}</td>
-<td><a href="{{ config.routers.admin }}resource/user/{{ items.item.id }}" class="">{{ items.item.alias }}</a></td>
-<td class="text-center"><a href="{{ config.routers.admin }}resource/user/{{ items.item.id }}" class="text-grey"><i class="fa fa-cogs font_20" aria-hidden="true"></i></a></td>
+<td><a href="{{ post_id }}{{ config.routers.admin }}resource/user/{{ items.item.id }}" class="">{{ items.item.alias }}</a></td>
+<td class="text-center"><a href="{{ post_id }}{{ config.routers.admin }}resource/user/{{ items.item.id }}" class="text-grey"><i class="fa fa-cogs font_20" aria-hidden="true"></i></a></td>
 <td class="text-center">
 <a href="#" onclick="resourceDelete('user', {{ items.item.id }});" class="text-red"><i class="fa fa-times font_20" aria-hidden="true"></i></a>
 </td>

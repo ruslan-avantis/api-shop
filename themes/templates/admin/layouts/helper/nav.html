@@ -36,35 +36,35 @@
 <style>.nav-item .nav-link .flag-icon {margin-right: 15px;}</style>
 
 {% if head.page == "index" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
-<a class="nav-link" href="{{ config.routers.admin_index }}">
+<a class="nav-link" href="{{ post_id }}{{ config.routers.admin_index }}">
 <img src="/themes/templates/{{ template.name }}/images/icons/1.png" alt="">
 <span class="menu-title">{{ language.24 }}</span>
 </a>
 </li>
 
 {% if head.page == "category" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
-<a class="nav-link" href="{{ config.routers.admin }}resource/category">
+<a class="nav-link" href="{{ post_id }}{{ config.routers.admin }}resource/category">
 <img src="/themes/templates/{{ template.name }}/images/icons/009-layout.png" alt="">
 <span class="menu-title">{{ language.858 }}</span>
 </a>
 </li>
 
 {% if head.page == "article" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
-<a class="nav-link" href="{{ config.routers.admin }}resource/article">
+<a class="nav-link" href="{{ post_id }}{{ config.routers.admin }}resource/article">
 <img src="/themes/templates/{{ template.name }}/images/icons/009-layout.png" alt="">
 <span class="menu-title">{{ language.699 }}</span>
 </a>
 </li>
 
 {% if head.page == "article_category" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
-<a class="nav-link" href="{{ config.routers.admin }}resource/article_category">
+<a class="nav-link" href="{{ post_id }}{{ config.routers.admin }}resource/article_category">
 <img src="/themes/templates/{{ template.name }}/images/icons/009-layout.png" alt="">
 <span class="menu-title">{{ language.855 }}</span>
 </a>
 </li>
 
 {% if head.page == "user" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
-<a class="nav-link" href="{{ config.routers.admin }}resource/user">
+<a class="nav-link" href="{{ post_id }}{{ config.routers.admin }}resource/user">
 <img src="/themes/templates/{{ template.name }}/images/profile.jpg" alt="">
 <span class="menu-title">{{ language.846 }}</span>
 </a>
@@ -106,21 +106,21 @@
 </li>
 
 {% if head.page == "template" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
-<a class="nav-link" href="{{ config.routers.admin }}template">
+<a class="nav-link" href="{{ post_id }}{{ config.routers.admin }}template">
 <img src="/themes/templates/{{ template.name }}/images/icons/009-layout.png" alt="">
 <span class="menu-title">{{ language.815 }}</span>
 </a>
 </li>
 
 {% if head.page == "packages" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
-<a class="nav-link" href="{{ config.routers.admin }}packages">
+<a class="nav-link" href="{{ post_id }}{{ config.routers.admin }}packages">
 <img src="/themes/templates/{{ template.name }}/images/icons/7.png" alt="">
 <span class="menu-title">{{ language.836 }}</span>
 </a>
 </li>
 
 {% if head.page == "config" %}<li class="nav-item active">{% else %}<li class="nav-item">{% endif %}
-<a class="nav-link" href="{{ config.routers.admin }}config">
+<a class="nav-link" href="{{ post_id }}{{ config.routers.admin }}config">
 <img src="/themes/templates/{{ template.name }}/images/icons/10.png" alt="">
 <span class="menu-title">{{ language.709 }}</span>
 </a>
