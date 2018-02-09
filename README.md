@@ -6,12 +6,12 @@ API Shop — это конструктор который находится м�
 
 Не важно какой шаблонизатор, систему кеширования или базу данных хотите использовать.
 ## API Shop — из коробки будет поддерживать:
-Автозагрузчики и управление пакетами: `Composer` и `AutoRequire` + `PackageManager` + `PackageRouter`
-Шаблонизаторы: `Twig`, `Smarty`, `Blade`, `Mustache`, `PhpRenderer`
-Кеширование: `Memcached`, `Memcache`, `Redis`, `Predis`, `Filesystem`, `JsonCache`, `MongoDB`, `Elasticsearch`, `Array`, `Apcu`, `Apc` + `illuminate`, `Doctrine`
-Хранение данных: `RESTful API`, `JsonDB`, `MySQL`, `PostgreSQL`, `MongoDB`, `SQLite`, `MariaDB`, `Redis`, `Elasticsearch` (каждая таблица может работать с любой из поддерживаемых баз данных благодаря routerDb который дает один интерфейс для работы со всеми базами данных).
-HTTP клиенты: `Guzzle`, `Buzz`, `Httplug`, `Httpful`, `Requests`, `Yii2 Httpclient`, `Unirest PHP`
-Обработчики изображений: `Imagine`, `Intervention`, `Spatie`
+- Автозагрузчики и управление пакетами: `Composer` и `AutoRequire` + `PackageManager` + `PackageRouter`
+- Шаблонизаторы: `Twig`, `Smarty`, `Blade`, `Mustache`, `PhpRenderer`
+- Кеширование: `Memcached`, `Memcache`, `Redis`, `Predis`, `Filesystem`, `JsonCache`, `MongoDB`, `Elasticsearch`, `Array`, `Apcu`, `Apc` + `illuminate`, `Doctrine`
+- Хранение данных: `RESTful API`, `JsonDB`, `MySQL`, `PostgreSQL`, `MongoDB`, `SQLite`, `MariaDB`, `Redis`, `Elasticsearch` (каждая таблица может работать с любой из поддерживаемых баз данных благодаря routerDb который дает один интерфейс для работы со всеми базами данных).
+- HTTP клиенты: `Guzzle`, `Buzz`, `Httplug`, `Httpful`, `Requests`, `Yii2 Httpclient`, `Unirest PHP`
+- Обработчики изображений: `Imagine`, `Intervention`, `Spatie`
 
 ## Требования к хостингу
 ### Для работы API Shop необходим хостинг, который поддерживает:
