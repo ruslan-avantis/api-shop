@@ -26,7 +26,11 @@
 ### Для работы API Shop необходим хостинг, который поддерживает:
 - PHP версии 7 или выше
 - Протокол HTTPS
-- Расширение PHP: `openssl` `zip` `memcache` `memcached`
+- Расширение PHP: `openssl` `zip`
+
+Для кеширования необходимо установить
+- Расширение PHP: `memcache` `memcached`
+- Требуемое хранилище (По умолчанию используется файловое кеширование)
 
 ![](https://github.com/pllano/api-shop/blob/master/themes/templates/mini-mo/img/logo.png)
 
