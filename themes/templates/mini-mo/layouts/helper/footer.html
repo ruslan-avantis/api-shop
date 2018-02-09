@@ -60,6 +60,7 @@ Copyright © {{ config.copyright.date }} <a class="control-link link-white" href
 {% if template.layouts.helper.title %}<link href="/themes/templates/{{ template.name }}/css/h1-description.css" rel="stylesheet">{% endif %}
 {% if template.layouts.helper.newsletter %}<link href="/themes/templates/{{ template.name }}/css/newsletter.css" rel="stylesheet">{% endif %}
 <script>
+var post_id = '{{ post_id }}'
 var router_check_in = '{{ routers.check_in }}'
 var router_login = '{{ routers.login }}'
 var router_logout = '{{ routers.logout }}'
