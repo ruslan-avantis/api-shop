@@ -184,10 +184,10 @@
         }, {
             "namespace": "Imagine",
             "dir": "/imagine/Imagine/lib/Imagine",
-            "link": "https://github.com/avalanche123/Imagine/archive/v0.7.1.zip",
+            "link": "https://github.com/avalanche123/Imagine/archive/master.zip",
             "git": "https://github.com/avalanche123/Imagine",
             "name": "Imagine",
-            "version": "0.7.1",
+            "version": "master",
             "vendor": "imagine",
             "state": "1",
             "system_package": "0"
