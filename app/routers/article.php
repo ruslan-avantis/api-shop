@@ -38,9 +38,10 @@ $app->get($category.'{alias:[a-z0-9_-]+}.html', function (Request $request, Resp
     $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook($config);
-    $hook->http($request, $response, $args, 'GET', 'site');
+    $hook->http($request, $response, $args, 'GET', 'site', 'article_category');
     $request = $hook->request();
     $args = $hook->args();
+	$state = $hook->state();
  
     // Подключаем плагины
     $utility = new Utility();
@@ -85,6 +86,13 @@ $app->get($category.'{alias:[a-z0-9_-]+}.html', function (Request $request, Resp
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = $session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -167,6 +175,7 @@ $app->get($category.'{alias:[a-z0-9_-]+}.html', function (Request $request, Resp
         "language" => $language,
         "template" => $template,
         "token" => $session->token,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "menu" => $menu,
         "content" => $content
@@ -178,7 +187,7 @@ $app->get($category.'{alias:[a-z0-9_-]+}.html', function (Request $request, Resp
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->view->render($hook->render(), $hook->view());
+    return $this->view->render($response, $hook->render(), $hook->view());
  
 });
 
@@ -188,9 +197,10 @@ $app->get($article.'{alias:[a-z0-9_-]+}.html', function (Request $request, Respo
     $config = (new Settings())->get();
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook($config);
-    $hook->http($request, $response, $args, 'GET', 'site');
+    $hook->http($request, $response, $args, 'GET', 'site', 'article');
     $request = $hook->request();
     $args = $hook->args();
+	if($hook->state() === true){
  
     // Подключаем плагины
     $utility = new Utility();
@@ -235,6 +245,13 @@ $app->get($article.'{alias:[a-z0-9_-]+}.html', function (Request $request, Respo
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = $session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -322,6 +339,7 @@ $app->get($article.'{alias:[a-z0-9_-]+}.html', function (Request $request, Respo
         "language" => $language,
         "template" => $template,
         "token" => $session->token,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "menu" => $menu,
         "content" => $content
@@ -331,7 +349,8 @@ $app->get($article.'{alias:[a-z0-9_-]+}.html', function (Request $request, Respo
     $hook->get($view, $render);
     // Запись в лог
     $this->logger->info($hook->logger());
+	}
     // Отдаем данные шаблонизатору
-    return $this->view->render($hook->render(), $hook->view());
+    return $this->view->render($response, $hook->render(), $hook->view());
  
 });

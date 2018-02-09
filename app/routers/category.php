@@ -86,6 +86,13 @@ $app->get($category.'[/{alias:[a-z0-9_-]+}]', function (Request $request, Respon
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = $session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language['402'];
     $keywords = $language['402'];
@@ -264,6 +271,7 @@ $app->get($category.'[/{alias:[a-z0-9_-]+}]', function (Request $request, Respon
         "language" => $language,
         "template" => $template,
         "token" => $session->token,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "menu" => $menu,
         "content" => $content,
@@ -283,7 +291,7 @@ $app->get($category.'[/{alias:[a-z0-9_-]+}]', function (Request $request, Respon
     // Запись в лог
     $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->view->render($hook->render(), $hook->view());
+    return $this->view->render($response, $hook->render(), $hook->view());
  
 });
  

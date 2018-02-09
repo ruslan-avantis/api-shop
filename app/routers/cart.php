@@ -13,17 +13,22 @@
  
 use Slim\Http\Request;
 use Slim\Http\Response;
- 
 use Pllano\RouterDb\Db;
 use Pllano\RouterDb\Router;
- 
 use ApiShop\Config\Settings;
 use ApiShop\Resources\Language;
  
 $config = (new Settings())->get();
 $cart = $config['routers']['cart'];
+// Подключаем сессию, берет название класса из конфигурации
+$session = new $config['vendor']['session']($config['settings']['session']['name']);
+if(isset($session->post_id)) {
+    $post_id = '/'.$session->post_id;
+} else {
+    $post_id = '/0';
+}
  
-$app->post($cart.'new-order', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$cart.'new-order', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();
@@ -203,7 +208,7 @@ $app->post($cart.'new-order', function (Request $request, Response $response, ar
  
 });
  
-$app->post($cart.'add-to-cart', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$cart.'add-to-cart', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию \ApiShop\Config\Settings
     $config = (new Settings())->get();

@@ -13,12 +13,9 @@
  
 use Slim\Http\Request;
 use Slim\Http\Response;
- 
 use Pllano\RouterDb\Db;
 use Pllano\RouterDb\Router;
- 
 use Pllano\Hooks\Hook;
- 
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Model\Security;
@@ -34,6 +31,13 @@ $sign_up = $config['routers']['sign_up'];
 $logout = $config['routers']['logout'];
 $login = $config['routers']['login'];
 $check_in = $config['routers']['check_in'];
+// Подключаем сессию, берет название класса из конфигурации
+$session = new $config['vendor']['session']($config['settings']['session']['name']);
+if(isset($session->post_id)) {
+    $post_id = '/'.$session->post_id.'/';
+} else {
+    $post_id = '/0';
+}
  
 // Страница авторизации
 $app->get($sign_in, function (Request $request, Response $response, array $args) {
@@ -80,6 +84,12 @@ $app->get($sign_in, function (Request $request, Response $response, array $args)
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
  
+    if(!empty($session->post_id)) {
+        $post_id = $session->post_id.'/';
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки
     $head = [
         "page" => 'sign-in',
@@ -102,6 +112,7 @@ $app->get($sign_in, function (Request $request, Response $response, array $args)
         "language" => $language,
         "template" => $template,
         "token" => $session->token,
+		"post_id" => $post_id,
         "session" => $user_data,
         "session_temp" => $session_temp,
         "content" => $content
@@ -113,7 +124,7 @@ $app->get($sign_in, function (Request $request, Response $response, array $args)
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->view->render($hook->render(), $hook->view());
+    return $this->view->render($response, $hook->render(), $hook->view());
  
 });
  
@@ -161,7 +172,13 @@ $app->get($sign_up, function (Request $request, Response $response, array $args)
     $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
-    
+ 
+    if(!empty($session->post_id)) {
+        $post_id = $session->post_id.'/';
+    } else {
+        $post_id = '/_';
+    }
+ 
     $head = [
         "page" => 'sign-in',
         "title" => "",
@@ -182,6 +199,7 @@ $app->get($sign_up, function (Request $request, Response $response, array $args)
         "template" => $template,
         "language" => $language,
         "token" => $session->token,
+		"post_id" => $post_id,
         "session" => $user_data,
         "session_temp" => $session_temp,
         "content" => $content
@@ -193,12 +211,12 @@ $app->get($sign_up, function (Request $request, Response $response, array $args)
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->view->render($hook->render(), $hook->view());
+    return $this->view->render($response, $hook->render(), $hook->view());
  
 });
  
 // Выйти
-$app->post($logout, function (Request $request, Response $response, array $args) {
+$app->post($post_id.$logout, function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -247,6 +265,7 @@ $app->post($logout, function (Request $request, Response $response, array $args)
     if ($csrf == $token) {
  
         $session->authorize = null;
+		$session->post_id = null;
         $session->cookie = '';
         unset($session->authorize); // удаляем сесию
         unset($session->id); // удаляем сесию
@@ -280,7 +299,7 @@ $app->post($logout, function (Request $request, Response $response, array $args)
 });
   
 // Авторизация
-$app->post($login, function (Request $request, Response $response, array $args) {
+$app->post($post_id.$login, function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -426,7 +445,7 @@ $app->post($login, function (Request $request, Response $response, array $args) 
 });
  
 // Регистрация
-$app->post($check_in, function (Request $request, Response $response, array $args) {
+$app->post($post_id.$check_in, function (Request $request, Response $response, array $args) {
  
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();

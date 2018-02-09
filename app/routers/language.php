@@ -18,9 +18,16 @@ use ApiShop\Resources\Language;
  
 $config = (new Settings())->get();
 $language = $config['routers']['language'];
+// Подключаем сессию, берет название класса из конфигурации
+$session = new $config['vendor']['session']($config['settings']['session']['name']);
+if(isset($session->post_id)) {
+    $post_id = '/'.$session->post_id;
+} else {
+    $post_id = '/0';
+}
  
 // Меняем язык отображения в session пользователя
-$app->post($language, function (Request $request, Response $response, array $args) {
+$app->post($post_id.$language, function (Request $request, Response $response, array $args) {
     // Подключаем конфигурацию
     $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации
@@ -67,7 +74,7 @@ $app->post($language, function (Request $request, Response $response, array $arg
 });
 
 // Меняем язык отображения в session пользователя
-$app->get($language, function (Request $request, Response $response, array $args) {
+$app->get($post_id.$language, function (Request $request, Response $response, array $args) {
     // Подключаем конфигурацию
     $config = (new Settings())->get();
     // Подключаем сессию, берет название класса из конфигурации

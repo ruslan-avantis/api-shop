@@ -96,6 +96,13 @@ $app->get($product.''.$alias.''.$name, function (Request $request, Response $res
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = $session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -224,6 +231,7 @@ $app->get($product.''.$alias.''.$name, function (Request $request, Response $res
             "language" => $language,
             "template" => $template,
             "token" => $session->token,
+			"post_id" => $post_id,
             "session" => $sessionUser,
             "content" => $content,
             "menu" => $menu,
@@ -237,7 +245,7 @@ $app->get($product.''.$alias.''.$name, function (Request $request, Response $res
     // Запись в лог
     $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->view->render($hook->render(), $hook->view());
+    return $this->view->render($response, $hook->render(), $hook->view());
  
 });
  
@@ -271,7 +279,7 @@ $app->get($quick_view.''.$alias.''.$name, function (Request $request, Response $
     $site_config = $site->get();
     $site_template = $site->template();
  
-    $templateConfig = new Template($site_template);
+ $templateConfig = new Template($site_template);
     $template = $templateConfig->get();
  
     // Получаем параметры из URL
@@ -296,6 +304,13 @@ $app->get($quick_view.''.$alias.''.$name, function (Request $request, Response $
     $sessionUser =(new SessionUser($config))->get();
     // Что бы не давало ошибку присваиваем пустое значение
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = $session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Меню
     $menu = (new Menu())->get();
     
@@ -379,6 +394,7 @@ $app->get($quick_view.''.$alias.''.$name, function (Request $request, Response $
             "language" => $language,
             "template" => $template,
             "token" => $session->token,
+			"post_id" => $post_id,
             "session" => $sessionUser,
             "content" => $content,
             "menu" => $menu,
@@ -393,7 +409,7 @@ $app->get($quick_view.''.$alias.''.$name, function (Request $request, Response $
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($view, $render);
     // Отдаем данные шаблонизатору
-    return $this->view->render($hook->render(), $hook->view());
+    return $this->view->render($response, $hook->render(), $hook->view());
  
 });
  

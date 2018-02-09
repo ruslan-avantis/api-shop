@@ -34,9 +34,15 @@ use ApiShop\Admin\Packages;
 $config = (new Settings())->get();
 $admin_router = $config['routers']['admin'];
 $admin_index_router = $config['routers']['admin_index'];
+$session = new $config['vendor']['session']($config['settings']['session']['name']);
+if(isset($session->post_id)) {
+    $post_id = '/'.$session->post_id;
+} else {
+    $post_id = '/0';
+}
  
 // Главная страница админ панели
-$app->get($admin_index_router.'', function (Request $request, Response $response, array $args) {
+$app->get($post_id.$admin_index_router.'', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -74,6 +80,13 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["709"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -122,6 +135,7 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
     ];
@@ -136,7 +150,7 @@ $app->get($admin_index_router.'', function (Request $request, Response $response
 });
  
 // Список items указанного resource
-$app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get($post_id.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -188,6 +202,13 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["709"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -271,6 +292,7 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content,
         "editor" => $config['admin']['editor'],
@@ -289,7 +311,7 @@ $app->get($admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fun
 });
  
 // Содать запись в resource
-$app->post($admin_router.'resource-post', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$admin_router.'resource-post', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -454,7 +476,7 @@ $app->post($admin_router.'resource-post', function (Request $request, Response $
 });
  
 // Удалить запись в resource
-$app->post($admin_router.'resource-delete', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$admin_router.'resource-delete', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -584,7 +606,7 @@ $app->post($admin_router.'resource-delete', function (Request $request, Response
 });
  
 // Редактируем запись в resource
-$app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -748,7 +770,7 @@ $app->post($admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]'
 });
  
 // Активировать заказ
-$app->post($admin_router.'order-activate', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$admin_router.'order-activate', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -845,7 +867,7 @@ $app->post($admin_router.'order-activate', function (Request $request, Response 
 });
  
 // Купить и установить шаблон
-$app->post($admin_router.'template-buy', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$admin_router.'template-buy', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -910,7 +932,7 @@ $app->post($admin_router.'template-buy', function (Request $request, Response $r
 });
  
 // Установить шаблон
-$app->post($admin_router.'template-install', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$admin_router.'template-install', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -1025,7 +1047,7 @@ $app->post($admin_router.'template-install', function (Request $request, Respons
 });
  
 // Активировать шаблон
-$app->post($admin_router.'template-activate', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$admin_router.'template-activate', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -1121,7 +1143,7 @@ $app->post($admin_router.'template-activate', function (Request $request, Respon
 });
  
 // Удалить шаблон
-$app->post($admin_router.'template-delete', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$admin_router.'template-delete', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -1194,7 +1216,7 @@ $app->post($admin_router.'template-delete', function (Request $request, Response
 });
  
 // Список шаблонов
-$app->get($admin_router.'template', function (Request $request, Response $response, array $args) {
+$app->get($post_id.$admin_router.'template', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -1232,6 +1254,13 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["815"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -1282,6 +1311,7 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content,
         "editor" => $config['admin']['editor'],
@@ -1298,7 +1328,7 @@ $app->get($admin_router.'template', function (Request $request, Response $respon
 });
  
 // Страница шаблона
-$app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+$app->get($post_id.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -1342,6 +1372,13 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -1388,6 +1425,7 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
     ];
@@ -1402,7 +1440,7 @@ $app->get($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $reque
 });
  
 // Редактируем настройки шаблона
-$app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -1446,6 +1484,13 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -1503,6 +1548,7 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
     ];
@@ -1517,7 +1563,7 @@ $app->post($admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $requ
 });
  
 // Станица пакета
-$app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
+$app->get($post_id.$admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -1561,6 +1607,13 @@ $app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $requ
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -1613,6 +1666,7 @@ $app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $requ
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
     ];
@@ -1627,7 +1681,7 @@ $app->get($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $requ
 });
 
 // Редактируем или добавляем пакет
-$app->post($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -1789,7 +1843,7 @@ $app->post($admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $req
 });
  
 // Изменение статуса пакета
-$app->post($admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -1902,7 +1956,7 @@ $app->post($admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $requ
 });
  
 // Список пакетов
-$app->get($admin_router.'packages', function (Request $request, Response $response, array $args) {
+$app->get($post_id.$admin_router.'packages', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -1940,6 +1994,13 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -1988,6 +2049,7 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
     ];
@@ -2002,7 +2064,7 @@ $app->get($admin_router.'packages', function (Request $request, Response $respon
 });
  
 // Репозиторий
-$app->get($admin_router.'packages-install', function (Request $request, Response $response, array $args) {
+$app->get($post_id.$admin_router.'packages-install', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2040,6 +2102,13 @@ $app->get($admin_router.'packages-install', function (Request $request, Response
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -2088,6 +2157,7 @@ $app->get($admin_router.'packages-install', function (Request $request, Response
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
     ];
@@ -2102,7 +2172,7 @@ $app->get($admin_router.'packages-install', function (Request $request, Response
 });
  
 // Страница установки из json файла
-$app->get($admin_router.'packages-install-json', function (Request $request, Response $response, array $args) {
+$app->get($post_id.$admin_router.'packages-install-json', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2140,6 +2210,13 @@ $app->get($admin_router.'packages-install-json', function (Request $request, Res
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -2188,6 +2265,7 @@ $app->get($admin_router.'packages-install-json', function (Request $request, Res
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
     ];
@@ -2202,7 +2280,7 @@ $app->get($admin_router.'packages-install-json', function (Request $request, Res
 });
  
 // Глобальные настройки
-$app->get($admin_router.'config', function (Request $request, Response $response, array $args) {
+$app->get($post_id.$admin_router.'config', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2240,6 +2318,13 @@ $app->get($admin_router.'config', function (Request $request, Response $response
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -2287,6 +2372,7 @@ $app->get($admin_router.'config', function (Request $request, Response $response
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
     ];
@@ -2301,7 +2387,7 @@ $app->get($admin_router.'config', function (Request $request, Response $response
 });
  
 // Редактируем глобальные настройки
-$app->post($admin_router.'config', function (Request $request, Response $response, array $args) {
+$app->post($post_id.$admin_router.'config', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2339,6 +2425,13 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["709"].' '.$language["814"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -2391,6 +2484,7 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
     ];
@@ -2405,7 +2499,7 @@ $app->post($admin_router.'config', function (Request $request, Response $respons
 });
  
 // Список баз данных
-$app->get($admin_router.'db', function (Request $request, Response $response, array $args) {
+$app->get($post_id.$admin_router.'db', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2443,6 +2537,13 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["814"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -2488,6 +2589,7 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
     ];
@@ -2502,7 +2604,7 @@ $app->get($admin_router.'db', function (Request $request, Response $response, ar
 });
  
 // Страница таблицы (ресурса)
-$app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get($post_id.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2546,6 +2648,13 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["814"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -2673,6 +2782,7 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content,
         "content_key" => $content_key,
@@ -2696,7 +2806,7 @@ $app->get($admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Re
 });
  
 // Глобально
-$app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get($post_id.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2746,6 +2856,13 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
     $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
     // Контент по умолчанию
     $content = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = '/'.$session->post_id;
+    } else {
+        $post_id = '/_';
+    }
+ 
     // Заголовки по умолчанию из конфигурации
     $title = $language["814"].' - '.$config['settings']['site']['title'];
     $keywords = $config['settings']['site']['keywords'];
@@ -2818,6 +2935,7 @@ $app->get($admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (R
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
     ];

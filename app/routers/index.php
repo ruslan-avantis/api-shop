@@ -38,11 +38,12 @@ $app->get($index, function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
-	// Передаем данные Hooks для обработки ожидающим классам
+    // Передаем данные Hooks для обработки ожидающим классам
     $hook = new Hook($config);
     $hook->http($request, $response, $args, 'GET', 'site');
     $request = $hook->request();
     $args = $hook->args();
+	
     // Подключаем плагины
     $utility = new Utility();
     // Получаем параметры из URL
@@ -71,6 +72,12 @@ $app->get($index, function (Request $request, Response $response, array $args) {
     // Контент по умолчанию
     $content = [];
     $render = '';
+ 
+    if(!empty($session->post_id)) {
+        $post_id = $session->post_id;
+    } else {
+        $post_id = '/_';
+    }
  
     if ($config["settings"]["install"]["status"] != null) {
         // Настройки сайта
@@ -151,6 +158,7 @@ $app->get($index, function (Request $request, Response $response, array $args) {
             "language" => $language,
             "template" => $template,
             "token" => $session->token,
+			"post_id" => $post_id,
             "session" => $sessionUser,
             "menu" => $menu,
             "content" => $content
@@ -189,7 +197,7 @@ $app->get($index, function (Request $request, Response $response, array $args) {
                 "template" => "install",
                 "routers" => $routers,
                 "config" => $config['settings']['site'],
-               "language" => $language,
+                "language" => $language,
                 "token" => $session->token,
                 "session" => $sessionUser,
                 "content" => $content
@@ -201,7 +209,7 @@ $app->get($index, function (Request $request, Response $response, array $args) {
     // Запись в лог
     $this->logger->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->view->render($hook->render(), $hook->view());
+    return $this->view->render($response, $hook->render(), $hook->view());
  
-});
+ });
  
