@@ -195,35 +195,35 @@
 			"demo-hook-index-get": {
 				"vendor": "\\Pllano\\Hooks\\HookIndexGet",
 				"query": "GET",
-				"render": "index.html",
-				"routers": "none",
-				"resource": "none",
-				"url": "none",
+				"render": "all",
+				"routers": 0,
+				"resource": 0,
+				"url": "/faq.html",
 				"app": "site",
 				"state": 1,
-				"config": "none"
+				"config": 0
 			},
 			"demo-hook-all": {
 				"vendor": "\\Pllano\\Hooks\\HookAll",
 				"query": "all",
 				"render": "all",
-				"routers": "none",
-				"resource": "none",
-				"url": "none",
+				"routers": 0,
+				"resource": 0,
+				"url": 0,
 				"app": "site",
 				"state": 0,
-				"config": "none"
+				"config": 0
 			},
 			"security": {
 				"vendor": "\\Pllano\\Hooks\\Security",
 				"query": "all",
 				"render": "all",
-				"routers": "none",
-				"resource": "none",
-				"url": "none",
+				"routers": 0,
+				"resource": 0,
+				"url": 0,
 				"app": "site",
 				"state": 0,
-				"config": "none"
+				"config": 0
 			}
 		}
 	},
