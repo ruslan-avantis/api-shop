@@ -234,32 +234,32 @@ class Image {
                 if (class_exists($this->config['vendor']['image_thumbnail'])) {
                     $vendor = $this->config['vendor']['image_thumbnail'];
                 } else {
-                        return null;
+                    return null;
                 }
                 if(isset($vendor)) {
                     if($vendor == '\Imagine\Gd\Imagine') {
                         // \Imagine\Gd\Imagine
                         // \Imagine\Imagick\Imagine
                         // \Imagine\Gmagick\Imagine
-                        $imagine = new $vendor();
+                        $images = new $vendor();
                         $size = new \Imagine\Image\Box($this->width, $this->height);
                         $mode = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
                         if($this->config['vendor']['image_thumbnail_mode'] == 'THUMBNAIL_OUTBOUND') {
                             $mode = \Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
                         }
-                        $imagine->open($this->image_temp)->thumbnail($size, $mode)->save($this->image);
+                        $images->open($this->image_temp)->thumbnail($size, $mode)->save($this->image);
  
                     } elseif ($vendor == '\Intervention\Image\ImageManager') {
                         // \Intervention\Image\ImageManager
-                        $intervention = new \Intervention\Image\ImageManager(array('driver' => $this->mode));
-                        $intervention->make($this->image_temp)->resize($this->width, $this->height)->save($this->image, 60);
+                        $images = new \Intervention\Image\ImageManager(array('driver' => $this->mode));
+                        $images->make($this->image_temp)->resize($this->width, $this->height)->save($this->image, 60);
  
                     } elseif ($vendor == '\Spatie\Image') {
                         // \Spatie\Image
-                        $spatie = \Spatie\Image::load($this->image_temp);
-                        $spatie->width($this->width);
-                        $spatie->height($this->height);
-                        $spatie->save($this->image);
+                        $images = \Spatie\Image::load($this->image_temp);
+                        $images->width($this->width);
+                        $images->height($this->height);
+                        $images->save($this->image);
  
                     } else {
  

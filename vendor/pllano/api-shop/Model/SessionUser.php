@@ -3,6 +3,7 @@
 namespace ApiShop\Model;
  
 use ApiShop\Config\Settings;
+use ApiShop\Utilities\Utility;
  
 class SessionUser
 {
@@ -20,6 +21,8 @@ class SessionUser
         $session = new $this->config['vendor']['session']($this->config['settings']['session']['name']);
         // Определяем язык интерфейса пользователя
  
+        $utility = new Utility();
+ 
         $langs = new $this->config['vendor']['language_detector']();
         // Получаем массив данных из таблицы language на языке из $session->language
         $lang = $this->config["settings"]["language"];
@@ -31,7 +34,9 @@ class SessionUser
         } else {
             $session->language = $lang;
         }
- 
+        if(!isset($session->post_id)) {
+            $session->post_id = $utility->random_alias_id();
+        }
         $response = array();
  
         if (isset($session->authorize)) {
