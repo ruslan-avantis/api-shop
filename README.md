@@ -21,13 +21,29 @@
 - HTTP клиенты: `Guzzle`, `Buzz`, `Httplug`, `Httpful`, `Requests`, `Yii2 Httpclient`, `Unirest PHP`
 - [Обработчики изображений](https://github.com/pllano/router-image): `Imagine`, `Intervention`, `Spatie`
 ## Конструктор - Настраивай так как привык
-### Роутинг - Вы можете заменить контроллер для любой страницы
+### Конфигурация
 ```php
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
- 
 // В файле конфигурации указана логика роутинга и контроллер 
 $config = [
+    "settings" => [
+        "debug" => 0
+        "displayErrorDetails" => 0,
+    ],
+    "template" => [
+        "front_end" => [
+            "template_engine" => "twig",
+            "themes" => [
+                "template" => "mini-mo",
+                "templates" => "templates",
+                "dir_name" => "\/..\/themes"
+            ]
+        ],
+        "twig" => [
+            "cache_state" => 0,
+            "strict_variables" => 0,
+            "cache_dir" => "\/..\/cache\/_twig_cache"
+        ]
+    ],
     "routers" => [
         "site" => [
             "index" => [
@@ -43,6 +59,41 @@ $config = [
         ]
     ]
 ];
+```
+### Вы можете заменить контроллер, шаблонизатор или базу данных
+```php
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+use ApiShop\Config\Settings;
+ 
+$config = (new Settings())->get();
+ 
+$app = new \Slim\App($config);
+ 
+$container = $app->getContainer();
+ 
+// Конфигурация
+$container['config'] = function () {
+    return (new Settings())->get();
+};
+ 
+// Monolog
+$container['logger'] = function ($logger) {
+    $config = (new Settings())->get();
+    $settings = $config['settings']['logger'];
+    $logger = new \Monolog\Logger($settings['name']);
+    $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
+    $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
+    return $logger;
+};
+ 
+// Register \Pllano\Adapter\TemplateEngine
+$container['view'] = function ($view) {
+    $config = (new Settings())->get();
+    // Получаем название шаблона
+    $template = $config['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
+    return new $config['vendor']['template_engine']($config, $template);
+};
  
 $app->get($config['routers']['site']['index']['route'], function (Request $req, Response $res, $args = []) {
     // Получаем настройки из конфигурации
@@ -56,6 +107,8 @@ $app->get($config['routers']['site']['index']['route'], function (Request $req, 
     // Получаем ответ и выводим на страницу
     return $class->$function($req, $res, $args);
 });
+ 
+$app->run();
 ```
 ## Требования к хостингу
 ### Для работы API Shop необходим хостинг, который поддерживает:
