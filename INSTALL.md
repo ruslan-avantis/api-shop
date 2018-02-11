@@ -107,6 +107,111 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     $require->run($vendor_dir, $auto_require);
  
 }
+
+## Конструктор - Настраивай так как привык
+### Конфигурация
+```php
+namespace ApiShop\Config;
+ 
+class Settings {
+ 
+    public static function get() {
+    
+        return [
+            "settings" => [
+                "debug" => 0
+                "displayErrorDetails" => 0,
+            ],
+            "vendor" => [
+                "template_engine" => "\\Pllano\\Adapter\\TemplateEngine"
+            ],
+            "template" => [
+                "front_end" => [
+                    "template_engine" => "twig",
+                    "themes" => [
+                       "template" => "mini-mo",
+                        "templates" => "templates",
+                        "dir_name" => "\/..\/themes"
+                    ]
+                ],
+                "twig" => [
+                    "cache_state" => 0,
+                    "strict_variables" => 0,
+                    "cache_dir" => "\/..\/cache\/_twig_cache"
+                ]
+            ],
+            "routers" => [
+                "site" => [
+                    "index" => [
+                        "route" => "\/",
+                        "controller" => "\\ApiShop\\Controller\\Index",
+                        "function" => "get",
+                    ],
+                    "article" => [
+                        "route" => "\/{alias:[a-z0-9_-]+}.html",
+                        "controller" => "\\ApiShop\\Controller\\Article",
+                        "function" => "get",
+                    ]
+                ]
+            ]
+        ];
+    }
+}
+```
+### Вы можете заменить контроллер, шаблонизатор или базу данных
+```php
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+use ApiShop\Config\Settings;
+use Monolog\Processor\UidProcessor;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Slim\App;
+ 
+$config = Settings::get();
+ 
+$app = new App($config);
+ 
+$container = $app->getContainer();
+ 
+// Конфигурация
+$container['config'] = function () {
+    return Settings::get();
+};
+ 
+// Monolog
+$container['logger'] = function ($logger) {
+    $config = Settings::get();
+    $settings = $config['settings']['logger'];
+    $logger = new Logger($settings['name']);
+    $logger->pushProcessor(new UidProcessor());
+    $logger->pushHandler(new StreamHandler($settings['path'], $settings['level']));
+    return $logger;
+};
+ 
+// Register \Pllano\Adapter\TemplateEngine
+$container['view'] = function ($view) {
+    $config = Settings::get();
+    // Получаем название шаблона
+    $template = $config['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
+    return new $config['vendor']['template_engine']($config, $template);
+};
+ 
+$app->get($config['routers']['site']['index']['route'], function (Request $req, Response $res, $args = []) {
+    // Получаем настройки из конфигурации
+    $router = $this->config['routers']['site']['index'];
+    // Назначает контроллер
+    $controller = $router['controller'];
+    // Назначает функцию вызова
+    $function = $router['function'];
+    // Отдаем контроллеру конфигурацию, шаблонизатор и класс обработки логов
+    $class = new $controller($this->config, $this->view, $this->logger);
+    // Получаем ответ и выводим на страницу
+    return $class->$function($req, $res, $args);
+});
+ 
+$app->run();
+```
  
 ```
 Если вы хотите сконфигурировать под себя необходимо подключить или отредактировать один из файлов [auto_require.json](https://github.com/pllano/auto-require/blob/master/auto_require.json) или [auto_require_master.json](https://github.com/pllano/auto-require/blob/master/auto_require_master.json).
