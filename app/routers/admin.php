@@ -18,10 +18,10 @@ use Pllano\RouterDb\Router;
 use Pllano\Hooks\Hook;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
-use ApiShop\Resources\Install;
-use ApiShop\Resources\Language;
-use ApiShop\Resources\Site;
-use ApiShop\Resources\Template;
+use ApiShop\Model\Install;
+use ApiShop\Model\Language;
+use ApiShop\Model\Site;
+use ApiShop\Model\Template;
 use ApiShop\Model\SessionUser;
 use ApiShop\Model\Filter;
 use ApiShop\Model\Pagination;
@@ -32,17 +32,20 @@ use ApiShop\Admin\Resources;
 use ApiShop\Admin\Packages;
  
 $config = (new Settings())->get();
-$admin_router = $config['routers']['admin'];
-$admin_index_router = $config['routers']['admin_index'];
+$admin_router = $config['routers']['admin']['all']['route'];
+$admin_index = $config['routers']['admin']['index']['route'];
 $session = new $config['vendor']['session']($config['settings']['session']['name']);
+$admin_uri = '/0';
+$post_id = '/0';
+if(isset($session->admin_uri)) {
+    $admin_uri = '/'.$session->admin_uri;
+}
 if(isset($session->post_id)) {
-    $post_id = '/'.$session->post_id;
-} else {
-    $post_id = '/0';
+    $post_id = '/'.$session->post_id.'/';
 }
  
 // Главная страница админ панели
-$app->get($post_id.$admin_index_router.'', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_index.'', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -59,7 +62,7 @@ $app->get($post_id.$admin_index_router.'', function (Request $request, Response 
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -81,10 +84,13 @@ $app->get($post_id.$admin_index_router.'', function (Request $request, Response 
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -135,6 +141,7 @@ $app->get($post_id.$admin_index_router.'', function (Request $request, Response 
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
@@ -150,7 +157,7 @@ $app->get($post_id.$admin_index_router.'', function (Request $request, Response 
 });
  
 // Список items указанного resource
-$app->get($post_id.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -181,7 +188,7 @@ $app->get($post_id.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -203,10 +210,13 @@ $app->get($post_id.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -292,6 +302,7 @@ $app->get($post_id.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content,
@@ -311,7 +322,7 @@ $app->get($post_id.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]
 });
  
 // Содать запись в resource
-$app->post($post_id.$admin_router.'resource-post', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'resource-post', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -476,7 +487,7 @@ $app->post($post_id.$admin_router.'resource-post', function (Request $request, R
 });
  
 // Удалить запись в resource
-$app->post($post_id.$admin_router.'resource-delete', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'resource-delete', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -606,7 +617,7 @@ $app->post($post_id.$admin_router.'resource-delete', function (Request $request,
 });
  
 // Редактируем запись в resource
-$app->post($post_id.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -770,7 +781,7 @@ $app->post($post_id.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z
 });
  
 // Активировать заказ
-$app->post($post_id.$admin_router.'order-activate', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'order-activate', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -867,7 +878,7 @@ $app->post($post_id.$admin_router.'order-activate', function (Request $request, 
 });
  
 // Купить и установить шаблон
-$app->post($post_id.$admin_router.'template-buy', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'template-buy', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -932,7 +943,7 @@ $app->post($post_id.$admin_router.'template-buy', function (Request $request, Re
 });
  
 // Установить шаблон
-$app->post($post_id.$admin_router.'template-install', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'template-install', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -1047,7 +1058,7 @@ $app->post($post_id.$admin_router.'template-install', function (Request $request
 });
  
 // Активировать шаблон
-$app->post($post_id.$admin_router.'template-activate', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'template-activate', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -1143,7 +1154,7 @@ $app->post($post_id.$admin_router.'template-activate', function (Request $reques
 });
  
 // Удалить шаблон
-$app->post($post_id.$admin_router.'template-delete', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'template-delete', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -1216,7 +1227,7 @@ $app->post($post_id.$admin_router.'template-delete', function (Request $request,
 });
  
 // Список шаблонов
-$app->get($post_id.$admin_router.'template', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'template', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -1233,7 +1244,7 @@ $app->get($post_id.$admin_router.'template', function (Request $request, Respons
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -1255,10 +1266,13 @@ $app->get($post_id.$admin_router.'template', function (Request $request, Respons
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -1311,6 +1325,7 @@ $app->get($post_id.$admin_router.'template', function (Request $request, Respons
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content,
@@ -1328,7 +1343,7 @@ $app->get($post_id.$admin_router.'template', function (Request $request, Respons
 });
  
 // Страница шаблона
-$app->get($post_id.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -1351,7 +1366,7 @@ $app->get($post_id.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Reque
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -1373,10 +1388,13 @@ $app->get($post_id.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Reque
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -1425,6 +1443,7 @@ $app->get($post_id.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Reque
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
@@ -1440,7 +1459,7 @@ $app->get($post_id.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Reque
 });
  
 // Редактируем настройки шаблона
-$app->post($post_id.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -1463,7 +1482,7 @@ $app->post($post_id.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Requ
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -1485,10 +1504,13 @@ $app->post($post_id.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Requ
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -1548,6 +1570,7 @@ $app->post($post_id.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Requ
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
@@ -1563,7 +1586,7 @@ $app->post($post_id.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Requ
 });
  
 // Станица пакета
-$app->get($post_id.$admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -1586,7 +1609,7 @@ $app->get($post_id.$admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Requ
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -1608,10 +1631,13 @@ $app->get($post_id.$admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Requ
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -1666,6 +1692,7 @@ $app->get($post_id.$admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Requ
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
@@ -1681,7 +1708,7 @@ $app->get($post_id.$admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Requ
 });
 
 // Редактируем или добавляем пакет
-$app->post($post_id.$admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -1843,7 +1870,7 @@ $app->post($post_id.$admin_router.'package/[{alias:[a-z0-9_-]+}]', function (Req
 });
  
 // Изменение статуса пакета
-$app->post($post_id.$admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
  
     // Подключаем конфиг Settings\Config
     $config = (new Settings())->get();
@@ -1956,7 +1983,7 @@ $app->post($post_id.$admin_router.'package-{querys:[a-z0-9_-]+}', function (Requ
 });
  
 // Список пакетов
-$app->get($post_id.$admin_router.'packages', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'packages', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -1973,7 +2000,7 @@ $app->get($post_id.$admin_router.'packages', function (Request $request, Respons
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -1995,10 +2022,13 @@ $app->get($post_id.$admin_router.'packages', function (Request $request, Respons
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -2049,6 +2079,7 @@ $app->get($post_id.$admin_router.'packages', function (Request $request, Respons
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
@@ -2064,7 +2095,7 @@ $app->get($post_id.$admin_router.'packages', function (Request $request, Respons
 });
  
 // Репозиторий
-$app->get($post_id.$admin_router.'packages-install', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'packages-install', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2081,7 +2112,7 @@ $app->get($post_id.$admin_router.'packages-install', function (Request $request,
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -2103,10 +2134,13 @@ $app->get($post_id.$admin_router.'packages-install', function (Request $request,
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -2157,6 +2191,7 @@ $app->get($post_id.$admin_router.'packages-install', function (Request $request,
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
@@ -2172,7 +2207,7 @@ $app->get($post_id.$admin_router.'packages-install', function (Request $request,
 });
  
 // Страница установки из json файла
-$app->get($post_id.$admin_router.'packages-install-json', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'packages-install-json', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2189,7 +2224,7 @@ $app->get($post_id.$admin_router.'packages-install-json', function (Request $req
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -2211,10 +2246,13 @@ $app->get($post_id.$admin_router.'packages-install-json', function (Request $req
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -2265,6 +2303,7 @@ $app->get($post_id.$admin_router.'packages-install-json', function (Request $req
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
@@ -2280,7 +2319,7 @@ $app->get($post_id.$admin_router.'packages-install-json', function (Request $req
 });
  
 // Глобальные настройки
-$app->get($post_id.$admin_router.'config', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'config', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2297,7 +2336,7 @@ $app->get($post_id.$admin_router.'config', function (Request $request, Response 
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -2319,10 +2358,13 @@ $app->get($post_id.$admin_router.'config', function (Request $request, Response 
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -2372,6 +2414,7 @@ $app->get($post_id.$admin_router.'config', function (Request $request, Response 
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
@@ -2387,7 +2430,7 @@ $app->get($post_id.$admin_router.'config', function (Request $request, Response 
 });
  
 // Редактируем глобальные настройки
-$app->post($post_id.$admin_router.'config', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'config', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2404,7 +2447,7 @@ $app->post($post_id.$admin_router.'config', function (Request $request, Response
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -2426,10 +2469,13 @@ $app->post($post_id.$admin_router.'config', function (Request $request, Response
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -2484,6 +2530,7 @@ $app->post($post_id.$admin_router.'config', function (Request $request, Response
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
@@ -2499,7 +2546,7 @@ $app->post($post_id.$admin_router.'config', function (Request $request, Response
 });
  
 // Список баз данных
-$app->get($post_id.$admin_router.'db', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'db', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2516,7 +2563,7 @@ $app->get($post_id.$admin_router.'db', function (Request $request, Response $res
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -2538,10 +2585,13 @@ $app->get($post_id.$admin_router.'db', function (Request $request, Response $res
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -2589,6 +2639,7 @@ $app->get($post_id.$admin_router.'db', function (Request $request, Response $res
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content
@@ -2604,7 +2655,7 @@ $app->get($post_id.$admin_router.'db', function (Request $request, Response $res
 });
  
 // Страница таблицы (ресурса)
-$app->get($post_id.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2627,7 +2678,7 @@ $app->get($post_id.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', fun
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -2649,10 +2700,13 @@ $app->get($post_id.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', fun
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -2782,6 +2836,7 @@ $app->get($post_id.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', fun
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content,
@@ -2806,7 +2861,7 @@ $app->get($post_id.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', fun
 });
  
 // Глобально
-$app->get($post_id.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
  
     // Получаем конфигурацию
     $config = (new Settings())->get();
@@ -2835,7 +2890,7 @@ $app->get($post_id.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fu
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
     // Конфигурация роутинга
-    $routers = $config['routers']['admin'];
+    $routers = $config['routers'];
     // Конфигурация шаблона
     $templateConfig = new Template($config['admin']['template']);
     $template = $templateConfig->get();
@@ -2857,10 +2912,13 @@ $app->get($post_id.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fu
     // Контент по умолчанию
     $content = '';
  
+    $post_id = '/_';
+    $admin_uri = '/_';
+    if(!empty($session->admin_uri)) {
+        $admin_uri = '/'.$session->admin_uri;
+    }
     if(!empty($session->post_id)) {
         $post_id = '/'.$session->post_id;
-    } else {
-        $post_id = '/_';
     }
  
     // Заголовки по умолчанию из конфигурации
@@ -2935,6 +2993,7 @@ $app->get($post_id.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', fu
         "language" => $language,
         "template" => $template,
         "token" => $session->token_admin,
+		"admin_uri" => $admin_uri,
 		"post_id" => $post_id,
         "session" => $sessionUser,
         "content" => $content

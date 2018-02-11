@@ -9,8 +9,8 @@ use Pllano\RouterDb\Router;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Model\Security;
-use ApiShop\Resources\User;
-use ApiShop\Resources\Install;
+use ApiShop\Model\User;
+use ApiShop\Model\Install;
  
 // Активация с помощью public_key
 $app->post('/install-api-key', function (Request $request, Response $response, array $args) {
