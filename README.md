@@ -29,6 +29,9 @@ $config = [
         "debug" => 0
         "displayErrorDetails" => 0,
     ],
+    "vendor" => [
+        "template_engine" => "\\Pllano\\Adapter\\TemplateEngine"
+    ],
     "template" => [
         "front_end" => [
             "template_engine" => "twig",
