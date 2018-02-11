@@ -33,7 +33,7 @@
 ![](https://github.com/pllano/api-shop/blob/master/themes/templates/mini-mo/img/logo.png)
 
 ### [Документация по установке](https://github.com/pllano/api-shop/blob/master/INSTALL.md)
-### [Документация по конфигурации](https://github.com/pllano/api-shop/blob/master/app/config/README.md)
+### [Документация по конфигурации](https://github.com/pllano/api-shop/blob/master/app/README.md)
 ### Мы ищем единомышленников ! Присоединяйтесь.
 
 <a name="feedback"></a>
