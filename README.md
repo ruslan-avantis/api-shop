@@ -76,7 +76,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use ApiShop\Config\Settings;
  
-$config = (new Settings())->get();
+$config = Settings::get();
  
 $app = new \Slim\App($config);
  
@@ -84,12 +84,12 @@ $container = $app->getContainer();
  
 // Конфигурация
 $container['config'] = function () {
-    return (new Settings())->get();
+    return Settings::get();
 };
  
 // Monolog
 $container['logger'] = function ($logger) {
-    $config = (new Settings())->get();
+    $config = Settings::get();
     $settings = $config['settings']['logger'];
     $logger = new \Monolog\Logger($settings['name']);
     $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
@@ -99,7 +99,7 @@ $container['logger'] = function ($logger) {
  
 // Register \Pllano\Adapter\TemplateEngine
 $container['view'] = function ($view) {
-    $config = (new Settings())->get();
+    $config = Settings::get();
     // Получаем название шаблона
     $template = $config['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
     return new $config['vendor']['template_engine']($config, $template);
