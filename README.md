@@ -41,10 +41,13 @@ $config = [
 $app->get($router['routers']['site']['index']['route'], function (Request $req, Response $res, $args = []) {
     // Получаем настройки из конфигурации
     $router = $this->config['routers']['site']['index'];
-    // Получаем настройки из конфигурации
+    // Назначает контроллер
     $controller = $router['controller'];
+    // Назначает функцию вызова
     $function = $router['function'];
+    // Отдаем контроллеру конфигурацию, шаблонизатор и класс обработки логов
     $class = new $controller($this->config, $this->view, $this->logger);
+    // Получаем ответ и выводим на страницу
     return $class->$function($req, $res, $args);
 });
 ```
