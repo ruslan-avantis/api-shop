@@ -107,7 +107,17 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
     $require->run($vendor_dir, $auto_require);
  
 }
+```
+Если вы хотите сконфигурировать под себя необходимо подключить или отредактировать один из файлов [auto_require.json](https://github.com/pllano/auto-require/blob/master/auto_require.json) или [auto_require_master.json](https://github.com/pllano/auto-require/blob/master/auto_require_master.json).
 
+В файле [`/index.php`](https://github.com/pllano/api-shop/blob/master/index.php) необходимо прописать пути ко всем необходимым файлам.
+
+### 4. Конфигурация
+За конфигурацию API Shop отвечает файл [`/app/config/settings.php`](https://github.com/pllano/api-shop/blob/master/app/config/settings.php)
+#### Конфигурация `jsonDB` и `routerDb`
+Большую часть в файле [`/app/config/settings.php`](https://github.com/pllano/api-shop/blob/master/app/config/settings.php) занимают настройки для:
+- [jsonDB](https://github.com/pllano/router-db)
+- [routerDb](https://github.com/pllano/json-db)
 ## Конструктор - Настраивай так как привык
 ### Конфигурация
 ```php
@@ -212,16 +222,4 @@ $app->get($config['routers']['site']['index']['route'], function (Request $req, 
  
 $app->run();
 ```
- 
-```
-Если вы хотите сконфигурировать под себя необходимо подключить или отредактировать один из файлов [auto_require.json](https://github.com/pllano/auto-require/blob/master/auto_require.json) или [auto_require_master.json](https://github.com/pllano/auto-require/blob/master/auto_require_master.json).
-
-В файле [`/index.php`](https://github.com/pllano/api-shop/blob/master/index.php) необходимо прописать пути ко всем необходимым файлам.
-
-### 4. Конфигурация
-За конфигурацию API Shop отвечает файл [`/app/config/settings.php`](https://github.com/pllano/api-shop/blob/master/app/config/settings.php)
-#### Конфигурация `jsonDB` и `routerDb`
-Большую часть в файле [`/app/config/settings.php`](https://github.com/pllano/api-shop/blob/master/app/config/settings.php) занимают настройки для:
-- [jsonDB](https://github.com/pllano/router-db)
-- [routerDb](https://github.com/pllano/json-db)
  
