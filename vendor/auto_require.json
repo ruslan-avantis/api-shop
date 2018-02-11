@@ -434,6 +434,17 @@
             "state": "1",
             "system_package": "1"
         }, {
+            "namespace": "Smarty",
+			"files": "bootstrap.php",
+            "dir": "/smarty/smarty/libs",
+            "link": "https://github.com/smarty-php/smarty/archive/v3.1.31.zip",
+            "git": "https://github.com/smarty-php/smarty",
+            "name": "smarty",
+            "version": "3.1.31",
+            "vendor": "smarty",
+            "state": "1",
+            "system_package": "0"
+        }, {
             "namespace": "Webmozart\\Assert",
             "dir": "/webmozart/assert/src",
             "link": "https://github.com/webmozart/assert/archive/1.2.0.zip",
