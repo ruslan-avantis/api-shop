@@ -75,10 +75,14 @@ class Settings {
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use ApiShop\Config\Settings;
+use Monolog\Processor\UidProcessor;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+use Slim\App;
  
 $config = Settings::get();
  
-$app = new \Slim\App($config);
+$app = new App($config);
  
 $container = $app->getContainer();
  
@@ -91,9 +95,9 @@ $container['config'] = function () {
 $container['logger'] = function ($logger) {
     $config = Settings::get();
     $settings = $config['settings']['logger'];
-    $logger = new \Monolog\Logger($settings['name']);
-    $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
-    $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
+    $logger = new Logger($settings['name']);
+    $logger->pushProcessor(new UidProcessor());
+    $logger->pushHandler(new StreamHandler($settings['path'], $settings['level']));
     return $logger;
 };
  
