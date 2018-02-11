@@ -1,7 +1,7 @@
 {
     "require": [{
             "namespace": "ApiShop",
-            "dir": "/pllano/api-shop",
+            "dir": "/pllano/api-shop/src",
             "git": "https://github.com/pllano/api-shop",
             "name": "api-shop",
             "version": "master",
