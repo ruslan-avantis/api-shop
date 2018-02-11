@@ -26,6 +26,7 @@
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
  
+// В файле конфигурации указана логика роутинга и контроллер 
 $config = [
     "routers" => [
         "site" => [
@@ -33,12 +34,17 @@ $config = [
                 "route" => "\/",
                 "controller" => "\\ApiShop\\Controller\\Index",
                 "function" => "get",
+            ],
+            "article" => [
+                "route" => "\/{alias:[a-z0-9_-]+}.html",
+                "controller" => "\\ApiShop\\Controller\\Article",
+                "function" => "get",
             ]
         ]
     ]
 ];
  
-$app->get($router['routers']['site']['index']['route'], function (Request $req, Response $res, $args = []) {
+$app->get($config['routers']['site']['index']['route'], function (Request $req, Response $res, $args = []) {
     // Получаем настройки из конфигурации
     $router = $this->config['routers']['site']['index'];
     // Назначает контроллер
