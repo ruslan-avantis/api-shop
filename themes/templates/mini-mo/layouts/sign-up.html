@@ -221,12 +221,13 @@ display: none;
 <link rel="stylesheet" href="/themes/lib/phone/1.0.1/css/intlTelInput.css">
 <script src="/themes/lib/phone/1.0.1/js/intlTelInput.js"></script>
 <script>
+{% if admin_uri %}var admin_uri = '{{ admin_uri }}'{% endif %}
 var post_id = '{{ post_id }}'
-var router_check_in = '{{ routers.check_in }}'
-var router_login = '{{ routers.login }}'
-var router_logout = '{{ routers.logout }}'
-var router_cart = '{{ routers.cart }}'
-var router_language = '{{ routers.language }}'
+var router_check_in = '{{ routers.site.check_in.route }}'
+var router_login = '{{ routers.site.login.route }}'
+var router_logout = '{{ routers.site.logout.route }}'
+var router_cart = '{{ routers.site.cart.route }}'
+var router_language = '{{ routers.site.language.route }}'
 </script>
 <script src="/themes/app/js/app.js"></script>
 <script src="/themes/app/js/check.js"></script>
