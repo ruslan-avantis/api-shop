@@ -23,45 +23,52 @@
 ## Конструктор - Настраивай так как привык
 ### Конфигурация
 ```php
-// В файле конфигурации указана логика роутинга и контроллер 
-$config = [
-    "settings" => [
-        "debug" => 0
-        "displayErrorDetails" => 0,
-    ],
-    "vendor" => [
-        "template_engine" => "\\Pllano\\Adapter\\TemplateEngine"
-    ],
-    "template" => [
-        "front_end" => [
-            "template_engine" => "twig",
-            "themes" => [
-                "template" => "mini-mo",
-                "templates" => "templates",
-                "dir_name" => "\/..\/themes"
-            ]
-        ],
-        "twig" => [
-            "cache_state" => 0,
-            "strict_variables" => 0,
-            "cache_dir" => "\/..\/cache\/_twig_cache"
-        ]
-    ],
-    "routers" => [
-        "site" => [
-            "index" => [
-                "route" => "\/",
-                "controller" => "\\ApiShop\\Controller\\Index",
-                "function" => "get",
+namespace ApiShop\Config;
+ 
+class Settings {
+ 
+    public static function get() {
+    
+        return [
+            "settings" => [
+                "debug" => 0
+                "displayErrorDetails" => 0,
             ],
-            "article" => [
-                "route" => "\/{alias:[a-z0-9_-]+}.html",
-                "controller" => "\\ApiShop\\Controller\\Article",
-                "function" => "get",
+            "vendor" => [
+                "template_engine" => "\\Pllano\\Adapter\\TemplateEngine"
+            ],
+            "template" => [
+                "front_end" => [
+                    "template_engine" => "twig",
+                    "themes" => [
+                       "template" => "mini-mo",
+                        "templates" => "templates",
+                        "dir_name" => "\/..\/themes"
+                    ]
+                ],
+                "twig" => [
+                    "cache_state" => 0,
+                    "strict_variables" => 0,
+                    "cache_dir" => "\/..\/cache\/_twig_cache"
+                ]
+            ],
+            "routers" => [
+                "site" => [
+                    "index" => [
+                        "route" => "\/",
+                        "controller" => "\\ApiShop\\Controller\\Index",
+                        "function" => "get",
+                    ],
+                    "article" => [
+                        "route" => "\/{alias:[a-z0-9_-]+}.html",
+                        "controller" => "\\ApiShop\\Controller\\Article",
+                        "function" => "get",
+                    ]
+                ]
             ]
-        ]
-    ]
-];
+        ];
+    }
+}
 ```
 ### Вы можете заменить контроллер, шаблонизатор или базу данных
 ```php
