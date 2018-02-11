@@ -34,7 +34,7 @@
 {% endif %}
 </td>
 <td>
-<a href="{{ post_id }}{{ config.routers.admin }}template/{{ template.dir }}" class="btn btn-sm bg-primary-sm btn-hover-effects text-white">{{ language.709 }}</a>
+<a href="{{ admin_uri }}{{ config.routers.admin.all.route }}template/{{ template.dir }}" class="btn btn-sm bg-primary-sm btn-hover-effects text-white">{{ language.709 }}</a>
 </td>
 <td>
 {% if config.settings.themes.template != template.name and template.name != 'admin' %}
@@ -48,7 +48,7 @@
 </div>
 
 <div class="text-left padding_width_14">
-<a class="btn btn-md bg-orange-md btn-hover-effects text-white" href="{{ post_id }}{{ config.routers.admin }}template">
+<a class="btn btn-md bg-orange-md btn-hover-effects text-white" href="{{ admin_uri }}{{ config.routers.admin.all.route }}template">
 {{ language.835 }}
 </a>
 </div>
