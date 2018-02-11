@@ -20,8 +20,34 @@
 - [Хранение данных](https://github.com/pllano/router-db): `RESTful API`, [`JsonDB`](https://github.com/pllano/json-db), `MySQL`, `PostgreSQL`, `MongoDB`, `SQLite`, `MariaDB`, `Redis`, `Elasticsearch` (каждая таблица может работать с любой из поддерживаемых баз данных благодаря routerDb который дает один интерфейс для работы со всеми базами данных).
 - HTTP клиенты: `Guzzle`, `Buzz`, `Httplug`, `Httpful`, `Requests`, `Yii2 Httpclient`, `Unirest PHP`
 - [Обработчики изображений](https://github.com/pllano/router-image): `Imagine`, `Intervention`, `Spatie`
-
-
+## Конструктор - Настраивай так как привык
+### Роутинг - Вы можете заменить контроллер для любой страницы
+```php
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
+ 
+$config = [
+    "routers" => [
+        "site" => [
+            "index" => [
+                "route" => "\/",
+                "controller" => "\\ApiShop\\Controller\\Index",
+                "function" => "get",
+            ]
+        ]
+    ]
+];
+ 
+$app->get($router['routers']['site']['index']['route'], function (Request $req, Response $res, $args = []) {
+    // Получаем настройки из конфигурации
+    $router = $this->config['routers']['site']['index'];
+    // Получаем настройки из конфигурации
+    $controller = $router['controller'];
+    $function = $router['function'];
+    $class = new $controller($this->config, $this->view, $this->logger);
+    return $class->$function($req, $res, $args);
+});
+```
 ## Требования к хостингу
 ### Для работы API Shop необходим хостинг, который поддерживает:
 - PHP версии 7 или выше
