@@ -17,12 +17,13 @@
 ## API Shop — из коробки будет поддерживать:
 - Автозагрузчики и управление пакетами: `Composer` и [`AutoRequire`](https://github.com/pllano/auto-require)
 - Подключение классов через [Hooks](https://github.com/pllano/hooks) без внесения изменений в код API Shop
-- Шаблонизаторы: - [`Twig`](https://github.com/twigphp/Twig) [`PhpRenderer`](https://github.com/slimphp/PHP-View) [`Smarty`](https://github.com/smarty-php/smarty) [`Dwoo`](https://github.com/dwoo-project/dwoo) [`Fenom`](https://github.com/fenom-template/fenom)  [`Mustache`](https://github.com/bobthecow/mustache.php) [`Blade`](https://github.com/PhiloNL/Laravel-Blade) `Volt`
-- [Кеширование](https://github.com/pllano/cache): `Memcached`, `Memcache`, `Redis`, `Predis`, `Filesystem`, `JsonCache`, `MongoDB`, `Elasticsearch`, `Array`, `Apcu`, `Apc` + `illuminate`, `Doctrine`
-- Управление данными [routerDb](https://github.com/pllano/router-db)
-- Хранение данных: `RESTful API`, [`JsonDB`](https://github.com/pllano/json-db), `MySQL`, `PostgreSQL`, `MongoDB`, `SQLite`, `MariaDB`, `Redis`, `Elasticsearch` (каждая таблица может работать с любой из поддерживаемых баз данных благодаря routerDb который дает один интерфейс для работы со всеми базами данных).
+- Шаблонизаторы (Замена шаблонизатора при установке шаблонов): - [`Twig`](https://github.com/twigphp/Twig) [`PhpRenderer`](https://github.com/slimphp/PHP-View) [`Smarty`](https://github.com/smarty-php/smarty) [`Dwoo`](https://github.com/dwoo-project/dwoo) [`Fenom`](https://github.com/fenom-template/fenom)  [`Mustache`](https://github.com/bobthecow/mustache.php) [`Blade`](https://github.com/PhiloNL/Laravel-Blade) `Volt`
+- [Кеширование](https://github.com/pllano/cache) (Горячая замена системы кеширования): `Memcached`, `Memcache`, `Redis`, `Predis`, `Filesystem`, `JsonCache`, `MongoDB`, `Elasticsearch`, `Array`, `Apcu`, `Apc` + `illuminate`, `Doctrine`
+- Управление данными (Один интерфейс для работы со всеми базами данных) - [routerDb](https://github.com/pllano/router-db)
+- Хранение данных: `RESTful API`, [`JsonDB`](https://github.com/pllano/json-db), `MySQL`, `PostgreSQL`, `MongoDB`, `SQLite`, `MariaDB`, `Redis`, `Elasticsearch` (Одновременная работа с любым количество баз данных. У каждой таблицы может быть своя база.).
 - HTTP клиенты: `Guzzle`, `Buzz`, `Httplug`, `Httpful`, `Requests`, `Yii2 Httpclient`, `Unirest PHP`
 - [Обработчики изображений](https://github.com/pllano/router-image): `Imagine`, `Intervention`, `Spatie`, `ImageOptimizer`
+- и многое другое ...
 ## Требования к хостингу
 ### Для работы API Shop необходим хостинг, который поддерживает:
 - PHP версии 7 или выше
