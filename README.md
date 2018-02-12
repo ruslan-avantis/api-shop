@@ -2,7 +2,7 @@
 # «API Shop» — E-Commerce Platform
 Написан на PHP. Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
 ## `{API}$hop` — это конструктор
-`{API}$hop` — находится между фреймворками и готовыми платформами. Имеет свою админ панель, систему управления пакетами, шаблонами и плагинами и все остальное чтобы быстро создать интернет-магазин или сайт. Потдерживает значительную часть стандартов [PSR](https://www.php-fig.org/) в том числе [PSR-7](https://www.php-fig.org/psr/psr-7/). Использует `Micro Framework Slim` который отвечает за роутинг (то что у него получается лучше всего), при этом есть возможность использовать компоненты `Symfony`, `Laravel` и любого другого фреймворка. Вы можете менять классы обработки на свои или на любые другие.
+`{API}$hop` — находится между фреймворками и готовыми платформами. Имеет свою админ панель, систему управления пакетами, шаблонами и плагинами и все остальное чтобы быстро создать интернет-магазин или сайт. Потдерживает значительную часть стандартов [PSR](https://www.php-fig.org/) в том числе [PSR-7](https://www.php-fig.org/psr/psr-7/). Использует [`Micro Framework Slim`](https://www.slimframework.com/) который отвечает за роутинг (то что у него получается лучше всего), при этом есть возможность использовать компоненты `Symfony`, `Laravel` и любого другого фреймворка. Вы можете менять классы обработки на свои или на любые другие.
 ## Отличная скорость работы без дополнительных оптимизаций
 `{API}$hop` — способен выдерживать огромную посещаемость и подойдет для высоконагруженных проектов. Если вы запустите обычный интернет-магазин или Landing Page - вы получите сайт который открывается со скоростью мысли. 
 - Демо - https://xti.com.ua/
@@ -15,7 +15,7 @@
 
 Не важно какой шаблонизатор, кеширование или базу данных хотите использовать.
 ## API Shop — из коробки будет поддерживать:
-- Автозагрузчики и управление пакетами: `Composer` и [`AutoRequire`](https://github.com/pllano/auto-require) + `PackageManager` + `PackageRouter`
+- Автозагрузчики и управление пакетами: `Composer` и [`AutoRequire`](https://github.com/pllano/auto-require)
 - Подключение классов через [Hooks](https://github.com/pllano/hooks) без внесения изменений в код API Shop
 - Шаблонизаторы: - [`Twig`](https://github.com/twigphp/Twig) [`PhpRenderer`](https://github.com/slimphp/PHP-View) [`Smarty`](https://github.com/smarty-php/smarty) [`Dwoo`](https://github.com/dwoo-project/dwoo) [`Fenom`](https://github.com/fenom-template/fenom)  [`Mustache`](https://github.com/bobthecow/mustache.php) [`Blade`](https://github.com/PhiloNL/Laravel-Blade) `Volt`
 - [Кеширование](https://github.com/pllano/cache): `Memcached`, `Memcache`, `Redis`, `Predis`, `Filesystem`, `JsonCache`, `MongoDB`, `Elasticsearch`, `Array`, `Apcu`, `Apc` + `illuminate`, `Doctrine`
