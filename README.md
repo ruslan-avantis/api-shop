@@ -11,13 +11,17 @@
 Самым главным преимуществом API Shop является низкий порог входа для разработчиков. Мы стараемся писать максимально просто ! За несколько дней с платформой разберется даже начинающий программист.
 ### [Документация по установке](https://github.com/pllano/api-shop/blob/master/INSTALL.md)
 ### [Документация по конфигурации](https://github.com/pllano/api-shop/blob/master/app/README.md)
+### [Заготовки для расширений](https://github.com/pllano/skeleton-extensions)
+### [Структура баз данных](https://github.com/pllano/structure-db)
+
+
 ### Мы ищем единомышленников ! Присоединяйтесь.
 
 Не важно какой шаблонизатор, кеширование или базу данных хотите использовать.
 ## API Shop — из коробки будет поддерживать:
 - Автозагрузчики и управление пакетами: `Composer` и [`AutoRequire`](https://github.com/pllano/auto-require) - Автозагрузка по стандартам PSR-0 и PSR-4. Поддерживается параллельная работа обоих загрузчиков. Установка и управление пакетами из админ панели.
 - Подключение классов через [Hooks](https://github.com/pllano/hooks) без внесения изменений в код API Shop
-- Шаблонизаторы: - [`Twig`](https://github.com/twigphp/Twig) [`PhpRenderer`](https://github.com/slimphp/PHP-View) [`Smarty`](https://github.com/smarty-php/smarty) [`Dwoo`](https://github.com/dwoo-project/dwoo) [`Fenom`](https://github.com/fenom-template/fenom)  [`Mustache`](https://github.com/bobthecow/mustache.php) [`Blade`](https://github.com/PhiloNL/Laravel-Blade) `Volt` - Замена шаблонизатора при установке шаблонов
+- Шаблонизаторы через [TemplateEngine](https://github.com/pllano/template-engine): - [`Twig`](https://github.com/twigphp/Twig) [`PhpRenderer`](https://github.com/slimphp/PHP-View) [`Smarty`](https://github.com/smarty-php/smarty) [`Dwoo`](https://github.com/dwoo-project/dwoo) [`Fenom`](https://github.com/fenom-template/fenom)  [`Mustache`](https://github.com/bobthecow/mustache.php) [`Blade`](https://github.com/PhiloNL/Laravel-Blade) `Volt` - Замена шаблонизатора при установке шаблонов
 - Кеширование через [Pllano\Caching\Cache](https://github.com/pllano/cache): `Memcached`, `Memcache`, `Redis`, `Predis`, `Filesystem`, `JsonCache`, `MongoDB`, `Elasticsearch`, `Array`, `Apcu`, `Apc` + `illuminate`, `Doctrine` - Горячая замена системы кеширования
 - Управление данными - [routerDb](https://github.com/pllano/router-db) - Один интерфейс для работы со всеми базами данных
 - Хранение данных: `RESTful API`, [`JsonDB`](https://github.com/pllano/json-db), `MySQL`, `PostgreSQL`, `MongoDB`, `SQLite`, `MariaDB`, `Redis`, `Elasticsearch` - Одновременная работа с любым количество баз данных. У каждой таблицы может быть своя база.
