@@ -18,7 +18,7 @@
 - Автозагрузчики и управление пакетами: `Composer` и [`AutoRequire`](https://github.com/pllano/auto-require) - Автозагрузка по стандартам PSR-0 и PSR-4. Параллельная работа обоих загрузчиков.
 - Подключение классов через [Hooks](https://github.com/pllano/hooks) без внесения изменений в код API Shop
 - Шаблонизаторы: - [`Twig`](https://github.com/twigphp/Twig) [`PhpRenderer`](https://github.com/slimphp/PHP-View) [`Smarty`](https://github.com/smarty-php/smarty) [`Dwoo`](https://github.com/dwoo-project/dwoo) [`Fenom`](https://github.com/fenom-template/fenom)  [`Mustache`](https://github.com/bobthecow/mustache.php) [`Blade`](https://github.com/PhiloNL/Laravel-Blade) `Volt` - Замена шаблонизатора при установке шаблонов
-- [Кеширование](https://github.com/pllano/cache): `Memcached`, `Memcache`, `Redis`, `Predis`, `Filesystem`, `JsonCache`, `MongoDB`, `Elasticsearch`, `Array`, `Apcu`, `Apc` + `illuminate`, `Doctrine` - Горячая замена системы кеширования
+- Кеширование через [Pllano\Caching\Cache](https://github.com/pllano/cache): `Memcached`, `Memcache`, `Redis`, `Predis`, `Filesystem`, `JsonCache`, `MongoDB`, `Elasticsearch`, `Array`, `Apcu`, `Apc` + `illuminate`, `Doctrine` - Горячая замена системы кеширования
 - Управление данными - [routerDb](https://github.com/pllano/router-db) - Один интерфейс для работы со всеми базами данных
 - Хранение данных: `RESTful API`, [`JsonDB`](https://github.com/pllano/json-db), `MySQL`, `PostgreSQL`, `MongoDB`, `SQLite`, `MariaDB`, `Redis`, `Elasticsearch` - Одновременная работа с любым количество баз данных. У каждой таблицы может быть своя база.
 - HTTP клиенты: `Guzzle`, `Buzz`, `Httplug`, `Httpful`, `Requests`, `Yii2 Httpclient`, `Unirest PHP`
