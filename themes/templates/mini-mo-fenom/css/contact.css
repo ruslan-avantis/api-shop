@@ -1,0 +1,20 @@
+.contact-block #contact{display:block;}
+.contact-none #contact{display:none;}
+#contact .contact-us{color:#fff;}
+#contact .contact-us{padding-top:50px;padding-bottom:10px;}
+#google-map{height:350px;}
+#contact-us{padding-bottom:40px;}
+#contact-us .heading{padding-top:30px;padding-bottom:40px;}
+#contact .form-control{background-color:transparent;border-color:rgba(255,255,255,.85);height:50px;border-radius:4px;box-shadow:none;}
+#contact textarea.form-control{min-height:180px;resize:none;}
+#contact .form-group{margin-bottom:30px;}
+#contact .contact-info{padding-left:70px;font-weight:300;}
+#contact ul.address{margin-top:30px;list-style:none;padding:0;margin:0;}
+#contact .contact-info ul li{margin-bottom:8px;}
+#contact .contact-info ul li a{color:#fff;}
+#contact .btn-submit{display:block;padding:12px;width:100%;color:#fff;border:0;margin-top:40px;}
+@media (max-width:575px){}
+@media (min-width:576px){}
+@media (min-width:768px){}
+@media (min-width:992px){}
+@media (min-width:1200px){}
