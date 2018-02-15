@@ -11,7 +11,7 @@
 <thead>
 <tr class="text-primary">
 <th>{{ language.816 }}</th>
-<th>{{ language.817 }}</th>
+<th>{{ language.869 }}</th>
 <th>{{ language.818 }}</th>
 <th>{{ language.517 }}</th>
 <th></th>
@@ -23,7 +23,7 @@
 {% for template in content.templates %}
 <tr class="">
 <td>{{ template.name }}</td>
-<td>{{ template.dir }}</td>
+<td>{{ template.template_engine|capitalize }}</td>
 <td><label class="btn btn-sm bg-green-sm text-white">{{ template.version }}</label></td>
 <td>
 {% if template.name != 'admin' %}
@@ -64,7 +64,7 @@
 <tr class="text-primary">
 <th>{{ language.843 }}</th>
 <th>{{ language.816 }}</th>
-<th>{{ language.817 }}</th>
+<th>{{ language.869 }}</th>
 <th>{{ language.558 }}</th>
 <th>{{ language.517 }}</th>
 <th>{{ language.36 }}</th>
@@ -90,7 +90,7 @@
 {% endif %}
 </a>
 </td>
-<td>{{ template.item.dir }}</td>
+<td>{{ template.item.template_engine|capitalize }}</td>
 <td>{{ template.item.kategorie }}</td>
 <td><a target="_blank" href="{{ template.item.demo }}" class="btn btn-sm bg-orange-sm btn-hover-effects text-white">demo</a></td>
 <td>
