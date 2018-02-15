@@ -64,9 +64,9 @@ function templateBuy(alias) {
     }),"json"
 }
 
-function templateActivate(alias, name) {
+function templateActivate(alias, dir) {
     var csrf = $("#csrf").val()
-    $.post(admin_uri + admin_dir + "template-activate", {alias: alias, name: name, csrf: csrf}, function (response) {
+    $.post(admin_uri + admin_dir + "template-activate", {alias: alias, dir: dir, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -77,9 +77,9 @@ function templateActivate(alias, name) {
     }),"json"
 }
 
-function templateDelete(alias, name) {
+function templateDelete(alias, dir) {
     var csrf = $("#csrf").val()
-    $.post(admin_uri + admin_dir + "template-delete", {alias: alias, name: name, csrf: csrf}, function (response) {
+    $.post(admin_uri + admin_dir + "template-delete", {alias: alias, dir: dir, csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
