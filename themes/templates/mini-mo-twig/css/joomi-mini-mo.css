@@ -1,0 +1,36 @@
+.logo-api{max-width:150px;}
+pre{display:block;margin-top:0;margin-bottom:0;font-size:100%;color:#292b2c;}
+.sps{padding:0;position:fixed;z-index:1050;top:0;left:0;right:0;transition:all 0.25s ease;width:100%;}
+.sps--abv{background-color:transparent;}
+.sps--blw{background-color:inherit;color:inherit;}
+.boxed #body{max-width:100%;margin:0 10% 0 10%;-webkit-box-shadow:0 0 20px rgba(0,0,0,0.15);box-shadow:0 0 20px rgba(0,0,0,0.15);}
+.navbar-box{max-width:100%;}
+.fixed-header .boxed-header.boxed .sps{max-width:100%;}
+.fixed-header .sps{position:fixed;top:0;right:0;left:0;}
+.fixed-header-none .boxed-header.boxed .sps{position:relative;max-width:100%;}
+.fixed-header-none .boxed-header .sps{position:relative;max-width:100%;}
+.navbar-none .sps{display:none;}
+.navbar-none #body{padding-top:0;}
+.navbar-none.fixed-header #body{padding-top:0;}
+.nav-link{display:block;padding:.5em 1em;border-radius:.25rem;background-color:transparent;border:1px solid transparent;}
+.nav-item .active{background-color:rgba(0,0,0,0.25);padding:.5em 1em;border-radius:.25rem;border:1px solid transparent;}
+.social-icons{margin-top:30px;text-align:center;}
+.social-icons ul{list-style:none;padding:0;margin:0;display:inline-block;}
+.social-icons ul li{float:left;margin-right:8px;}
+.social-icons ul li:last-child{margin-right:0;}
+.social-icons ul li a{color:#fff;background-color:rgba(0,0,0,0.75);height:36px;width:36px;line-height:36px;display:block;font-size:16px;opacity:0.8;}
+.social-icons ul li a:hover{opacity:1;-webkit-transform:scale(1.2);transform:scale(1.2);}
+.payment-icons-list{margin-top:30px;text-align:center;}
+.payment-icons-list ul{list-style:none;padding:0;margin:0;display:inline-block;}
+.payment-icons-list ul li{float:left;margin-right:8px;}
+.payment-icons-list > li img{width:35px;display:block;opacity:0.9;}
+@media (max-width:575px){.boxed #body{max-width:100%;margin:0;}
+}
+@media (min-width:576px){.boxed #body{max-width:100%;margin:0;}
+}
+@media (min-width:768px){.boxed #body{max-width:100%;margin:0 3% 0 3%;}
+}
+@media (min-width:992px){.boxed #body{max-width:100%;margin:0 5% 0 5%;}
+}
+@media (min-width:1200px){.boxed #body{max-width:100%;margin:0 10% 0 10%;}
+}

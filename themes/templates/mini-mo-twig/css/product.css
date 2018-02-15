@@ -1,0 +1,63 @@
+/*
+Theme Name: joomi-Mini-Mo
+Theme URI: https://templates.joomimart.com/demo/free/joomi-mini-mo/demo.html
+Copyright 2014-2017 joomiMart
+Author: joomiTemplates
+Author URI: https://templates.joomimart.com/
+Description: Responsive Multipurpose One Page Bootstrap HTML Template
+Version: 1.0.1
+Licensed under MIT https://github.com/joomimart-com/joomi-mini-mo/blob/master/LICENSE
+Text Domain: joomi-Mini-Mo
+*/
+/* card product class */
+.product-blocks {width:100%;margin:0;padding:0;}
+.product-block {width:100%; padding:0; margin:0; border:0; border-radius:0;}
+.link-product-img {text-decoration:none;display:block;margin:0;padding:0;}
+.link-product-name {margin-top:1.1rem;font-size:1rem;text-decoration:none;}
+.product-name {position:absolute; padding: 10px 14px 20px 14px; top: 9.5%; right: 10%; width:30%; display:inline-block; z-index:500; margin:0; border-radius: 1.1rem; -moz-border-radius: 1.1rem; -webkit-border-radius: 1.1rem; -webkit-box-shadow:0 3px 2px rgba(0,0,0,0.15),0 0 1px rgba(0,0,0,0.15);box-shadow:0 3px 2px rgba(0,0,0,0.15),0 0 1px rgba(0,0,0,0.15); }
+.product-name .link-product-name {padding: 8px 4px 4px 4px;}
+.product-name .link-product-name:hover {text-decoration:none; color: rgba(0,0,0,0.6);}
+.product-name .link-product-name h2:hover {text-decoration:none; color: rgba(0,0,0,0.6);}
+.product-block-text {font-size:.85rem;}
+.product-block img {max-width:100%;}
+.product-block .product-img img:hover {width:100%; opacity: 1;}
+a:hover, a:focus {color: inherit; opacity: 1;}
+.product-img {position:relative;width:100%;min-height:15rem;display:block;margin:0;}
+.product-img-primary {position:relative;width:100%;display:inline-block;z-index:1;margin:0;}
+.product-price{display:block;}
+.product-price-old{margin:.25rem .5rem;text-decoration:line-through;}
+.product-price-new{margin:.25rem .5rem;}
+/* album class */
+.album {min-height:10rem; padding-top:0;padding-bottom:0;}
+/* cart class */
+.productlistcount {z-index:100;position:relative;font-weight:bold;font-size:1.3rem;top:-1.3rem;}
+/* countdown class */
+.count-down {display:block;width:100%;}
+.count-down .is-countdown {border:0;}
+.count-down .count {display:inline-block;margin:0;padding:0;}
+.count-down .background-block .count {display:inline-block;margin:0;padding:0;}
+.count-down .dot {display:none;margin:0;padding:0;border:0;}
+.count-down .count .num {width:100%;float:left;padding:.5rem 0;font-size:2.5rem;}
+.count-down .count .text {width:100%;float:left;padding:.5rem 0;font-size:1.1rem;margin:0;}
+.countdown-lastest {display:block;}
+/* RESPONSIVE CSS */
+/* Extra small devices (portrait phones,less than 576px)*/
+@media (max-width:575px) {
+
+}
+/* Small devices (landscape phones,576px and up)*/
+@media (min-width:576px) {
+
+}
+/* Medium devices (tablets,768px and up)*/
+@media (min-width:768px) {
+
+}
+/* Large devices (desktops,992px and up)*/
+@media (min-width:992px) {
+
+}
+/* Extra large devices (large desktops,1200px and up)*/
+@media (min-width:1200px) {
+
+}
