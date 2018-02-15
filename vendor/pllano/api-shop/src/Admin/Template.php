@@ -1,10 +1,10 @@
 <?php
 /**
-    * This file is part of the API SHOP
+    * This file is part of the {API}$hop
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/api-shop
- * @version 1.1.0
+ * @version 1.1.1
  * @package pllano.api-shop
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,14 +20,12 @@ class Template {
     private $template = null;
     private $config;
  
-    function __construct($template = null)
+    function __construct($config, $template = null)
     {
         // Устанавливаем название шаблона
         if ($template != null) {
             $this->template = $template;
         }
-        // Подключаем конфиг Settings\Config
-        $config = (new Settings())->get();
         $this->config = $config;
     }
  
@@ -46,6 +44,7 @@ class Template {
                         $json = json_decode(file_get_contents($json_dir."config.json"), true);
                          $template = $json;
                          $templates["alias"] = $template["alias"];
+						 $templates["template_engine"] = $template["template_engine"];
                          $templates["name"] = $template["name"];
                          $templates["dir"] = $dir;
                          $templates["version"] = $template["version"];

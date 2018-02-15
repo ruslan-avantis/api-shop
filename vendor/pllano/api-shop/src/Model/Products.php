@@ -1,10 +1,10 @@
 <?php
 /**
- * This file is part of the API SHOP
+ * This file is part of the {API}$hop
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/api-shop
- * @version 1.1.0
+ * @version 1.1.1
  * @package pllano.api-shop
  *
  * For the full copyright and license information, please view the LICENSE
@@ -16,7 +16,6 @@ namespace ApiShop\Model;
 use Pllano\RouterDb\Db;
 use Pllano\RouterDb\Router;
  
-use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Adapter\Image;
  
@@ -25,10 +24,8 @@ class Products {
     private $config;
     private $count = 0;
  
-    function __construct()
+    function __construct($config = [])
     {
-        // Подключаем конфиг Settings\Config
-        $config = (new Settings())->get();
         $this->config = $config;
     }
  
@@ -37,7 +34,7 @@ class Products {
         // Подключаем плагины
         $utility = new Utility();
         // Обработка картинок
-        $image = new Image();
+        $image = new Image($this->config);
         // Ресурс (таблица) к которому обращаемся
         $resource = "price";
         // Отдаем роутеру RouterDb конфигурацию.
@@ -87,6 +84,8 @@ class Products {
                 $product['price'] = (isset($item['item']['price_out'])) ? $utility->clean($item['item']['price_out']) : '';
                 $product['available'] = (isset($item['item']['available'])) ? $utility->clean($item['item']['available']) : '';
                 $product['product_id'] = (isset($item['item']['product_id'])) ? $utility->clean($item['item']['product_id']) : '';
+				$product['shortname'] = 'грн.';
+				$product['currency'] = 'UAH';
  
                 $rand = rand(1000, 5000);
                 $date = date("Y-m-d H:i:s",strtotime(date("Y-m-d H:i:s")." +".$rand." minutes"));

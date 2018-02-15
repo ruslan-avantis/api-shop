@@ -1,10 +1,10 @@
 <?php
 /**
- * This file is part of the API SHOP
+ * This file is part of the {API}$hop
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/api-shop
- * @version 1.1.0
+ * @version 1.1.1
  * @package pllano.api-shop
  *
  * For the full copyright and license information, please view the LICENSE
@@ -32,10 +32,10 @@ class Language
         $this->request = $request;
         $getParams = $this->request->getQueryParams();
         // Подключаем сессию, берет название класса из конфигурации
-        $session = new $this->config['vendor']['session']($this->config['settings']['session']['name']);
+        $session = new $this->config['vendor']['session']['session']($this->config['settings']['session']['name']);
  
         // Подключаем определение языка в браузере
-        $langs = new $this->config['vendor']['language_detector']();
+        $langs = new $this->config['vendor']['detector']['language']();
         // Получаем массив данных из таблицы language на языке из $session->language
         if (isset($getParams['lang'])) {
             if ($getParams['lang'] == "ru" || $getParams['lang'] == "ua" || $getParams['lang'] == "en" || $getParams['lang'] == "de") {

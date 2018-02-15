@@ -1,10 +1,10 @@
 <?php
 /**
- * This file is part of the API SHOP
+ * This file is part of the {API}$hop
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/api-shop
- * @version 1.1.0
+ * @version 1.1.1
  * @package pllano.api-shop
  *
  * For the full copyright and license information, please view the LICENSE
@@ -38,8 +38,8 @@ class Language
  
         // Подключаем сессию, берет название класса из конфигурации
         // $session = new Session();
-        $session = new $config['vendor']['session']($config['settings']['session']['name']);
-        $langs = new $config['vendor']['language_detector']();
+        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+        $langs = new $config['vendor']['detector']['language']();
         // Получаем массив данных из таблицы language на языке из $session->language
         if (isset($session->language)) {
             $lang = $session->language;
@@ -77,8 +77,8 @@ class Language
  
         // Подключаем сессию, берет название класса из конфигурации
         // $session = new Session();
-        $session = new $config['vendor']['session']($config['settings']['session']['name']);
-        $langs = new $config['vendor']['language_detector']();
+        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+        $langs = new $config['vendor']['detector']['language']();
         // Получаем массив данных из таблицы language на языке из $session->language
         if (isset($session->language)) {
             $lang = $session->language;

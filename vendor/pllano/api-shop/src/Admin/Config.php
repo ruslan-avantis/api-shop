@@ -1,10 +1,10 @@
 <?php
 /**
- * This file is part of the API SHOP
+ * This file is part of the {API}$hop
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/api-shop
- * @version 1.1.0
+ * @version 1.1.1
  * @package pllano.api-shop
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,10 +20,8 @@ class Config {
  
     private $config;
  
-    function __construct()
+    function __construct($config)
     {
-        // Подключаем конфиг Settings\Config
-        $config = (new Settings())->get();
         $this->config = $config;
     }
  
@@ -50,9 +48,13 @@ class Config {
         return true;
     }
  
-    public function template_activate($name)
+    public function template_activate($name, $alias = null)
     {
-        $param['settings']['themes']['template'] = $name;
+        $template_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config['template']['front_end']["themes"]["templates"].'/'.$name;
+		$template_config = json_decode(file_get_contents($template_dir.'/config/config.json'), true);
+		$param['settings']['themes']['template'] = $name;
+		$param['template']['front_end']['themes']['template'] = $name;
+		$param['template']['front_end']['template_engine'] = $template_config['template_engine'];
         $arr = array_replace_recursive($this->get(), $param);
         $newArr = json_encode($arr);
         $newArr = str_replace('"1"', 1, $newArr);
@@ -63,7 +65,7 @@ class Config {
  
     public function template_install($name, $dir, $uri)
     {
-        $template_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config["settings"]["themes"]["templates"].'/'.$dir;
+        $template_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config['template']['front_end']["themes"]["templates"].'/'.$dir;
  
         if (!file_exists($template_dir)) {
             mkdir($template_dir, 0777, true);
@@ -78,8 +80,8 @@ class Config {
                     unlink($template_dir."/template.zip");
                 }
                 
-                $config_install = json_decode(file_get_contents($template_dir."/config/config.json"), true);
-                $install = $config_install['install'];
+                $template_config = json_decode(file_get_contents($template_dir."/config/config.json"), true);
+                $install = $template_config['install'];
  
                 // Записываем в файл конфигурации
                 if (isset($install['config'])) {
@@ -109,6 +111,8 @@ class Config {
  
                 // Активируем шаблон
                 $param['settings']['themes']['template'] = $name;
+				$param['template']['front_end']['themes']['template'] = $name;
+			    $param['template']['front_end']['template_engine'] = $template_config['template_engine'];
                 $this->put($param);
  
                 return true;

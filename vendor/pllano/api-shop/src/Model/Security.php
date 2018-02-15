@@ -1,10 +1,10 @@
 <?php
 /**
- * This file is part of the API SHOP
+ * This file is part of the {API}$hop
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/api-shop
- * @version 1.1.0
+ * @version 1.1.1
  * @package pllano.api-shop
  *
  * For the full copyright and license information, please view the LICENSE
@@ -30,7 +30,7 @@ class Security {
     public function token(Request $request, Response $response)
     {
         // Подключаем сессию, берет название класса из конфигурации
-        $session = new $this->config['vendor']['session']($this->config['settings']['session']['name']);
+        $session = new $this->config['vendor']['session']['session']($this->config['settings']['session']['name']);
  
         // Отправляем сообщение администратору
     }
@@ -39,7 +39,7 @@ class Security {
     public function csrf(Request $request, Response $response)
     {
         // Подключаем сессию, берет название класса из конфигурации
-        $session = new $this->config['vendor']['session']($this->config['settings']['session']['name']);
+        $session = new $this->config['vendor']['session']['session']($this->config['settings']['session']['name']);
  
         // Отправляем сообщение администратору
     }

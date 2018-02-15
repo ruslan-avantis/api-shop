@@ -1,9 +1,9 @@
 <?php /**
-    * This file is part of the API SHOP
+    * This file is part of the {API}$hop
     *
     * @license http://opensource.org/licenses/MIT
     * @link https://github.com/pllano/api-shop
-    * @version 1.1.0
+    * @version 1.1.1
     * @package pllano.api-shop
     *
     * For the full copyright and license information, please view the LICENSE
@@ -42,7 +42,7 @@ class Cart
         // Подключаем плагины
         $utility = new Utility();
         // Подключаем сессию, берет название класса из конфигурации
-        $session = new $config['vendor']['session']($config['settings']['session']['name']);
+        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
         // Читаем ключи
         $session_key = $config['key']['session'];
         $cookie_key = $config['key']['cookie'];
@@ -55,7 +55,7 @@ class Cart
         $product_id = filter_var($post['product_id'], FILTER_SANITIZE_STRING);
         $price = filter_var($post['price'], FILTER_SANITIZE_STRING);
         $num = filter_var($post['num'], FILTER_SANITIZE_STRING);
-        $cookie = $config['vendor']['crypto']::decrypt($_COOKIE[$config['settings']['session']['name']], $cookie_key);
+        $cookie = $config['vendor']['crypto']['crypt']::decrypt($_COOKIE[$config['settings']['session']['name']], $cookie_key);
         
         $callbackStatus = 400;
         $callbackTitle = 'Соообщение системы';
@@ -110,7 +110,7 @@ class Cart
     {
         $config = $this->config;
         // Подключаем сессию, берет название класса из конфигурации
-        $session = new $config['vendor']['session']($config['settings']['session']['name']);
+        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
         // Читаем ключи
         $session_key = $config['key']['session'];
         $cookie_key = $config['key']['cookie'];
@@ -124,7 +124,7 @@ class Cart
         
         try {
             // Получаем токен из сессии
-            $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+            $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
             } catch (\Exception $ex) {
             $token = 0;
             // Сообщение об Атаке или подборе токена
@@ -132,7 +132,7 @@ class Cart
         }
         try {
             // Получаем токен из POST
-            $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+            $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
             // Чистим данные на всякий случай пришедшие через POST
             $csrf = $utility->clean($post_csrf);
             } catch (\Exception $ex) {
@@ -154,10 +154,10 @@ class Cart
         $price = filter_var($post['price'], FILTER_SANITIZE_STRING);
         $num = filter_var($post['num'], FILTER_SANITIZE_STRING);
         $description = filter_var($post['description'], FILTER_SANITIZE_STRING);
-        $cookie = $config['vendor']['crypto']::decrypt($_COOKIE[$config['settings']['session']['name']], $cookie_key);
+        $cookie = $config['vendor']['crypto']['crypt']::decrypt($_COOKIE[$config['settings']['session']['name']], $cookie_key);
         
         if ($session->authorize == 1) {
-            $user_id = $config['vendor']['crypto']::decrypt($session->user_id, $session_key);
+            $user_id = $config['vendor']['crypto']['crypt']::decrypt($session->user_id, $session_key);
         } else {
             
             $userArr = [
@@ -182,7 +182,7 @@ class Cart
             $user = $db->post($resource, $userArr);
             
             if (isset($user['response']['id'])) {
-                $session->user_id = $config['vendor']['crypto']::encrypt($user['response']['id'], $session_key);
+                $session->user_id = $config['vendor']['crypto']['crypt']::encrypt($user['response']['id'], $session_key);
                 $user_id = $user['response']['id'];
             }
         }

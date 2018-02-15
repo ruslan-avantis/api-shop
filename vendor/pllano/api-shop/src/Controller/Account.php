@@ -1,10 +1,10 @@
 <?php 
 /**
-    * This file is part of the API SHOP
+    * This file is part of the {API}$hop
     *
     * @license http://opensource.org/licenses/MIT
     * @link https://github.com/pllano/api-shop
-    * @version 1.1.0
+    * @version 1.1.1
     * @package pllano.api-shop
     *
     * For the full copyright and license information, please view the LICENSE
@@ -18,8 +18,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 use Pllano\RouterDb\Db;
 use Pllano\RouterDb\Router;
-use Pllano\Hooks\Hook;
-
+ 
 use ApiShop\Model\Language;
 use ApiShop\Model\Site;
 use ApiShop\Model\Template;
@@ -46,7 +45,7 @@ class Account
         $config = $this->config;
         
         // Передаем данные Hooks для обработки ожидающим классам
-        $hook = new Hook($config);
+        $hook = new $config['vendor']['hooks']['hook']($config);
         $hook->http($request, $response, $args, 'GET', 'site');
         $request = $hook->request();
         $args = $hook->args();
@@ -71,17 +70,17 @@ class Account
         $languages = new Language($request, $config);
         $language = $languages->get();
         // Подключаем сессию, берет название класса из конфигурации
-        $session = new $config['vendor']['session']($config['settings']['session']['name']);
+        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
         // Данные пользователя из сессии
         $user_data = (new SessionUser($config))->get();
         // Подключаем временное хранилище
-        $session_temp = new $config['vendor']['session']("_temp");
+        $session_temp = new $config['vendor']['session']['session']("_temp");
         // Читаем ключи
         $token_key = $config['key']['token'];
         // Генерируем токен
         $token = $utility->random_token();
         // Записываем токен в сессию
-        $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
+        $session->token = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
         // Что бы не давало ошибку присваиваем пустое значение
         $content = '';
         
@@ -134,7 +133,7 @@ class Account
         $config = $this->config;
         
         // Передаем данные Hooks для обработки ожидающим классам
-        $hook = new Hook($config);
+        $hook = new $config['vendor']['hooks']['hook']($config);
         $hook->http($request, $response, $args, 'GET', 'site');
         $request = $hook->request();
         $args = $hook->args();
@@ -159,17 +158,17 @@ class Account
         $languages = new Language($request, $config);
         $language = $languages->get();
         // Подключаем сессию, берет название класса из конфигурации
-        $session = new $config['vendor']['session']($config['settings']['session']['name']);
+        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
         // Данные пользователя из сессии
         $user_data = (new SessionUser($config))->get();
         // Подключаем временное хранилище
-        $session_temp = new $config['vendor']['session']("_temp");
+        $session_temp = new $config['vendor']['session']['session']("_temp");
         // Читаем ключи
         $token_key = $config['key']['token'];
         // Генерируем токен
         $token = $utility->random_token();
         // Записываем токен в сессию
-        $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
+        $session->token = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
         // Что бы не давало ошибку присваиваем пустое значение
         $content = '';
         
@@ -220,7 +219,7 @@ class Account
         $config = $this->config;
         
         // Передаем данные Hooks для обработки ожидающим классам
-        $hook = new Hook($config);
+        $hook = new $config['vendor']['hooks']['hook']($config);
         $hook->http($request, $response, $args, 'POST', 'site');
         $request = $hook->request();
         $args = $hook->args();
@@ -231,7 +230,7 @@ class Account
         // Подключаем плагины
         $utility = new Utility();
         // Подключаем сессию, берет название класса из конфигурации
-        $session = new $config['vendor']['session']($config['settings']['session']['name']);
+        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
         // Читаем ключи
         $token_key = $config['key']['token'];
         // Подключаем систему безопасности
@@ -239,7 +238,7 @@ class Account
         
         try {
             // Получаем токен из сессии
-            $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+            $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
             } catch (\Exception $ex) {
             $token = 0;
             // Сообщение об Атаке или подборе токена
@@ -247,7 +246,7 @@ class Account
         }
         try {
             // Получаем токен из POST
-            $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+            $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
             // Чистим данные на всякий случай пришедшие через POST
             $csrf = $utility->clean($post_csrf);
             } catch (\Exception $ex) {
@@ -302,7 +301,7 @@ class Account
         $config = $this->config;
         
         // Передаем данные Hooks для обработки ожидающим классам
-        $hook = new Hook($config);
+        $hook = new $config['vendor']['hooks']['hook']($config);
         $hook->http($request, $response, $args, 'POST', 'site');
         $request = $hook->request();
         $args = $hook->args();
@@ -313,7 +312,7 @@ class Account
         // Подключаем плагины
         $utility = new Utility();
         // Подключаем сессию, берет название класса из конфигурации
-        $session = new $config['vendor']['session']($config['settings']['session']['name']);
+        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
         // Читаем ключи
         $token_key = $config['key']['token'];
         $session_key = $config['key']['session'];
@@ -322,7 +321,7 @@ class Account
         
         try {
             // Получаем токен из сессии
-            $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+            $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
             } catch (\Exception $ex) {
             $token = 0;
             // Сообщение об Атаке или подборе токена
@@ -330,7 +329,7 @@ class Account
         }
         try {
             // Получаем токен из POST
-            $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+            $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
             // Чистим данные на всякий случай пришедшие через POST
             $csrf = $utility->clean($post_csrf);
             } catch (\Exception $ex) {
@@ -394,10 +393,10 @@ class Account
                                                 $session->admin_uri = $utility->random_alias_id();
                                             }
                                             $session->user_id = $user["id"];
-                                            $session->iname = $config['vendor']['crypto']::encrypt($user["iname"], $session_key);
-                                            $session->fname = $config['vendor']['crypto']::encrypt($user["fname"], $session_key);
-                                            $session->phone = $config['vendor']['crypto']::encrypt($user["phone"], $session_key);
-                                            $session->email = $config['vendor']['crypto']::encrypt($user["email"], $session_key);
+                                            $session->iname = $config['vendor']['crypto']['crypt']::encrypt($user["iname"], $session_key);
+                                            $session->fname = $config['vendor']['crypto']['crypt']::encrypt($user["fname"], $session_key);
+                                            $session->phone = $config['vendor']['crypto']['crypt']::encrypt($user["phone"], $session_key);
+                                            $session->email = $config['vendor']['crypto']['crypt']::encrypt($user["email"], $session_key);
                                             
                                             $callbackStatus = 200;
                                             
@@ -497,7 +496,7 @@ class Account
                         $cookie = $utility->random_token();
                         
                         // Генерируем identificator
-                        $identificator = $config['vendor']['crypto']::encrypt($cookie, $cookie_key);
+                        $identificator = $config['vendor']['crypto']['crypt']::encrypt($cookie, $cookie_key);
                         
                         $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
                         // Записываем пользователю новый cookie
@@ -540,10 +539,10 @@ class Account
                             $session->authorize = 1;
                             $session->cookie = $identificator;
                             $session->user_id = $user_id;
-                            $session->phone = $config['vendor']['crypto']::encrypt($phone, $session_key);
-                            $session->email = $config['vendor']['crypto']::encrypt($email, $session_key);
-                            $session->iname = $config['vendor']['crypto']::encrypt($iname, $session_key);
-                            $session->fname = $config['vendor']['crypto']::encrypt($fname, $session_key);
+                            $session->phone = $config['vendor']['crypto']['crypt']::encrypt($phone, $session_key);
+                            $session->email = $config['vendor']['crypto']['crypt']::encrypt($email, $session_key);
+                            $session->iname = $config['vendor']['crypto']['crypt']::encrypt($iname, $session_key);
+                            $session->fname = $config['vendor']['crypto']['crypt']::encrypt($fname, $session_key);
                             
                             $callback = ['status' => 200];
                             // Выводим заголовки

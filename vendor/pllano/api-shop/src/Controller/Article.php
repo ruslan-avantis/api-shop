@@ -1,10 +1,9 @@
-<?php
-/**
- * This file is part of the API SHOP
+<?php /**
+ * This file is part of the {API}$hop
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/api-shop
- * @version 1.1.0
+ * @version 1.1.1
  * @package pllano.api-shop
  *
  * For the full copyright and license information, please view the LICENSE
@@ -19,14 +18,15 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Pllano\RouterDb\Db;
 use Pllano\RouterDb\Router;
 use Pllano\Caching\Cache;
-use Pllano\Hooks\Hook;
  
+use ApiShop\Utilities\Utility;
+ 
+use ApiShop\Adapter\Menu;
+ 
+use ApiShop\Model\SessionUser;
 use ApiShop\Model\Language;
 use ApiShop\Model\Site;
 use ApiShop\Model\Template;
-use ApiShop\Model\SessionUser;
-use ApiShop\Adapter\Menu;
-use ApiShop\Utilities\Utility;
  
 class Article
 {
@@ -44,10 +44,11 @@ class Article
  
     public function get(Request $request, Response $response, array $args)
     {
+        // Конфигурация
         $config = $this->config;
-    
+ 
         // Передаем данные Hooks для обработки ожидающим классам
-        $hook = new Hook($config);
+        $hook = new $config['vendor']['hooks']['hook']($config);
         $hook->http($request, $response, $args, 'GET', 'site', 'article');
         $request = $hook->request();
         $args = $hook->args();
@@ -62,7 +63,6 @@ class Article
                 $alias = null;
             }
             // Получаем параметры из URL
-            $getParams = $request->getQueryParams();
             $host = $request->getUri()->getHost();
             $path = $request->getUri()->getPath();
             // Конфигурация роутинга
@@ -76,22 +76,18 @@ class Article
             $templateConfig = new Template($site_template);
             $template = $templateConfig->get();
             // Меню, берет название класса из конфигурации
-            $menu = (new Menu())->get();
+            $menu = (new Menu($config))->get();
             // Подключаем мультиязычность
             $languages = new Language($request, $config);
             $language = $languages->get();
             // Подключаем сессию, берет название класса из конфигурации
-            $session = new $config['vendor']['session']($config['settings']['session']['name']);
+            $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
             // Данные пользователя из сессии
             $sessionUser =(new SessionUser($config))->get();
-            // Подключаем временное хранилище
-            $session_temp = new $config['vendor']['session']("_temp");
-            // Читаем ключи
-            $token_key = $config['key']['token'];
-            // Генерируем токен
-            $token = $utility->random_token();
-            // Записываем токен в сессию
-            $session->token = $config['vendor']['crypto']::encrypt($token, $token_key);
+ 
+            // Генерируем токен. Читаем ключ. Записываем токен в сессию.
+            $session->token = $config['vendor']['crypto']['crypt']::encrypt($utility->random_token(), $config['key']['token']);
+ 
             // Шаблон по умолчанию 404
             $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
             // Контент по умолчанию

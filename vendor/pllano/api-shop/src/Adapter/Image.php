@@ -1,10 +1,10 @@
 <?php
 /**
- * This file is part of the API SHOP
+ * This file is part of the {API}$hop
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/api-shop
- * @version 1.1.0
+ * @version 1.1.1
  * @package pllano.api-shop
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,8 +12,6 @@
  */
  
 namespace ApiShop\Adapter;
- 
-use ApiShop\Config\Settings;
  
 class Image {
  
@@ -30,16 +28,15 @@ class Image {
     private $image_path = null;
     private $image_temp = null;
  
-    function __construct()
+    function __construct($config = [])
     {
-        $config = (new Settings())->get();
         $this->config = $config;
     }
  
     // Функция контроля изображений если есть отдает локальный url, если нет загружает с платформы
     public function get($id = null, $url = null, $width = null, $height = null, $dir = null)
     {
-        if(isset($width)) {
+		if(isset($width)) {
             $this->width = $width;
         }
         if(isset($height)) {
@@ -94,7 +91,7 @@ class Image {
  
                                     if (file_exists($this->image)) {
  
-                                        if($this->config['vendor']['image_optimize'] != '') {
+                                        if($this->config['vendor']['image']['optimize'] != '') {
  
                                             // Оптимизируем изображение
                                             $this->optimize();
@@ -112,6 +109,9 @@ class Image {
                                 return null;
                             }
                     } else {
+					
+					    $this->optimize();
+						//print("<br>optimize<br>");
  
                         return $this->image;
  
@@ -126,7 +126,54 @@ class Image {
             return null;
         }
     }
-    
+ 
+    public function optimize($open = null, $save = null)
+    {
+		 try {
+            if(isset($this->config['vendor']['image']['optimize'])) {
+                $vendor = null;
+                if (class_exists($this->config['vendor']['image']['optimize'])) {
+                    $vendor = $this->config['vendor']['image']['optimize'];
+                } else {
+				    print("<br>Class {$this->config['vendor']['image']['optimize']} not found<br>");
+                    return null;
+                }
+                if(isset($vendor)) {
+					if($vendor == '\Spatie\ImageOptimizer\OptimizerChainFactory') {
+					    $optimizer = \Spatie\ImageOptimizer\OptimizerChainFactory::create();
+					    $optimizer->optimize($this->image);
+					} elseif ($vendor == '\ImageOptimizer\OptimizerFactory') {
+					    
+						$factory = new \ImageOptimizer\OptimizerFactory();
+                        $optimizer = $factory->get();
+						//print("<br>OptimizerFactory");
+						
+					} else {
+					    $optimizer = $vendor();
+					}
+                    if (isset($this->image)) {
+                        $optimizer->optimize($this->image);
+						//print(" - OK<br>");
+                    } elseif(isset($open) && isset($save)) {
+                        $optimizer->optimize($open, $save);
+                    } else {
+					    print("<br>optimizer image - NO<br>");
+                        return null;
+                    }
+                    return true;
+                } else {
+				    print("<br>optimizer vendor - NO<br>");
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        } catch (\Exception $e) {
+			print("<br>Exception ERROR! Class {$this->config['vendor']['image']['optimize']}<br>");
+            return null;
+        }
+    }
+ 
     public function run_dir()
     {
         if (!file_exists($this->dir)) {mkdir($this->dir);}
@@ -229,10 +276,10 @@ class Image {
         }
  
         try {
-            if(isset($this->config['vendor']['image_thumbnail']) && $this->config['vendor']['image_thumbnail'] != '') {
+            if(isset($this->config['vendor']['image']['thumbnail']) && $this->config['vendor']['image']['thumbnail'] != '') {
                 $vendor = null;
-                if (class_exists($this->config['vendor']['image_thumbnail'])) {
-                    $vendor = $this->config['vendor']['image_thumbnail'];
+                if (class_exists($this->config['vendor']['image']['thumbnail'])) {
+                    $vendor = $this->config['vendor']['image']['thumbnail'];
                 } else {
                     return null;
                 }
@@ -244,7 +291,7 @@ class Image {
                         $images = new $vendor();
                         $size = new \Imagine\Image\Box($this->width, $this->height);
                         $mode = \Imagine\Image\ImageInterface::THUMBNAIL_INSET;
-                        if($this->config['vendor']['image_thumbnail_mode'] == 'THUMBNAIL_OUTBOUND') {
+                        if($this->config['vendor']['image']['thumbnail_mode'] == 'THUMBNAIL_OUTBOUND') {
                             $mode = \Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND;
                         }
                         $images->open($this->image_temp)->thumbnail($size, $mode)->save($this->image);
@@ -263,7 +310,7 @@ class Image {
  
                     } else {
  
-                            $this->mode = $this->config['vendor']['image_thumbnail_mode'];
+                            $this->mode = $this->config['vendor']['image']['thumbnail_mode'];
  
                             if($this->mode == 'default') {
                                 $images = new $vendor($this->mode);
@@ -310,37 +357,6 @@ class Image {
  
                         return true;
  
-                } else {
-                    return null;
-                }
-            } else {
-                return null;
-            }
-        } catch (\Exception $e) {
-            return null;
-        }
-    }
- 
-    public function optimize($open = null, $save = null)
-    {
-         try {
-            if(isset($this->config['vendor']['image_optimize']) && $this->config['vendor']['image_optimize'] != '') {
-                $vendor = null;
-                if (class_exists($this->config['vendor']['image_optimize'])) {
-                    $vendor = $this->config['vendor']['image_optimize'];
-                } else {
-                    return null;
-                }
-                if(isset($vendor)) {
-                    $optimizer = $vendor();
-                    if(isset($open) && isset($save)) {
-                        $optimizer->optimize($open, $save);
-                    } elseif (isset($this->image)) {
-                        $optimizer->optimize($this->image, $this->image);
-                    } else {
-                        return null;
-                    }
-                    return true;
                 } else {
                     return null;
                 }

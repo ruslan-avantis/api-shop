@@ -1,10 +1,10 @@
 <?php
 /**
- * This file is part of the API SHOP
+ * This file is part of the {API}$hop
  *
  * @license http://opensource.org/licenses/MIT
  * @link https://github.com/pllano/api-shop
- * @version 1.1.0
+ * @version 1.1.1
  * @package pllano.api-shop
  *
  * For the full copyright and license information, please view the LICENSE
@@ -13,8 +13,6 @@
  
 namespace ApiShop\Model;
  
-use ApiShop\Config\Settings;
- 
 use Pllano\RouterDb\Db;
 use Pllano\RouterDb\Router;
  
@@ -22,10 +20,8 @@ class Install {
  
     private $config;
  
-    function __construct()
+    function __construct($config)
     {
-        // Подключаем конфиг Settings\Config
-        $config = (new Settings())->get();
         $this->config = $config;
     }
 
