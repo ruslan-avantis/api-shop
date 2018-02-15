@@ -1,7 +1,5 @@
-<?php
-// {API}$hop
-/**
-    * This file is part of the API SHOP
+<?php /**
+    * This file is part of the {API}$hop
     *
     * @license http://opensource.org/licenses/MIT
     * @link https://github.com/pllano/api-shop
@@ -63,9 +61,10 @@
     }
     $slim['settings'] = $slimArr;
     $config = array_replace_recursive($config, $slim);
+ 
     // Подключаем Slim и отдаем ему конфигурацию
     $app = new \Slim\App($config);
-
+ 
     // Run User Session
     // Запускаем сессию пользователя
     (new \ApiShop\Model\User())->run();
