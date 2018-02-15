@@ -1,10 +1,9 @@
-<?php 
-/**
-    * This file is part of the API SHOP
+<?php /**
+    * This file is part of the {API}$hop
     *
     * @license http://opensource.org/licenses/MIT
     * @link https://github.com/pllano/api-shop
-    * @version 1.1.0
+    * @version 1.1.1
     * @package pllano.api-shop
     *
     * For the full copyright and license information, please view the LICENSE
@@ -13,16 +12,13 @@
  
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-
-use ApiShop\Model\Site;
-use ApiShop\Config\Settings;
  
 $container = $app->getContainer();
  
 // Конфигурация доступна внутри и вне роутеров
 // Получить внутри роутера $name = $this->config['name']; всю = $this->config
 // Получить вне роутеров $name = $config['name']; всю = $config
-$container['config'] = Settings::get();
+$container['config'] = \ApiShop\Config\Settings::get();
  
 // monolog
 $container['logger'] = function ($config) {
@@ -42,12 +38,12 @@ $container['view'] = function ($config) {
     // Получаем название шаблона из конфигурации
     $template = $config['config']['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
  
-    $site = new Site($config['config']);
+    $site = new \ApiShop\Model\Site($config['config']);
     $site->get();
     // Получаем название шаблона из конфигурации сайта
     if ($site->template()) {$template = $site->template();}
  
-    return new $config['config']['vendor']['template_engine']($config['config'], $template);
+    return new $config['config']['vendor']['templates']['template_engine']($config['config'], $template);
  
 };
  
@@ -55,7 +51,7 @@ $container['view'] = function ($config) {
 $container['admin'] = function ($config) {
  
     // Получаем название шаблона
-    $template = $config['config']['admin']["template"];
+    $template = $config['config']['admin']['template'];
     $loader = new \Twig_Loader_Filesystem($config['config']['settings']['themes']['dir']."/".$config['config']['settings']['themes']['templates']."/".$template."/layouts");
     $admin = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
  
@@ -65,14 +61,14 @@ $container['admin'] = function ($config) {
  
 // Для POST запросов вначале url генерируем post_id
 // Если у пользователя нет сессии он не сможет отправлять POST запросы
-$session = new $config['vendor']['session']($config['settings']['session']['name']);
+$session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
 $post_id = '/_'; if(isset($session->post_id)){$post_id = '/'.$session->post_id;}
  
 /**
     * API Shop дает полную свободу с выбора классов обработки страниц
     * При установке пекетов или шаблонов вы можете перезаписать в конфиге класс и функцию обработки
     * Вы можете использовать контроллеры по умолчанию и вносить изменения с помощью \Pllano\Hooks\Hook
-	* Вы можете использовать ApiShop\Adapter\ и менять vendor в конфигурации
+    * Вы можете использовать ApiShop\Adapter\ и менять vendor в конфигурации
 */
  
 // Получаем конфигурацию роутеров
@@ -155,7 +151,7 @@ $app->get($router['cart']['route'].'{function:[a-z0-9_-]+}', function (Request $
     if ($req->getAttribute('function') && method_exists($controller,'get_'.str_replace("-", "_", $req->getAttribute('function')))) {
         $function = 'get_'.str_replace("-", "_", $req->getAttribute('function'));
     } else {
-	    $controller = $this->config['routers']['site']['error']['controller'];
+        $controller = $this->config['routers']['site']['error']['controller'];
         $function = 'get';
     }
     $class = new $controller($this->config, $this->view, $this->logger);
@@ -169,7 +165,7 @@ $app->post($post_id.$router['cart']['route'].'{function:[a-z0-9_-]+}', function 
     if ($req->getAttribute('function') && method_exists($controller,'post_'.str_replace("-", "_", $req->getAttribute('function')))) {
         $function = 'post_'.str_replace("-", "_", $req->getAttribute('function'));
     } else {
-	    $controller = $this->config['routers']['site']['error']['controller'];
+        $controller = $this->config['routers']['site']['error']['controller'];
         $function = 'post';
     }
     $class = new $controller($this->config, $this->view, $this->logger);

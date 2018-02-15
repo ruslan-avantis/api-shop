@@ -1,12 +1,21 @@
-<?php 
+<?php /**
+    * This file is part of the {API}$hop
+    *
+    * @license http://opensource.org/licenses/MIT
+    * @link https://github.com/pllano/api-shop
+    * @version 1.1.1
+    * @package pllano.api-shop
+    *
+    * For the full copyright and license information, please view the LICENSE
+    * file that was distributed with this source code.
+*/
  
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
  
 use Pllano\RouterDb\Db;
 use Pllano\RouterDb\Router;
  
-use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Model\Security;
 use ApiShop\Model\User;
@@ -14,12 +23,12 @@ use ApiShop\Model\Install;
  
 // Активация с помощью public_key
 $app->post('/install-api-key', function (Request $request, Response $response, array $args) {
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
+    // Конфигурация
+    $config = $this->config;
     // Подключаем плагины
     $utility = new Utility();
     // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Получаем данные отправленные нам через POST
@@ -27,14 +36,14 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
  
     try {
         // Получаем токен из сессии
-        $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+        $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
     }
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
@@ -50,7 +59,7 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
  
             $session->install = null;
  
-            $dir_name = __DIR__ .'/../config'.$config["db"]["json"]["dir_name"];
+            $dir_name = __DIR__ .'/..'.$config["db"]["json"]["dir_name"];
             $rep = 'https://raw.githubusercontent.com/pllano/structure-db/master/db.json';
             file_put_contents($dir_name.'core/db.json', file_get_contents($rep));
             // Скачиваем демо данные
@@ -73,7 +82,7 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
             }
  
             $api = null;
-            $httpClient = new $config['vendor']['http_client']();
+            $httpClient = new $config['vendor']['http_client']['client']();
             $httpBody = $httpClient->request('GET', $config["db"]["pllanoapi"]["url"].'api?public_key='.$public_key);
             $resp = $httpBody->getBody();
             $output = $utility->clean_json($resp);
@@ -101,12 +110,15 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
             if (isset($session->template)) {
                 $template = $session->template;
             } else {
-                $template = 'mini-mo';
+                $template = 'mini-mo-twig';
+				$template_engine = 'twig';
             }
             $paramPost['settings']['themes']['template'] = $template;
+			$paramPost['template']['front_end']['themes']['template'] = $template;
+			$paramPost['template']['front_end']['template_engine'] = 'twig';
  
             // Подключаем класс файла конфигурации
-            $settingsAdmin = new \ApiShop\Admin\Config();
+            $settingsAdmin = new \ApiShop\Admin\Config($config);
             // Получаем массив конфигурации
             $arrJson = $settingsAdmin->get();
             // Соеденяем два массива
@@ -145,16 +157,16 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
  
 // Записать в сессию
 $app->post('/install-key', function (Request $request, Response $response, array $args) {
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
+    // Конфигурация
+    $config = $this->config;
     // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     
     try {
         // Получаем токен из сессии
-        $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+        $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
@@ -163,7 +175,7 @@ $app->post('/install-key', function (Request $request, Response $response, array
     $post = $request->getParsedBody();
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
@@ -203,16 +215,16 @@ $app->post('/install-key', function (Request $request, Response $response, array
 
 // Записать в сессию
 $app->post('/install-no-key', function (Request $request, Response $response, array $args) {
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
+    // Конфигурация
+    $config = $this->config;
     // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     
     try {
         // Получаем токен из сессии
-        $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+        $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
@@ -221,7 +233,7 @@ $app->post('/install-no-key', function (Request $request, Response $response, ar
     $post = $request->getParsedBody();
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
@@ -261,16 +273,16 @@ $app->post('/install-no-key', function (Request $request, Response $response, ar
  
 // Записать выбранный магазин в сессию
 $app->post('/install-store', function (Request $request, Response $response, array $args) {
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
+    // Конфигурация
+    $config = $this->config;
     // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     
     try {
         // Получаем токен из сессии
-        $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+        $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
@@ -279,7 +291,7 @@ $app->post('/install-store', function (Request $request, Response $response, arr
     $post = $request->getParsedBody();
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
@@ -322,16 +334,16 @@ $app->post('/install-store', function (Request $request, Response $response, arr
  
 // Записать выбранный шаблон в сессию
 $app->post('/install-template', function (Request $request, Response $response, array $args) {
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
+    // Конфигурация
+    $config = $this->config;
     // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     
     try {
         // Получаем токен из сессии
-        $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+        $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
@@ -340,7 +352,7 @@ $app->post('/install-template', function (Request $request, Response $response, 
     $post = $request->getParsedBody();
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
@@ -389,6 +401,9 @@ $app->post('/install-template', function (Request $request, Response $response, 
                     }
  
                     $session->template = $dir;
+					$template_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config['template']['front_end']["themes"]["templates"].'/'.$dir;
+					$template_config = json_decode(file_get_contents($template_dir."/config/config.json"), true);
+					$session->template_engine = $template_config['template_engine'];
                 }
  
                 if (file_exists($template_dir."/template.zip")) {
@@ -469,8 +484,8 @@ $app->post('/install-template', function (Request $request, Response $response, 
 // Регистрация продавца
 $app->post('/register-in-seller', function (Request $request, Response $response, array $args) {
     $today = date("Y-m-d H:i:s");
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
+    // Конфигурация
+    $config = $this->config;
     // Отдаем роутеру RouterDb конфигурацию.
     $router = new Router($config);
     // Читаем ключи
@@ -478,10 +493,10 @@ $app->post('/register-in-seller', function (Request $request, Response $response
     $cookie_key = $config['key']['cookie'];
     $token_key = $config['key']['token'];
     // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
     try {
         // Получаем токен из сессии
-        $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+        $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
         (new Security())->token();
         $token = null;
@@ -496,7 +511,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
     $post_host = filter_var($post['host'], FILTER_SANITIZE_STRING);
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
@@ -542,7 +557,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                     // Создаем новую cookie
                     $cookie = $utility->random_token();
                     // Генерируем identificator
-                    $identificator = $config['vendor']['crypto']::encrypt($cookie, $cookie_key);
+                    $identificator = $config['vendor']['crypto']['crypt']::encrypt($cookie, $cookie_key);
                     // Записываем пользователю новый cookie
                     $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
  
@@ -643,10 +658,10 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                                             $session->role_id = intval(100);
                                             $session->cookie = $identificator;
                                             $session->platform_user_id = intval($user_id);
-                                            $session->phone = $config['vendor']['crypto']::encrypt($phone, $session_key);
-                                            $session->email = $config['vendor']['crypto']::encrypt($email, $session_key);
-                                            $session->iname = $config['vendor']['crypto']::encrypt($iname, $session_key);
-                                            $session->fname = $config['vendor']['crypto']::encrypt($fname, $session_key);
+                                            $session->phone = $config['vendor']['crypto']['crypt']::encrypt($phone, $session_key);
+                                            $session->email = $config['vendor']['crypto']['crypt']::encrypt($email, $session_key);
+                                            $session->iname = $config['vendor']['crypto']['crypt']::encrypt($iname, $session_key);
+                                            $session->fname = $config['vendor']['crypto']['crypt']::encrypt($fname, $session_key);
  
                                             $callback = ['status' => 200];
                                             // Выводим заголовки
@@ -797,16 +812,16 @@ $app->post('/register-in-seller', function (Request $request, Response $response
  
 // Запуск магазина
 $app->post('/start-shop', function (Request $request, Response $response, array $args) {
-    // Подключаем конфиг Settings\Config
-    $config = (new Settings())->get();
+    // Конфигурация
+    $config = $this->config;
     // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']($config['settings']['session']['name']);
+    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
     // Читаем ключи
     $token_key = $config['key']['token'];
     
     try {
         // Получаем токен из сессии
-        $token = $config['vendor']['crypto']::decrypt($session->token, $token_key);
+        $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
         (new Security())->token();
         // Сообщение об Атаке или подборе токена
@@ -815,7 +830,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
     $post = $request->getParsedBody();
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
         (new Security())->csrf();
         // Сообщение об Атаке или подборе csrf
@@ -852,6 +867,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
  
                     $public_key = $session->public_key;
                     $template = $session->template;
+					$template_engine = $session->template_engine;
  
                     $dir_name = __DIR__ .'/../config'.$config["db"]["json"]["dir_name"];
                     $rep = 'https://raw.githubusercontent.com/pllano/structure-db/master/db.json';
@@ -876,7 +892,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     }
  
                     // Подключаем класс
-                    $settingsAdmin = new \ApiShop\Admin\Config();
+                    $settingsAdmin = new \ApiShop\Admin\Config($config);
                     // Получаем массив
                     $arrJson = $settingsAdmin->get();
                     $paramPost = array();
@@ -884,6 +900,8 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     $paramPost['db']['pllanoapi']['public_key'] = $public_key;
                     $paramPost['db']['api']['public_key'] = $public_key;
                     $paramPost['settings']['themes']['template'] = $template;
+					$paramPost['template']['front_end']['themes']['template'] = $template;
+					$paramPost['template']['front_end']['template_engine'] = $template_engine;
                     // Соеденяем массивы
                     $newArr = array_replace_recursive($arrJson, $paramPost);
                     // Сохраняем в файл

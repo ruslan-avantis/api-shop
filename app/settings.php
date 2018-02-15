@@ -1,10 +1,10 @@
 <?php 
 /**
-    * This file is part of the API SHOP
+    * This file is part of the {API}$hop
     *
     * @license http://opensource.org/licenses/MIT
     * @link https://github.com/pllano/api-shop
-    * @version 1.1.0
+    * @version 1.1.1
     * @package pllano.api-shop
     *
     * For the full copyright and license information, please view the LICENSE
@@ -81,36 +81,36 @@ class Settings {
  
         // Генерируем ключи шифрования, если их нет
         if (!file_exists($key_session)) {
-            file_put_contents($key_session, ($json["vendor"]["crypto_key_create"]())->saveToAsciiSafeString());
+            file_put_contents($key_session, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
         }
         if (!file_exists($key_cookie)) {
-            file_put_contents($key_cookie, ($json["vendor"]["crypto_key_create"]())->saveToAsciiSafeString());
+            file_put_contents($key_cookie, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
         }
         if (!file_exists($key_token)) {
-            file_put_contents($key_token, ($json["vendor"]["crypto_key_create"]())->saveToAsciiSafeString());
+            file_put_contents($key_token, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
         }
         if (!file_exists($key_password)) {
-            file_put_contents($key_password, ($json["vendor"]["crypto_key_create"]())->saveToAsciiSafeString());
+            file_put_contents($key_password, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
         }
         if (!file_exists($key_user)) {
-            file_put_contents($key_user, ($json["vendor"]["crypto_key_create"]())->saveToAsciiSafeString());
+            file_put_contents($key_user, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
         }
         if (!file_exists($key_card)) {
-            file_put_contents($key_card, ($json["vendor"]["crypto_key_create"]())->saveToAsciiSafeString());
+            file_put_contents($key_card, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
         }
  
-        $config["key"]["session"] = $json["vendor"]["crypto_key_load"](file_get_contents($key_session, true));
-        $config["key"]["token"] = $json["vendor"]["crypto_key_load"](file_get_contents($key_token, true));
-        $config["key"]["cookie"] = $json["vendor"]["crypto_key_load"](file_get_contents($key_cookie, true));
-        $config["key"]["password"] = $json["vendor"]["crypto_key_load"](file_get_contents($key_password, true));
-        $config["key"]["user"] = $json["vendor"]["crypto_key_load"](file_get_contents($key_user, true));
-        $config["key"]["card"] = $json["vendor"]["crypto_key_load"](file_get_contents($key_card, true));
+        $config["key"]["session"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_session, true));
+        $config["key"]["token"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_token, true));
+        $config["key"]["cookie"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_cookie, true));
+        $config["key"]["password"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_password, true));
+        $config["key"]["user"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_user, true));
+        $config["key"]["card"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_card, true));
         // Динамический ключ шифрования для ajax
-        $config["key"]["ajax"] = ($json["vendor"]["crypto_key_create"]())->saveToAsciiSafeString();
+        $config["key"]["ajax"] = ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString();
  
         $key_db = $key."/db.txt";
         if (!file_exists($key_db)) {
-            file_put_contents($key_db, ($json["vendor"]["crypto_key_create"]())->saveToAsciiSafeString());
+            file_put_contents($key_db, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
         }
         // Ключ шифрования в базах данных. Отдаем в чистом виде.
         $config["db"]["key"] = file_get_contents($key_db, true);
