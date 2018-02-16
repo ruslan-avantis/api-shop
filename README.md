@@ -31,8 +31,9 @@
 - Расширение PHP: `openssl` `zip`
 - Для кеширования необходимо установить требуемое хранилище кеша (по умолчанию используется файловое кеширование) и расширение PHP: `memcache` `memcached` или другое.
 ### Настройки `php.ini`
-- `max_execution_time` = 120 или 180 (по умолчанию 30)
+- `max_execution_time` = 120 или 240 (по умолчанию 30)
 - `memory_limit` = 512 или 1024 (по умолчанию 128)
+Эти параметры нужны при установке API Shop. При работе он менее требователен.
 
 ![](https://github.com/pllano/api-shop/blob/master/themes/templates/mini-mo/img/logo.png)
 
