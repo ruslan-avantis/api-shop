@@ -58,6 +58,7 @@ class Top {
                         $parent = $db->get($this->resource, ["menu" => 1, "state" => 1, "parent_id" => $val->id]);
                         if (isset($parent['headers']['code'])) {
                             if ($parent['headers']['code'] == 200 || $parent['headers']['code'] == '200') {
+ 
                                 foreach($parent['body']['items'] as $subvalue)
                                 {
                                     $sub = $subvalue['item'];
@@ -72,7 +73,8 @@ class Top {
                                     $subparent = $db->get($this->resource, ["menu" => 1, "state" => 1, "parent_id" => $sub->id]);
                                     if (isset($subparent['headers']['code'])) {
                                         if ($subparent['headers']['code'] == 200 || $subparent['headers']['code'] == '200') {
-                                            $submenu['subsubmenu'] = '';
+                                            $submenu['subsubmenu'] = [];
+											$subsubmenu = [];
                                             foreach($subparent['body']['items'] as $subsubvalue)
                                             {
                                                 $subsub = $subsubvalue['item'];
