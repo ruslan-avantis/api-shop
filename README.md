@@ -34,7 +34,7 @@
 - `max_execution_time` = 120 или 240 (по умолчанию 30)
 - `memory_limit` = 512 или 1024 (по умолчанию 128)
 
-Эти параметры нужны для установки API Shop с помощью [install.php](https://github.com/pllano/api-shop/blob/master/install.php). При работе он менее требователен.
+Эти параметры нужны для установки API Shop и загрузки пакетов с помощью [install.php](https://github.com/pllano/api-shop/blob/master/install.php). При работе он менее требователен.
 
 ![](https://github.com/pllano/api-shop/blob/master/themes/templates/mini-mo/img/logo.png)
 
