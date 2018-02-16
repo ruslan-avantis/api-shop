@@ -102,7 +102,7 @@ class Product
         // Шаблон по умолчанию 404
         $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
         // Контент по умолчанию
-        $content = '';
+        $content = [];
  
         $post_id = '/_';
         $admin_uri = '/_';
@@ -166,6 +166,8 @@ class Product
                 $content['url'] = '/product/'.$resp["body"]['items']['0']['item']['id'].'/'.$baseurl.'.html';
                 
                 $content['name'] = (isset($resp["body"]['items']['0']['item']['name'])) ? $utility->clean($resp["body"]['items']['0']['item']['name']) : '';
+				
+				$item_name = $content['name'];
                 
                 $content['description'] = (isset($resp["body"]['items']['0']['item']['description']['text'])) ? $utility->clean($resp["body"]['items']['0']['item']['description']['text']) : '';
                 $content['type'] = (isset($resp["body"]['items']['0']['item']['type'])) ? $utility->clean($resp["body"]['items']['0']['item']['type']) : '';
@@ -224,11 +226,11 @@ class Product
             // Информация для head
             $page = [
             "page" => 'product',
-            "title" => $content['name'],
-            "keywords" => $content['name'],
-            "description" => $content['name'],
-            "og_title" => $content['name'],
-            "og_description" => $content['name'],
+            "title" => $item_name,
+            "keywords" => $item_name,
+            "description" => $item_name,
+            "og_title" => $item_name,
+            "og_description" => $item_name,
             "host" => $host,
             "path" => $path
             ];
