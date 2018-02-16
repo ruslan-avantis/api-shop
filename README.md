@@ -33,6 +33,7 @@
 ### Настройки `php.ini`
 - `max_execution_time` = 120 или 240 (по умолчанию 30)
 - `memory_limit` = 512 или 1024 (по умолчанию 128)
+
 Эти параметры нужны при установке API Shop. При работе он менее требователен.
 
 ![](https://github.com/pllano/api-shop/blob/master/themes/templates/mini-mo/img/logo.png)
