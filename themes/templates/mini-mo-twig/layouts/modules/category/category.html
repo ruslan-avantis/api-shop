@@ -37,7 +37,7 @@
 <div class="container">
 <div class="row text-center cards">
 {% for item in value.content.products %}
-{% if value.content.products_template %}{{ include (value.content.products_template) }}{% else %}{{ include (value.helper.products_list) }}{% endif %}
+{% if value.content.products_template %}{{ include (value.content.products_template) }}{% else %}{{ include (value.config.helper.products_list) }}{% endif %}
 {% endfor %}
 </div>
 </div>
@@ -47,7 +47,7 @@
 <div class="col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 padding_21">
 <ul class="pagination justify-content-center">
 {% for pagination in value.content.paginator %}
-{% if value.helper.paginator %}{{ include (value.helper.paginator) }}{% endif %}
+{% if value.config.helper.paginator %}{{ include (value.config.helper.paginator) }}{% endif %}
 {% endfor %}
 </ul>
 </div>

@@ -1,4 +1,3 @@
-
 # «API Shop» — E-Commerce Platform
 Написан на PHP. Поддерживает самую последнюю версию PHP 7.2.2. Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT).
 ## `{API}$hop` — это конструктор с огромной гибкостью
@@ -34,7 +33,9 @@
 - `max_execution_time` = 120 или 240 (по умолчанию 30)
 - `memory_limit` = 512 или 1024 (по умолчанию 128)
 
-Эти параметры нужны для установки API Shop и загрузки пакетов с помощью [install.php](https://github.com/pllano/api-shop/blob/master/install.php). При работе он менее требователен.
+Эти параметры нужны для установки API Shop и загрузки пакетов с помощью 
+[install.php](https://github.com/pllano/api-shop/blob/master/install.php). 
+При работе он менее требователен.
 
 ![](https://github.com/pllano/api-shop/blob/master/themes/templates/mini-mo/img/logo.png)
 
@@ -54,6 +55,4 @@
 
 Лицензия API Shop
 -------
-
 The MIT License (MIT). Please see [LICENSE](https://github.com/pllano/api-shop/blob/master/LICENSE) for more information.
-
