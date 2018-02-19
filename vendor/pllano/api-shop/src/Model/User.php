@@ -27,7 +27,7 @@ class User {
     {
         // Подключаем конфиг \ApiShop\Config\Settings
         $config = (new Settings())->get();
-        // Подключаем плагины
+        // Подключаем утилиты
         $utility = new Utility();
         // Подключаем сессию, берет название класса из конфигурации
         $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);

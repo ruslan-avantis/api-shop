@@ -51,10 +51,10 @@ class Config {
     public function template_activate($name, $alias = null)
     {
         $template_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config['template']['front_end']["themes"]["templates"].'/'.$name;
-		$template_config = json_decode(file_get_contents($template_dir.'/config/config.json'), true);
-		$param['settings']['themes']['template'] = $name;
-		$param['template']['front_end']['themes']['template'] = $name;
-		$param['template']['front_end']['template_engine'] = $template_config['template_engine'];
+        $template_config = json_decode(file_get_contents($template_dir.'/config/config.json'), true);
+        $param['settings']['themes']['template'] = $name;
+        $param['template']['front_end']['themes']['template'] = $name;
+        $param['template']['front_end']['template_engine'] = $template_config['template_engine'];
         $arr = array_replace_recursive($this->get(), $param);
         $newArr = json_encode($arr);
         $newArr = str_replace('"1"', 1, $newArr);
@@ -111,8 +111,8 @@ class Config {
  
                 // Активируем шаблон
                 $param['settings']['themes']['template'] = $name;
-				$param['template']['front_end']['themes']['template'] = $name;
-			    $param['template']['front_end']['template_engine'] = $template_config['template_engine'];
+                $param['template']['front_end']['themes']['template'] = $name;
+                $param['template']['front_end']['template_engine'] = $template_config['template_engine'];
                 $this->put($param);
  
                 return true;

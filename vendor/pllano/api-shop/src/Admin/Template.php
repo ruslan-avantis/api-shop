@@ -44,7 +44,7 @@ class Template {
                         $json = json_decode(file_get_contents($json_dir."config.json"), true);
                          $template = $json;
                          $templates["alias"] = $template["alias"];
-						 $templates["template_engine"] = $template["template_engine"];
+                         $templates["template_engine"] = $template["template_engine"];
                          $templates["name"] = $template["name"];
                          $templates["dir"] = $dir;
                          $templates["version"] = $template["version"];
