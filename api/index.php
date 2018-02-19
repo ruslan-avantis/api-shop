@@ -67,9 +67,9 @@ $config = $settings->get();
 $slimArr = '';
 // На всякий случай, конвертируем конфигурацию в правильный формат
 foreach ($config['slim']['settings'] as $key => $value) {
-	$value = str_replace(array("1", '1', 1), true, $value);
-	$value = str_replace(array("0", '0', 0), false, $value);
-	$slimArr[$key] = $value;
+    $value = str_replace(array("1", '1', 1), true, $value);
+    $value = str_replace(array("0", '0', 0), false, $value);
+    $slimArr[$key] = $value;
 }
 $slim['settings'] = $slimArr;
 // Подключаем Slim и отдаем ему конфигурацию
@@ -86,4 +86,4 @@ require $router;
 // Slim Run
 $app->run();
  
-	
+    

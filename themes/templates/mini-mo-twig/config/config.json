@@ -1,58 +1,57 @@
 {
-    "alias": "minimotwig",
-    "name": "mini-mo-twig",
-    "dir": "mini-mo-twig",
-    "template_engine": "twig",
-    "version": "1.0.1",
-    "url": "https:\/\/cdn.pllano.com\/templates\/mini-mo\/1.0.1\/mini-mo-twig.zip",
-    "logo": "\/images\/logo.svg",
-    "demo": "https:\/\/mini-mo.pllano.com\/",
-    "layouts": {
-        "layout": "layout.html",
-        "404": "404.html",
-        "blank": "blank.html",
-        "panel": {
-            "settings": "panel\/settings.html",
-            "demo": "panel\/demo.html"
-        }
-    },
-    "install": {
-        "config": {
-            "vendor": {
-                "menu": "\\ApiShop\\Test\\BigMenu",
-                "session": "\\ApiShop\\ModelTest\\Session"
-            },
-            "routers": {
-                "router_1": "\/router_1\/",
-                "router_2": "\/router_2\/"
-            }
-        },
-        "routers": [{
-                "file": "router_1.php",
-                "action": "add"
-            }, {
-                "file": "router_2.php",
-                "action": "replace"
-            }
-        ],
-        "packages": [{
-                "namespace": "\\ApiShop\\Test\\BigMenu",
-                "dir": "\/pllano\/test",
-                "link": "https:\/\/cdn.pllano.com\/test\/big-menu-master.zip",
-                "git": null,
-                "name": "big-menu",
-                "version": "master",
-                "vendor": "pllano"
-            }, {
-                "namespace": "\\ApiShop\\ModelTest\\Session",
-                "dir": "\/pllano\/model-test",
-                "link": "https:\/\/cdn.pllano.com\/test\/session-master.zip",
-                "git": null,
-                "name": "session",
-                "version": "master",
-                "vendor": "pllano"
-            }
-        ]
-    }
+	"alias": "minimotwig",
+	"name": "mini-mo-twig",
+	"dir": "mini-mo-twig",
+	"template_engine": "twig",
+	"version": "1.0.1",
+	"url": "https:\/\/cdn.pllano.com\/templates\/mini-mo\/1.0.1\/mini-mo-twig.zip",
+	"logo": "\/images\/logo.svg",
+	"demo": "https:\/\/mini-mo.pllano.com\/",
+	"layouts": {
+		"layout": "layout.html",
+		"404": "404.html",
+		"blank": "blank.html",
+		"panel": {
+			"settings": "panel\/settings.html",
+			"demo": "panel\/demo.html"
+		}
+	},
+	"install": {
+		"config": {
+			"vendor": {
+				"menu": "\\ApiShop\\Test\\BigMenu",
+				"session": "\\ApiShop\\ModelTest\\Session"
+			},
+			"routers": {
+				"router_1": "\/router_1\/",
+				"router_2": "\/router_2\/"
+			}
+		},
+		"routers": [{
+				"file": "router_1.php",
+				"action": "add"
+			}, {
+				"file": "router_2.php",
+				"action": "replace"
+			}
+		],
+		"packages": [{
+				"namespace": "\\ApiShop\\Test\\BigMenu",
+				"dir": "\/pllano\/test",
+				"link": "https:\/\/cdn.pllano.com\/test\/big-menu-master.zip",
+				"git": null,
+				"name": "big-menu",
+				"version": "master",
+				"vendor": "pllano"
+			}, {
+				"namespace": "\\ApiShop\\ModelTest\\Session",
+				"dir": "\/pllano\/model-test",
+				"link": "https:\/\/cdn.pllano.com\/test\/session-master.zip",
+				"git": null,
+				"name": "session",
+				"version": "master",
+				"vendor": "pllano"
+			}
+		]
+	}
 }
- 

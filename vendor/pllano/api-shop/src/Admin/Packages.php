@@ -110,11 +110,11 @@ class Packages
  
     public function put($param)
     {
-		$arr = array_replace_recursive($this->get(), $param);
+        $arr = array_replace_recursive($this->get(), $param);
         $newArr = json_encode($arr);
-		$newArr = str_replace('"1"', 1, $newArr);
+        $newArr = str_replace('"1"', 1, $newArr);
         $newArr = str_replace('"0"', 0, $newArr);
-		$vendor_dir = $this->config["dir"]["vendor"].'/';
+        $vendor_dir = $this->config["dir"]["vendor"].'/';
         file_put_contents($vendor_dir."auto_require.json", $newArr);
         return true;
     }
@@ -172,7 +172,7 @@ class Packages
             $key = $vendor.'.'.$package;
             $newParam['require'][$key]['state'] = $state;
             $arr = array_replace_recursive($getArr, $newParam);
-			$newArr = json_encode($arr);
+            $newArr = json_encode($arr);
             $newArr = str_replace('"1"', 1, $newArr);
             $newArr = str_replace('"0"', 0, $newArr);
             $vendor_dir = $this->config["dir"]["vendor"].'/';

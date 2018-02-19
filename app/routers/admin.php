@@ -1662,12 +1662,12 @@ $app->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+
  
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
-			// Подключаем класс
+            // Подключаем класс
             $packages = new Packages($config);
-			if ($request->getMethod() == 'POST') {
-				$paramPost = $request->getParsedBody();
+            if ($request->getMethod() == 'POST') {
+                $paramPost = $request->getParsedBody();
                 $packages->put($paramPost);
-			}
+            }
             if (isset($vendor) && isset($package)) {
                 // Получаем массив
                 $content = $packages->getOne($vendor, $package);

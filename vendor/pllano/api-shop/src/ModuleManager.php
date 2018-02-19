@@ -18,7 +18,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 class ModuleManager
 {
     private $config;
-	private $package;
+    private $package;
     private $template;
     private $route;
     private $block;
@@ -29,7 +29,7 @@ class ModuleManager
     function __construct($config = [], $package = [], $template = [], $block, $route, $lang = null, $language = null)
     {
         $this->config = $config;
-		$this->package = $package;
+        $this->package = $package;
         $this->template = $template;
         $this->block = $block;
         $this->route = $route;
@@ -52,12 +52,12 @@ class ModuleManager
             {
                 if($val['state'] == 1) {
                     if (isset($val['vendor'])) {
-						$package = [];
-						//print_r($this->package['require'][$val['package']]);
-						if (isset($this->package['require'][$val['package']])) {
-							$package = $this->package['require'][$val['package']];
-						}
-						//$conf = array_replace_recursive($this->config, $package, $this->template, $key, $this->block, $this->route, $this->lang, $this->language);
+                        $package = [];
+                        //print_r($this->package['require'][$val['package']]);
+                        if (isset($this->package['require'][$val['package']])) {
+                            $package = $this->package['require'][$val['package']];
+                        }
+                        //$conf = array_replace_recursive($this->config, $package, $this->template, $key, $this->block, $this->route, $this->lang, $this->language);
                         $plugin = new $val['vendor']($this->config, $package, $this->template, $key, $this->block, $this->route, $this->lang, $this->language);
                         $function = $val['function'];
                         $arr = $plugin->$function($request, $response, $args);

@@ -29,7 +29,7 @@ use ApiShop\Model\User;
 class ControllerManager
 {
     private $config = [];
-	private $package = [];
+    private $package = [];
     protected $logger;
     protected $view;
     protected $route;
@@ -38,7 +38,7 @@ class ControllerManager
     function __construct($query, $route, $config, $package, $view, $logger)
     {
         $this->config = $config;
-		$this->package = $package;
+        $this->package = $package;
         $this->logger = $logger;
         $this->view = $view;
         $this->route = $route;
@@ -258,17 +258,17 @@ class ControllerManager
         // Подключаем систему безопасности
         $security = new Security();
  
-		// Настройки сайта
-		$site = new Site($config);
-		$siteConfig = $site->get();
-		// Получаем название шаблона
-		// Конфигурация шаблона
-		$templateConfig = new Template($site->template());
-		$template = $templateConfig->get();
-		// Подключаем мультиязычность
-		$languages = new Language($request, $config);
-		$language = $languages->get();
-		$lang = $languages->lang();
+        // Настройки сайта
+        $site = new Site($config);
+        $siteConfig = $site->get();
+        // Получаем название шаблона
+        // Конфигурация шаблона
+        $templateConfig = new Template($site->template());
+        $template = $templateConfig->get();
+        // Подключаем мультиязычность
+        $languages = new Language($request, $config);
+        $language = $languages->get();
+        $lang = $languages->lang();
  
         try {
             // Получаем токен из сессии

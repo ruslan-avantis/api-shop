@@ -29,7 +29,7 @@ class Index {
     {
         // Получаем список виджетов для вывода на главную
         $resource_list = explode(',', str_replace(array('"', "'", " "), '', $this->config['admin']['index_widget']));
-		$resp = [];
+        $resp = [];
         foreach($resource_list as $resource)
         {
             if($resource == 'templates') {

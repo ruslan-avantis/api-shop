@@ -31,7 +31,7 @@ class Language
         $this->config = $config;
         $this->request = $request;
         $getParams = $this->request->getQueryParams();
-		
+        
         // Подключаем сессию, берет название класса из конфигурации
         $session = new $this->config['vendor']['session']['session']($this->config['settings']['session']['name']);
  
@@ -58,7 +58,7 @@ class Language
     public function get()
     {
         $host = $this->request->getUri()->getHost();
-		$cache = new Cache($this->config);
+        $cache = new Cache($this->config);
         $cache_run = $cache->run($host.'/'.$this->resource.'/'.$this->language, $this->cache_lifetime);
         if ($cache_run === null) {
             // Отдаем роутеру RouterDb конфигурацию.
