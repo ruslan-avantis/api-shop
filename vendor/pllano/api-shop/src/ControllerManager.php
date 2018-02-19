@@ -227,7 +227,11 @@ class ControllerManager
  
         }
  
-		return $this->view->render($response, $hook->render(), $hook->view());
+		if ($config['settings']["install"]["status"] != null) {
+			return $this->view->render($response, $hook->render(), $hook->view());
+		} else {
+		    return $this->view->render($render, $data);
+		}
  
     }
  
