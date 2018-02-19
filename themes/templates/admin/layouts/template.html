@@ -17,6 +17,18 @@
 </li>
 {% endif %}
 
+{% if content.footer %}
+<li class="nav-item">
+<a class="nav-link" href="#footer" data-toggle="tab">Footer</a>
+</li>
+{% endif %}
+
+{% if content.modules %}
+<li class="nav-item">
+<a class="nav-link" href="#modules" data-toggle="tab">Modules</a>
+</li>
+{% endif %}
+
 {% if content.home %}
 <li class="nav-item">
 <a class="nav-link" href="#home" data-toggle="tab">{{ language.24 }}</a>
@@ -34,13 +46,7 @@
 <a class="nav-link" href="#plugins" data-toggle="tab">{{ language.860 }}</a>
 </li>
 {% endif %}
-
-{% if content.footer %}
-<li class="nav-item">
-<a class="nav-link" href="#footer" data-toggle="tab">Footer</a>
-</li>
-{% endif %}
-
+ 
 {% if content.category %}
 <li class="nav-item">
 <a class="nav-link" href="#category" data-toggle="tab">{{ language.187 }}</a>
@@ -152,6 +158,58 @@
 <div class="form-group col-xl-6">
 <label for="{{ key }}">{{ key }}</label>
 <input type="text" class="form-control form-control-xs" name="products[{{ key }}]" aria-describedby="{{ value }}" value="{{ value }}">
+</div>
+{% endif %}
+{% endif %}
+{% endfor %}
+{# -------------- #}
+</div>
+</div>
+{% endif %}
+
+{% if content.modules %}
+<div role="tabpanel" class="tab-pane fade in" id="modules">
+{% if content.modules.name %}<div class="col-lg-12"><h3 class="padding_top_14 text-green-xxxl">{{ content.modules.name }}</h3></div>{% endif %}
+<div class="form-row">
+{# -------------- #}
+{% for key, value in content.modules %}
+{% if key != 'name' %}
+{% if value is iterable %}
+{% if key %}<div class="col-lg-12"><h4 class="padding_14 text-pink-xxxl">{{ key }}</h4><hr/></div>{% endif %}
+{# ------ #}
+{% for key_two, value_two in value %}
+{% if value_two is iterable %}
+{% if key_two %}<div class="col-lg-12"><h5 class="padding_top_14 text-indigo-xxxl">{{ key_two }}</h5></div>{% endif %}
+{# --- #}
+{% for key_three, value_three in value_two %}
+{% if value_three is iterable %}
+{% if key_three %}<div class="col-lg-12"><h6 class="padding_top_14 text-primary-xxxl">{{ key_three }}</h6></div>{% endif %}
+{% for key_four, value_four in value_three %}
+<div class="form-group col-xl-3">
+<label for="{{ key_four }}">{{ key_four }}</label>
+<input type="text" class="form-control form-control-xs" name="modules[{{ key }}][{{ key_two }}][{{ key_three }}][{{ key_four }}]" aria-describedby="{{ value_four }}" value="{{ value_four }}">
+</div>
+{% endfor %}
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key_three }}">{{ key_three }}</label>
+<input type="text" class="form-control form-control-xs" name="modules[{{ key }}][{{ key_two }}][{{ key_three }}]" aria-describedby="{{ value_three }}" value="{{ value_three }}">
+</div>
+{% endif %}
+{% endfor %}
+{# --- #}
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key_two }}">{{ key_two }}</label>
+<input type="text" class="form-control form-control-xs" name="modules[{{ key }}][{{ key_two }}]" aria-describedby="{{ value_two }}" value="{{ value_two }}">
+</div>
+{% endif %}
+{% endfor %}
+{# ------ #}
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key }}">{{ key }}</label>
+<input type="text" class="form-control form-control-xs" name="modules[{{ key }}]" aria-describedby="{{ value }}" value="{{ value }}">
 </div>
 {% endif %}
 {% endif %}

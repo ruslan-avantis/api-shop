@@ -1,6 +1,6 @@
 {{ include ('helper/header.html') }}
 {{ include ('helper/navbar.html') }}
-<h1 class="page-heading mb-4">{{ language.865 }} - {% if content.name %}{{ content.name }}{% else %}{{ language.864 }}{% endif %}</h1>
+<h1 class="page-heading mb-4">{{ language.865 }} - {{ language.864 }}</h1>
 <div class="row mb-2">
 <div class="col-lg-12">
 <div class="card">
@@ -20,58 +20,50 @@
 <a class="nav-link active" href="{{ admin_uri }}{{ config.routers.admin.all.route }}package/"><span class="font_14">{{ language.864 }}</span></a>
 </li>
 </ul>
+<h4 class="padding_7">{{ language.865 }}</h4>
+{% if content.require %}
+{% for key, value in content.require %}
+<form class="forms-sample" action="{{ admin_uri }}{{ config.routers.admin.all.route }}package/{{ key|lower }}" method="post">
+<div class="col-lg-12">
+<div class="form-row">
+{% if value is iterable %}
+<div class="col-lg-12"><h3 class="padding_top_14">{% if key %}{{ key }}{% endif %}</h3></div>
+{% for key_two, value_two in value %}
+{% if value_two is iterable %}
+<div class="col-lg-12"><h4 class="padding_top_14">{% if key_two %}{{ key_two }}{% endif %}</h4></div>
+{% for key_three, value_three in value_two %}
+<div class="form-group col-xl-6">
+<label for="{{ key_three }}">{{ key_three }}</label>
+<input type="text" class="form-control form-control-xs" name="require[{{ key }}][{{ key_two }}][{{ key_three }}]" value="{{ value_three }}">
+</div>
+{% endfor %}
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key_two }}">{{ key_two }}</label>
+<input type="text" class="form-control form-control-xs" name="require[{{ key }}][{{ key_two }}]" value="{{ value_two }}">
+</div>
+{% endif %}
+{% endfor %}
+{% else %}
+<div class="form-group col-xl-6">
+<label for="{{ key }}">{{ key }}</label>
+<input type="text" class="form-control form-control-xs" name="require[{{ key }}]" value="{{ value }}">
+</div>
+{% endif %}
+</div>
+</div>
+<div class="col-lg-12">
+<div class="form-row">
+<div class="form-group col-md-12">
+<button type="submit" class="btn btn-primary">{{ language.240 }}</button>
+</div>
+</div>
+</div>
+</form>
+{% endfor %}
+{% endif %}
 
-<div class="form-row padding_7">
-
-<div class="col-lg-6">
-<h4 class="padding_7">{{ language.865 }}</h4>    
-<div class="form-group col-lg-12">
-<label for="name">name</label>
-<input type="text" class="form-control form-control-xs" name="name" id="name" value="{{ content.name }}">
-</div>
-
-<div class="form-group col-lg-12">
-<label for="namespace">namespace</label>
-<input type="text" class="form-control form-control-xs" name="namespace" id="namespace" value="{{ content.namespace }}">
-</div>
-
-<div class="form-group col-lg-12">
-<label for="dir">dir</label>
-<input type="text" class="form-control form-control-xs" name="dir" id="dir" value="{{ content.dir }}">
-</div>
- 
-<div class="form-group col-lg-12">
-<label for="link">link</label>
-<input type="text" class="form-control form-control-xs" name="link" id="link" value="{{ content.link }}">
-</div>
- 
-<div class="form-group col-lg-12">
-<label for="git">git</label>
-<input type="text" class="form-control form-control-xs" name="git" id="git" value="{{ content.git }}">
-</div>
- 
-<div class="form-group col-lg-12">
-<label for="version">version</label>
-<input type="text" class="form-control form-control-xs" name="version" id="version" value="{{ content.version }}">
-</div>
- 
-<div class="form-group col-lg-12">
-<label for="vendor">vendor</label>
-<input type="text" class="form-control form-control-xs" name="vendor" id="vendor" value="{{ content.vendor }}">
-</div>
-
-<div class="form-group col-lg-12">
-<label for="files">files</label>
-<input type="text" class="form-control form-control-xs" name="files" id="files" value="{{ content.files }}">
-</div>
- 
-<div class="form-group col-lg-12">
-<label for="state">state</label>
-<input type="text" class="form-control form-control-xs" name="state" id="state" value="{{ content.state }}">
-</div>
-
-</div>
-<div class="col-lg-6">
+<div class="col-lg-12">
 {% if content.name %}
 <h4 class="padding_7">{{ content.name }} - auto_require.json</h4>
 {% else %}
@@ -126,14 +118,8 @@
 </div>
 
 
-</div>
 
-<div class="col-lg-12">
-<div class="row padding_7">
-<button type="submit" onclick="packagePut('{{ content.name|lower }}');" class="btn btn-primary text-white">{{ language.240 }}</button>
-</div>
-</div>
-
+ 
 </div>
 </div>
 </div>

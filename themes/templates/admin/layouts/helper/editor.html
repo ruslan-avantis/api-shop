@@ -4,6 +4,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.9/summernote-bs4.js"></script>
 <script>
 $('#text').summernote({});
+$('#seo_text').summernote({});
 $('#text_ru').summernote({});
 $('#text_de').summernote({});
 $('#text_en').summernote({});
@@ -20,6 +21,7 @@ nicEditors.allTextAreas(
 <script src="//cdn.ckeditor.com/4.8.0/standard/ckeditor.js"></script>
 <script>
 CKEDITOR.replace( 'text' );
+CKEDITOR.replace( 'seo_text' );
 CKEDITOR.replace( 'text_ru' );
 CKEDITOR.replace( 'text_de' );
 CKEDITOR.replace( 'text_en' );
@@ -30,6 +32,7 @@ CKEDITOR.replace( 'text_ua' );
 <script>
 ClassicEditor
 .create( document.querySelector( '#text' ) )
+.create( document.querySelector( '#seo_text' ) )
 .create( document.querySelector( '#text_ru' ) )
 .create( document.querySelector( '#text_de' ) )
 .create( document.querySelector( '#text_en' ) )
