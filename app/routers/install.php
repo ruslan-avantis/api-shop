@@ -111,11 +111,11 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
                 $template = $session->template;
             } else {
                 $template = 'mini-mo-twig';
-				$template_engine = 'twig';
+                $template_engine = 'twig';
             }
             $paramPost['settings']['themes']['template'] = $template;
-			$paramPost['template']['front_end']['themes']['template'] = $template;
-			$paramPost['template']['front_end']['template_engine'] = 'twig';
+            $paramPost['template']['front_end']['themes']['template'] = $template;
+            $paramPost['template']['front_end']['template_engine'] = 'twig';
  
             // Подключаем класс файла конфигурации
             $settingsAdmin = new \ApiShop\Admin\Config($config);
@@ -401,9 +401,9 @@ $app->post('/install-template', function (Request $request, Response $response, 
                     }
  
                     $session->template = $dir;
-					$template_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config['template']['front_end']["themes"]["templates"].'/'.$dir;
-					$template_config = json_decode(file_get_contents($template_dir."/config/config.json"), true);
-					$session->template_engine = $template_config['template_engine'];
+                    $template_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config['template']['front_end']["themes"]["templates"].'/'.$dir;
+                    $template_config = json_decode(file_get_contents($template_dir."/config/config.json"), true);
+                    $session->template_engine = $template_config['template_engine'];
                 }
  
                 if (file_exists($template_dir."/template.zip")) {
@@ -867,7 +867,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
  
                     $public_key = $session->public_key;
                     $template = $session->template;
-					$template_engine = $session->template_engine;
+                    $template_engine = $session->template_engine;
  
                     $dir_name = __DIR__ .'/../config'.$config["db"]["json"]["dir_name"];
                     $rep = 'https://raw.githubusercontent.com/pllano/structure-db/master/db.json';
@@ -900,8 +900,8 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     $paramPost['db']['pllanoapi']['public_key'] = $public_key;
                     $paramPost['db']['api']['public_key'] = $public_key;
                     $paramPost['settings']['themes']['template'] = $template;
-					$paramPost['template']['front_end']['themes']['template'] = $template;
-					$paramPost['template']['front_end']['template_engine'] = $template_engine;
+                    $paramPost['template']['front_end']['themes']['template'] = $template;
+                    $paramPost['template']['front_end']['template_engine'] = $template_engine;
                     // Соеденяем массивы
                     $newArr = array_replace_recursive($arrJson, $paramPost);
                     // Сохраняем в файл
