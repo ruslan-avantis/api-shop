@@ -36,7 +36,7 @@ class Image {
     // Функция контроля изображений если есть отдает локальный url, если нет загружает с платформы
     public function get($id = null, $url = null, $width = null, $height = null, $dir = null)
     {
-		if(isset($width)) {
+        if(isset($width)) {
             $this->width = $width;
         }
         if(isset($height)) {
@@ -109,9 +109,9 @@ class Image {
                                 return null;
                             }
                     } else {
-					
-					    $this->optimize();
-						//print("<br>optimize<br>");
+                    
+                        $this->optimize();
+                        //print("<br>optimize<br>");
  
                         return $this->image;
  
@@ -129,47 +129,47 @@ class Image {
  
     public function optimize($open = null, $save = null)
     {
-		 try {
+         try {
             if(isset($this->config['vendor']['image']['optimize'])) {
                 $vendor = null;
                 if (class_exists($this->config['vendor']['image']['optimize'])) {
                     $vendor = $this->config['vendor']['image']['optimize'];
                 } else {
-				    print("<br>Class {$this->config['vendor']['image']['optimize']} not found<br>");
+                    print("<br>Class {$this->config['vendor']['image']['optimize']} not found<br>");
                     return null;
                 }
                 if(isset($vendor)) {
-					if($vendor == '\Spatie\ImageOptimizer\OptimizerChainFactory') {
-					    $optimizer = \Spatie\ImageOptimizer\OptimizerChainFactory::create();
-					    $optimizer->optimize($this->image);
-					} elseif ($vendor == '\ImageOptimizer\OptimizerFactory') {
-					    
-						$factory = new \ImageOptimizer\OptimizerFactory();
+                    if($vendor == '\Spatie\ImageOptimizer\OptimizerChainFactory') {
+                        $optimizer = \Spatie\ImageOptimizer\OptimizerChainFactory::create();
+                        $optimizer->optimize($this->image);
+                    } elseif ($vendor == '\ImageOptimizer\OptimizerFactory') {
+                        
+                        $factory = new \ImageOptimizer\OptimizerFactory();
                         $optimizer = $factory->get();
-						//print("<br>OptimizerFactory");
-						
-					} else {
-					    $optimizer = $vendor();
-					}
+                        //print("<br>OptimizerFactory");
+                        
+                    } else {
+                        $optimizer = $vendor();
+                    }
                     if (isset($this->image)) {
                         $optimizer->optimize($this->image);
-						//print(" - OK<br>");
+                        //print(" - OK<br>");
                     } elseif(isset($open) && isset($save)) {
                         $optimizer->optimize($open, $save);
                     } else {
-					    print("<br>optimizer image - NO<br>");
+                        print("<br>optimizer image - NO<br>");
                         return null;
                     }
                     return true;
                 } else {
-				    print("<br>optimizer vendor - NO<br>");
+                    print("<br>optimizer vendor - NO<br>");
                     return null;
                 }
             } else {
                 return null;
             }
         } catch (\Exception $e) {
-			print("<br>Exception ERROR! Class {$this->config['vendor']['image']['optimize']}<br>");
+            print("<br>Exception ERROR! Class {$this->config['vendor']['image']['optimize']}<br>");
             return null;
         }
     }

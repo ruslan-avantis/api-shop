@@ -1,21 +1,13 @@
 {
-	"date_time": "2018-01-27 23:59:59",
+	"date_time": "2018-02-19 23:59:59",
 	"update": "pllano",
-	"slim": {
-		"settings": {
-			"debug": 1,
-			"displayErrorDetails": 1,
-			"addContentLengthHeader": 0,
-			"determineRouteBeforeAppMiddleware": 1
-		}
-	},
 	"cache": {
 		"driver": "filesystem",
 		"state": 1,
-		"cache_lifetime": "360",
+		"cache_lifetime": "3600",
 		"dynamic": 0,
 		"cpu": "80",
-		"memory": "20",
+		"memory": "80",
 		"vendor": "cache",
 		"adapter": "apishop",
 		"print": 0,
@@ -97,7 +89,7 @@
 		"alias": null,
 		"download_dir": null,
 		"download_alias": null,
-		"terms_of_delivery": 0,
+		"terms_of_delivery": 1,
 		"currency_code": "UAH",
 		"currency_id": 1,
 		"store": 1,
@@ -150,13 +142,14 @@
 		"plugins_dir": "\/plugins"
 	},
 	"vendor": {
+		"modules": {
+			"manager": "\\ApiShop\\ModuleManager"
+		},
+		"controllers": {
+			"controller": "\\ApiShop\\ControllerManager"
+		},
 		"hooks": {
 			"hook": "\\Pllano\\Hooks\\Hook"
-		},
-		"menu": {
-			"top": "\\ApiShop\\Model\\Menu\\Top",
-			"footer": "\\ApiShop\\Model\\Menu\\Footer",
-			"left": "\\ApiShop\\Model\\Menu\\Left"
 		},
 		"templates": {
 			"template_engine": "\\Pllano\\Adapter\\TemplateEngine"
@@ -166,11 +159,6 @@
 			"session": "\\Adbar\\Session",
 			"session_name": "_session",
 			"cookie": "\\ApiShop\\Model\\User"
-		},
-		"products": {
-			"home": "\\ApiShop\\Model\\Products",
-			"category": "\\ApiShop\\Model\\Products",
-			"product": "\\ApiShop\\Model\\Product"
 		},
 		"detector": {
 			"language": "\\Sinergi\\BrowserDetector\\Language"
@@ -194,72 +182,63 @@
 	},
 	"routers": {
 		"site": {
-			"error": {
-				"controller": "\\ApiShop\\Controller\\Error"
-			},
 			"index": {
 				"route": "\/",
-				"controller": "\\ApiShop\\Controller\\Index",
-				"function": "get"
+				"blocks": "header,nav,footer,index"
 			},
 			"article": {
 				"route": "\/{alias:[a-z0-9_-]+}.html",
-				"controller": "\\ApiShop\\Controller\\Article",
-				"function": "get"
+				"blocks": "header,nav,footer,article,left_sidebar,right_sidebar"
 			},
 			"article_category": {
 				"route": "\/content\/{alias:[a-z0-9_-]+}.html",
-				"controller": "\\ApiShop\\Controller\\ArticleCategory",
-				"function": "get"
+				"blocks": "header,nav,footer,article_category"
+			},
+			"product": {
+				"route": "\/product\/{alias:[a-z0-9_]+}\/{name}.html",
+				"blocks": "header,nav,footer,product"
+			},
+			"quick_view": {
+				"route": "\/quick-view\/product\/{alias:[a-z0-9_]+}\/{name}.html",
+				"blocks": "header,footer,product"
 			},
 			"category": {
-				"route": "\/category[/{alias:[a-z0-9_-]+}]",
-				"controller": "\\ApiShop\\Controller\\Category",
-				"function": "get"
+				"route": "\/category[\/{alias:[a-z0-9_-]+}]",
+				"blocks": "header,nav,footer,category"
+			},
+			"sign_in": {
+				"route": "\/sign-in",
+				"blocks": "sign_in"
+			},
+			"sign_up": {
+				"route": "\/sign-up",
+				"blocks": "sign_up"
 			},
 			"cart": {
 				"route": "\/cart\/",
 				"controller": "\\ApiShop\\Controller\\Cart",
-				"function": "get"
-			},
-			"product": {
-				"route": "\/product\/{alias:[a-z0-9_]+}\/{name}.html",
-				"controller": "\\ApiShop\\Controller\\Product",
-				"function": "get"
-			},
-			"product_quick_view": {
-				"route": "\/quick-view\/product\/{alias:[a-z0-9_]+}\/{name}.html",
-				"controller": "\\ApiShop\\Controller\\Product",
-				"function": "quick_view"
+				"blocks": "header,nav,footer,cart"
 			},
 			"language": {
 				"route": "\/language",
-				"controller": "\\ApiShop\\Controller\\Language"
-			},
-			"sign_in": {
-				"route": "\/sign-in",
-				"controller": "\\ApiShop\\Controller\\Account",
-				"function": "sign_in"
-			},
-			"sign_up": {
-				"route": "\/sign-up",
-				"controller": "\\ApiShop\\Controller\\Account",
-				"function": "sign_up"
+				"controller": "\\ApiShop\\Controller\\Language",
+				"blocks": "language"
 			},
 			"logout": {
 				"route": "\/logout",
-				"controller": "\\ApiShop\\Controller\\Account",
-				"function": "logout"
+				"blocks": "logout"
 			},
 			"login": {
 				"route": "\/login",
-				"controller": "\\ApiShop\\Controller\\Account",
-				"function": "login"
+				"blocks": "login"
 			},
 			"check_in": {
 				"route": "\/check-in",
-				"controller": "\\ApiShop\\Controller\\Account",
-				"function": "check_in"
+				"blocks": "check_in"
+			},
+			"error": {
+				"controller": "\\ApiShop\\Controller\\Error",
+				"blocks": "header,nav,footer,error"
 			}
 		},
 		"admin": {
@@ -268,6 +247,221 @@
 			},
 			"all": {
 				"route": "\/admin\/"
+			}
+		}
+	},
+	"modules": {
+		"index": {
+			"carousel": {
+				"state": 1,
+				"view": "helper\/carousel.html",
+				"data_to": "25",
+				"slogan": "",
+				"href": "\/category",
+				"background": "\/themes\/templates\/mini-mo-twig\/images\/home\/4.jpg"
+			},
+			"title": {
+				"state": 1,
+				"view": "helper\/title.html",
+				"data_to": "25",
+				"slogan": "",
+				"href": "\/category",
+				"background": "\/themes\/templates\/mini-mo-twig\/images\/home\/4.jpg"
+			},
+			"products_action": {
+				"state": 1,
+				"vendor": "\\ApiShop\\Modules\\Products\\ProductsAction",
+				"package": "pllano.products-action",
+				"function": "get",
+				"view": "modules\/products\/products_action.html",
+				"style": "",
+				"script": "",
+				"label": "action",
+				"limit": "6",
+				"sort": "price",
+				"order": "ASC",
+				"image_width": "360",
+				"image_height": "360",
+				"relations": "image"
+			},
+			"products_hit": {
+				"state": 1,
+				"vendor": "\\ApiShop\\Modules\\Products\\ProductsHits",
+				"package": "pllano.products-hit",
+				"function": "get",
+				"view": "modules\/products\/products_hit.html",
+				"style": "",
+				"script": "",
+				"label": "hit",
+				"limit": "6",
+				"sort": "name",
+				"order": "ASC",
+				"image_width": "360",
+				"image_height": "360",
+				"relations": "image"
+			}
+		},
+		"article": {
+			"article": {
+				"state": 1,
+				"vendor": "\\ApiShop\\Modules\\Articles\\Article",
+				"package": "pllano.article",
+				"function": "get",
+				"view": "modules\/articles\/article.html"
+			}
+		},
+		"product": {
+			"product": {
+				"state": 1,
+				"vendor": "\\ApiShop\\Modules\\Products\\Product",
+				"package": "pllano.product",
+				"function": "get",
+				"view": "modules\/products\/product.html",
+				"image_width": "600",
+				"image_height": "600"
+			}
+		},
+		"quick_view": {
+			"quick_view": {
+				"state": 1,
+				"vendor": "\\ApiShop\\Modules\\Products\\ProductQuickView",
+				"package": "pllano.quick-view",
+				"function": "get",
+				"view": "modules\/products\/quick_view.html",
+				"image_width": "600",
+				"image_height": "600"
+			}
+		},
+		"category": {
+			"title": {
+				"state": 1,
+				"view": "helper\/title.html",
+				"name": "\u0411\u0430\u043d\u043d\u0435\u0440 \u043d\u0430 \u0433\u043b\u0430\u0432\u043d\u043e\u0439",
+				"data_to": "25",
+				"slogan": "",
+				"href": "\/category",
+				"background": "\/themes\/templates\/mini-mo-twig\/images\/home\/4.jpg"
+			},
+			"category": {
+				"state": 1,
+				"view": "modules\/category\/category.html",
+				"vendor": "\\ApiShop\\Modules\\Categories\\Category",
+				"package": "pllano.category",
+				"function": "get",
+				"vendors": {
+					"products": "\\ApiShop\\Modules\\Categories\\Products",
+					"paginator": "\\ApiShop\\Modules\\Categories\\Pagination",
+					"filter": "\\ApiShop\\Modules\\Categories\\Filter"
+				},
+				"helper": {
+					"products_list": "modules\/category\/products_list.html",
+					"paginator": "modules\/category\/paginator.html"
+				},
+				"limit": "30",
+				"sort": "price",
+				"order": "ASC",
+				"image_width": "360",
+				"image_height": "360",
+				"relations": "image"
+			}
+		},
+		"sign_in": {
+			"sign_in": {
+				"state": 1,
+				"vendor": "\\ApiShop\\Modules\\Blank",
+				"package": "pllano.blank",
+				"function": "get",
+				"view": "sign-in.html"
+			}
+		},
+		"sign_up": {
+			"sign_up": {
+				"state": 1,
+				"vendor": "\\ApiShop\\Modules\\Blank",
+				"package": "pllano.blank",
+				"function": "get",
+				"view": "sign-up.html"
+			}
+		},
+		"login": {
+			"login": {
+				"state": 1,
+				"vendor": "\\ApiShop\\Modules\\Account\\Login",
+				"package": "pllano.login",
+				"function": "post"
+			}
+		},
+		"logout": {
+			"logout": {
+				"state": 1,
+				"vendor": "\\ApiShop\\Modules\\Account\\Logout",
+				"package": "pllano.logout",
+				"function": "post"
+			}
+		},
+		"check_in": {
+			"check_in": {
+				"state": 1,
+				"vendor": "\\ApiShop\\Modules\\Account\\CheckIn",
+				"package": "pllano.check-in",
+				"function": "post"
+			}
+		},
+		"nav": {
+			"nav": {
+				"state": 1,
+				"view": "helper\/nav.html",
+				"menu": "modules\/menu\/menu_top.html"
+			},
+			"top_menu": {
+				"state": 1,
+				"vendor": "\\ApiShop\\Modules\\Menu\\TopMenu",
+				"package": "pllano.top-menu",
+				"function": "get"
+			}
+		},
+		"header": {
+			"header": {
+				"state": 1,
+				"view": "helper\/header.html"
+			}
+		},
+		"footer": {
+			"newsletter": {
+				"state": 1,
+				"view": "helper\/newsletter.html"
+			},
+			"footer_block": {
+				"state": 1,
+				"view": "helper\/footer.html"
+			},
+			"social": {
+				"state": 0,
+				"rss": "#",
+				"facebook": "#",
+				"twitter": "#",
+				"vimeo": "#",
+				"youtube": "#",
+				"pinterest": "#",
+				"gplus": "#"
+			},
+			"quick_links": {
+				"state": 0,
+				"one": {
+					"text": "",
+					"title": "",
+					"url": ""
+				},
+				"two": {
+					"text": "",
+					"title": "",
+					"url": ""
+				},
+				"three": {
+					"text": "",
+					"title": "",
+					"url": ""
+				}
 			}
 		}
 	},
@@ -316,19 +510,13 @@
 		"editor": "summernote",
 		"template": "admin",
 		"resource_list": "user,role,article,article_category,category,currency,address,contact",
-		"resource": {
-			"index": 1,
-			"article": 1,
-			"user": 1,
-			"template": 1,
-			"settings": 1
-		}
+		"auto_update": 0
 	},
 	"template": {
 		"front_end": {
 			"template_engine": "twig",
 			"themes": {
-				"template": "mini-mo",
+				"template": "mini-mo-twig",
 				"templates": "templates",
 				"dir_name": "\/..\/themes"
 			}
@@ -384,8 +572,10 @@
 	"settings": {
 		"name": "settings",
 		"language": "ru",
+		"seo": {
+			"head": "title,keywords,description,robots,og_title,og_description,og_image,og_type,og_url"
+		},
 		"site": {
-			"demo_panel": 0,
 			"title": "API Shop",
 			"description": "\u0420\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u0447\u0435\u0440\u0435\u0437 RESTful API",
 			"keywords": "API Shop",
@@ -396,10 +586,13 @@
 			"og_locale": "",
 			"og_type": "site",
 			"og_url": "",
+			"text": "",
+			"seo_text": "",
+			"demo_panel": 0,
 			"cookie_httponly": 1
 		},
 		"themes": {
-			"template": "mini-mo",
+			"template": "mini-mo-twig",
 			"templates": "templates",
 			"dir_name": "\/..\/..\/themes"
 		},

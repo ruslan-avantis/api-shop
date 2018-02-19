@@ -17,8 +17,7 @@ class Settings {
  
     public static function get() {
  
-        $config = array();
- 
+        $config = [];
         // Папка файла конфигурации settings.json
         $settings =  __DIR__ .'/settings.json';
         $json = '';
@@ -121,15 +120,16 @@ class Settings {
         if(isset($json["seller"]["public_key"])) {
             if($json["seller"]["public_key"] != '' && $json["seller"]["public_key"] != 'null') {
                 $public_key = $json["seller"]["public_key"];
-                } else {
+            } else {
                 $public_key = null;
             }
-            } else {
+        } else {
             $public_key = null;
         }
  
-        if(isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'){
-            $_SERVER['HTTPS'] = 'on';
+        // Определяем протокол
+        $config["server"]["scheme"] = 'http';
+        if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
             $config["server"]["scheme"] = 'https';
         }
  

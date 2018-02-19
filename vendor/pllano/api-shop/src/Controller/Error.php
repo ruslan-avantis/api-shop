@@ -25,15 +25,19 @@ use ApiShop\Utilities\Utility;
 class Error
 {
     
-    private $config = [];
-    protected $logger;
-    protected $view;
+    private $config;
+    private $query;
+    private $route;
+    private $view;
+    private $logger;
     
-    function __construct($config, $view, $logger)
+    function __construct($query, $route, $config = [], $view, $logger)
     {
         $this->config = $config;
-        $this->logger = $logger;
+        $this->query = $query;
+        $this->route = $route;
         $this->view = $view;
+        $this->logger = $logger;
     }
      
     public function post(Request $request, Response $response, array $args)
@@ -53,7 +57,7 @@ class Error
     {
         $config = $this->config;
  
-        // Подключаем плагины
+        // Подключаем утилиты
         $utility = new Utility();
         // Получаем параметры из URL
         $host = $request->getUri()->getHost();
@@ -148,3 +152,4 @@ class Error
     }
     
 }
+ 

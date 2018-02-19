@@ -21,21 +21,24 @@ use ApiShop\Model\Language as Languages;
 class Language
 {
  
-	private $config = [];
-	protected $logger;
-	protected $view;
- 
-    function __construct($config, $view, $logger)
+    private $config;
+    private $query;
+    private $route;
+    private $view;
+    private $logger;
+    
+    function __construct($query, $route, $config = [], $view, $logger)
     {
-		$this->config = $config;
-		$this->logger = $logger;
-		$this->view = $view;
+        $this->config = $config;
+        $this->query = $query;
+        $this->route = $route;
+        $this->view = $view;
+        $this->logger = $logger;
     }
  
     public function get(Request $request, Response $response, array $args)
     {
         $config = $this->config;
- 
         // Подключаем сессию, берет название класса из конфигурации
         // $session = new Session();
         $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
@@ -69,8 +72,8 @@ class Language
         // Выводим json
         echo json_encode($callback);
  
-	}
-	
+    }
+    
     public function post(Request $request, Response $response, array $args)
     {
         $config = $this->config;

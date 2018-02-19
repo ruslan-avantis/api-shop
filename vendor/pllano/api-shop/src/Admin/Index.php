@@ -13,8 +13,6 @@
  
 namespace ApiShop\Admin;
  
-use ApiShop\Config\Settings;
- 
 use Pllano\RouterDb\Db;
 use Pllano\RouterDb\Router;
  
@@ -22,10 +20,8 @@ class Index {
  
     private $config;
  
-    function __construct()
+    function __construct($config)
     {
-        // Подключаем конфиг Settings\Config
-        $config = (new Settings())->get();
         $this->config = $config;
     }
  
@@ -33,9 +29,10 @@ class Index {
     {
         // Получаем список виджетов для вывода на главную
         $resource_list = explode(',', str_replace(array('"', "'", " "), '', $this->config['admin']['index_widget']));
+		$resp = [];
         foreach($resource_list as $resource)
         {
-            if($resource == 'templates'){
+            if($resource == 'templates') {
                 $resp["templates"] = array();
                 $templates = array();
                 $directory = $this->config["settings"]["themes"]["dir"]."/".$this->config["settings"]["themes"]["templates"];

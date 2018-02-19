@@ -25,21 +25,25 @@ use ApiShop\Controller\Error;
 class Cart
 {
     
-    private $config = [];
-    protected $logger;
-    protected $view;
+    private $config;
+    private $query;
+    private $route;
+    private $view;
+    private $logger;
     
-    function __construct($config, $view, $logger)
+    function __construct($query, $route, $config = [], $view, $logger)
     {
         $this->config = $config;
-        $this->logger = $logger;
+        $this->query = $query;
+        $this->route = $route;
         $this->view = $view;
+        $this->logger = $logger;
     }
     
     public function post_add_to_cart(Request $request, Response $response, array $args)
     {
         $config = $this->config;
-        // Подключаем плагины
+        // Подключаем утилиты
         $utility = new Utility();
         // Подключаем сессию, берет название класса из конфигурации
         $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);

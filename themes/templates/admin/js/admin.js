@@ -104,9 +104,9 @@ function orderActivate(alias) {
 }
 
 
-function packageBuy(alias) {
+function packageBuy(vendor_package) {
     var csrf = $("#csrf").val()
-    $.post(admin_uri + admin_dir + "package-buy", {alias: alias, csrf: csrf}, function (response) {
+    $.post(admin_uri + admin_dir + "package-buy/" + vendor_package, {csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -117,9 +117,9 @@ function packageBuy(alias) {
     }),"json"
 }
 
-function packageActivate(alias) {
+function packageActivate(vendor_package) {
     var csrf = $("#csrf").val()
-    $.post(admin_uri + admin_dir + "package-activate", {alias: alias, csrf: csrf}, function (response) {
+    $.post(admin_uri + admin_dir + "package-activate/" + vendor_package, {csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -130,9 +130,9 @@ function packageActivate(alias) {
     }),"json"
 }
 
-function packageDeactivate(alias) {
+function packageDeactivate(vendor_package) {
     var csrf = $("#csrf").val()
-    $.post(admin_uri + admin_dir + "package-deactivate", {alias: alias, csrf: csrf}, function (response) {
+    $.post(admin_uri + admin_dir + "package-deactivate/" + vendor_package, {csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -143,9 +143,9 @@ function packageDeactivate(alias) {
     }),"json"
 }
 
-function packageDelete(alias) {
+function packageDelete(vendor_package) {
     var csrf = $("#csrf").val()
-    $.post(admin_uri + admin_dir + "package-delete", {alias: alias, csrf: csrf}, function (response) {
+    $.post(admin_uri + admin_dir + "package-delete/" + vendor_package, {csrf: csrf}, function (response) {
         var data = JSON && JSON.parse(response) || $.parseJSON(response)
         if(data.status == 200)
         {
@@ -156,17 +156,3 @@ function packageDelete(alias) {
     }),"json"
 }
  
-function packagePut(alias) {
-    var fields = $( ":input" || ":textarea" || ":checkbox" || ":radio" || "select").serializeArray();
-    $.post(admin_uri + admin_dir + 'package/' + alias, fields, function (response) {
-        var data = JSON && JSON.parse(response) || $.parseJSON(response)
-        if(data.status == 200)
-        {
-            window.location.reload()
-        } else if(data.status == 201) {
-            window.location = data.url
-        } else if(data.status == 400) {
-            OneNotify(data.title, data.text, data.color)
-        }
-    }),"json"
-}

@@ -24,49 +24,41 @@
 <thead>
 <tr class="text-primary">
 <th>{{ language.816 }}</th>
-<th>{{ language.842 }}</th>
 <th>{{ language.841 }}</th>
-<th class="text-center">{{ language.755 }}</th>
 <th class="text-center">State</th>
 <th class="text-center">Edit</th>
 <th class="text-center">Run</th>
+<th>{{ language.842 }}</th>
 <th>{{ language.817 }}</th>
 </tr>
 </thead>
 <tbody>
 {% for item in content.require %}
 <tr class="">
-<td>{{ item.name }}</td>
-<td><a href="{{ admin_uri }}{{ config.routers.admin.all.route }}package/{{ item.name|lower }}">{{ item.namespace }}</a></td>
+<td><a href="{{ admin_uri }}{{ config.routers.admin.all.route }}package/{{ item.vendor|lower }}.{{ item.name|lower }}">{{ item.vendor|lower }}.<strong>{{ item.name|lower }}</strong></a></td>
 <td class="text-center"><a target="_blank" href="{{ item.link }}" class="btn btn-sm bg-green-xl btn-hover-effects text-white">{{ item.version }}</a></td>
-<td class="text-center">
-{% if item.git %}
-<a target="_blank" href="{{ item.git }}" class="btn btn-sm bg-black btn-hover-effects text-white"><i class="fa fa-github" aria-hidden="true"></i> GitHub</a>
-{% else %}
-
-{% endif %}
-</td>
 <td class="text-center">
 {% if item.state == '1' %}
 <div class="text-green-xl text_bold">{{ language.246 }}</div>
 {% else %}
-<a href="#" onClick="packageActivate('{{ item.name|lower }}');" class="btn btn-sm bg-green-sm btn-hover-effects text-white">{{ language.759 }}</a>
+<a href="#" onClick="packageActivate('{{ item.vendor|lower }}.{{ item.name|lower }}');" class="btn btn-sm bg-green-sm btn-hover-effects text-white">{{ language.759 }}</a>
 {% endif %}
 </td>
 <td class="text-center">
 {% if item.system_package != '1' %}
-<a href="{{ admin_uri }}{{ config.routers.admin.all.route }}package/{{ item.name|lower }}" class="text-primary-xxl"><i class="fa fa-pencil-square-o font_20" aria-hidden="true"></i></a>
+<a href="{{ admin_uri }}{{ config.routers.admin.all.route }}package/{{ item.vendor|lower }}.{{ item.name|lower }}" class="text-primary-xxl"><i class="fa fa-pencil-square-o font_20" aria-hidden="true"></i></a>
 {% endif %}
 </td>
 <td class="text-center">
 {% if item.system_package != '1' %}
 {% if item.state == '0' %}
-<a href="#" onClick="packageDelete('{{ item.name|lower }}');" class="text-red"><i class="fa fa-times font_20" aria-hidden="true"></i></a>
+<a href="#" onClick="packageDelete('{{ item.vendor|lower }}.{{ item.name|lower }}');" class="text-red"><i class="fa fa-times font_20" aria-hidden="true"></i></a>
 {% else %}
-<a href="#" onClick="packageDeactivate('{{ item.name|lower }}');" class="text-grey-xl"><i class="fa fa-power-off font_20" aria-hidden="true"></i></a>
+<a href="#" onClick="packageDeactivate('{{ item.vendor|lower }}.{{ item.name|lower }}');" class="text-grey-xl"><i class="fa fa-power-off font_20" aria-hidden="true"></i></a>
 {% endif %}
 {% endif %}
 </td>
+<td><a href="{{ admin_uri }}{{ config.routers.admin.all.route }}package/{{ item.vendor|lower }}.{{ item.name|lower }}">{{ item.namespace }}</a></td>
 <td>{{ item.dir }}</td>
 </tr>
 {% endfor %}
@@ -77,5 +69,4 @@
 </div>
 </div>
 </div>
-
 {{ include ('helper/footer.html') }}
