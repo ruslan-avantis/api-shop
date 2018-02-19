@@ -34,7 +34,6 @@ class Site
     public function get()
     {
         $config = $this->config;
-        // Кеш
         $cache = new Cache($config);
         $cache_run = $cache->run($this->resource, $this->cache_lifetime);
         if ($cache_run === null) {

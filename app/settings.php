@@ -118,7 +118,7 @@ class Settings {
         $config["settings"]["install"]["strlen"] = 64;
  
         if(isset($json["seller"]["public_key"])) {
-            if($json["seller"]["public_key"] != '' && $json["seller"]["public_key"] != 'null') {
+            if($json["seller"]["public_key"] != '' && $json["seller"]["public_key"] != 'null' && $json["seller"]["public_key"] != null) {
                 $public_key = $json["seller"]["public_key"];
             } else {
                 $public_key = null;

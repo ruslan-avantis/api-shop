@@ -12,6 +12,13 @@
  
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+
+/**
+    * API Shop дает полную свободу с выбора классов обработки страниц
+    * При установке пекетов или шаблонов вы можете перезаписать в конфиге класс и функцию обработки
+    * Вы можете использовать контроллеры по умолчанию и вносить изменения с помощью \Pllano\Hooks\Hook
+    * Вы можете использовать ApiShop\Adapter\ и менять vendor в конфигурации
+*/
  
 $container = $app->getContainer();
  
@@ -27,6 +34,14 @@ $config = $container['config'];
  
 // Создаем контейнер с конфигурацией пакетов
 $container['package'] = $package;
+ 
+// Для POST запросов вначале url генерируем post_id
+// Если у пользователя нет сессии он не сможет отправлять POST запросы
+$session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+$post_id = '/_'; if(isset($session->post_id)){$post_id = '/'.$session->post_id;}
+ 
+// Получаем конфигурацию роутеров
+$router = $config['routers']['site'];
  
 // Run User Session
 // Запускаем сессию пользователя
@@ -50,17 +65,55 @@ $container['logger'] = function ($c)
     
 };
  
-// Register \Pllano\Adapter\TemplateEngine
-$container['view'] = function ($config)
-{
-    // Получаем название шаблона из конфигурации
-    $template = $config['config']['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
-    $site = new \ApiShop\Model\Site($config['config']);
-    $site->get();
-    // Получаем название шаблона из конфигурации сайта
-    if ($site->template()) {$template = $site->template();}
-    return new $config['config']['vendor']['templates']['template_engine']($config['config'], $template);
+// Register Original Twig View
+$container['view'] = function ($conf) {
+    $config = (new Settings())->get();
+    $themes = $config['settings']['themes'];
  
+    if ($config['settings']["install"]["status"] != null) {
+        // Получаем название шаблона
+        $template = $themes["template"]; // По умолчанию mini-mo
+        $site = new Site();
+        $site->get();
+        if ($site->template()) {
+            $template = $site->template();
+        }
+        $loader = new \Twig_Loader_Filesystem($themes['dir']."/".$themes['templates']."/".$template."/layouts");
+        $view = new \Twig_Environment($loader, array(
+            'cache' => false,
+            'strict_variables' => false
+        ));
+ 
+    } else {
+ 
+        $loader = new \Twig_Loader_Filesystem($themes['dir']."/".$themes['templates']."/install");
+        $view = new \Twig_Environment($loader, array(
+            'cache' => false,
+            'strict_variables' => false
+        ));
+    }
+ 
+    return $view;
+ 
+};
+
+// Register \Pllano\Adapter\TemplateEngine
+$container['view'] = function ($apishop)
+{
+	$return = '';
+	if ($apishop['config']['settings']["install"]["status"] != null) {
+        // Получаем название шаблона из конфигурации
+        $template = $apishop['config']['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
+        $site = new \ApiShop\Model\Site($apishop['config']);
+        $site->get();
+        // Получаем название шаблона из конфигурации сайта
+        if ($site->template()) {$template = $site->template();}
+        $return = new $apishop['config']['vendor']['templates']['template_engine']($apishop['config'], $template);
+	} else {
+        $loader = new \Twig_Loader_Filesystem($apishop['config']['settings']['themes']['front_end_dir']."/".$apishop['config']['template']['front_end']['themes']['templates']."/install");
+        $return = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
+    }
+	return $return;
 };
  
 // Register Original Twig View Admin Panel
@@ -71,23 +124,7 @@ $container['admin'] = function ($config)
     $loader = new \Twig_Loader_Filesystem($config['config']['settings']['themes']['dir']."/".$config['config']['settings']['themes']['templates']."/".$template."/layouts");
     $admin = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
     return $admin;
- 
 };
- 
-// Для POST запросов вначале url генерируем post_id
-// Если у пользователя нет сессии он не сможет отправлять POST запросы
-$session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
-$post_id = '/_'; if(isset($session->post_id)){$post_id = '/'.$session->post_id;}
- 
-/**
-    * API Shop дает полную свободу с выбора классов обработки страниц
-    * При установке пекетов или шаблонов вы можете перезаписать в конфиге класс и функцию обработки
-    * Вы можете использовать контроллеры по умолчанию и вносить изменения с помощью \Pllano\Hooks\Hook
-    * Вы можете использовать ApiShop\Adapter\ и менять vendor в конфигурации
-*/
- 
-// Получаем конфигурацию роутеров
-$router = $config['routers']['site'];
  
 // GET - Главная
 $app->get($router['index']['route'], function (Request $req, Response $res, $args = []) {
@@ -208,8 +245,9 @@ foreach ($routers as $router) {
 // Если решить эту задачку получим крутое подключение роутринга
 // Сейчас подключает но только один роутер
 // Думаю стоит взять юрл и по регулярке сравнить с конфигом если совпало выполнить
- 
-/* foreach ($router as $key => $val)
+// Возможно просто не вижу очевидного :) буду очень благодарен за дельные советы
+/* 
+foreach ($router as $key => $val)
 {
     if($key == 'index' || $key == '_article') {
  
@@ -237,5 +275,7 @@ foreach ($routers as $router) {
  
         });
     }
-} */
+}
+*/
+ 
  

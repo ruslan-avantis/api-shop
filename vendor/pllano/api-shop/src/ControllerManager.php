@@ -180,8 +180,8 @@ class ControllerManager
                 
                 //print_r($data);
  
-            } 
-            else {
+            } else {
+			    $render = "index.html";
                 // Если ключа доступа у нет, значит сайт еще не активирован
                 $content = '';
                 // $session->install = null;
@@ -189,7 +189,7 @@ class ControllerManager
                     if ($session->install == 1) {
                         $render = "stores.html";
                         $content = (new Install($config))->stores_list();
-                        } elseif ($session->install == 2) {
+                    } elseif ($session->install == 2) {
                         $render = "templates.html";
                         if (isset($session->install_store)) {
                             $install_store = $session->install_store;
@@ -197,12 +197,12 @@ class ControllerManager
                             $install_store = null;
                         }
                         $content = (new Install($config))->templates_list($install_store);
-                        } elseif ($session->install == 3) {
+                    } elseif ($session->install == 3) {
                         $render = "welcome.html";
-                        } elseif ($session->install == 10) {
+                    } elseif ($session->install == 10) {
                         $render = "templates.html";
                         $content = (new Install($config))->templates_list(null);
-                        } elseif ($session->install == 11) {
+                    } elseif ($session->install == 11) {
                         $render = "key.html";
                     }
                 }
@@ -219,8 +219,6 @@ class ControllerManager
                     "content" => $content
                 ];
             }
-            
-            //print_r($data);
  
             // Передаем данные Hooks для обработки ожидающим классам
             $hook->get($render, $data);
@@ -229,8 +227,7 @@ class ControllerManager
  
         }
  
-        // Отдаем данные шаблонизатору
-        return $this->view->render($response, $hook->render(), $hook->view());
+		return $this->view->render($response, $hook->render(), $hook->view());
  
     }
  
