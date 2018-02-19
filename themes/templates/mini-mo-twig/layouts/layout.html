@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="{{ site.language }}" class="fixed-header fixed-footer-none" style="font-family:'Open Sans',sans-serif; font-size:14px;">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1">
+<link rel="icon" href="/favicon.ico">
+{% if header.modules %}
+{% for key, value in header.modules %}
+{% if value.config.view %}{{ include (value.config.view) }}{% endif %}
+{% endfor %}
+{% endif %}
+</head>
+<body data-spy="scroll" data-target="#navbar-example" class="bg-cover navbar-block carousel-block-100 product-list-block h1-description-block marketing-block newsletter-block footer-block footer-header-block section_1-block" style="font-family: 'Open Sans',sans-serif;">
+<div id="body">
+<input type="hidden" name="csrf" id="csrf" value="{{ token }}">
+{% if nav.modules %}
+{% for key, value in nav.modules %}
+{% if value.config.view %}{{ include (value.config.view) }}{% endif %}
+{% endfor %}
+{% endif %}
+{% if left_sidebar.modules %}
+{% for key, value in left_sidebar.modules %}
+{% if value.config.view %}{{ include (value.config.view) }}{% endif %}
+{% endfor %}
+{% endif %}
+{% if content.modules %}
+{% for key, value in content.modules %}
+{% if value.config.view %}{{ include (value.config.view) }}{% endif %}
+{% endfor %}
+{% endif %}
+{% if right_sidebar.modules %}
+{% for key, value in right_sidebar.modules %}
+{% if value.config.view %}{{ include (value.config.view) }}{% endif %}
+{% endfor %}
+{% endif %}
+</div>
+{% if footer.modules %}
+{% for key, value in footer.modules %}
+{% if value.config.view %}{{ include (value.config.view) }}{% endif %}
+{% endfor %}
+{% endif %}
+</body>
+</html>

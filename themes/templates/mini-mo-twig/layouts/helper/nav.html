@@ -17,7 +17,7 @@
 </div>
 <div class="nav-nav a-white a-hover-light-grey-md">
 <ul class="nav justify-content-end animated bounceInRight" role="tablist">
-{% if template.layouts.helper.menu %}{{ include (template.layouts.helper.menu) }}{% endif %}
+{% if value.config.menu %}{{ include (value.config.menu) }}{% endif %}
 <li class="nav-item"> 
 <div class="btn-group btn-red">
 <button type="button" class="btn btn-md btn-hover-effects text-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -61,7 +61,7 @@
 <a class="nav-link" href="/sign-in"><span class="text-white">{{ language.203 }}</span></a>
 {% endif %} 
 </li>
-
+{% if value.cart %}{{ include (value.cart) }}{% endif %}
 </ul>
 </div>
 </nav>

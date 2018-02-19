@@ -1,0 +1,63 @@
+{% if value.content %}
+<section id="product-list" class="product-list">
+<div class="control-background bg-white">
+<div class="control-text-3 text-black">
+<br>
+<div class="control-background bg-white">
+<div class="control-text-3 text-black">
+<div class="album">
+<div class="container">
+<div class="row">
+<div class="col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 padding_21 text-right">
+
+{% for item in value.content.sort %}
+<div class="btn-group">
+<a  href="{{ item.url }}" class="btn btn-sm bg-red-md text-white" type="button" href="{{ item.url }}">{{ item.name }}</a>
+</div>
+{% endfor %}
+<div class="btn-group">
+<button class="btn btn-sm bg-red-md text-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+{{ language.69 }}
+</button>
+<div class="dropdown-menu">
+{% for item in value.content.limit %}
+<a class="dropdown-item" href="{{ item.url }}">{{ item.name }}</a>
+{% endfor %}
+</div>
+</div>
+{% for item in value.content.order %}
+<div class="btn-group">
+<a href="{{ item.url }}" class="btn btn-sm bg-red-md text-white" type="button"><i class="{{ item.icon }}" aria-hidden="true"></i></a>
+</div>
+{% endfor %}
+ 
+</div>
+</div>
+</div>
+<div class="container">
+<div class="row text-center cards">
+{% for item in value.content.products %}
+{% if value.content.products_template %}{{ include (value.content.products_template) }}{% else %}{{ include (value.helper.products_list) }}{% endif %}
+{% endfor %}
+</div>
+</div>
+{% if value.content.paginator %}
+<div class="container">
+<div class="row">
+<div class="col-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 padding_21">
+<ul class="pagination justify-content-center">
+{% for pagination in value.content.paginator %}
+{% if value.helper.paginator %}{{ include (value.helper.paginator) }}{% endif %}
+{% endfor %}
+</ul>
+</div>
+</div>
+</div>
+{% endif %}
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+{% endif %}

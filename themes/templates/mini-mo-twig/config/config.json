@@ -1,224 +1,58 @@
 {
-	"alias": "minimotwig",
-	"name": "mini-mo-twig",
-	"dir": "mini-mo-twig",
-	"template_engine": "twig",
-	"version": "1.0.1",
-	"url": "https:\/\/cdn.pllano.com\/templates\/mini-mo\/1.0.1\/mini-mo-twig.zip",
-	"logo": "\/images\/logo.svg",
-	"demo": "https:\/\/mini-mo.pllano.com\/",
-	"layouts": {
-		"name": "layouts",
-		"404": "404.html",
-		"blank": "blank.html",
-		"index": "index.html",
-		"article": "article.html",
-		"article_category": "article-category.html",
-		"categories": "categories.html",
-		"category": "category.html",
-		"product": "product.html",
-		"product_quick_view": "product-quick-view.html",
-		"sign_in": "sign-in.html",
-		"sign_up": "sign-up.html",
-		"cart": "cart.html",
-		"orders": "orders.html",
-		"checkout": "checkout.html",
-		"wishlist": "wishlist.html",
-		"comparison": "comparison.html",
-		"payments": "payments.html",
-		"helper": {
-			"carousel": "helper\/carousel.html",
-			"footer": "helper\/footer.html",
-			"header": "helper\/header.html",
-			"menu": "helper\/menu.html",
-			"nav": "helper\/nav.html",
-			"newsletter": "helper\/newsletter.html",
-			"cart": "helper\/cart.html",
-			"order": "helper\/order.html",
-			"paginator": "helper\/paginator.html",
-			"products": "helper\/products.html",
-			"title": "helper\/title.html"
-		},
-		"widget": {
-			"blank": "widget\/blank.html"
-		},
-		"panel": {
-			"settings": "panel\/settings.html",
-			"demo": "panel\/demo.html"
-		}
-	},
-	"products": {
-		"name": "\u0421\u043f\u0438\u0441\u043e\u043a \u0442\u043e\u0432\u0430\u0440\u043e\u0432",
-		"image_width": "360",
-		"image_height": "360",
-		"image_big_width": "800",
-		"image_big_height": "800",
-		"home": {
-			"limit": "12",
-			"sort": "price",
-			"order": "ASC",
-			"relations": "image"
-		},
-		"category": {
-			"limit": "30",
-			"sort": "price",
-			"order": "ASC",
-			"relations": "image"
-		}
-	},
-	"home": {
-		"name": "home",
-		"section": {
-			"menu": "1",
-			"parallax": "1",
-			"product": "1",
-			"countdown": "1",
-			"category": "1",
-			"social": "1",
-			"footer": "1"
-		},
-		"parallax": {
-			"name": "\u0411\u0430\u043d\u043d\u0435\u0440 \u043d\u0430 \u0433\u043b\u0430\u0432\u043d\u043e\u0439",
-			"data_to": "25",
-			"slogan": "",
-			"href": "\/category",
-			"background": "\/themes\/templates\/mini-mo\/images\/home\/4.jpg"
-		},
-		"countdown": {
-			"name": "\u0422\u0430\u0439\u043c\u0435\u0440 \u043d\u0430 \u0433\u043b\u0430\u0432\u043d\u043e\u0439",
-			"data_time": "2018\/02\/19 11:34:51",
-			"title_strong": "",
-			"title": "",
-			"background": "\/themes\/templates\/mini-mo\/images\/pattern\/pattern19.png",
-			"animation": "fadeInUp"
-		},
-		"category": {
-			"name": "\u0411\u043b\u043e\u043a \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438",
-			"one": {
-				"text": "\u041c\u0430\u0442\u0440\u0430\u0441\u044b",
-				"title": {
-					"ru": "\u041c\u0430\u0442\u0440\u0430\u0441\u044b",
-					"ua": "\u041c\u0430\u0442\u0440\u0430\u0446\u0438",
-					"de": "Mattresses",
-					"en": "Matratzen"
-				},
-				"url": "\/category?type=\u043c\u0430\u0442\u0440\u0430\u0441",
-				"image": "\/themes\/templates\/mini-mo\/images\/shop\/shop-category\/1.jpg",
-				"count": "795"
-			},
-			"two": {
-				"text": "\u041e\u0434\u0435\u044f\u043b\u0430",
-				"title": {
-					"ru": "\u041e\u0434\u0435\u044f\u043b\u0430",
-					"ua": "\u041a\u043e\u0432\u0434\u0440\u0438",
-					"de": "Blankets",
-					"en": "Decken"
-				},
-				"url": "\/category?type=\u043e\u0434\u0435\u044f\u043b\u043e",
-				"image": "\/themes\/templates\/mini-mo\/images\/shop\/shop-category\/2.jpg",
-				"count": "35"
-			},
-			"three": {
-				"text": "\u041f\u043e\u0434\u0443\u0448\u043a\u0438",
-				"title": {
-					"ru": "\u041f\u043e\u0434\u0443\u0448\u043a\u0438",
-					"ua": "\u041f\u043e\u0434\u0443\u0448\u043a\u0438",
-					"de": "Pillows",
-					"en": "Kissen"
-				},
-				"url": "\/category?type=\u043f\u043e\u0434\u0443\u0448\u043a\u0430",
-				"image": "\/themes\/templates\/mini-mo\/images\/shop\/shop-category\/3.jpg",
-				"count": "40"
-			},
-			"four": {
-				"text": "\u0422\u043e\u043f\u043f\u0435\u0440\u044b",
-				"title": {
-					"ru": "\u0422\u043e\u043f\u043f\u0435\u0440\u044b",
-					"ua": "\u0422\u043e\u043f\u043f\u0435\u0440\u0438",
-					"de": "Toppers",
-					"en": "Toppers"
-				},
-				"url": "\/category?type=\u0442\u043e\u043f\u043f\u0435\u0440",
-				"image": "\/themes\/templates\/mini-mo\/images\/shop\/shop-category\/4.jpg",
-				"count": "250"
-			}
-		}
-	},
-	"footer": {
-		"name": "footer",
-		"social": {
-			"rss": "#",
-			"facebook": "#",
-			"twitter": "#",
-			"vimeo": "#",
-			"youtube": "#",
-			"pinterest": "#",
-			"gplus": "#"
-		},
-		"quick_links": {
-			"one": {
-				"text": "",
-				"title": "",
-				"url": ""
-			},
-			"two": {
-				"text": "",
-				"title": "",
-				"url": ""
-			},
-			"three": {
-				"text": "",
-				"title": "",
-				"url": ""
-			}
-		}
-	},
-	"plugins": {
-		"name": "plugins",
-		"test": {
-			"name": "Plugin Name",
-			"state": "0",
-			"url": "modules",
-			"name2": "modules",
-			"name3": "modules"
-		}
-	},
-	"install": {
-		"config": {
-			"vendor": {
-				"menu": "\\ApiShop\\Test\\BigMenu",
-				"session": "\\ApiShop\\ModelTest\\Session"
-			},
-			"routers": {
-				"router_1": "\/router_1\/",
-				"router_2": "\/router_2\/"
-			}
-		},
-		"routers": [{
-				"file": "router_1.php",
-				"action": "add"
-			}, {
-				"file": "router_2.php",
-				"action": "replace"
-			}
-		],
-		"packages": [{
-				"namespace": "\\ApiShop\\Test\\BigMenu",
-				"dir": "\/pllano\/test",
-				"link": "https:\/\/cdn.pllano.com\/test\/big-menu-master.zip",
-				"git": null,
-				"name": "big-menu",
-				"version": "master",
-				"vendor": "pllano"
-			}, {
-				"namespace": "\\ApiShop\\ModelTest\\Session",
-				"dir": "\/pllano\/model-test",
-				"link": "https:\/\/cdn.pllano.com\/test\/session-master.zip",
-				"git": null,
-				"name": "session",
-				"version": "master",
-				"vendor": "pllano"
-			}
-		]
-	}
+    "alias": "minimotwig",
+    "name": "mini-mo-twig",
+    "dir": "mini-mo-twig",
+    "template_engine": "twig",
+    "version": "1.0.1",
+    "url": "https:\/\/cdn.pllano.com\/templates\/mini-mo\/1.0.1\/mini-mo-twig.zip",
+    "logo": "\/images\/logo.svg",
+    "demo": "https:\/\/mini-mo.pllano.com\/",
+    "layouts": {
+        "layout": "layout.html",
+        "404": "404.html",
+        "blank": "blank.html",
+        "panel": {
+            "settings": "panel\/settings.html",
+            "demo": "panel\/demo.html"
+        }
+    },
+    "install": {
+        "config": {
+            "vendor": {
+                "menu": "\\ApiShop\\Test\\BigMenu",
+                "session": "\\ApiShop\\ModelTest\\Session"
+            },
+            "routers": {
+                "router_1": "\/router_1\/",
+                "router_2": "\/router_2\/"
+            }
+        },
+        "routers": [{
+                "file": "router_1.php",
+                "action": "add"
+            }, {
+                "file": "router_2.php",
+                "action": "replace"
+            }
+        ],
+        "packages": [{
+                "namespace": "\\ApiShop\\Test\\BigMenu",
+                "dir": "\/pllano\/test",
+                "link": "https:\/\/cdn.pllano.com\/test\/big-menu-master.zip",
+                "git": null,
+                "name": "big-menu",
+                "version": "master",
+                "vendor": "pllano"
+            }, {
+                "namespace": "\\ApiShop\\ModelTest\\Session",
+                "dir": "\/pllano\/model-test",
+                "link": "https:\/\/cdn.pllano.com\/test\/session-master.zip",
+                "git": null,
+                "name": "session",
+                "version": "master",
+                "vendor": "pllano"
+            }
+        ]
+    }
 }
+ 

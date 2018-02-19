@@ -53,12 +53,6 @@ Copyright © {{ config.copyright.date }} <a class="control-link link-white" href
 <link href="https://cdn.joomimart.com/joomi-colors/1.0.2/css/joomi-colors.css" rel="stylesheet">
 <link href="/themes/lib/pnotify/3.2.0/css/pnotify.min.css" rel="stylesheet">
 <link href="/themes/templates/{{ template.name }}/css/joomi-mini-mo.css" rel="stylesheet">
-<link href="/themes/templates/{{ template.name }}/css/marketing.css" rel="stylesheet">
-<link href="/themes/templates/{{ template.name }}/css/section_1.css" rel="stylesheet">
-<link href="/themes/templates/{{ template.name }}/css/product-list.css" rel="stylesheet">
-{% if template.layouts.helper.carousel %}<link href="/themes/templates/{{ template.name }}/css/carousel-100.css" rel="stylesheet">{% endif %}
-{% if template.layouts.helper.title %}<link href="/themes/templates/{{ template.name }}/css/h1-description.css" rel="stylesheet">{% endif %}
-{% if template.layouts.helper.newsletter %}<link href="/themes/templates/{{ template.name }}/css/newsletter.css" rel="stylesheet">{% endif %}
 <script>
 {% if admin_uri %}
 var admin_uri = '{{ admin_uri }}'
@@ -71,8 +65,6 @@ var router_cart = '{{ routers.site.cart.route }}'
 var router_language = '{{ routers.site.language.route }}'
 </script>
 <script src="/themes/app/js/app.min.js"></script>
-<link href="/themes/templates/{{ template.name }}/css/contact.css" rel="stylesheet">
-<link href="/themes/templates/{{ template.name }}/css/footer.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
 <script src="https://cdn.joomimart.com/holder/2.9.4/js/holder.min.js"></script>
@@ -101,5 +93,3 @@ Holder.addTheme("thumb", { background: "#55595c", foreground: "#eceeef", text: "
 {{ include (template.layouts.panel.demo) }}
 {% endif %}
 {% endif %}
-</body>
-</html>
