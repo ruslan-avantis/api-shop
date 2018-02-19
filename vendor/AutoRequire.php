@@ -128,7 +128,7 @@ class Autoloader
             if (isset($data["require"])) {
                 if (count($data["require"]) >= 1) {
                     // Перебираем массив
-                    foreach($data["require"] as $value)
+                    foreach($data["require"] as $key => $value)
                     {
                         if (isset($value["vendor"]) && isset($value["name"])) {
                             if ($value["state"] != '0' && $value["state"] != '') {
