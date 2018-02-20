@@ -13,7 +13,6 @@
  
 namespace ApiShop\Admin;
  
-use ApiShop\Config\Settings;
 use ApiShop\Admin\Packages;
  
 class Config {

@@ -10,16 +10,10 @@
     * file that was distributed with this source code.
 */
  
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
- 
-use Pllano\RouterDb\Db;
-use Pllano\RouterDb\Router;
- 
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Pllano\RouterDb\{Db, Router};
+use ApiShop\Model\{Security, User, Install};
 use ApiShop\Utilities\Utility;
-use ApiShop\Model\Security;
-use ApiShop\Model\User;
-use ApiShop\Model\Install;
  
 // Активация с помощью public_key
 $app->post('/install-api-key', function (Request $request, Response $response, array $args) {
@@ -895,7 +889,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     $settingsAdmin = new \ApiShop\Admin\Config($config);
                     // Получаем массив
                     $arrJson = $settingsAdmin->get();
-                    $paramPost = array();
+                    $paramPost = [];
                     $paramPost['seller']['public_key'] = $public_key;
                     $paramPost['db']['pllanoapi']['public_key'] = $public_key;
                     $paramPost['db']['api']['public_key'] = $public_key;

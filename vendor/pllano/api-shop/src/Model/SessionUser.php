@@ -1,8 +1,17 @@
-<?php
+<?php /**
+    * This file is part of the {API}$hop
+    *
+    * @license http://opensource.org/licenses/MIT
+    * @link https://github.com/pllano/api-shop
+    * @version 1.1.1
+    * @package pllano.api-shop
+    *
+    * For the full copyright and license information, please view the LICENSE
+    * file that was distributed with this source code.
+*/
  
 namespace ApiShop\Model;
  
-use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
  
 class SessionUser
@@ -37,7 +46,7 @@ class SessionUser
         if(!isset($session->post_id)) {
             $session->post_id = $utility->random_alias_id();
         }
-        $response = array();
+        $response = [];
  
         if (isset($session->authorize)) {
             if ($session->authorize == 1) {

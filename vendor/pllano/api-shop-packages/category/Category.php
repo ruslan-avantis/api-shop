@@ -12,13 +12,10 @@
 
 namespace ApiShop\Modules\Categories;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\{Filter, Pagination};
 use ApiShop\Utilities\Utility;
-use Pllano\RouterDb\Db;
-use Pllano\RouterDb\Router;
-use ApiShop\Model\Filter;
-use ApiShop\Model\Pagination;
 
 class Category
 {

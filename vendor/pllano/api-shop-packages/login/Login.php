@@ -12,10 +12,8 @@
 
 namespace ApiShop\Modules\Account;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-use Pllano\RouterDb\Db;
-use Pllano\RouterDb\Router;
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Pllano\RouterDb\{Db, Router};
 use ApiShop\Utilities\Utility;
 use ApiShop\Model\User;
 

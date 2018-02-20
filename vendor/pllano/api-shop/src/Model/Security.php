@@ -13,23 +13,18 @@
  
 namespace ApiShop\Model;
  
-use Slim\Http\Request;
-use Slim\Http\Response;
- 
-use ApiShop\Config\Settings;
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
  
 class Security {
  
-    function __construct()
+    function __construct($config)
     {
-        $config = (new Settings())->get();
         $this->config = $config['hooks'];
     }
  
     // Сообщение об Атаке или подборе токена
     public function token(Request $request, Response $response)
     {
-
         // Отправляем сообщение администратору
     }
  

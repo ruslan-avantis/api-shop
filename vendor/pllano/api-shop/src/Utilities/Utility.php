@@ -146,7 +146,7 @@ class Utility {
     public function get_new_alias($str, $charset = 'UTF-8')
     {
         $str = mb_strtolower($str, $charset);
-        $glyph_array = array(
+        $glyph_array = [
             'a' => 'а',
             'b' => 'б',
             'v' => 'в',
@@ -182,7 +182,7 @@ class Utility {
             'ja' => 'я',
             '-' => ' ,_',
             'x' => '*'
-        );
+        ];
 
         foreach ($glyph_array as $letter => $glyphs)
         {
@@ -212,7 +212,7 @@ class Utility {
     public function get_alias($str, $charset = 'UTF-8')
     {
         $str = mb_strtolower($str, $charset);
-        $glyph_array = array(
+        $glyph_array = [
             'a' => 'а',
             'b' => 'б',
             'v' => 'в',
@@ -248,7 +248,7 @@ class Utility {
             'ja' => 'я',
             '-' => ' ,_',
             'x' => '*'
-        );
+        ];
 
         foreach ($glyph_array as $letter => $glyphs)
         {
@@ -282,7 +282,7 @@ class Utility {
         // Если не был указан протокол, или
         // указанный протокол некорректен для url
         if (!array_key_exists("scheme", $arUrl)
-            || !in_array($arUrl["scheme"], array("http", "https")))
+            || !in_array($arUrl["scheme"], ["http", "https"]))
 
         // Задаем протокол по умолчанию - http
         $arUrl["scheme"] = "http";
@@ -348,8 +348,8 @@ class Utility {
     {
         if(strlen($date) < 12) $date .= " 00:00:00";
 
-        $month_ru_full = array("", "января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря");
-        $month_ru_short = array("", "янв.", "февр.", "мар.", "апр.", "мая", "июн.", "июл.", "авг.", "сент.", "окт.", "нояб.", "дек.");
+        $month_ru_full = ["", "января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+        $month_ru_short = ["", "янв.", "февр.", "мар.", "апр.", "мая", "июн.", "июл.", "авг.", "сент.", "окт.", "нояб.", "дек."];
 
         $month_ru = ($full_month) ? $month_ru_full : $month_ru_short;
 

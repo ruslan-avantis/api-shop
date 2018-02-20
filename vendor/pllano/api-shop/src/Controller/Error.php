@@ -11,14 +11,9 @@
 */
 
 namespace ApiShop\Controller;
-
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
  
-use ApiShop\Model\Language;
-use ApiShop\Model\Site;
-use ApiShop\Model\Template;
-use ApiShop\Model\SessionUser;
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use ApiShop\Model\{Language, Site, Template, SessionUser}; 
 use ApiShop\Adapter\Menu;
 use ApiShop\Utilities\Utility;
  

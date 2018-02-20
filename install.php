@@ -68,24 +68,20 @@ class ZipArchiveExtended extends ZipArchive
    */
   public function extractDirTo($destination, $directory)
   {
-    $errors = array();
-
-    $destination = str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $destination);
-    $directory = str_replace(array("/", "\\"), "/", $directory);
-
+    $errors = [];
+    $destination = str_replace(["/", "\\"], DIRECTORY_SEPARATOR, $destination);
+    $directory = str_replace(["/", "\\"], "/", $directory);
     if (substr($destination, mb_strlen(DIRECTORY_SEPARATOR, "UTF-8") * -1) != DIRECTORY_SEPARATOR) {
       $destination .= DIRECTORY_SEPARATOR;
     }
-
     if (substr($directory, -1) != "/") {
       $directory .= "/";
     }
-
     for ($i = 0; $i < $this->numFiles; $i++) {
       $filename = $this->getNameIndex($i);
       if (substr($filename, 0, mb_strlen($directory, "UTF-8")) == $directory) {
         $relativePath = substr($filename, mb_strlen($directory, "UTF-8"));
-        $relativePath = str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, $relativePath);        
+        $relativePath = str_replace(["/", "\\"], DIRECTORY_SEPARATOR, $relativePath);        
         if (mb_strlen($relativePath, "UTF-8") > 0) {
           if (substr($filename, -1) == "/") {
             if (!is_dir($destination . $relativePath))
@@ -105,7 +101,6 @@ class ZipArchiveExtended extends ZipArchive
         }
       }
     }
-
     return count($errors) > 0 ? $errors : true;
   }
 }

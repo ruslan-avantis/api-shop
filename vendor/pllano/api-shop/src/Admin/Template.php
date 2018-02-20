@@ -13,8 +13,6 @@
  
 namespace ApiShop\Admin;
  
-use ApiShop\Config\Settings;
- 
 class Template {
  
     private $template = null;
@@ -31,10 +29,10 @@ class Template {
  
     public function get()
     {
-        $resp["templates"] = array();
-        $templates = array();
+        $resp["templates"] = [];
+        $templates = [];
         $directory = $this->config["settings"]["themes"]["dir"]."/".$this->config["settings"]["themes"]["templates"];
-        $scanned = array_diff(scandir($directory), array('..', '.'));
+        $scanned = array_diff(scandir($directory), ['..', '.']);
         if (count($scanned) >= 1) {
             foreach($scanned as $dir)
             {

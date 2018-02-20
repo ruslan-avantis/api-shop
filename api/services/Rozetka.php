@@ -22,7 +22,7 @@ use ApiShop\Config\Settings;
 */
 class Rozetka
 {
-    public function get($resource = null, array $arr = array(), $id = null)
+    public function get($resource = null, array $arr =  [], $id = null)
     {
         // тело GET
         // $resource - ресурс (модель)
@@ -31,14 +31,14 @@ class Rozetka
         print("-- TEST Rozetka --");
     }
     
-    public function post($resource = null, array $arr = array())
+    public function post($resource = null, array $arr =  [])
     {
         // тело POST
         // $resource - ресурс (модель)
         // $arr - массив с параметрами
     }
     
-    public function put($resource = null, array $arr = array(), $id = null)
+    public function put($resource = null, array $arr =  [], $id = null)
     {
         // тело PUT
         // $resource - ресурс (модель)
@@ -46,7 +46,7 @@ class Rozetka
         // $arr - массив с параметрами
     }
     
-    public function patch($resource = null, array $arr = array(), $id = null)
+    public function patch($resource = null, array $arr =  [], $id = null)
     {
         // тело PATCH
         // $resource - ресурс (модель)
@@ -54,7 +54,7 @@ class Rozetka
         // $arr - массив с параметрами
     }
 
-    public function delete($resource = null, array $arr = array(), $id = null)
+    public function delete($resource = null, array $arr =  [], $id = null)
     {
         // тело DELETE
         // $resource - ресурс (модель)

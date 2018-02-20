@@ -1,5 +1,4 @@
-<?php 
-/**
+<?php /**
     * This file is part of the {API}$hop
     *
     * @license http://opensource.org/licenses/MIT

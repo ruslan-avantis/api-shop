@@ -64,7 +64,7 @@ class Autoloader
      *
      * @var array
      */
-    protected $prefixes = array();
+    protected $prefixes = [];
     protected $replace_name = null;
     protected $base_dir = null;
     // Ссылка на резервный файл auto_require.json
@@ -90,7 +90,7 @@ class Autoloader
                 file_put_contents($this->json, file_get_contents($this->json_get));
             }
  
-            $require = array();
+            $require = [];
             // Открываем файл json с параметрами класов
             $data = $this->get();
  
@@ -195,7 +195,7 @@ class Autoloader
  
     public function delete($dir)
     {
-       $files = array_diff(scandir($dir), array('.','..'));
+       $files = array_diff(scandir($dir), ['.','..']);
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? $this->delete("$dir/$file") : unlink("$dir/$file");
         }
@@ -238,7 +238,7 @@ class Autoloader
         $return = null;
         if (isset($name)) {
             $data = $this->get();
-            $param['require'] = array();
+            $param['require'] = [];
             foreach($data['require'] as $key => $val)
             {
                 if (strtolower($name) == strtolower($val['name'])) {
@@ -272,7 +272,7 @@ class Autoloader
         $return = false;
         if (isset($name) && isset($state)) {
             $data = $this->get();
-            $param['require'] = array();
+            $param['require'] = [];
             foreach($data['require'] as $key => $val)
             {
                 if (strtolower($name) == strtolower($val['name'])) {
@@ -298,8 +298,8 @@ class Autoloader
     */
     public function register()
     {
-        //spl_autoload_register(array($this, 'autoload'));
-        spl_autoload_register(array($this, 'loadClass'));
+        //spl_autoload_register([$this, 'autoload']);
+        spl_autoload_register([$this, 'loadClass']);
  
         // Лекарство для Twig который работает с пространсвом имен PSR-0
         spl_autoload_register(function ($class) {
@@ -328,7 +328,7 @@ class Autoloader
     
     public function unregister()
     {
-        spl_autoload_unregister(array($this, 'loadClass'));
+        spl_autoload_unregister([$this, 'loadClass']);
     }
     
     public function setAutoloading($replace_name, $base_dir)
@@ -358,7 +358,7 @@ class Autoloader
 
         // initialize the namespace prefix array
         if (isset($this->prefixes[$prefix]) === false) {
-            $this->prefixes[$prefix] = array();
+            $this->prefixes[$prefix] = [];
         }
 
         // retain the base directory for the namespace prefix

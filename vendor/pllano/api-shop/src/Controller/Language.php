@@ -13,9 +13,7 @@
  
 namespace ApiShop\Controller;
  
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
- 
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
 use ApiShop\Model\Language as Languages;
  
 class Language
@@ -60,11 +58,11 @@ class Language
             $langArr[] = $arr;
         }
         // callback - Даем ответ в виде json о результате
-        $callback = array(
+        $callback = [
             'language' => $lang,
             'languages' => $langArr,
             'status' => 200
-        );
+        ];
         // Выводим заголовки
         $response->withStatus(200);
         $response->withHeader('Content-type', 'application/json');
@@ -109,11 +107,11 @@ class Language
             $langArr[] = $arr;
         }
         // callback - Даем ответ в виде json о результате
-        $callback = array(
+        $callback = [
             'language' => $session->language,
             'languages' => $langArr,
             'status' => 200
-        );
+        ];
         // Выводим заголовки
         $response->withStatus(200);
         $response->withHeader('Content-type', 'application/json');

@@ -12,12 +12,11 @@
  
 namespace ApiShop;
  
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use ApiShop\Model\{User, Install, SessionUser, Language, Site, Template, Security};
 use ApiShop\Utilities\Utility;
 use ApiShop\Adapter\Menu;
 use Pllano\Caching\Cache;
-use ApiShop\Model\{User, Install, SessionUser, Language, Site, Template, Security}; // php7
  
 class ControllerManager
 {
@@ -118,7 +117,7 @@ class ControllerManager
             //print("<br>query: {$host}{$params}/{$lang}/{$this->route}<br>");
  
             // Заголовки по умолчанию из конфигурации
-            $headArr = explode(',', str_replace(array(" ", "'"), "", $config['settings']['seo']['head']));
+            $headArr = explode(',', str_replace([" ", "'"], "", $config['settings']['seo']['head']));
             $head = ["page" => $this->route, "host" => $host, "path" => $path, "scheme" => $config["server"]["scheme"].'://'];
             foreach($headArr as $headKey => $headVal)
             {
@@ -138,7 +137,7 @@ class ControllerManager
                         "config" => $config['settings']['site'],
                         "template" => $template
                     ];
-                    $mods = explode(',', str_replace(array(" ", "'"), "", $config['routers']['site'][$this->route]['blocks']));
+                    $mods = explode(',', str_replace([" ", "'"], "", $config['routers']['site'][$this->route]['blocks']));
                     foreach($mods as $key => $block)
                     {
                         $modules = new $config['vendor']['modules']['manager']($config, $this->package, $template, $block, $this->route, $lang, $language);
@@ -289,7 +288,7 @@ class ControllerManager
         $response->withHeader('Content-type', 'application/json');
  
         if ($csrf == $token) {
-            $mods = explode(',', str_replace(array(" ", "'"), "", $config['routers']['site'][$this->route]['blocks']));
+            $mods = explode(',', str_replace([" ", "'"], "", $config['routers']['site'][$this->route]['blocks']));
             foreach($mods as $key => $block)
             {
                 $modules = new $config['vendor']['modules']['manager']($config, $template, $block, $this->route, $lang, $language);

@@ -17,7 +17,7 @@ use ApiShop\Modules\Categories\Pagination;
  
 class Filter {
  
-    function __construct($url_path, $getArray = array())
+    function __construct($url_path, $getArray = [])
     {
         $this->url_path = $url_path;
         foreach($getArray as $key => $unit){$this->$key = $unit;}
@@ -122,7 +122,7 @@ class Filter {
             foreach($pages as $key => $pag_item)
             {
                 $real_key = $key - 1;
-                $arr = array();
+                $arr = [];
                 if ($real_key >= 1) {$arr['offset'] = $real_key;}
                 if (isset($this->order)){$arr['order'] = $this->order;}
                 if (isset($this->sort)){$arr['sort'] = $this->sort;}
@@ -170,13 +170,13 @@ class Filter {
         $pages = $pagination->build(); // Contains associative array with a numbers of a pages
         $new_offset = $pagination->offset();
         $number_pages = intval($totalItems / $this->limit); // Вычисляем колличество страниц
-        $paginator = array();
+        $paginator = [];
        
         if ($number_pages >= 2) {
             foreach($pages as $key => $pag_item)
             {
                 $real_key = $key - 1;
-                $arr = array();
+                $arr = [];
                 if ($real_key >= 1) {$arr['offset'] = $real_key;}
                 if (isset($this->order)){$arr['order'] = $this->order;}
                 if (isset($this->sort)){$arr['sort'] = $this->sort;}

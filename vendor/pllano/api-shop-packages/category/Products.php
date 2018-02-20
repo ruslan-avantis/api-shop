@@ -13,9 +13,7 @@
  
 namespace ApiShop\Modules\Categories;
  
-use Pllano\RouterDb\Db;
-use Pllano\RouterDb\Router;
- 
+use Pllano\RouterDb\{Db, Router};
 use ApiShop\Utilities\Utility;
 use ApiShop\Adapter\Image;
  

@@ -10,44 +10,25 @@
     * file that was distributed with this source code.
 */
  
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
- 
-use Pllano\RouterDb\Db;
-use Pllano\RouterDb\Router;
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Pllano\RouterDb\{Db, Router};
 use Pllano\Hooks\Hook;
- 
+use ApiShop\Model\{Language, Site, Template, SessionUser, Security, Filter, Pagination, Install};
+use ApiShop\Admin\{Control, AdminDatabase, Resources, Packages};
 use ApiShop\Utilities\Utility;
- 
-use ApiShop\Model\Install;
-use ApiShop\Model\Language;
-use ApiShop\Model\Site;
-use ApiShop\Model\Template;
-use ApiShop\Model\SessionUser;
-use ApiShop\Model\Filter;
-use ApiShop\Model\Pagination;
-use ApiShop\Model\Security;
- 
-use ApiShop\Admin\Control;
-use ApiShop\Admin\AdminDatabase;
-use ApiShop\Admin\Resources;
-use ApiShop\Admin\Packages;
  
 $admin_router = $config['routers']['admin']['all']['route'];
 $admin_index = $config['routers']['admin']['index']['route'];
- 
 $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
- 
 $admin_uri = '/0';
 $post_id = '/0';
- 
 if(isset($session->admin_uri)) {
     $admin_uri = '/'.$session->admin_uri;
 }
 if(isset($session->post_id)) {
     $post_id = '/'.$session->post_id.'/';
 }
-
+ 
 // Главная страница админ панели
 $app->get($admin_uri.$admin_index.'', function (Request $request, Response $response, array $args) {
     
@@ -2465,7 +2446,7 @@ $app->get($admin_uri.$admin_router.'db', function (Request $request, Response $r
     
     if (isset($session->authorize)) {
         if ($session->role_id) {
-            $adminDatabase = new AdminDatabase();
+            $adminDatabase = new AdminDatabase($config);
             $content = $adminDatabase->list();
             $render = $template['layouts']['db'] ? $template['layouts']['db'] : 'db.html';
         }
@@ -2790,7 +2771,7 @@ $app->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', 
     $og_locale = $config['settings']['site']['og_locale'];
     $og_url = $config['settings']['site']['og_url'];
     
-    $control = new Control();
+    $control = new Control($config);
     $test = $control->test($resource);
     if ($test === true) {
         

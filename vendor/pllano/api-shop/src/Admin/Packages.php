@@ -12,8 +12,6 @@
  
 namespace ApiShop\Admin;
  
-use ApiShop\Config\Settings;
- 
 class Packages
 {
     private $config;

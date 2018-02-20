@@ -298,7 +298,7 @@ class Image {
  
                     } elseif ($vendor == '\Intervention\Image\ImageManager') {
                         // \Intervention\Image\ImageManager
-                        $images = new \Intervention\Image\ImageManager(array('driver' => $this->mode));
+                        $images = new \Intervention\Image\ImageManager(['driver' => $this->mode]);
                         $images->make($this->image_temp)->resize($this->width, $this->height)->save($this->image, 60);
  
                     } elseif ($vendor == '\Spatie\Image') {

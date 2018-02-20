@@ -2,16 +2,12 @@
  
 namespace ApiShop\Admin;
  
-use ApiShop\Config\Settings;
- 
 class AdminDatabase {
     
     private $config;
  
-    function __construct()
+    function __construct($config)
     {
-        // Подключаем конфиг Settings\Config
-        $config = (new Settings())->get();
         $this->config = $config;
     }
  

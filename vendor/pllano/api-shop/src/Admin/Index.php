@@ -13,8 +13,7 @@
  
 namespace ApiShop\Admin;
  
-use Pllano\RouterDb\Db;
-use Pllano\RouterDb\Router;
+use Pllano\RouterDb\{Db, Router};
  
 class Index {
  
@@ -28,15 +27,15 @@ class Index {
     public function get()
     {
         // Получаем список виджетов для вывода на главную
-        $resource_list = explode(',', str_replace(array('"', "'", " "), '', $this->config['admin']['index_widget']));
+        $resource_list = explode(',', str_replace(['"', "'", " "], '', $this->config['admin']['index_widget']));
         $resp = [];
         foreach($resource_list as $resource)
         {
             if($resource == 'templates') {
-                $resp["templates"] = array();
-                $templates = array();
+                $resp["templates"] = [];
+                $templates = [];
                 $directory = $this->config["settings"]["themes"]["dir"]."/".$this->config["settings"]["themes"]["templates"];
-                $scanned = array_diff(scandir($directory), array('..', '.'));
+                $scanned = array_diff(scandir($directory), ['..', '.']);
                 if (count($scanned) >= 1) {
                     foreach($scanned as $dir)
                     {

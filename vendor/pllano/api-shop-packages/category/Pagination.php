@@ -148,9 +148,9 @@ class Pagination
     public function build()
     {
         if ($this->totalItems == 0 || $this->totalPages == 1) {
-            return array();
+            return [];
         }
-        $output = array();
+        $output = [];
         // Previous
         $offset = $this->currentPage - 1;
         $limit = $this->currentPage - $this->neighbours;

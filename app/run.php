@@ -10,9 +10,8 @@
     * file that was distributed with this source code.
 */
  
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+ 
 /**
     * API Shop дает полную свободу с выбора классов обработки страниц
     * При установке пекетов или шаблонов вы можете перезаписать в конфиге класс и функцию обработки
