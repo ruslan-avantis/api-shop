@@ -36,10 +36,9 @@ $app->get($admin_uri.$admin_index.'', function (Request $request, Response $resp
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'GET', 'admin');
+    $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
-    
+ 
     // Подключаем плагины
     $utility = new Utility();
     // Получаем параметры из URL
@@ -148,9 +147,9 @@ $app->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'GET', 'admin');
+    $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -313,9 +312,9 @@ $app->post($admin_uri.$admin_router.'resource-post', function (Request $request,
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'POST', 'admin');
+    $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     $today = date("Y-m-d H:i:s");
     // Получаем данные отправленные нам через POST
@@ -327,7 +326,7 @@ $app->post($admin_uri.$admin_router.'resource-post', function (Request $request,
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Подключаем систему безопасности
-    $security = new Security();
+    $security = new Security($config);
     
     $resource = null;
     if (isset($post['resource'])) {
@@ -342,11 +341,11 @@ $app->post($admin_uri.$admin_router.'resource-post', function (Request $request,
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                $security->token($request, $response);
+                $security->token($request);
             }
         } else {
             // Сообщение об Атаке или подборе токена
-            $security->token($request, $response);
+            $security->token($request);
         }
     }
     
@@ -360,11 +359,11 @@ $app->post($admin_uri.$admin_router.'resource-post', function (Request $request,
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                $security->csrf($request, $response);
+                $security->csrf($request);
             }
         } else {
             // Сообщение об Атаке или подборе csrf
-            $security->csrf($request, $response);
+            $security->csrf($request);
         }
     }
     
@@ -464,8 +463,6 @@ $app->post($admin_uri.$admin_router.'resource-post', function (Request $request,
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
-    // Подменяем заголовки
-    $response = $hook->response();
     // Выводим json
     echo json_encode($hook->callback($callback));
     
@@ -478,9 +475,9 @@ $app->post($admin_uri.$admin_router.'resource-delete', function (Request $reques
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'POST', 'admin');
+    $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -489,7 +486,7 @@ $app->post($admin_uri.$admin_router.'resource-delete', function (Request $reques
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Подключаем систему безопасности
-    $security = new Security();
+    $security = new Security($config);
     
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
@@ -512,11 +509,11 @@ $app->post($admin_uri.$admin_router.'resource-delete', function (Request $reques
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                $security->token($request, $response);
+                $security->token($request);
             }
         } else {
             // Сообщение об Атаке или подборе токена
-            $security->token($request, $response);
+            $security->token($request);
         }
     }
     
@@ -530,11 +527,11 @@ $app->post($admin_uri.$admin_router.'resource-delete', function (Request $reques
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                $security->csrf($request, $response);
+                $security->csrf($request);
             }
         } else {
             // Сообщение об Атаке или подборе csrf
-            $security->csrf($request, $response);
+            $security->csrf($request);
         }
     }
     
@@ -594,8 +591,8 @@ $app->post($admin_uri.$admin_router.'resource-delete', function (Request $reques
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
-    // Подменяем заголовки
-    $response = $hook->response();
+
+
     // Выводим json
     echo json_encode($hook->callback($callback));
     
@@ -608,9 +605,9 @@ $app->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'POST', 'admin');
+    $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -650,11 +647,11 @@ $app->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                (new Security())->token($request, $response);
+                (new Security())->token($request);
             }
         } else {
             // Сообщение об Атаке или подборе токена
-            (new Security())->token($request, $response);
+            (new Security())->token($request);
         }
     }
     
@@ -668,11 +665,11 @@ $app->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                (new Security())->csrf($request, $response);
+                (new Security())->csrf($request);
             }
         } else {
             // Сообщение об Атаке или подборе csrf
-            (new Security())->csrf($request, $response);
+            (new Security())->csrf($request);
         }
     }
     
@@ -758,8 +755,8 @@ $app->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
-    // Подменяем заголовки
-    $response = $hook->response();
+
+
     // Выводим json
     echo json_encode($hook->callback($callback));
     
@@ -772,9 +769,9 @@ $app->post($admin_uri.$admin_router.'order-activate', function (Request $request
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'POST', 'admin');
+    $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
@@ -795,11 +792,11 @@ $app->post($admin_uri.$admin_router.'order-activate', function (Request $request
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                (new Security())->token($request, $response);
+                (new Security())->token($request);
             }
         } else {
             // Сообщение об Атаке или подборе токена
-            (new Security())->token($request, $response);
+            (new Security())->token($request);
         }
     }
     
@@ -813,11 +810,11 @@ $app->post($admin_uri.$admin_router.'order-activate', function (Request $request
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                (new Security())->csrf($request, $response);
+                (new Security())->csrf($request);
             }
         } else {
             // Сообщение об Атаке или подборе csrf
-            (new Security())->csrf($request, $response);
+            (new Security())->csrf($request);
         }
     }
     
@@ -855,8 +852,8 @@ $app->post($admin_uri.$admin_router.'order-activate', function (Request $request
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
-    // Подменяем заголовки
-    $response = $hook->response();
+
+
     // Выводим json
     echo json_encode($hook->callback($callback));
     
@@ -869,9 +866,9 @@ $app->post($admin_uri.$admin_router.'template-buy', function (Request $request, 
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'POST', 'admin');
+    $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
@@ -882,7 +879,7 @@ $app->post($admin_uri.$admin_router.'template-buy', function (Request $request, 
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token_admin, $token_key);
     } catch (\Exception $ex) {
-        (new Security())->token($request, $response);
+        (new Security())->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -891,7 +888,7 @@ $app->post($admin_uri.$admin_router.'template-buy', function (Request $request, 
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         } catch (\Exception $ex) {
-        (new Security())->csrf($request, $response);
+        (new Security())->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
     // Подключаем плагины
@@ -920,8 +917,8 @@ $app->post($admin_uri.$admin_router.'template-buy', function (Request $request, 
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
-    // Подменяем заголовки
-    $response = $hook->response();
+
+
     // Выводим json
     echo json_encode($hook->callback($callback));
     
@@ -934,9 +931,9 @@ $app->post($admin_uri.$admin_router.'template-install', function (Request $reque
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'POST', 'admin');
+    $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -955,11 +952,11 @@ $app->post($admin_uri.$admin_router.'template-install', function (Request $reque
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                (new Security())->token($request, $response);
+                (new Security())->token($request);
             }
             } else {
             // Сообщение об Атаке или подборе токена
-            (new Security())->token($request, $response);
+            (new Security())->token($request);
         }
     }
     
@@ -973,11 +970,11 @@ $app->post($admin_uri.$admin_router.'template-install', function (Request $reque
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                (new Security())->csrf($request, $response);
+                (new Security())->csrf($request);
             }
             } else {
             // Сообщение об Атаке или подборе csrf
-            (new Security())->csrf($request, $response);
+            (new Security())->csrf($request);
         }
     }
     
@@ -1035,8 +1032,8 @@ $app->post($admin_uri.$admin_router.'template-install', function (Request $reque
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
-    // Подменяем заголовки
-    $response = $hook->response();
+
+
     // Выводим json
     echo json_encode($hook->callback($callback));
     
@@ -1049,9 +1046,9 @@ $app->post($admin_uri.$admin_router.'template-activate', function (Request $requ
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'POST', 'admin');
+    $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -1070,11 +1067,11 @@ $app->post($admin_uri.$admin_router.'template-activate', function (Request $requ
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                (new Security())->token($request, $response);
+                (new Security())->token($request);
             }
             } else {
             // Сообщение об Атаке или подборе токена
-            (new Security())->token($request, $response);
+            (new Security())->token($request);
         }
     }
     
@@ -1088,11 +1085,11 @@ $app->post($admin_uri.$admin_router.'template-activate', function (Request $requ
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                (new Security())->csrf($request, $response);
+                (new Security())->csrf($request);
             }
             } else {
             // Сообщение об Атаке или подборе csrf
-            (new Security())->csrf($request, $response);
+            (new Security())->csrf($request);
         }
     }
     
@@ -1131,8 +1128,8 @@ $app->post($admin_uri.$admin_router.'template-activate', function (Request $requ
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
-    // Подменяем заголовки
-    $response = $hook->response();
+
+
     // Выводим json
     echo json_encode($hook->callback($callback));
     
@@ -1145,9 +1142,9 @@ $app->post($admin_uri.$admin_router.'template-delete', function (Request $reques
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'POST', 'admin');
+    $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
@@ -1158,7 +1155,7 @@ $app->post($admin_uri.$admin_router.'template-delete', function (Request $reques
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token_admin, $token_key);
         } catch (\Exception $ex) {
-        (new Security())->token($request, $response);
+        (new Security())->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -1167,7 +1164,7 @@ $app->post($admin_uri.$admin_router.'template-delete', function (Request $reques
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         } catch (\Exception $ex) {
-        (new Security())->csrf($request, $response);
+        (new Security())->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
     // Подключаем плагины
@@ -1204,8 +1201,8 @@ $app->post($admin_uri.$admin_router.'template-delete', function (Request $reques
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
-    // Подменяем заголовки
-    $response = $hook->response();
+
+
     // Выводим json
     echo json_encode($hook->callback($callback));
     
@@ -1218,9 +1215,9 @@ $app->get($admin_uri.$admin_router.'template', function (Request $request, Respo
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'GET', 'admin');
+    $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -1334,9 +1331,9 @@ $app->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Req
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'GET', 'admin');
+    $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -1450,9 +1447,9 @@ $app->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Re
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'POST', 'admin');
+    $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -1576,9 +1573,9 @@ $app->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'GET', 'admin');
+    $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -1704,9 +1701,9 @@ $app->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'POST', 'admin');
+    $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
  
     // Подключаем плагины
     $utility = new Utility();
@@ -1741,11 +1738,11 @@ $app->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                (new Security())->token($request, $response);
+                (new Security())->token($request);
             }
             } else {
             // Сообщение об Атаке или подборе токена
-            (new Security())->token($request, $response);
+            (new Security())->token($request);
         }
     }
     try {
@@ -1758,11 +1755,11 @@ $app->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                (new Security())->csrf($request, $response);
+                (new Security())->csrf($request);
             }
             } else {
             // Сообщение об Атаке или подборе csrf
-            (new Security())->csrf($request, $response);
+            (new Security())->csrf($request);
         }
     }
     
@@ -1809,8 +1806,8 @@ $app->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
-    // Подменяем заголовки
-    $response = $hook->response();
+
+
     // Выводим json
     echo json_encode($hook->callback($callback));
     
@@ -1823,9 +1820,9 @@ $app->get($admin_uri.$admin_router.'packages', function (Request $request, Respo
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'GET', 'admin');
+    $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -1935,9 +1932,9 @@ $app->get($admin_uri.$admin_router.'packages-install', function (Request $reques
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'GET', 'admin');
+    $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -2047,9 +2044,9 @@ $app->get($admin_uri.$admin_router.'packages-install-json', function (Request $r
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'GET', 'admin');
+    $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -2159,9 +2156,9 @@ $app->get($admin_uri.$admin_router.'config', function (Request $request, Respons
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'GET', 'admin');
+    $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -2272,9 +2269,9 @@ $app->post($admin_uri.$admin_router.'config', function (Request $request, Respon
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'POST', 'admin');
+    $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -2390,9 +2387,9 @@ $app->get($admin_uri.$admin_router.'db', function (Request $request, Response $r
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'GET', 'admin');
+    $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -2499,9 +2496,9 @@ $app->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', f
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'GET', 'admin');
+    $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();
@@ -2705,9 +2702,9 @@ $app->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', 
     $config = $this->config;
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
-    $hook->http($request, $response, $args, 'GET', 'admin');
+    $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-    $args = $hook->args();
+
     
     // Подключаем плагины
     $utility = new Utility();

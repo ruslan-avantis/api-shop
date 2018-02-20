@@ -59,7 +59,8 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
         ini_set('display_startup_errors', 0);
     }
  
-	$settings = $package['require']['slim.slim']['settings'];
+	$settings['settings'] = $package['require']['slim.slim']['settings'];
+ 
     // Подключаем Slim и отдаем ему конфигурацию
     $app = new \Slim\App($settings);
     // Подключаем Routers и Containers

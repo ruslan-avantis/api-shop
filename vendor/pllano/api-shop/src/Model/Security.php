@@ -13,23 +13,23 @@
  
 namespace ApiShop\Model;
  
-use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Http\Message\ServerRequestInterface as Request;
  
 class Security {
  
     function __construct($config)
     {
-        $this->config = $config['hooks'];
+        $this->config = $config;
     }
  
     // Сообщение об Атаке или подборе токена
-    public function token(Request $request, Response $response)
+    public function token(Request $request)
     {
         // Отправляем сообщение администратору
     }
  
     // Сообщение об Атаке или подборе csrf
-    public function csrf(Request $request, Response $response)
+    public function csrf(Request $request)
     {
         // Отправляем сообщение администратору
     }

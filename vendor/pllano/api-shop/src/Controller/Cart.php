@@ -36,7 +36,7 @@ class Cart
         $this->logger = $logger;
     }
     
-    public function post_add_to_cart(Request $request, Response $response, array $args)
+    public function post_add_to_cart(Request $request, Response $response)
     {
         $config = $this->config;
         // Подключаем утилиты
@@ -106,7 +106,7 @@ class Cart
         
     }
     
-    public function post_new_order(Request $request, Response $response, array $args)
+    public function post_new_order(Request $request, Response $response)
     {
         $config = $this->config;
         // Подключаем сессию, берет название класса из конфигурации
@@ -120,7 +120,7 @@ class Cart
         // Разбираем post
         $post = $request->getParsedBody();
         // Подключаем систему безопасности
-        $security = new Security();
+        $security = new Security($config);
         
         try {
             // Получаем токен из сессии

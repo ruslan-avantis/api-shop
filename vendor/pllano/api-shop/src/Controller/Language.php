@@ -34,7 +34,7 @@ class Language
         $this->logger = $logger;
     }
  
-    public function get(Request $request, Response $response, array $args)
+    public function get(Request $request, Response $response)
     {
         $config = $this->config;
         // Подключаем сессию, берет название класса из конфигурации
@@ -72,7 +72,7 @@ class Language
  
     }
     
-    public function post(Request $request, Response $response, array $args)
+    public function post(Request $request, Response $response)
     {
         $config = $this->config;
  

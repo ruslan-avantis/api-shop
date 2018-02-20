@@ -248,7 +248,7 @@ class ControllerManager
         // Читаем ключи
         $token_key = $config['key']['token'];
         // Подключаем систему безопасности
-        $security = new Security();
+        $security = new Security($config);
  
         // Настройки сайта
         $site = new Site($config);
