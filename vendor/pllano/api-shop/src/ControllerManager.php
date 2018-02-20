@@ -12,7 +12,8 @@
  
 namespace ApiShop;
  
-use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Resp};
+use Psr\Container\ContainerInterface as Container;
 use ApiShop\Model\{User, Install, SessionUser, Language, Site, Template, Security};
 use ApiShop\Utilities\Utility;
 use ApiShop\Adapter\Menu;
@@ -37,7 +38,7 @@ class ControllerManager
         $this->query = $query;
     }
  
-    public function get(Request $request, Response $response, array $args)
+    public function get(Request $request, Resp $resp)
     {
         // $getScheme = $request->getUri()->getScheme(); // Работает
         // $getParams = $request->getQueryParams(); // Работает
@@ -53,9 +54,9 @@ class ControllerManager
         // Передаем данные Hooks для обработки ожидающим классам
         // Default Pllano\Hooks\Hook
         $hook = new $config['vendor']['hooks']['hook']($config, $this->query, $this->route, 'site');
-        $hook->http($request, $response, $args);
+        $hook->http($request);
         $request = $hook->request();
-        $args = $hook->args();
+ 
         // true - Если все хуки отказались подменять контент
         if($hook->state() === true) {
             // Подключаем утилиты
@@ -141,7 +142,7 @@ class ControllerManager
                     foreach($mods as $key => $block)
                     {
                         $modules = new $config['vendor']['modules']['manager']($config, $this->package, $template, $block, $this->route, $lang, $language);
-                        $arr = $modules->get($request, $response, $args);
+                        $arr = $modules->get($request);
                         $dataArr = array_replace_recursive($dataArr, $arr);
                     }
                     if ((int)$cache->state() == 1) {
@@ -153,11 +154,13 @@ class ControllerManager
  
                 // Определяем layout
                 // Модули могут поменять layout
-                if (isset($dataArr['content']['modules'][$this->route]['content']['layout'])) {
+				$render = $dataArr['content']['modules'][$this->route]['content']['layout'] ?? $template['layouts']['layout'];
+				
+/*                 if (isset($dataArr['content']['modules'][$this->route]['content']['layout'])) {
                     $render = $dataArr['content']['modules'][$this->route]['content']['layout'];
                 } elseif (isset($dataArr['content'])) {
                     $render = $template['layouts']['layout'];
-                }
+                } */
  
                 // Массив данных который нельзя кешировать
                 $userArr = [
@@ -217,14 +220,14 @@ class ControllerManager
  
         }
 		if ($config['settings']["install"]["status"] != null) {
-			return $this->view->render($response, $hook->render(), $hook->view());
+			return $this->view->render($hook->render(), $hook->view());
 		} else {
 		    return $this->view->render($render, $data);
 		}
  
     }
  
-    public function post(Request $request, Response $response, array $args)
+    public function post(Request $request, Resp $resp)
     {
         $config = $this->config;
         $method = $request->getMethod();
@@ -235,9 +238,8 @@ class ControllerManager
  
         // Передаем данные Hooks для обработки ожидающим классам
         $hook = new $config['vendor']['hooks']['hook']($config);
-        $hook->http($request, $response, $args, $method, 'site');
+        $hook->http($request, $method, 'site');
         $request = $hook->request();
-        $args = $hook->args();
  
         // Подключаем утилиты
         $utility = new Utility();
@@ -266,7 +268,7 @@ class ControllerManager
         } catch (\Exception $ex) {
             $token = 0;
             // Сообщение об Атаке или подборе токена
-            $security->token($request, $response);
+            $security->token($request);
         }
         try {
             // Получаем токен из POST
@@ -276,7 +278,7 @@ class ControllerManager
         } catch (\Exception $ex) {
             $csrf = 1;
             // Сообщение об Атаке или подборе csrf
-            $security->csrf($request, $response);
+            $security->csrf($request);
         }
  
         $callbackStatus = 400;
@@ -284,23 +286,21 @@ class ControllerManager
         $callbackText = 'Действие запрещено !';
         $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
+        $resp->withStatus(200);
+        $resp->withHeader('Content-type', 'application/json');
  
         if ($csrf == $token) {
             $mods = explode(',', str_replace([" ", "'"], "", $config['routers']['site'][$this->route]['blocks']));
             foreach($mods as $key => $block)
             {
                 $modules = new $config['vendor']['modules']['manager']($config, $template, $block, $this->route, $lang, $language);
-                $callback = $modules->post($request, $response, $args);
+                $callback = $modules->post($request);
             }
         } else {
             $callbackText = 'Перегрузите страницу';
             $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
         }
  
-        // Подменяем заголовки
-        $response = $hook->response();
         // Выводим json
         echo json_encode($callback, JSON_PRETTY_PRINT);
  

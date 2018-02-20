@@ -12,7 +12,7 @@
 
 namespace ApiShop\Modules\Categories;
 
-use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Pllano\RouterDb\{Db, Router};
 use Pllano\RouterDb\{Filter, Pagination};
 use ApiShop\Utilities\Utility;
@@ -45,7 +45,7 @@ class Category
         }
     }
     
-    public function get(Request $request, Response $response, array $args)
+    public function get(Request $request)
     {
         $config = $this->config;
         $template = $this->template;

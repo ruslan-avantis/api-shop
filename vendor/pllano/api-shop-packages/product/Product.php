@@ -12,7 +12,7 @@
  
 namespace ApiShop\Modules\Products;
  
-use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Pllano\RouterDb\{Db, Router};
 use ApiShop\Utilities\Utility;
 use ApiShop\Adapter\Image;
@@ -45,7 +45,7 @@ class Product
         }
     }
  
-    public function get(Request $request, Response $response, array $args)
+    public function get(Request $request)
     {
         $config = $this->config;
         $host = $request->getUri()->getHost();

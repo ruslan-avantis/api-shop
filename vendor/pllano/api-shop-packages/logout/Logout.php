@@ -12,7 +12,7 @@
 
 namespace ApiShop\Modules\Account;
  
-use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Http\Message\ServerRequestInterface as Request;
  
 class Logout
 {
@@ -23,7 +23,7 @@ class Logout
         $this->config = $config;
     }
  
-    public function post(Request $request, Response $response, array $args)
+    public function post(Request $request)
     {
         $config = $this->config;
         // Подключаем сессию, берет название класса из конфигурации

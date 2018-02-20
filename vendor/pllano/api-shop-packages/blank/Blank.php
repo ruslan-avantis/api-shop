@@ -12,7 +12,7 @@
 
 namespace ApiShop\Modules;
  
-use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Http\Message\ServerRequestInterface as Request;
  
 class Blank
 {
@@ -41,7 +41,7 @@ class Blank
         }
     }
  
-    public function get(Request $request, Response $response, array $args)
+    public function get(Request $request)
     {
         // Конфигурация пакета
         $moduleArr['config'] = $this->config['modules'][$this->route][$this->module];
@@ -52,12 +52,9 @@ class Blank
         return $return;
     }
  
-    public function post(Request $request, Response $response, array $args)
+    public function post(Request $request)
     {
         $callback = ['status' => 404, 'title' => '', 'text' => ''];
-        // Выводим заголовки
-        $response->withStatus(404);
-        $response->withHeader('Content-type', 'application/json');
         // Выводим json
         echo json_encode($callback);
     }

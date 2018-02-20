@@ -13,7 +13,7 @@
  
 namespace ApiShop\Modules\Menu;
  
-use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Pllano\RouterDb\{Db, Router};
  
 class TopMenu {
@@ -45,7 +45,7 @@ class TopMenu {
         }
     }
  
-    public function get(Request $request, Response $response, array $args)
+    public function get(Request $request)
     {
         $this->resource = 'category';
         $config = $this->config;

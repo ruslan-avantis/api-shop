@@ -12,7 +12,7 @@
  
 namespace ApiShop;
  
-use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Http\Message\ServerRequestInterface as Request;
  
 class ModuleManager
 {
@@ -43,7 +43,7 @@ class ModuleManager
         }
     }
  
-    public function get(Request $request, Response $response, array $args = [])
+    public function get(Request $request): array
     {
         $resp = [];
         if (isset($this->modules)) {
@@ -59,7 +59,7 @@ class ModuleManager
                         //$conf = array_replace_recursive($this->config, $package, $this->template, $key, $this->block, $this->route, $this->lang, $this->language);
                         $plugin = new $val['vendor']($this->config, $package, $this->template, $key, $this->block, $this->route, $this->lang, $this->language);
                         $function = $val['function'];
-                        $arr = $plugin->$function($request, $response, $args);
+                        $arr = $plugin->$function($request);
                     } else {
                         if ($this->block == $this->route) {
                             $arr['content']['modules'][$key]['config'] = $this->modules[$key];
@@ -74,7 +74,7 @@ class ModuleManager
         return $resp;
     }
  
-    public function post(Request $request, Response $response, array $args = [])
+    public function post(Request $request): array
     {
         $resp = [];
         if (isset($this->modules[$this->block])) {
@@ -87,7 +87,7 @@ class ModuleManager
                     }
                     $plugin = new $this->modules[$this->block]['vendor']($this->config, $package, $this->template, $this->block, $this->block, $this->route, $this->lang, $this->language);
                     $function = $this->modules[$this->block]['function'];
-                    $arr = $plugin->$function($request, $response, $args);
+                    $arr = $plugin->$function($request);
                 }
                 $resp = array_replace_recursive($resp, $arr);
             }

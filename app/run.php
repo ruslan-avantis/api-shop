@@ -10,7 +10,10 @@
     * file that was distributed with this source code.
 */
  
-use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Http\Message\{ServerRequestInterface as Req, ResponseInterface as Resp};
+/* use Psr\Container\ContainerInterface;
+use Pimple\Container as Pimple;
+use Pimple\Psr11\Container; */
  
 /**
     * API Shop дает полную свободу с выбора классов обработки страниц
@@ -31,6 +34,8 @@ require __DIR__ . '/settings.php';
 $container['config'] = \ApiShop\Config\Settings::get();
 $config = $container['config'];
  
+//$app->add();
+
 // Создаем контейнер с конфигурацией пакетов
 $container['package'] = $package;
  
@@ -65,93 +70,96 @@ $container['logger'] = function ($c)
 };
  
 // Register \Pllano\Adapter\TemplateEngine
-$container['view'] = function ($apishop)
+$container['view'] = function ($c)
 {
 	$view = '';
-	if ($apishop['config']['settings']["install"]["status"] != null) {
+	if ($c['config']['settings']["install"]["status"] != null) {
         // Получаем название шаблона из конфигурации
-        $template = $apishop['config']['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
-        $site = new \ApiShop\Model\Site($apishop['config']);
+        $template = $c['config']['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
+        $site = new \ApiShop\Model\Site($c['config']);
         $site->get();
         // Получаем название шаблона из конфигурации сайта
         if ($site->template()) {$template = $site->template();}
-        $view = new $apishop['config']['vendor']['templates']['template_engine']($apishop['config'], $template);
+        $view = new $c['config']['vendor']['templates']['template_engine']($c['config'], $template);
 	} else {
-        $loader = new \Twig_Loader_Filesystem($apishop['config']['settings']['themes']['front_end_dir']."/".$apishop['config']['template']['front_end']['themes']['templates']."/install");
+        $loader = new \Twig_Loader_Filesystem($c['config']['settings']['themes']['front_end_dir']."/".$c['config']['template']['front_end']['themes']['templates']."/install");
         $view = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
     }
 	return $view;
 };
  
 // Register Original Twig View Admin Panel
-$container['admin'] = function ($config)
+$container['admin'] = function ($c)
 {
     // Получаем название шаблона
-    $template = $config['config']['admin']['template'];
-    $loader = new \Twig_Loader_Filesystem($config['config']['settings']['themes']['dir']."/".$config['config']['settings']['themes']['templates']."/".$template."/layouts");
+    $template = $c['config']['admin']['template'];
+    $loader = new \Twig_Loader_Filesystem($c['config']['settings']['themes']['dir']."/".$c['config']['settings']['themes']['templates']."/".$template."/layouts");
     $admin = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
     return $admin;
 };
  
 // GET - Главная
-$app->get($router['index']['route'], function (Request $req, Response $res, $args = []) {
+$app->get($router['index']['route'], function (Req $req, Resp $res, $args = []) {
+	//$config = $this->get('config');
+	//$config = $this->config;
+	//print_r($config);
     $controller = $this->config['vendor']['controllers']['controller'];
     $function = strtolower($req->getMethod());
     $class = new $controller($req->getMethod(), 'index', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res, $args);
+    return $class->$function($req, $res);
 }); 
  
 // GET - Статьи
-$app->get($router['article']['route'], function (Request $req, Response $res, $args = []) {
+$app->get($router['article']['route'], function (Req $req, Resp $res, $args = []) {
     $controller = $this->config['vendor']['controllers']['controller'];
     $function = strtolower($req->getMethod());
     $class = new $controller($req->getMethod(), 'article', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res, $args);
+    return $class->$function($req, $res);
 });
  
 // GET - Категории статей
-$app->get($router['article_category']['route'], function (Request $req, Response $res, $args = []) {
+$app->get($router['article_category']['route'], function (Req $req, Resp $res, $args = []) {
     $controller = $this->config['vendor']['controllers']['controller'];
     $function = strtolower($req->getMethod());
     $class = new $controller($req->getMethod(), 'article_category', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res, $args);
+    return $class->$function($req, $res);
 }); 
  
 // GET - Категории товаров
-$app->get($router['category']['route'], function (Request $req, Response $res, $args = []) {
+$app->get($router['category']['route'], function (Req $req, Resp $res, $args = []) {
     $controller = $this->config['vendor']['controllers']['controller'];
     $function = strtolower($req->getMethod());
     $class = new $controller($req->getMethod(), 'category', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res, $args);
+    return $class->$function($req, $res);
 });
  
 // GET - Страница товара
-$app->get($router['product']['route'], function (Request $req, Response $res, $args = []) {
+$app->get($router['product']['route'], function (Req $req, Resp $res, $args = []) {
     $controller = $this->config['vendor']['controllers']['controller'];
     $function = strtolower($req->getMethod());
     $class = new $controller($req->getMethod(), 'product', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res, $args);
+    return $class->$function($req, $res);
 });
  
 // GET - Страница товара quick_view
-$app->get($router['quick_view']['route'], function (Request $req, Response $res, $args = []) {
+$app->get($router['quick_view']['route'], function (Req $req, Resp $res, $args = []) {
     $controller = $this->config['vendor']['controllers']['controller'];
     $function = strtolower($req->getMethod());
     $class = new $controller($req->getMethod(), 'quick_view', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res, $args);
+    return $class->$function($req, $res);
 });
  
 // GET - Получить локализацию
-$app->map(['GET', 'POST'], $post_id.$router['language']['route'], function (Request $req, Response $res, $args = []) {
+$app->map(['GET', 'POST'], $post_id.$router['language']['route'], function (Req $req, Resp $res, $args = []) {
     $router = $this->config['routers']['site']['language'];
     $controller = $router['controller'];
     $function = strtolower($req->getMethod());
     $class = new $controller($req->getMethod(), 'language', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res, $args);
+    return $class->$function($req, $res);
 });
  
 // GET - запросы к корзине
-$app->map(['GET', 'POST'], $router['cart']['route'].'{function:[a-z0-9_-]+}', function (Request $req, Response $res, $args = []) {
+$app->map(['GET', 'POST'], $router['cart']['route'].'{function:[a-z0-9_-]+}', function (Req $req, Resp $res, $args = []) {
     $router = $this->config['routers']['site']['cart'];
     $controller = $router['controller'];
     if ($req->getAttribute('function') && method_exists($controller,'get_'.str_replace("-", "_", $req->getAttribute('function')))) {
@@ -161,45 +169,45 @@ $app->map(['GET', 'POST'], $router['cart']['route'].'{function:[a-z0-9_-]+}', fu
         $function = strtolower($req->getMethod());
     }
     $class = new $controller($req->getMethod(), 'cart', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res, $args);
+    return $class->$function($req, $res);
 });
  
 // GET - Страница авторизации. Войти в систему
-$app->get($router['sign_in']['route'], function (Request $req, Response $res, $args = []) {
+$app->get($router['sign_in']['route'], function (Req $req, Resp $res, $args = []) {
     $controller = $this->config['vendor']['controllers']['controller'];
     $function = strtolower($req->getMethod());
     $class = new $controller($req->getMethod(), 'sign_in', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res, $args);
+    return $class->$function($req, $res);
 });
 
 // GET - Страница регистрации. Зарегистрироваться
-$app->get($router['sign_up']['route'], function (Request $req, Response $res, $args = []) {
+$app->get($router['sign_up']['route'], function (Req $req, Resp $res, $args = []) {
     $controller = $this->config['vendor']['controllers']['controller'];
     $function = strtolower($req->getMethod());
     $class = new $controller($req->getMethod(), 'sign_up', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res, $args);
+    return $class->$function($req, $res);
 });
  
 // POST - Авторизоваться
-$app->map(['GET', 'POST'], $post_id.$router['login']['route'], function (Request $req, Response $res, $args = []) {
+$app->map(['GET', 'POST'], $post_id.$router['login']['route'], function (Req $req, Resp $res, $args = []) {
     $controller = $this->config['vendor']['controllers']['controller'];
     $class = new $controller($req->getMethod(), 'login', $this->config, $this->package, $this->view, $this->logger);
-    return $class->post($req, $res, $args);
+    return $class->post($req, $res);
 });
  
 // POST - Зарегистрироваться
-$app->post($post_id.$router['check_in']['route'], function (Request $req, Response $res, $args = []) {
+$app->post($post_id.$router['check_in']['route'], function (Req $req, Resp $res, $args = []) {
     $router = $this->config['routers']['site']['check_in'];
     $controller = $router['controller'];
     $class = new $controller($req->getMethod(), 'check_in', $this->config, $this->package, $this->view, $this->logger);
-    return $class->check_in($req, $res, $args);
+    return $class->check_in($req, $res);
 });
  
 // POST - Выйти
-$app->post($post_id.$router['logout']['route'], function (Request $req, Response $res, $args = []) {
+$app->post($post_id.$router['logout']['route'], function (Req $req, Resp $res, $args = []) {
     $controller = $this->config['vendor']['controllers']['controller'];
     $class = new $controller($req->getMethod(), 'logout', $this->config, $this->package, $this->view, $this->logger);
-    return $class->post($req, $res, $args);
+    return $class->post($req, $res);
 });
 
 // Automatically register routers
@@ -223,7 +231,7 @@ foreach ($router as $key => $val)
         
         $return = '';
  
-        $app->get($val['route'], function (Request $req, Response $res, $args = []) {
+        $app->get($val['route'], function (Req $req, Resp $res, $args = []) {
  
             print("<br>{$this->settings['keys']}<br>");
  
@@ -236,7 +244,7 @@ foreach ($router as $key => $val)
             $function = strtolower($req->getMethod());
             $class = new $controller($req->getMethod(), $key, $this->config, $this->package, $this->view, $this->logger);
             
-            $return = $class->$function($req, $res, $args);
+            $return = $class->$function($req, $res);
  
             return $return;
  
