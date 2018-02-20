@@ -65,38 +65,6 @@ $container['logger'] = function ($c)
     
 };
  
-// Register Original Twig View
-$container['view'] = function ($conf) {
-    $config = (new Settings())->get();
-    $themes = $config['settings']['themes'];
- 
-    if ($config['settings']["install"]["status"] != null) {
-        // Получаем название шаблона
-        $template = $themes["template"]; // По умолчанию mini-mo
-        $site = new Site();
-        $site->get();
-        if ($site->template()) {
-            $template = $site->template();
-        }
-        $loader = new \Twig_Loader_Filesystem($themes['dir']."/".$themes['templates']."/".$template."/layouts");
-        $view = new \Twig_Environment($loader, array(
-            'cache' => false,
-            'strict_variables' => false
-        ));
- 
-    } else {
- 
-        $loader = new \Twig_Loader_Filesystem($themes['dir']."/".$themes['templates']."/install");
-        $view = new \Twig_Environment($loader, array(
-            'cache' => false,
-            'strict_variables' => false
-        ));
-    }
- 
-    return $view;
- 
-};
-
 // Register \Pllano\Adapter\TemplateEngine
 $container['view'] = function ($apishop)
 {

@@ -15,16 +15,9 @@ namespace ApiShop;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use ApiShop\Utilities\Utility;
-use ApiShop\Model\Install;
-use ApiShop\Model\SessionUser;
-use ApiShop\Model\Language;
-use ApiShop\Model\Site;
-use ApiShop\Model\Template;
-use ApiShop\Model\Security;
 use ApiShop\Adapter\Menu;
 use Pllano\Caching\Cache;
-
-use ApiShop\Model\User;
+use ApiShop\Model\{User, Install, SessionUser, Language, Site, Template, Security}; // php7
  
 class ControllerManager
 {
@@ -191,11 +184,9 @@ class ControllerManager
                         $content = (new Install($config))->stores_list();
                     } elseif ($session->install == 2) {
                         $render = "templates.html";
-                        if (isset($session->install_store)) {
-                            $install_store = $session->install_store;
-                        } else {
-                            $install_store = null;
-                        }
+						
+						$install_store = $session->install_store ?? null; // php7
+ 
                         $content = (new Install($config))->templates_list($install_store);
                     } elseif ($session->install == 3) {
                         $render = "welcome.html";
