@@ -226,7 +226,6 @@ class ControllerManager
             $this->logger->info($hook->logger());
  
         }
- 
 		if ($config['settings']["install"]["status"] != null) {
 			return $this->view->render($response, $hook->render(), $hook->view());
 		} else {

@@ -100,7 +100,7 @@ $container['view'] = function ($conf) {
 // Register \Pllano\Adapter\TemplateEngine
 $container['view'] = function ($apishop)
 {
-	$return = '';
+	$view = '';
 	if ($apishop['config']['settings']["install"]["status"] != null) {
         // Получаем название шаблона из конфигурации
         $template = $apishop['config']['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
@@ -108,12 +108,12 @@ $container['view'] = function ($apishop)
         $site->get();
         // Получаем название шаблона из конфигурации сайта
         if ($site->template()) {$template = $site->template();}
-        $return = new $apishop['config']['vendor']['templates']['template_engine']($apishop['config'], $template);
+        $view = new $apishop['config']['vendor']['templates']['template_engine']($apishop['config'], $template);
 	} else {
         $loader = new \Twig_Loader_Filesystem($apishop['config']['settings']['themes']['front_end_dir']."/".$apishop['config']['template']['front_end']['themes']['templates']."/install");
-        $return = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
+        $view = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
     }
-	return $return;
+	return $view;
 };
  
 // Register Original Twig View Admin Panel
