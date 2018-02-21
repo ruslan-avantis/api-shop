@@ -3,10 +3,10 @@
 		"slim.slim": {
 			"namespace": "Slim",
 			"dir": "\/slim\/Slim\/Slim",
-			"link": "https:\/\/github.com\/slimphp\/Slim\/archive\/3.9.2.zip",
+			"link": "https:\/\/github.com\/slimphp\/Slim\/archive\/4.x.zip",
 			"git": "https:\/\/github.com\/slimphp\/Slim",
 			"name": "Slim",
-			"version": "3.9.2",
+			"version": "4.x",
 			"vendor": "slim",
 			"state": 1,
 			"system_package": 1,
@@ -25,7 +25,7 @@
 			"name": "Slim-Http",
 			"version": "master",
 			"vendor": "slim",
-			"state": 0,
+			"state": 1,
 			"system_package": 1,
 			"settings": {}
 		},

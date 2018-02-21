@@ -10,11 +10,6 @@
     * file that was distributed with this source code.
 */
  
-use Psr\Http\Message\{ServerRequestInterface as Req, ResponseInterface as Resp};
-/* use Psr\Container\ContainerInterface;
-use Pimple\Container as Pimple;
-use Pimple\Psr11\Container; */
- 
 /**
     * API Shop дает полную свободу с выбора классов обработки страниц
     * При установке пекетов или шаблонов вы можете перезаписать в конфиге класс и функцию обработки
@@ -22,11 +17,14 @@ use Pimple\Psr11\Container; */
     * Вы можете использовать ApiShop\Adapter\ и менять vendor в конфигурации
 */
  
-$container = $app->getContainer();
+use Pimple\Container;
+use Pimple\Psr11\Container as PsrContainer;
  
 // Подключаем файл конфигурации системы
 require __DIR__ . '/settings.php';
 // Получаем конфигурацию
+ 
+$container = new Container();
  
 // Конфигурация доступна внутри и вне роутеров
 // Получить внутри роутера $name = $this->config['name']; всю = $this->config
@@ -34,8 +32,6 @@ require __DIR__ . '/settings.php';
 $container['config'] = \ApiShop\Config\Settings::get();
 $config = $container['config'];
  
-//$app->add();
-
 // Создаем контейнер с конфигурацией пакетов
 $container['package'] = $package;
  
@@ -46,6 +42,8 @@ $post_id = '/_'; if(isset($session->post_id)){$post_id = '/'.$session->post_id;}
  
 // Получаем конфигурацию роутеров
 $router = $config['routers']['site'];
+
+//print_r($router);
  
 // Run User Session
 // Запускаем сессию пользователя
@@ -98,116 +96,120 @@ $container['admin'] = function ($c)
     return $admin;
 };
  
+$app->setContainer(new PsrContainer($container));
+ 
+//$controller = $config['vendor']['controllers']['controller'];
+//$app->get($router['index']['route'], $controller.':get')->add(new $controller($container))->setName('index');
+	
 // GET - Главная
-$app->get($router['index']['route'], function (Req $req, Resp $res, $args = []) {
-	//$config = $this->get('config');
-	//$config = $this->config;
-	//print_r($config);
-    $controller = $this->config['vendor']['controllers']['controller'];
-    $function = strtolower($req->getMethod());
-    $class = new $controller($req->getMethod(), 'index', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res);
-}); 
+$app->get($router['index']['route'], function ($request, $response, $args) {
+    $controller = $this->get('config')['vendor']['controllers']['controller'];
+    $function = strtolower($request->getMethod());
+    $class = new $controller($request->getMethod(), 'index', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+	return $response->write($class->$function($request, $response, $args));
+});
  
 // GET - Статьи
-$app->get($router['article']['route'], function (Req $req, Resp $res, $args = []) {
-    $controller = $this->config['vendor']['controllers']['controller'];
-    $function = strtolower($req->getMethod());
-    $class = new $controller($req->getMethod(), 'article', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res);
+$app->get($router['article']['route'], function ($request, $response, $args) {
+    $controller = $this->get('config')['vendor']['controllers']['controller'];
+    $function = strtolower($request->getMethod());
+    $class = new $controller($request->getMethod(), 'article', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+    return $response->write($class->$function($request, $response, $args));
 });
  
 // GET - Категории статей
-$app->get($router['article_category']['route'], function (Req $req, Resp $res, $args = []) {
-    $controller = $this->config['vendor']['controllers']['controller'];
-    $function = strtolower($req->getMethod());
-    $class = new $controller($req->getMethod(), 'article_category', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res);
+$app->get($router['article_category']['route'], function ($request, $response, $args) {
+    $controller = $this->get('config')['vendor']['controllers']['controller'];
+    $function = strtolower($request->getMethod());
+    $class = new $controller($request->getMethod(), 'article_category', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+    return $response->write($class->$function($request, $response, $args));
 }); 
  
 // GET - Категории товаров
-$app->get($router['category']['route'], function (Req $req, Resp $res, $args = []) {
-    $controller = $this->config['vendor']['controllers']['controller'];
-    $function = strtolower($req->getMethod());
-    $class = new $controller($req->getMethod(), 'category', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res);
+$app->get($router['category']['route'], function ($request, $response, $args) {
+    $controller = $this->get('config')['vendor']['controllers']['controller'];
+    $function = strtolower($request->getMethod());
+    $class = new $controller($request->getMethod(), 'category', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+    return $response->write($class->$function($request, $response, $args));
 });
  
 // GET - Страница товара
-$app->get($router['product']['route'], function (Req $req, Resp $res, $args = []) {
-    $controller = $this->config['vendor']['controllers']['controller'];
-    $function = strtolower($req->getMethod());
-    $class = new $controller($req->getMethod(), 'product', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res);
+$app->get($router['product']['route'], function ($request, $response, $args) {
+    $controller = $this->get('config')['vendor']['controllers']['controller'];
+    $function = strtolower($request->getMethod());
+    $class = new $controller($request->getMethod(), 'product', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+    return $response->write($class->$function($request, $response, $args));
 });
  
 // GET - Страница товара quick_view
-$app->get($router['quick_view']['route'], function (Req $req, Resp $res, $args = []) {
-    $controller = $this->config['vendor']['controllers']['controller'];
-    $function = strtolower($req->getMethod());
-    $class = new $controller($req->getMethod(), 'quick_view', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res);
+$app->get($router['quick_view']['route'], function ($request, $response, $args) {
+    $controller = $this->get('config')['vendor']['controllers']['controller'];
+    $function = strtolower($request->getMethod());
+    $class = new $controller($request->getMethod(), 'quick_view', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+    return $response->write($class->$function($request, $response, $args));
 });
  
 // GET - Получить локализацию
-$app->map(['GET', 'POST'], $post_id.$router['language']['route'], function (Req $req, Resp $res, $args = []) {
-    $router = $this->config['routers']['site']['language'];
+$app->map(['GET', 'POST'], $post_id.$router['language']['route'], function ($request, $response, $args) {
+    $router = $this->get('config')['routers']['site']['language'];
     $controller = $router['controller'];
-    $function = strtolower($req->getMethod());
-    $class = new $controller($req->getMethod(), 'language', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res);
+    $function = strtolower($request->getMethod());
+    $class = new $controller($request->getMethod(), 'language', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+    return $response->write($class->$function($request, $response, $args));
 });
  
 // GET - запросы к корзине
-$app->map(['GET', 'POST'], $router['cart']['route'].'{function:[a-z0-9_-]+}', function (Req $req, Resp $res, $args = []) {
-    $router = $this->config['routers']['site']['cart'];
+$app->map(['GET', 'POST'], $router['cart']['route'].'{function:[a-z0-9_-]+}', function ($request, $response, $args) {
+    $router = $this->get('config')['routers']['site']['cart'];
     $controller = $router['controller'];
-    if ($req->getAttribute('function') && method_exists($controller,'get_'.str_replace("-", "_", $req->getAttribute('function')))) {
-        $function = 'get_'.str_replace("-", "_", $req->getAttribute('function'));
+    if ($request->getAttribute('function') && method_exists($controller,'get_'.str_replace("-", "_", $request->getAttribute('function')))) {
+        $function = 'get_'.str_replace("-", "_", $request->getAttribute('function'));
     } else {
-        $controller = $this->config['routers']['site']['error']['controller'];
-        $function = strtolower($req->getMethod());
+       $controller = $this->get('config')['routers']['site']['error']['controller'];
+        $function = strtolower($request->getMethod());
     }
-    $class = new $controller($req->getMethod(), 'cart', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res);
+    $class = new $controller($request->getMethod(), 'cart', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+    return $response->write($class->$function($request, $response, $args));
 });
  
 // GET - Страница авторизации. Войти в систему
-$app->get($router['sign_in']['route'], function (Req $req, Resp $res, $args = []) {
-    $controller = $this->config['vendor']['controllers']['controller'];
-    $function = strtolower($req->getMethod());
-    $class = new $controller($req->getMethod(), 'sign_in', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res);
+$app->get($router['sign_in']['route'], function ($request, $response, $args) {
+    $controller = $this->get('config')['vendor']['controllers']['controller'];
+    $function = strtolower($request->getMethod());
+    $class = new $controller($request->getMethod(), 'sign_in', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+    return $response->write($class->$function($request, $response, $args));
 });
 
 // GET - Страница регистрации. Зарегистрироваться
-$app->get($router['sign_up']['route'], function (Req $req, Resp $res, $args = []) {
-    $controller = $this->config['vendor']['controllers']['controller'];
-    $function = strtolower($req->getMethod());
-    $class = new $controller($req->getMethod(), 'sign_up', $this->config, $this->package, $this->view, $this->logger);
-    return $class->$function($req, $res);
+$app->get($router['sign_up']['route'], function ($request, $response, $args) {
+    $controller = $this->get('config')['vendor']['controllers']['controller'];
+    $function = strtolower($request->getMethod());
+    $class = new $controller($request->getMethod(), 'sign_up', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+    return $response->write($class->$function($request, $response, $args));
 });
  
 // POST - Авторизоваться
-$app->map(['GET', 'POST'], $post_id.$router['login']['route'], function (Req $req, Resp $res, $args = []) {
-    $controller = $this->config['vendor']['controllers']['controller'];
-    $class = new $controller($req->getMethod(), 'login', $this->config, $this->package, $this->view, $this->logger);
-    return $class->post($req, $res);
+$app->map(['GET', 'POST'], $post_id.$router['login']['route'], function ($request, $response, $args) {
+    $controller = $this->get('config')['vendor']['controllers']['controller'];
+	$function = strtolower($request->getMethod());
+    $class = new $controller($request->getMethod(), 'login', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+    return $response->write($class->$function($request, $response, $args));
 });
  
 // POST - Зарегистрироваться
-$app->post($post_id.$router['check_in']['route'], function (Req $req, Resp $res, $args = []) {
-    $router = $this->config['routers']['site']['check_in'];
-    $controller = $router['controller'];
-    $class = new $controller($req->getMethod(), 'check_in', $this->config, $this->package, $this->view, $this->logger);
-    return $class->check_in($req, $res);
+$app->post($post_id.$router['check_in']['route'], function ($request, $response, $args) {
+    $controller = $this->get('config')['vendor']['controllers']['controller'];
+	$function = strtolower($request->getMethod());
+    $class = new $controller($request->getMethod(), 'check_in', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+    return $response->write($class->$function($request, $response, $args));
 });
  
 // POST - Выйти
-$app->post($post_id.$router['logout']['route'], function (Req $req, Resp $res, $args = []) {
-    $controller = $this->config['vendor']['controllers']['controller'];
-    $class = new $controller($req->getMethod(), 'logout', $this->config, $this->package, $this->view, $this->logger);
-    return $class->post($req, $res);
+$app->post($post_id.$router['logout']['route'], function ($request, $response, $args) {
+    $controller = $this->get('config')['vendor']['controllers']['controller'];
+	$function = strtolower($request->getMethod());
+    $class = new $controller($request->getMethod(), 'logout', $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
+    return $response->write($class->$function($request, $response, $args));
 });
 
 // Automatically register routers
@@ -231,20 +233,20 @@ foreach ($router as $key => $val)
         
         $return = '';
  
-        $app->get($val['route'], function (Req $req, Resp $res, $args = []) {
+        $app->get($val['route'], function ($request, $response, $args) {
  
             print("<br>{$this->settings['keys']}<br>");
  
             $router = $this->config['routers']['site'][$this->settings['keys']];
             
-            $controller = $router['controller'];
+           $controller = $router['controller'];
  
             print("<br>{$router['controller']}<br>");
  
-            $function = strtolower($req->getMethod());
-            $class = new $controller($req->getMethod(), $key, $this->config, $this->package, $this->view, $this->logger);
+            $function = strtolower($request->getMethod());
+            $class = new $controller($request->getMethod(), $key, $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
             
-            $return = $class->$function($req, $res);
+            $return = $class->$function($request, $response, $args);
  
             return $return;
  
@@ -252,5 +254,4 @@ foreach ($router as $key => $val)
     }
 }
 */
- 
  

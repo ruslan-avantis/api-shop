@@ -10,15 +10,14 @@
     * file that was distributed with this source code.
 */
  
-use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
 use Pllano\RouterDb\{Db, Router};
 use ApiShop\Model\{Security, User, Install};
 use ApiShop\Utilities\Utility;
  
 // Активация с помощью public_key
-$app->post('/install-api-key', function (Request $request, Response $response, array $args) {
+$app->post('/install-api-key', function ($request, $response, $args) {
     // Конфигурация
-    $config = $this->config;
+    $config = $this->get('config');
     // Подключаем плагины
     $utility = new Utility();
     // Подключаем сессию, берет название класса из конфигурации
@@ -131,10 +130,7 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
         }
  
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     } else {
         $callback = array(
             'status' => 400,
@@ -142,17 +138,14 @@ $app->post('/install-api-key', function (Request $request, Response $response, a
             'text' => "Ошибка"
         );
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     }
 });
  
 // Записать в сессию
-$app->post('/install-key', function (Request $request, Response $response, array $args) {
+$app->post('/install-key', function ($request, $response, $args) {
     // Конфигурация
-    $config = $this->config;
+    $config = $this->get('config');
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
     // Читаем ключи
@@ -189,10 +182,7 @@ $app->post('/install-key', function (Request $request, Response $response, array
             'text' => "Все ок"
         );
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     } else {
         $callback = array(
             'status' => 200,
@@ -200,17 +190,14 @@ $app->post('/install-key', function (Request $request, Response $response, array
             'text' => "Ошибка"
         );
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     }
 });
 
 // Записать в сессию
-$app->post('/install-no-key', function (Request $request, Response $response, array $args) {
+$app->post('/install-no-key', function ($request, $response, $args) {
     // Конфигурация
-    $config = $this->config;
+    $config = $this->get('config');
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
     // Читаем ключи
@@ -247,10 +234,7 @@ $app->post('/install-no-key', function (Request $request, Response $response, ar
             'text' => "Все ок"
         );
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     } else {
         $callback = array(
             'status' => 200,
@@ -258,17 +242,14 @@ $app->post('/install-no-key', function (Request $request, Response $response, ar
             'text' => "Ошибка"
         );
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     }
 });
  
 // Записать выбранный магазин в сессию
-$app->post('/install-store', function (Request $request, Response $response, array $args) {
+$app->post('/install-store', function ($request, $response, $args) {
     // Конфигурация
-    $config = $this->config;
+    $config = $this->get('config');
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
     // Читаем ключи
@@ -308,10 +289,7 @@ $app->post('/install-store', function (Request $request, Response $response, arr
             'text' => "Все ок"
         );
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     } else {
         $callback = array(
             'status' => 200,
@@ -319,17 +297,14 @@ $app->post('/install-store', function (Request $request, Response $response, arr
             'text' => "Ошибка"
         );
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     }
 });
  
 // Записать выбранный шаблон в сессию
-$app->post('/install-template', function (Request $request, Response $response, array $args) {
+$app->post('/install-template', function ($request, $response, $args) {
     // Конфигурация
-    $config = $this->config;
+    $config = $this->get('config');
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
     // Читаем ключи
@@ -395,7 +370,7 @@ $app->post('/install-template', function (Request $request, Response $response, 
                     }
  
                     $session->template = $dir;
-                    $template_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config['template']['front_end']["themes"]["templates"].'/'.$dir;
+                    $template_dir = $this->get('config')["settings"]["themes"]["dir"].'/'.$this->get('config')['template']['front_end']["themes"]["templates"].'/'.$dir;
                     $template_config = json_decode(file_get_contents($template_dir."/config/config.json"), true);
                     $session->template_engine = $template_config['template_engine'];
                 }
@@ -457,10 +432,7 @@ $app->post('/install-template', function (Request $request, Response $response, 
         }
  
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     } else {
         $callback = array(
             'status' => 400,
@@ -468,18 +440,15 @@ $app->post('/install-template', function (Request $request, Response $response, 
             'text' => "Ошибка"
         );
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     }
 });
  
 // Регистрация продавца
-$app->post('/register-in-seller', function (Request $request, Response $response, array $args) {
+$app->post('/register-in-seller', function ($request, $response, $args) {
     $today = date("Y-m-d H:i:s");
     // Конфигурация
-    $config = $this->config;
+    $config = $this->get('config');
     // Отдаем роутеру RouterDb конфигурацию.
     $router = new Router($config);
     // Читаем ключи
@@ -532,12 +501,6 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                 'title' => "Сообщение системы",
                 'text' => "Номер телефона не валиден"
             );
-            // Выводим заголовки
-            $response->withStatus(200);
-            $response->withHeader('Content-type', 'application/json');
-            // Выводим json
-            echo json_encode($callback);
-            return false;
         }
  
         if(!empty($phone) && !empty($email) && !empty($iname) && !empty($fname) && !empty($host)) {
@@ -659,11 +622,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
  
                                             $callback = ['status' => 200];
                                             // Выводим заголовки
-                                            $response->withStatus(200);
-                                            $response->withHeader('Content-type', 'application/json');
-                                            // Выводим json
-                                            echo json_encode($callback);
-                                            //return false;
+                                            return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
  
                                         } else {
                                             $callback = array(
@@ -672,11 +631,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                                                 'text' => "Не могу создать пользователя. Нет id"
                                             );
                                             // Выводим заголовки
-                                            $response->withStatus(200);
-                                            $response->withHeader('Content-type', 'application/json');
-                                            // Выводим json
-                                            echo json_encode($callback);
-                                            return false;
+                                            return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
                                         }
  
                                     } else {
@@ -686,11 +641,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                                             'text' => "Не могу создать пользователя"
                                         );
                                         // Выводим заголовки
-                                        $response->withStatus(200);
-                                        $response->withHeader('Content-type', 'application/json');
-                                        // Выводим json
-                                        echo json_encode($callback);
-                                        return false;
+                                        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
                                     }
  
                                 } else {
@@ -700,11 +651,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                                         'text' => "Не могу создать пользователя. В данных есть ошибка"
                                     );
                                     // Выводим заголовки
-                                    $response->withStatus(200);
-                                    $response->withHeader('Content-type', 'application/json');
-                                    // Выводим json
-                                    echo json_encode($callback);
-                                    return false;
+                                    return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
                                 }
  
                             } else {
@@ -714,11 +661,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                                     'text' => "Не могу получить public_key -1"
                                 );
                                 // Выводим заголовки
-                                $response->withStatus(200);
-                                $response->withHeader('Content-type', 'application/json');
-                                // Выводим json
-                                echo json_encode($callback);
-                                return false;
+                                return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
                             }
  
                         } else {
@@ -728,11 +671,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                                 'text' => "Не могу получить public_key -2"
                             );
                             // Выводим заголовки
-                            $response->withStatus(200);
-                            $response->withHeader('Content-type', 'application/json');
-                            // Выводим json
-                            echo json_encode($callback);
-                            return false;
+                            return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
                         }
  
                     } else {
@@ -742,11 +681,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                             'text' => "Не могу получить public_key -3"
                         );
                         // Выводим заголовки
-                        $response->withStatus(200);
-                        $response->withHeader('Content-type', 'application/json');
-                        // Выводим json
-                        echo json_encode($callback);
-                        return false;
+                        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
                     }
  
                 } else {
@@ -756,11 +691,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                         'text' => "Пользователь уже существует"
                     );
                     // Выводим заголовки
-                    $response->withStatus(200);
-                    $response->withHeader('Content-type', 'application/json');
-                    // Выводим json
-                    echo json_encode($callback);
-                    return false;
+                    return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
                 }
             } else {
                 $callback = array(
@@ -769,11 +700,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                     'text' => "Введите правильные данные !"
                 );
                 // Выводим заголовки
-                $response->withStatus(200);
-                $response->withHeader('Content-type', 'application/json');
-                // Выводим json
-                echo json_encode($callback);
-                return false;
+                return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
             }
         } else {
             $callback = array(
@@ -782,11 +709,7 @@ $app->post('/register-in-seller', function (Request $request, Response $response
                 'text' => "Заполните пустые поля"
             );
             // Выводим заголовки
-            $response->withStatus(200);
-            $response->withHeader('Content-type', 'application/json');
-            // Выводим json
-            echo json_encode($callback);
-            return false;
+            return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
         }
         //print_r($callback);
     } else {
@@ -796,18 +719,14 @@ $app->post('/register-in-seller', function (Request $request, Response $response
             'text' => "Перегрузите страницу"
         );
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
-        // Выводим json
-        echo json_encode($callback);
-        return false;
+        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     } 
 });
  
 // Запуск магазина
-$app->post('/start-shop', function (Request $request, Response $response, array $args) {
+$app->post('/start-shop', function ($request, $response, $args) {
     // Конфигурация
-    $config = $this->config;
+    $config = $this->get('config');
     // Подключаем сессию, берет название класса из конфигурации
     $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
     // Читаем ключи
@@ -911,11 +830,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     $callback = ['status' => 200];
  
                     // Выводим заголовки
-                    $response->withStatus(200);
-                    $response->withHeader('Content-type', 'application/json');
-                    // Выводим json
-                    echo json_encode($callback);
-                    return;
+                    return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
  
                 } else {
                     $callback = array(
@@ -924,11 +839,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                         'text' => "Ошибка"
                     );
                     // Выводим заголовки
-                    $response->withStatus(200);
-                    $response->withHeader('Content-type', 'application/json');
-                    // Выводим json
-                    echo json_encode($callback);
-                    return;
+                    return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
                 }
             } else {
                 $callback = array(
@@ -937,11 +848,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                     'text' => "Ошибка"
                 );
                 // Выводим заголовки
-                $response->withStatus(200);
-                $response->withHeader('Content-type', 'application/json');
-                // Выводим json
-                echo json_encode($callback);
-                return;
+                return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
             }
         } else {
             $callback = array(
@@ -950,11 +857,7 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
                 'text' => "Ошибка"
             );
             // Выводим заголовки
-            $response->withStatus(200);
-            $response->withHeader('Content-type', 'application/json');
-            // Выводим json
-            echo json_encode($callback);
-            return;
+            return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
         }
     } else {
         $callback = array(
@@ -963,11 +866,9 @@ $app->post('/start-shop', function (Request $request, Response $response, array 
             'text' => "Ошибка"
         );
         // Выводим заголовки
-        $response->withStatus(200);
-        $response->withHeader('Content-type', 'application/json');
+ 
         // Выводим json
-        echo json_encode($callback);
-        return;
+        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     }
  
 });

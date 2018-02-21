@@ -53,13 +53,13 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
     // Получаем список и конфигурацию пакетов
     $package = json_decode(file_get_contents($auto_require), true);
  
-    if ($package['require']['slim.slim']['settings']['displayErrorDetails'] == 0) {
+/*     if ($package['require']['slim.slim']['settings']['displayErrorDetails'] == 0) {
         ini_set('error_reporting', 0);
         ini_set('display_errors', 0);
         ini_set('display_startup_errors', 0);
-    }
+    } */
  
-	$settings['settings'] = $package['require']['slim.slim']['settings'];
+	$settings = $package['require']['slim.slim']['settings'];
  
     // Подключаем Slim и отдаем ему конфигурацию
     $app = new \Slim\App($settings);

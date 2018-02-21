@@ -10,7 +10,6 @@
     * file that was distributed with this source code.
 */
  
-use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
 use Pllano\RouterDb\{Db, Router};
 use Pllano\Hooks\Hook;
 use ApiShop\Model\{Language, Site, Template, SessionUser, Security, Filter, Pagination, Install};
@@ -30,10 +29,10 @@ if(isset($session->post_id)) {
 }
  
 // Главная страница админ панели
-$app->get($admin_uri.$admin_index.'', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_index.'', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -134,17 +133,18 @@ $app->get($admin_uri.$admin_index.'', function (Request $request, Response $resp
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+	
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Список items указанного resource
-$app->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -299,17 +299,17 @@ $app->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
-    
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+ 
 });
 
 // Содать запись в resource
-$app->post($admin_uri.$admin_router.'resource-post', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'resource-post', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -464,15 +464,15 @@ $app->post($admin_uri.$admin_router.'resource-post', function (Request $request,
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
     // Выводим json
-    echo json_encode($hook->callback($callback));
+    return $response->write(json_encode($hook->callback($callback)));
     
 });
 
 // Удалить запись в resource
-$app->post($admin_uri.$admin_router.'resource-delete', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'resource-delete', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -594,15 +594,15 @@ $app->post($admin_uri.$admin_router.'resource-delete', function (Request $reques
 
 
     // Выводим json
-    echo json_encode($hook->callback($callback));
+    return $response->write(json_encode($hook->callback($callback)));
     
 });
 
 // Редактируем запись в resource
-$app->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -758,15 +758,15 @@ $app->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a
 
 
     // Выводим json
-    echo json_encode($hook->callback($callback));
+    return $response->write(json_encode($hook->callback($callback)));
     
 });
 
 // Активировать заказ
-$app->post($admin_uri.$admin_router.'order-activate', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'order-activate', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -855,15 +855,15 @@ $app->post($admin_uri.$admin_router.'order-activate', function (Request $request
 
 
     // Выводим json
-    echo json_encode($hook->callback($callback));
+    return $response->write(json_encode($hook->callback($callback)));
     
 });
 
 // Купить и установить шаблон
-$app->post($admin_uri.$admin_router.'template-buy', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'template-buy', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -920,15 +920,15 @@ $app->post($admin_uri.$admin_router.'template-buy', function (Request $request, 
 
 
     // Выводим json
-    echo json_encode($hook->callback($callback));
+    return $response->write(json_encode($hook->callback($callback)));
     
 });
 
 // Установить шаблон
-$app->post($admin_uri.$admin_router.'template-install', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'template-install', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -1035,15 +1035,15 @@ $app->post($admin_uri.$admin_router.'template-install', function (Request $reque
 
 
     // Выводим json
-    echo json_encode($hook->callback($callback));
+    return $response->write(json_encode($hook->callback($callback)));
     
 });
 
 // Активировать шаблон
-$app->post($admin_uri.$admin_router.'template-activate', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'template-activate', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -1131,15 +1131,15 @@ $app->post($admin_uri.$admin_router.'template-activate', function (Request $requ
 
 
     // Выводим json
-    echo json_encode($hook->callback($callback));
+    return $response->write(json_encode($hook->callback($callback)));
     
 });
 
 // Удалить шаблон
-$app->post($admin_uri.$admin_router.'template-delete', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'template-delete', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -1204,15 +1204,15 @@ $app->post($admin_uri.$admin_router.'template-delete', function (Request $reques
 
 
     // Выводим json
-    echo json_encode($hook->callback($callback));
+    return $response->write(json_encode($hook->callback($callback)));
     
 });
 
 // Список шаблонов
-$app->get($admin_uri.$admin_router.'template', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'template', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -1318,17 +1318,17 @@ $app->get($admin_uri.$admin_router.'template', function (Request $request, Respo
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Страница шаблона
-$app->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -1434,17 +1434,17 @@ $app->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Req
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Редактируем настройки шаблона
-$app->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -1561,16 +1561,16 @@ $app->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Re
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Станица пакета
-$app->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+$app->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function ($request, $response, $args) {
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -1688,17 +1688,17 @@ $app->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
  
 });
  
 // Изменение статуса пакета
-$app->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -1809,15 +1809,15 @@ $app->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-
 
 
     // Выводим json
-    echo json_encode($hook->callback($callback));
+    return $response->write(json_encode($hook->callback($callback)));
     
 });
 
 // Список пакетов
-$app->get($admin_uri.$admin_router.'packages', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'packages', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -1919,17 +1919,17 @@ $app->get($admin_uri.$admin_router.'packages', function (Request $request, Respo
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Репозиторий
-$app->get($admin_uri.$admin_router.'packages-install', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'packages-install', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -2031,17 +2031,17 @@ $app->get($admin_uri.$admin_router.'packages-install', function (Request $reques
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Страница установки из json файла
-$app->get($admin_uri.$admin_router.'packages-install-json', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'packages-install-json', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -2143,17 +2143,17 @@ $app->get($admin_uri.$admin_router.'packages-install-json', function (Request $r
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Глобальные настройки
-$app->get($admin_uri.$admin_router.'config', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'config', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -2256,17 +2256,17 @@ $app->get($admin_uri.$admin_router.'config', function (Request $request, Respons
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Редактируем глобальные настройки
-$app->post($admin_uri.$admin_router.'config', function (Request $request, Response $response, array $args) {
+$app->post($admin_uri.$admin_router.'config', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -2374,17 +2374,17 @@ $app->post($admin_uri.$admin_router.'config', function (Request $request, Respon
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Список баз данных
-$app->get($admin_uri.$admin_router.'db', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'db', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -2483,17 +2483,17 @@ $app->get($admin_uri.$admin_router.'db', function (Request $request, Response $r
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Страница таблицы (ресурса)
-$app->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -2689,17 +2689,17 @@ $app->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', f
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Глобально
-$app->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args) {
+$app->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) {
     
     // Получаем конфигурацию
-    $config = $this->config;
+    $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -2837,9 +2837,9 @@ $app->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->logger->info($hook->logger());
+    $this->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $this->admin->render($hook->render(), $hook->view());
+    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
     
 });
  

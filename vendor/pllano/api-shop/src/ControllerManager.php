@@ -12,8 +12,10 @@
  
 namespace ApiShop;
  
-use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Resp};
-use Psr\Container\ContainerInterface as Container;
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Container\ContainerInterface;
+use Pimple\Container;
+use Pimple\Psr11\Container as PsrContainer;
 use ApiShop\Model\{User, Install, SessionUser, Language, Site, Template, Security};
 use ApiShop\Utilities\Utility;
 use ApiShop\Adapter\Menu;
@@ -37,8 +39,15 @@ class ControllerManager
         $this->route = $route;
         $this->query = $query;
     }
+	
+/*     private $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    } */
  
-    public function get(Request $request, Resp $resp)
+    public function get(Request $request, Response $response, array $args)
     {
         // $getScheme = $request->getUri()->getScheme(); // Работает
         // $getParams = $request->getQueryParams(); // Работает
@@ -227,7 +236,7 @@ class ControllerManager
  
     }
  
-    public function post(Request $request, Resp $resp)
+    public function post(Request $request, Response $response)
     {
         $config = $this->config;
         $method = $request->getMethod();
@@ -286,8 +295,8 @@ class ControllerManager
         $callbackText = 'Действие запрещено !';
         $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
         // Выводим заголовки
-        $resp->withStatus(200);
-        $resp->withHeader('Content-type', 'application/json');
+        $response->withStatus(200);
+        $response->withHeader('Content-type', 'application/json');
  
         if ($csrf == $token) {
             $mods = explode(',', str_replace([" ", "'"], "", $config['routers']['site'][$this->route]['blocks']));
