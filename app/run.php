@@ -10,52 +10,14 @@
     * file that was distributed with this source code.
 */
  
-/**
-    * API Shop дает полную свободу с выбора классов обработки страниц
-    * При установке пекетов или шаблонов вы можете перезаписать в конфиге класс и функцию обработки
-    * Вы можете использовать контроллеры по умолчанию и вносить изменения с помощью \Pllano\Hooks\Hook
-    * Вы можете использовать ApiShop\Adapter\ и менять vendor в конфигурации
-*/
- 
 use Pimple\Container;
 use Pimple\Psr11\Container as PsrContainer;
  
-// Подключаем файл конфигурации системы
-require __DIR__ . '/settings.php';
-// Получаем конфигурацию
- 
 $container = new Container();
- 
-// Конфигурация доступна внутри и вне роутеров
-// Получить внутри роутера $name = $this->config['name']; всю = $this->config
-// Получить вне роутеров $name = $config['name']; всю = $config
-$container['config'] = \ApiShop\Config\Settings::get();
-$config = $container['config'];
- 
+// Создаем контейнер с глобальной конфигурацией
+$container['config'] = $config;
 // Создаем контейнер с конфигурацией пакетов
 $container['package'] = $package;
- 
-// Для POST запросов вначале url генерируем post_id
-// Если у пользователя нет сессии он не сможет отправлять POST запросы
-$session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
-$post_id = '/_'; if(isset($session->post_id)){$post_id = '/'.$session->post_id;}
- 
-// Получаем конфигурацию роутеров
-$router = $config['routers']['site'];
-
-//print_r($router);
- 
-// Run User Session
-// Запускаем сессию пользователя
-(new \ApiShop\Model\User())->run();
- 
-// Если одина из баз json запускаем jsonDB
-if ($config['db']['master'] == "json" || $config['db']['slave'] == "json") {
-    // Запускаем jsonDB\Db
-    $jsonDb = new \jsonDB\Db($config['db']['json']['dir']);
-    $jsonDb->run();
-}
- 
 // monolog
 $container['logger'] = function ($c)
 {
@@ -66,7 +28,6 @@ $container['logger'] = function ($c)
     return $logger;
     
 };
- 
 // Register \Pllano\Adapter\TemplateEngine
 $container['view'] = function ($c)
 {
@@ -85,7 +46,6 @@ $container['view'] = function ($c)
     }
 	return $view;
 };
- 
 // Register Original Twig View Admin Panel
 $container['admin'] = function ($c)
 {
@@ -108,7 +68,8 @@ $app->setContainer(new PsrContainer($container));
  
 //$controller = $config['vendor']['controllers']['controller'];
 //$app->get($router['index']['route'], $controller.':get')->add(new $controller($container))->setName('index');
-	
+//$app->get($router['index']['route'], ['App\Controller\UserController', 'indexAction']);
+
 // GET - Главная
 $app->get($router['index']['route'], function ($request, $response, $args) {
     $controller = $this->get('config')['vendor']['controllers']['controller'];
@@ -225,6 +186,13 @@ $app->post($post_id.$router['logout']['route'], function ($request, $response, $
 $routers = glob(__DIR__ . '/routers/*.php');
 foreach ($routers as $router) {
     require $router;
+}
+ 
+// Если одина из баз json запускаем jsonDB
+if ($config['db']['master'] == "json" || $config['db']['slave'] == "json") {
+    // Запускаем jsonDB\Db
+    $jsonDb = new \jsonDB\Db($config['db']['json']['dir']);
+    $jsonDb->run();
 }
  
 // Если решить эту задачку получим крутое подключение роутринга

@@ -1,4 +1,5 @@
-<?php /**
+<?php 
+/**
     * This file is part of the {API}$hop
     *
     * @license http://opensource.org/licenses/MIT
@@ -8,6 +9,12 @@
     *
     * For the full copyright and license information, please view the LICENSE
     * file that was distributed with this source code.
+*/
+/**
+    * API Shop дает полную свободу с выбора классов обработки страниц
+    * При установке пекетов или шаблонов вы можете перезаписать в конфиге класс и функцию обработки
+    * Вы можете использовать контроллеры по умолчанию и вносить изменения с помощью \Pllano\Hooks\Hook
+    * Вы можете использовать ApiShop\Adapter\ и менять vendor в конфигурации
 */
  
 if (PHP_SAPI == 'cli-server') {
@@ -19,10 +26,6 @@ if (PHP_SAPI == 'cli-server') {
         return false;
     }
 }
- 
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
  
 // Запускаем сессию PHP
 session_start();
@@ -46,27 +49,62 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
     require $autoRequire;
     // instantiate the loader
     $require = new \Pllano\AutoRequire\Autoloader();
-    
     // Запускаем Автозагрузку
     $require->run($vendor_dir, $auto_require);
  
+    // Подключаем файл конфигурации системы
+    require __DIR__ . '/app/settings.php';
+    $config = \ApiShop\Config\Settings::get();
+ 
     // Получаем список и конфигурацию пакетов
     $package = json_decode(file_get_contents($auto_require), true);
+	$slimSettings = $package['require']['slim.slim']['settings'];
  
-/*     if ($package['require']['slim.slim']['settings']['displayErrorDetails'] == 0) {
-        ini_set('error_reporting', 0);
-        ini_set('display_errors', 0);
-        ini_set('display_startup_errors', 0);
-    } */
+	$slim = [];
  
-	$settings = $package['require']['slim.slim']['settings'];
+	$slim['debug'] = false;
+	$slim['displayErrorDetails'] = false;
+	$slim['addContentLengthHeader'] = false;
+	$slim['determineRouteBeforeAppMiddleware'] = false;
+ 
+    if (isset($slimSettings['displayErrorDetails'])) {if ($slimSettings['displayErrorDetails'] == 1) {
+        ini_set('error_reporting', E_ALL);
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+		$slim['displayErrorDetails'] = true;
+    }}
+	if (isset($slimSettings['debug'])) {if ($slimSettings['debug'] == 1) {
+	    $slim['debug'] = true;
+	}}
+	if (isset($slimSettings['addContentLengthHeader'])) {if ($slimSettings['addContentLengthHeader'] == 1) {
+	    $slim['addContentLengthHeader'] = true;
+	}}
+	if (isset($slimSettings['determineRouteBeforeAppMiddleware'])) {if ($slimSettings['determineRouteBeforeAppMiddleware'] == 1) {
+	    $slim['determineRouteBeforeAppMiddleware'] = true;
+	}}
  
     // Подключаем Slim и отдаем ему конфигурацию
-    $app = new \Slim\App($settings);
+    $app = new \Slim\App($slim);
+ 
+    // Для POST запросов вначале url генерируем post_id
+    // Если у пользователя нет сессии он не сможет отправлять POST запросы
+    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $post_id = '/_'; if(isset($session->post_id)){$post_id = '/'.$session->post_id;}
+ 
+    // Run User Session
+    // Запускаем сессию пользователя
+    (new \ApiShop\Model\User())->run();
+ 
+    // Получаем конфигурацию роутеров
+    $router = $config['routers']['site'];
     // Подключаем Routers и Containers
     require __DIR__ . '/app/run.php';
     // Slim Run
     $app->run();
  
+} else {
+    ini_set('error_reporting', E_ALL);
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
 }
  

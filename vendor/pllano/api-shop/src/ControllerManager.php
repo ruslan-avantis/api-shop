@@ -14,8 +14,6 @@ namespace ApiShop;
  
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
 use Psr\Container\ContainerInterface;
-use Pimple\Container;
-use Pimple\Psr11\Container as PsrContainer;
 use ApiShop\Model\{User, Install, SessionUser, Language, Site, Template, Security};
 use ApiShop\Utilities\Utility;
 use ApiShop\Adapter\Menu;
