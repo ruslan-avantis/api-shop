@@ -1820,8 +1820,7 @@ $app->get($admin_uri.$admin_router.'packages', function ($request, $response, $a
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-
-    
+ 
     // Подключаем плагины
     $utility = new Utility();
     // Получаем параметры из URL
@@ -1886,32 +1885,32 @@ $app->get($admin_uri.$admin_router.'packages', function ($request, $response, $a
     }
     
     $head = [
-    "page" => $render,
-    "title" => $title,
-    "keywords" => $keywords,
-    "description" => $description,
-    "robots" => $robots,
-    "og_title" => $og_title,
-    "og_description" => $og_description,
-    "og_image" => $og_image,
-    "og_type" => $og_type,
-    "og_locale" => $og_locale,
-    "og_url" => $og_url,
-    "host" => $host,
-    "path" => $path
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
     ];
     
     $view = [
-    "head" => $head,
-    "routers" => $routers,
-    "config" => $config,
-    "language" => $language,
-    "template" => $template,
-    "token" => $session->token_admin,
-    "admin_uri" => $admin_uri,
-    "post_id" => $post_id,
-    "session" => $sessionUser,
-    "content" => $content
+        "head" => $head,
+        "routers" => $routers,
+        "config" => $config,
+        "language" => $language,
+        "template" => $template,
+        "token" => $session->token_admin,
+        "admin_uri" => $admin_uri,
+        "post_id" => $post_id,
+        "session" => $sessionUser,
+        "content" => $content
     ];
     
     // Передаем данные Hooks для обработки ожидающим классам

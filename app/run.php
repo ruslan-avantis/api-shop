@@ -98,7 +98,7 @@ $container['admin'] = function ($c)
 	if($c['config']['template']['back_end']['cache'] == 1){
 	    $twig_config['cache'] = $c['config']['template']['back_end']['cache'];
 	}
-	if($c['package']['require']['twig.Twig']['settings']['strict_variables'] == 1) {
+	if($c['package']['require']['twig.twig']['settings']['strict_variables'] == 1) {
 	    $twig_config['strict_variables'] = true;
 	}
     return new \Twig_Environment($loader, $twig_config);

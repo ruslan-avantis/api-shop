@@ -115,7 +115,7 @@
 				"package": 1
 			}
 		},
-		"twig.Twig": {
+		"twig.twig": {
 			"namespace": "Twig",
 			"dir": "\/twig\/Twig\/lib\/Twig",
 			"link": "https:\/\/github.com\/twigphp\/Twig\/archive\/v2.4.4.zip",
@@ -363,7 +363,7 @@
 			"state": 1,
 			"system_package": 1
 		},
-		"imagine.Imagine": {
+		"imagine.imagine": {
 			"namespace": "Imagine",
 			"dir": "\/imagine\/Imagine\/lib\/Imagine",
 			"link": "https:\/\/github.com\/avalanche123\/Imagine\/archive\/master.zip",
@@ -374,7 +374,7 @@
 			"state": 1,
 			"system_package": 0
 		},
-		"myclabs.DeepCopy": {
+		"myclabs.deepcopy": {
 			"namespace": "DeepCopy",
 			"files": "deep_copy.php",
 			"dir": "\/myclabs\/DeepCopy\/src\/DeepCopy",
@@ -386,7 +386,7 @@
 			"state": 1,
 			"system_package": 1
 		},
-		"nikic.FastRoute": {
+		"nikic.fastroute": {
 			"namespace": "FastRoute",
 			"files": "functions.php",
 			"dir": "\/nikic\/FastRoute\/src",
@@ -409,7 +409,7 @@
 			"state": 1,
 			"system_package": 1
 		},
-		"phpdocumentor.ReflectionCommon": {
+		"phpdocumentor.reflectioncommon": {
 			"namespace": "phpDocumentor\\Reflection",
 			"dir": "\/phpdocumentor\/ReflectionCommon\/src",
 			"link": "https:\/\/github.com\/phpDocumentor\/ReflectionCommon\/archive\/1.0.1.zip",
@@ -420,7 +420,7 @@
 			"state": 1,
 			"system_package": 1
 		},
-		"phpdocumentor.ReflectionDocBlock": {
+		"phpdocumentor.reflectiondocblock": {
 			"namespace": "phpDocumentor\\Reflection",
 			"dir": "\/phpdocumentor\/ReflectionDocBlock\/src",
 			"link": "https:\/\/github.com\/phpDocumentor\/ReflectionDocBlock\/archive\/4.2.0.zip",
@@ -431,7 +431,7 @@
 			"state": 1,
 			"system_package": 1
 		},
-		"phpdocumentor.TypeResolver": {
+		"phpdocumentor.typeresolver": {
 			"namespace": "phpDocumentor\\Reflection",
 			"dir": "\/phpdocumentor\/TypeResolver\/src",
 			"link": "https:\/\/github.com\/phpDocumentor\/TypeResolver\/archive\/0.5.0.zip",
@@ -453,7 +453,7 @@
 			"state": 1,
 			"system_package": 1
 		},
-		"pimple.Pimple": {
+		"pimple.pimple": {
 			"namespace": "Pimple",
 			"dir": "\/pimple\/Pimple\/src\/Pimple",
 			"link": "https:\/\/github.com\/silexphp\/Pimple\/archive\/v3.2.3.zip",
