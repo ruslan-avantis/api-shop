@@ -1215,8 +1215,7 @@ $app->get($admin_uri.$admin_router.'template', function ($request, $response, $a
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
-
-    
+ 
     // Подключаем плагины
     $utility = new Utility();
     // Получаем параметры из URL
@@ -1276,6 +1275,7 @@ $app->get($admin_uri.$admin_router.'template', function ($request, $response, $a
             // Получаем массив с настройками шаблона
             $content = $templates->get();
             $api = (new Install($config))->templates_list($config['seller']['store']);
+ 
             $render = $template['layouts']['templates'] ? $template['layouts']['templates'] : 'templates.html';
         }
     } else {

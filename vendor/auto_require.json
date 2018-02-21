@@ -11,8 +11,8 @@
 			"state": 1,
 			"system_package": 1,
 			"settings": {
-				"debug": 1,
-				"displayErrorDetails": 1,
+				"debug": 0,
+				"displayErrorDetails": 0,
 				"addContentLengthHeader": 0,
 				"determineRouteBeforeAppMiddleware": 1
 			}

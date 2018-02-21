@@ -46,7 +46,6 @@ class Install {
     {
         // Ресурс к которому обращаемся
         $resource = "templates_list";
- 
         // Отдаем роутеру RouterDb конфигурацию.
         $router = new Router($this->config);
         // Получаем название базы для указанного ресурса

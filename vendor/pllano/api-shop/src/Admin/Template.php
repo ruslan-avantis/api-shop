@@ -31,13 +31,13 @@ class Template {
     {
         $resp["templates"] = [];
         $templates = [];
-        $directory = $this->config["settings"]["themes"]["dir"]."/".$this->config["template"]["front_end"]["themes"]["template"];
+        $directory = $this->config["template"]["front_end"]["themes"]["dir"]."/".$this->config["template"]["front_end"]["themes"]["templates"];
         $scanned = array_diff(scandir($directory), ['..', '.']);
         if (count($scanned) >= 1) {
             foreach($scanned as $dir)
             {
                 if (is_dir($directory.'/'.$dir)) {
-                    $json_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config["template"]["front_end"]["themes"]["template"].'/'.$dir.'/config/';
+                    $json_dir = $this->config["template"]["front_end"]["themes"]["dir"].'/'.$this->config["template"]["front_end"]["themes"]["templates"].'/'.$dir.'/config/';
                     if (file_exists($json_dir."config.json")) {
                         $json = json_decode(file_get_contents($json_dir."config.json"), true);
                          $template = $json;
@@ -65,7 +65,7 @@ class Template {
     public function getOne()
     {
         if ($this->template != null) {
-            $json_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config["template"]["front_end"]["themes"]["template"].'/'.$this->template.'/config/';
+            $json_dir = $this->config["template"]["front_end"]["themes"]["dir"].'/'.$this->config["template"]["front_end"]["themes"]["templates"].'/'.$this->template.'/config/';
             if (file_exists($json_dir."config.json")) {
                 return json_decode(file_get_contents($json_dir."config.json"), true);
             } else {
@@ -80,7 +80,7 @@ class Template {
     {
         $arr = array_replace_recursive($this->get(), $param);
         $newArr = json_encode($arr);
-        $json_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config["template"]["front_end"]["themes"]["template"].'/'.$this->template.'/config/';
+        $json_dir = $this->config["template"]["front_end"]["themes"]["dir"].'/'.$this->config["template"]["front_end"]["themes"]["templates"].'/'.$this->template.'/config/';
         file_put_contents($json_dir."config.json", $newArr);
         return true;
     }
