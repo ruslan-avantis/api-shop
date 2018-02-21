@@ -3,7 +3,7 @@
 	"update": "pllano",
 	"cache": {
 		"driver": "filesystem",
-		"state": 0,
+		"state": 1,
 		"cache_lifetime": "3600",
 		"dynamic": 0,
 		"cpu": "80",
@@ -515,7 +515,7 @@
 	"template": {
 		"front_end": {
 			"template_engine": "twig",
-			"template_package": "twig.Twig",
+			"template_package": "twig.twig",
 			"cache": 1,
 			"themes": {
 				"template": "mini-mo-twig",
@@ -525,7 +525,7 @@
 		},
 		"back_end": {
 			"template_engine": "twig",
-			"template_package": "twig.Twig",
+			"template_package": "twig.twig",
 			"cache": 0,
 			"themes": {
 				"template": "admin",
