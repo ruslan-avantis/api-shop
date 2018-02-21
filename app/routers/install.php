@@ -328,7 +328,7 @@ $app->post('/install-template', function ($request, $response, $args) {
         $dir = filter_var($post['dir'], FILTER_SANITIZE_STRING);
         $host = filter_var($post['host'], FILTER_SANITIZE_STRING);
         if ($id && $uri && $dir && $host) {
-            $template_dir = $config["settings"]["themes"]["dir"]."/".$config["template"]["front_end"]["themes"]["template"]."/".$dir;
+            $template_dir = $config["template"]["front_end"]["themes"]["dir"]."/".$config["template"]["front_end"]["themes"]["template"]."/".$dir;
             if (!file_exists($template_dir)) {
                 mkdir($template_dir, 0777, true);
                 file_put_contents($template_dir."/template.zip", file_get_contents($uri));
@@ -361,7 +361,7 @@ $app->post('/install-template', function ($request, $response, $args) {
                     }
  
                     $session->template = $dir;
-                    $template_dir = $this->get('config')["settings"]["themes"]["dir"].'/'.$this->get('config')['template']['front_end']["themes"]["templates"].'/'.$dir;
+                    $template_dir = $this->get('config')["template"]["front_end"]["themes"]["dir"].'/'.$this->get('config')['template']['front_end']["themes"]["templates"].'/'.$dir;
                     $template_config = json_decode(file_get_contents($template_dir."/config/config.json"), true);
                     $session->template_engine = $template_config['template_engine'];
                 }
@@ -505,7 +505,7 @@ $app->post('/register-in-seller', function ($request, $response, $args) {
                     $install["phone"] = $phone;
                     $install["email"] = $email;
                     $install["language"] = "ru";
-                    $install["template"] = $config['settings']['themes']['template'];
+                    $install["template"] = $config["template"]["front_end"]["themes"]["template"];
                     $install["iname"] = $iname;
                     $install["fname"] = $fname;
                     $install["host"] = $host;
@@ -790,7 +790,6 @@ $app->post('/start-shop', function ($request, $response, $args) {
                     $paramPost['seller']['public_key'] = $public_key;
                     $paramPost['db']['pllanoapi']['public_key'] = $public_key;
                     $paramPost['db']['api']['public_key'] = $public_key;
-                    $paramPost['settings']['themes']['template'] = $template;
                     $paramPost['template']['front_end']['themes']['template'] = $template;
                     $paramPost['template']['front_end']['template_engine'] = $template_engine;
                     // Соеденяем массивы

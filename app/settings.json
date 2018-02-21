@@ -515,6 +515,8 @@
 	"template": {
 		"front_end": {
 			"template_engine": "twig",
+			"template_package": "twig.Twig",
+			"cache": 1,
 			"themes": {
 				"template": "mini-mo-twig",
 				"templates": "templates",
@@ -523,50 +525,13 @@
 		},
 		"back_end": {
 			"template_engine": "twig",
+			"template_package": "twig.Twig",
+			"cache": 0,
 			"themes": {
 				"template": "admin",
 				"templates": "templates",
 				"dir_name": "\/..\/themes"
 			}
-		},
-		"fenom": {
-			"cache_state": 0,
-			"cache_dir": "\/..\/cache\/_fenom_cache",
-			"disable_cache": 0,
-			"force_compile": 0,
-			"compile_check": 0
-		},
-		"twig": {
-			"cache_state": 1,
-			"strict_variables": 0,
-			"cache_dir": "\/..\/cache\/_twig_cache"
-		},
-		"blade": {
-			"cache_state": 0,
-			"strict_variables": 0,
-			"cache_dir": "\/..\/cache\/_twig_cache"
-		},
-		"smarty": {
-			"cache_state": 0,
-			"cache_dir": 0,
-			"compile_dir": 0,
-			"plugins_dir": 0
-		},
-		"mustache": {
-			"cache_state": 0
-		},
-		"dwoo": {
-			"cache_state": 0
-		},
-		"websun": {
-			"cache_state": 0,
-			"predecessor": 0,
-			"allowed_extensions": 0,
-			"no_global_vars": 0,
-			"profiling": 0
-		},
-		"arhone": {
-			"cache_state": 0
 		}
 	},
 	"settings": {

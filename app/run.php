@@ -50,7 +50,7 @@ $router = $config['routers']['site'];
 (new \ApiShop\Model\User())->run();
  
 // Если одина из баз json запускаем jsonDB
-if ($config["db"]["master"] == "json" || $config["db"]["slave"] == "json") {
+if ($config['db']['master'] == "json" || $config['db']['slave'] == "json") {
     // Запускаем jsonDB\Db
     $jsonDb = new \jsonDB\Db($config['db']['json']['dir']);
     $jsonDb->run();
@@ -59,7 +59,7 @@ if ($config["db"]["master"] == "json" || $config["db"]["slave"] == "json") {
 // monolog
 $container['logger'] = function ($c)
 {
-    $settings = $c['config']['settings']["logger"];
+    $settings = $c['config']['settings']['logger'];
     $logger = new \Monolog\Logger($settings['name']);
     $logger->pushProcessor(new \Monolog\Processor\UidProcessor());
     $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
@@ -71,16 +71,16 @@ $container['logger'] = function ($c)
 $container['view'] = function ($c)
 {
 	$view = null;
-	if ($c['config']['settings']["install"]["status"] != null) {
+	if ($c['config']['settings']['install']['status'] != null) {
         // Получаем название шаблона из конфигурации
-        $template = $c['config']['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
+        $template = $c['config']['template']['front_end']['themes']['template']; // По умолчанию mini-mo-twig
         $site = new \ApiShop\Model\Site($c['config']);
         $site->get();
         // Получаем название шаблона из конфигурации сайта
         if ($site->template()) {$template = $site->template();}
-        $view = new $c['config']['vendor']['templates']['template_engine']($c['config'], $template);
+        $view = new $c['config']['vendor']['templates']['template_engine']($c['config'], $c['package']['require'], $template);
 	} else {
-        $loader = new \Twig_Loader_Filesystem($c['config']["template"]["front_end"]["themes"]['dir']."/".$c['config']['template']['front_end']['themes']['templates']."/install");
+        $loader = new \Twig_Loader_Filesystem($c['config']['template']['front_end']['themes']['dir']."/".$c['config']['template']['front_end']['themes']['templates']."/install");
         $view = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
     }
 	return $view;
@@ -90,10 +90,18 @@ $container['view'] = function ($c)
 $container['admin'] = function ($c)
 {
     // Получаем название шаблона
-    $template = $c['config']["template"]["back_end"]["themes"]['template'];
-    $loader = new \Twig_Loader_Filesystem($c['config']["template"]["back_end"]["themes"]['dir']."/".$c['config']["template"]["back_end"]["themes"]['templates']."/".$template."/layouts");
-    $admin = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
-    return $admin;
+    $template = $c['config']['template']['back_end']['themes']['template'];
+    $loader = new \Twig_Loader_Filesystem($c['config']['template']['back_end']['themes']['dir']."/".$c['config']['template']['back_end']['themes']['templates']."/".$template."/layouts");
+	$twig_config = [];
+	$twig_config['cache'] = false;
+	$twig_config['strict_variables'] = false;
+	if($c['config']['template']['back_end']['cache'] == 1){
+	    $twig_config['cache'] = $c['config']['template']['back_end']['cache'];
+	}
+	if($c['package']['require']['twig.Twig']['settings']['strict_variables'] == 1) {
+	    $twig_config['strict_variables'] = true;
+	}
+    return new \Twig_Environment($loader, $twig_config);
 };
  
 $app->setContainer(new PsrContainer($container));

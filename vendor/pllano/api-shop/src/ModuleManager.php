@@ -81,7 +81,6 @@ class ModuleManager
             if($this->modules[$this->block]['state'] == 1) {
                 if (isset($this->modules[$this->block]['vendor'])) {
                     $package = [];
-                    //print_r($this->package['require'][$val['package']]);
                     if (isset($this->package['require'][$this->block])) {
                         $package = $this->package['require'][$this->block];
                     }

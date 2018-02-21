@@ -29,22 +29,6 @@
 			"system_package": 1,
 			"settings": {}
 		},
-		"monolog.monolog": {
-			"namespace": "Monolog",
-			"dir": "\/monolog\/monolog\/src\/Monolog",
-			"link": "https:\/\/github.com\/Seldaek\/monolog\/archive\/1.23.0.zip",
-			"git": "https:\/\/github.com\/Seldaek\/monolog",
-			"name": "monolog",
-			"version": "1.23.0",
-			"vendor": "monolog",
-			"state": 1,
-			"system_package": 1,
-			"settings": {
-				"name": "",
-				"path": "",
-				"level": ""
-			}
-		},
 		"pllano.api-shop": {
 			"namespace": "ApiShop",
 			"dir": "\/pllano\/api-shop\/src",
@@ -56,198 +40,12 @@
 			"system_package": 1,
 			"settings": {}
 		},
-		"pllano.products-action": {
-			"namespace": "ApiShop\\Modules\\Products",
-			"dir": "\/pllano\/api-shop-packages\/products-action",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/api-shop-pllano\/packages\/products-action",
-			"name": "products-action",
-			"version": "master",
-			"vendor": "pllano",
-			"state": 1,
-			"system_package": 0,
-			"settings": {
-				"label": "action",
-				"limit": "6",
-				"sort": "price",
-				"order": "ASC",
-				"image_width": "360",
-				"image_height": "360",
-				"relations": "image"
-			},
-			"install": {
-				"modules": {
-					"block": "index",
-					"module": "products_action",
-					"vendor": "\\ApiShop\\Modules\\Products\\ProductsAction",
-					"function": "get",
-					"view": "modules\/products\/products_action.html"
-				},
-				"files": {
-					"view": {
-						"take_here": "view\/products_action.html",
-						"put_here": "modules\/products",
-						"put_name": "products_action.html"
-					}
-				}
-			}
-		},
-		"pllano.products-hit": {
-			"namespace": "ApiShop\\Modules\\Products",
-			"dir": "\/pllano\/api-shop-packages\/products-hit",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/products-hit",
-			"name": "products-hit",
-			"version": "master",
-			"vendor": "pllano",
-			"state": 1,
-			"system_package": 0,
-			"settings": {
-				"label": "hit",
-				"limit": "6",
-				"sort": "name",
-				"order": "ASC",
-				"image_width": "360",
-				"image_height": "360",
-				"relations": "image"
-			}
-		},
-		"pllano.article": {
-			"namespace": "ApiShop\\Modules\\Articles",
-			"dir": "\/pllano\/api-shop-packages\/article",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/article",
-			"name": "article",
-			"version": "master",
-			"vendor": "pllano",
-			"state": 1,
-			"system_package": 0,
-			"settings": {}
-		},
-		"pllano.article-category": {
-			"namespace": "ApiShop\\Modules\\Articles",
-			"dir": "\/pllano\/api-shop-packages\/article-category",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/article-category",
-			"name": "article-category",
-			"version": "master",
-			"vendor": "pllano",
-			"state": 1,
-			"system_package": 0,
-			"settings": {}
-		},
-		"pllano.product": {
-			"namespace": "ApiShop\\Modules\\Products",
-			"dir": "\/pllano\/api-shop-packages\/product",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/product",
-			"name": "product",
-			"version": "master",
-			"vendor": "pllano",
-			"state": 1,
-			"system_package": 0,
-			"settings": {
-				"image_width": "600",
-				"image_height": "600"
-			}
-		},
-		"pllano.quick-view": {
-			"namespace": "ApiShop\\Modules\\Products",
-			"dir": "\/pllano\/api-shop-packages\/quick-view",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/quick-view",
-			"name": "quick-view",
-			"version": "master",
-			"vendor": "pllano",
-			"state": 1,
-			"system_package": 0,
-			"settings": {
-				"image_width": "600",
-				"image_height": "600"
-			}
-		},
-		"pllano.category": {
-			"namespace": "ApiShop\\Modules\\Categories",
-			"dir": "\/pllano\/api-shop-packages\/category",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/category",
-			"name": "category",
-			"version": "master",
-			"vendor": "pllano",
-			"state": 1,
-			"system_package": 0,
-			"settings": {
-				"vendors": {
-					"products": "\\ApiShop\\Modules\\Categories\\Products",
-					"paginator": "\\ApiShop\\Modules\\Categories\\Pagination",
-					"filter": "\\ApiShop\\Modules\\Categories\\Filter"
-				},
-				"helper": {
-					"products_list": "modules\/category\/products_list.html",
-					"paginator": "modules\/category\/paginator.html"
-				},
-				"limit": "30",
-				"sort": "price",
-				"order": "ASC",
-				"image_width": "360",
-				"image_height": "360",
-				"relations": "image"
-			}
-		},
-		"pllano.top-menu": {
-			"namespace": "ApiShop\\Modules\\Menu",
-			"dir": "\/pllano\/api-shop-packages\/top-menu",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/api-shop-pllano\/api-shop-packages\/top-menu",
-			"name": "top-menu",
-			"version": "master",
-			"vendor": "pllano",
-			"state": 1,
-			"system_package": 0,
-			"settings": {}
-		},
-		"pllano.check-in": {
-			"namespace": "ApiShop\\Modules\\Account",
-			"dir": "\/pllano\/api-shop-packages\/check-in",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/check-in",
-			"name": "check-in",
-			"version": "master",
-			"vendor": "pllano",
-			"state": 1,
-			"system_package": 0,
-			"settings": {}
-		},
-		"pllano.login": {
-			"namespace": "ApiShop\\Modules\\Account",
-			"dir": "\/pllano\/api-shop-packages\/login",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/login",
-			"name": "login",
-			"version": "master",
-			"vendor": "pllano",
-			"state": 1,
-			"system_package": 0,
-			"settings": {}
-		},
-		"pllano.logout": {
-			"namespace": "ApiShop\\Modules\\Account",
-			"dir": "\/pllano\/api-shop-packages\/logout",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/logout",
-			"name": "logout",
-			"version": "master",
-			"vendor": "pllano",
-			"state": 1,
-			"system_package": 0,
-			"settings": {}
-		},
-		"pllano.blank": {
-			"namespace": "ApiShop\\Modules",
-			"dir": "\/pllano\/api-shop-packages\/blank",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/blank",
-			"name": "blank",
-			"version": "master",
-			"vendor": "pllano",
-			"state": 1,
-			"system_package": 0,
-			"settings": {}
-		},
-		"pllano.json-db": {
-			"namespace": "jsonDB",
-			"dir": "\/pllano\/json-db\/src",
-			"link": "https:\/\/github.com\/pllano\/json-db\/archive\/master.zip",
-			"git": "https:\/\/github.com\/pllano\/json-db",
-			"name": "json-db",
+		"pllano.template-engine": {
+			"namespace": "Pllano\\Adapter",
+			"dir": "\/pllano\/template-engine\/src",
+			"link": "https:\/\/github.com\/pllano\/template-engine\/archive\/master.zip",
+			"git": "https:\/\/github.com\/pllano\/template-engine",
+			"name": "template-engine",
 			"version": "master",
 			"vendor": "pllano",
 			"state": 1,
@@ -302,12 +100,12 @@
 				"package": 1
 			}
 		},
-		"pllano.template-engine": {
-			"namespace": "Pllano\\Adapter",
-			"dir": "\/pllano\/template-engine\/src",
-			"link": "https:\/\/github.com\/pllano\/template-engine\/archive\/master.zip",
-			"git": "https:\/\/github.com\/pllano\/template-engine",
-			"name": "template-engine",
+		"pllano.json-db": {
+			"namespace": "jsonDB",
+			"dir": "\/pllano\/json-db\/src",
+			"link": "https:\/\/github.com\/pllano\/json-db\/archive\/master.zip",
+			"git": "https:\/\/github.com\/pllano\/json-db",
+			"name": "json-db",
 			"version": "master",
 			"vendor": "pllano",
 			"state": 1,
@@ -315,6 +113,119 @@
 			"settings": {
 				"state": 1,
 				"package": 1
+			}
+		},
+		"twig.Twig": {
+			"namespace": "Twig",
+			"dir": "\/twig\/Twig\/lib\/Twig",
+			"link": "https:\/\/github.com\/twigphp\/Twig\/archive\/v2.4.4.zip",
+			"git": "https:\/\/github.com\/twigphp\/Twig",
+			"name": "Twig",
+			"version": "2.4.4",
+			"vendor": "twig",
+			"autoloading": "psr-0",
+			"replace_name": "Twig",
+			"state": 1,
+			"system_package": 1,
+			"settings": {
+				"strict_variables": 0,
+				"cache_dir": "\/..\/cache\/_twig_cache"
+			}
+		},
+		"smarty.smarty": {
+			"namespace": "Smarty",
+			"files": "bootstrap.php",
+			"dir": "\/smarty\/smarty\/libs",
+			"link": "https:\/\/github.com\/smarty-php\/smarty\/archive\/v3.1.31.zip",
+			"git": "https:\/\/github.com\/smarty-php\/smarty",
+			"name": "smarty",
+			"version": "3.1.31",
+			"vendor": "smarty",
+			"state": 1,
+			"system_package": 0,
+			"settings": {
+				"strict_variables": 0,
+				"cache_dir": "\/..\/cache\/_smarty_cache"
+			}
+		},
+		"fenom.fenom": {
+			"namespace": "Fenom",
+			"dir": "\/fenom\/fenom\/src\/Fenom",
+			"files": "\/..\/Fenom.php",
+			"link": "https:\/\/github.com\/fenom-template\/fenom\/archive\/2.11.5.zip",
+			"git": "https:\/\/github.com\/fenom-template\/fenom",
+			"name": "fenom",
+			"version": "2.11.5",
+			"vendor": "fenom",
+			"state": 1,
+			"system_package": 0,
+			"settings": {
+				"cache_dir": "\/..\/cache\/_fenom_cache",
+				"disable_cache": 0,
+				"force_compile": 0,
+				"compile_check": 0
+			}
+		},
+		"dwoo.dwoo": {
+			"namespace": "Dwoo",
+			"dir": "\/dwoo\/dwoo\/lib\/Dwoo",
+			"link": "https:\/\/github.com\/dwoo-project\/dwoo\/archive\/1.3.6.zip",
+			"git": "https:\/\/github.com\/dwoo-project\/dwoo",
+			"name": "dwoo",
+			"version": "1.3.6",
+			"vendor": "dwoo",
+			"state": 1,
+			"system_package": 0,
+			"settings": {
+				"strict_variables": 0,
+				"cache_dir": "\/..\/cache\/_dwoo_cache"
+			}
+		},
+		"mustache.mustache": {
+			"namespace": "Mustache",
+			"dir": "\/mustache\/mustache\/src",
+			"link": "https:\/\/github.com\/bobthecow\/mustache.php\/archive\/v2.12.0.zip",
+			"git": "https:\/\/github.com\/bobthecow\/mustache.php",
+			"name": "mustache.php",
+			"version": "2.12.0",
+			"vendor": "mustache",
+			"state": 1,
+			"system_package": 0,
+			"settings": {
+				"strict_variables": 0,
+				"cache_dir": "\/..\/cache\/_mustache_cache"
+			}
+		},
+		"nette.latte": {
+			"namespace": "Latte",
+			"files": "\/..\/latte.php",
+			"dir": "\/nette\/latte\/src\/Latte",
+			"link": "https:\/\/github.com\/nette\/latte\/archive\/v2.4.7.zip",
+			"git": "https:\/\/github.com\/nette\/latte",
+			"name": "latte",
+			"version": "2.4.7",
+			"vendor": "nette",
+			"state": 1,
+			"system_package": 0,
+			"settings": {
+				"strict_variables": 0,
+				"cache_dir": "\/..\/cache\/_latte_cache"
+			}
+		},
+		"monolog.monolog": {
+			"namespace": "Monolog",
+			"dir": "\/monolog\/monolog\/src\/Monolog",
+			"link": "https:\/\/github.com\/Seldaek\/monolog\/archive\/1.23.0.zip",
+			"git": "https:\/\/github.com\/Seldaek\/monolog",
+			"name": "monolog",
+			"version": "1.23.0",
+			"vendor": "monolog",
+			"state": 1,
+			"system_package": 1,
+			"settings": {
+				"name": "",
+				"path": "",
+				"level": ""
 			}
 		},
 		"psr.http-message": {
@@ -694,77 +605,6 @@
 			"state": 1,
 			"system_package": 1
 		},
-		"twig.Twig": {
-			"namespace": "Twig",
-			"dir": "\/twig\/Twig\/lib\/Twig",
-			"link": "https:\/\/github.com\/twigphp\/Twig\/archive\/v2.4.4.zip",
-			"git": "https:\/\/github.com\/twigphp\/Twig",
-			"name": "Twig",
-			"version": "2.4.4",
-			"vendor": "twig",
-			"autoloading": "psr-0",
-			"replace_name": "Twig",
-			"state": 1,
-			"system_package": 1
-		},
-		"smarty.smarty": {
-			"namespace": "Smarty",
-			"files": "bootstrap.php",
-			"dir": "\/smarty\/smarty\/libs",
-			"link": "https:\/\/github.com\/smarty-php\/smarty\/archive\/v3.1.31.zip",
-			"git": "https:\/\/github.com\/smarty-php\/smarty",
-			"name": "smarty",
-			"version": "3.1.31",
-			"vendor": "smarty",
-			"state": 1,
-			"system_package": 0
-		},
-		"fenom.fenom": {
-			"namespace": "Fenom",
-			"dir": "\/fenom\/fenom\/src\/Fenom",
-			"files": "\/..\/Fenom.php",
-			"link": "https:\/\/github.com\/fenom-template\/fenom\/archive\/2.11.5.zip",
-			"git": "https:\/\/github.com\/fenom-template\/fenom",
-			"name": "fenom",
-			"version": "2.11.5",
-			"vendor": "fenom",
-			"state": 1,
-			"system_package": 0
-		},
-		"dwoo.dwoo": {
-			"namespace": "Dwoo",
-			"dir": "\/dwoo\/dwoo\/lib\/Dwoo",
-			"link": "https:\/\/github.com\/dwoo-project\/dwoo\/archive\/1.3.6.zip",
-			"git": "https:\/\/github.com\/dwoo-project\/dwoo",
-			"name": "dwoo",
-			"version": "1.3.6",
-			"vendor": "dwoo",
-			"state": 1,
-			"system_package": 0
-		},
-		"mustache.mustache": {
-			"namespace": "Mustache",
-			"dir": "\/mustache\/mustache\/src",
-			"link": "https:\/\/github.com\/bobthecow\/mustache.php\/archive\/v2.12.0.zip",
-			"git": "https:\/\/github.com\/bobthecow\/mustache.php",
-			"name": "mustache.php",
-			"version": "2.12.0",
-			"vendor": "mustache",
-			"state": 1,
-			"system_package": 0
-		},
-		"nette.latte": {
-			"namespace": "Latte",
-			"files": "\/..\/latte.php",
-			"dir": "\/nette\/latte\/src\/Latte",
-			"link": "https:\/\/github.com\/nette\/latte\/archive\/v2.4.7.zip",
-			"git": "https:\/\/github.com\/nette\/latte",
-			"name": "latte",
-			"version": "2.4.7",
-			"vendor": "nette",
-			"state": 1,
-			"system_package": 0
-		},
 		"webmozart.assert": {
 			"namespace": "Webmozart\\Assert",
 			"dir": "\/webmozart\/assert\/src",
@@ -899,6 +739,192 @@
 			"vendor": "spatie",
 			"state": 1,
 			"system_package": 0
+		},
+		"pllano.products-action": {
+			"namespace": "ApiShop\\Modules\\Products",
+			"dir": "\/pllano\/api-shop-packages\/products-action",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/api-shop-pllano\/packages\/products-action",
+			"name": "products-action",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 0,
+			"settings": {
+				"label": "action",
+				"limit": "6",
+				"sort": "price",
+				"order": "ASC",
+				"image_width": "360",
+				"image_height": "360",
+				"relations": "image"
+			},
+			"install": {
+				"modules": {
+					"block": "index",
+					"module": "products_action",
+					"vendor": "\\ApiShop\\Modules\\Products\\ProductsAction",
+					"function": "get",
+					"view": "modules\/products\/products_action.html"
+				},
+				"files": {
+					"view": {
+						"take_here": "view\/products_action.html",
+						"put_here": "modules\/products",
+						"put_name": "products_action.html"
+					}
+				}
+			}
+		},
+		"pllano.products-hit": {
+			"namespace": "ApiShop\\Modules\\Products",
+			"dir": "\/pllano\/api-shop-packages\/products-hit",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/products-hit",
+			"name": "products-hit",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 0,
+			"settings": {
+				"label": "hit",
+				"limit": "6",
+				"sort": "name",
+				"order": "ASC",
+				"image_width": "360",
+				"image_height": "360",
+				"relations": "image"
+			}
+		},
+		"pllano.article": {
+			"namespace": "ApiShop\\Modules\\Articles",
+			"dir": "\/pllano\/api-shop-packages\/article",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/article",
+			"name": "article",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 0,
+			"settings": {}
+		},
+		"pllano.article-category": {
+			"namespace": "ApiShop\\Modules\\Articles",
+			"dir": "\/pllano\/api-shop-packages\/article-category",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/article-category",
+			"name": "article-category",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 0,
+			"settings": {}
+		},
+		"pllano.product": {
+			"namespace": "ApiShop\\Modules\\Products",
+			"dir": "\/pllano\/api-shop-packages\/product",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/product",
+			"name": "product",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 0,
+			"settings": {
+				"image_width": "600",
+				"image_height": "600"
+			}
+		},
+		"pllano.quick-view": {
+			"namespace": "ApiShop\\Modules\\Products",
+			"dir": "\/pllano\/api-shop-packages\/quick-view",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/quick-view",
+			"name": "quick-view",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 0,
+			"settings": {
+				"image_width": "600",
+				"image_height": "600"
+			}
+		},
+		"pllano.category": {
+			"namespace": "ApiShop\\Modules\\Categories",
+			"dir": "\/pllano\/api-shop-packages\/category",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/category",
+			"name": "category",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 0,
+			"settings": {
+				"vendors": {
+					"products": "\\ApiShop\\Modules\\Categories\\Products",
+					"paginator": "\\ApiShop\\Modules\\Categories\\Pagination",
+					"filter": "\\ApiShop\\Modules\\Categories\\Filter"
+				},
+				"helper": {
+					"products_list": "modules\/category\/products_list.html",
+					"paginator": "modules\/category\/paginator.html"
+				},
+				"limit": "30",
+				"sort": "price",
+				"order": "ASC",
+				"image_width": "360",
+				"image_height": "360",
+				"relations": "image"
+			}
+		},
+		"pllano.top-menu": {
+			"namespace": "ApiShop\\Modules\\Menu",
+			"dir": "\/pllano\/api-shop-packages\/top-menu",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/api-shop-pllano\/api-shop-packages\/top-menu",
+			"name": "top-menu",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 0,
+			"settings": {}
+		},
+		"pllano.check-in": {
+			"namespace": "ApiShop\\Modules\\Account",
+			"dir": "\/pllano\/api-shop-packages\/check-in",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/check-in",
+			"name": "check-in",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 0,
+			"settings": {}
+		},
+		"pllano.login": {
+			"namespace": "ApiShop\\Modules\\Account",
+			"dir": "\/pllano\/api-shop-packages\/login",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/login",
+			"name": "login",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 0,
+			"settings": {}
+		},
+		"pllano.logout": {
+			"namespace": "ApiShop\\Modules\\Account",
+			"dir": "\/pllano\/api-shop-packages\/logout",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/logout",
+			"name": "logout",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 0,
+			"settings": {}
+		},
+		"pllano.blank": {
+			"namespace": "ApiShop\\Modules",
+			"dir": "\/pllano\/api-shop-packages\/blank",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/blank",
+			"name": "blank",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 0,
+			"settings": {}
 		}
 	}
 }
