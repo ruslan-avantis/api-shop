@@ -219,6 +219,7 @@ class ControllerManager
                     "config" => $config['settings']['site'],
                     "language" => $language,
                     "token" => $session->token,
+                    "post_id" => $post_id,
                     "session" => $sessionUser,
                     "session_temp" => $sessionTemp,
                     "content" => $content

@@ -328,7 +328,8 @@ $app->post('/install-template', function ($request, $response, $args) {
         $dir = filter_var($post['dir'], FILTER_SANITIZE_STRING);
         $host = filter_var($post['host'], FILTER_SANITIZE_STRING);
         if ($id && $uri && $dir && $host) {
-            $template_dir = $config["template"]["front_end"]["themes"]["dir"]."/".$config["template"]["front_end"]["themes"]["template"]."/".$dir;
+			
+            $template_dir = $config["template"]["front_end"]["themes"]["dir"]."/".$config["template"]["front_end"]["themes"]["templates"]."/".$dir;
             if (!file_exists($template_dir)) {
                 mkdir($template_dir, 0777, true);
                 file_put_contents($template_dir."/template.zip", file_get_contents($uri));
