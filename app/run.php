@@ -70,7 +70,7 @@ $container['logger'] = function ($c)
 // Register \Pllano\Adapter\TemplateEngine
 $container['view'] = function ($c)
 {
-	$view = '';
+	$view = null;
 	if ($c['config']['settings']["install"]["status"] != null) {
         // Получаем название шаблона из конфигурации
         $template = $c['config']['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
@@ -80,7 +80,7 @@ $container['view'] = function ($c)
         if ($site->template()) {$template = $site->template();}
         $view = new $c['config']['vendor']['templates']['template_engine']($c['config'], $template);
 	} else {
-        $loader = new \Twig_Loader_Filesystem($c['config']['settings']['themes']['front_end_dir']."/".$c['config']['template']['front_end']['themes']['templates']."/install");
+        $loader = new \Twig_Loader_Filesystem($c['config']["template"]["front_end"]["themes"]['dir']."/".$c['config']['template']['front_end']['themes']['templates']."/install");
         $view = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
     }
 	return $view;
@@ -90,8 +90,8 @@ $container['view'] = function ($c)
 $container['admin'] = function ($c)
 {
     // Получаем название шаблона
-    $template = $c['config']['admin']['template'];
-    $loader = new \Twig_Loader_Filesystem($c['config']['settings']['themes']['dir']."/".$c['config']['settings']['themes']['templates']."/".$template."/layouts");
+    $template = $c['config']["template"]["back_end"]["themes"]['template'];
+    $loader = new \Twig_Loader_Filesystem($c['config']["template"]["back_end"]["themes"]['dir']."/".$c['config']["template"]["back_end"]["themes"]['templates']."/".$template."/layouts");
     $admin = new \Twig_Environment($loader, ['cache' => false, 'strict_variables' => false]);
     return $admin;
 };

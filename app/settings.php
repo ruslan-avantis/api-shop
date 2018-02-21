@@ -52,9 +52,8 @@ class Settings {
         $config["settings"]["cache"] =  __DIR__ . "/_cache/";
         
         // Папка с шаблонами
-        $config["settings"]["themes"]["dir"] = __DIR__ .''.$json['template']['front_end']['themes']["dir_name"];
-        $config["settings"]["themes"]["back_end_dir"] = __DIR__ .''.$json['template']['back_end']['themes']["dir_name"];
-        $config["settings"]["themes"]["front_end_dir"] = __DIR__ .''.$json['template']['front_end']['themes']["dir_name"];
+        $config['template']['front_end']['themes']['dir'] = __DIR__ .''.$json['template']['front_end']['themes']['dir_name'];
+        $config['template']['back_end']['themes']['dir'] = __DIR__ .''.$json['template']['back_end']['themes']['dir_name'];
         // Директория хранения файлов базы данных json
         $config["db"]["json"]["dir"] = __DIR__ .''.$json["db"]["json"]["dir_name"];
         // Если директории нет создать

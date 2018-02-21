@@ -47,7 +47,7 @@ $app->get($admin_uri.$admin_index.'', function ($request, $response, $args) {
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -174,7 +174,7 @@ $app->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -1180,7 +1180,7 @@ $app->post($admin_uri.$admin_router.'template-delete', function ($request, $resp
         if (isset($post['dir'])) {
             $dir = filter_var($post['dir'], FILTER_SANITIZE_STRING);
             
-            $directory = $config["settings"]["themes"]["dir"].'/'.$config["settings"]["themes"]["templates"].'/'.$dir;
+            $directory = $config["settings"]["themes"]["dir"].'/'.$config["template"]["front_end"]["themes"]["template"].'/'.$dir;
             // Подключаем класс
             $admin = new \ApiShop\Admin\Control();
             // Получаем массив
@@ -1226,7 +1226,7 @@ $app->get($admin_uri.$admin_router.'template', function ($request, $response, $a
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -1348,7 +1348,7 @@ $app->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($re
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -1464,7 +1464,7 @@ $app->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($r
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -1595,7 +1595,7 @@ $app->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -1831,7 +1831,7 @@ $app->get($admin_uri.$admin_router.'packages', function ($request, $response, $a
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -1943,7 +1943,7 @@ $app->get($admin_uri.$admin_router.'packages-install', function ($request, $resp
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -2055,7 +2055,7 @@ $app->get($admin_uri.$admin_router.'packages-install-json', function ($request, 
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -2167,7 +2167,7 @@ $app->get($admin_uri.$admin_router.'config', function ($request, $response, $arg
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -2280,7 +2280,7 @@ $app->post($admin_uri.$admin_router.'config', function ($request, $response, $ar
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -2398,7 +2398,7 @@ $app->get($admin_uri.$admin_router.'db', function ($request, $response, $args) {
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -2513,7 +2513,7 @@ $app->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', f
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);
@@ -2725,7 +2725,7 @@ $app->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', 
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config['admin']['template']);
+    $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
     $languages = new Language($request, $config);

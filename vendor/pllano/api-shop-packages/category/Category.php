@@ -113,7 +113,7 @@ class Category
  
                     if (isset($category['categories_template'])) {
                         $themes_dir = $config["settings"]["themes"]["dir"];
-                        $templates_dir = $config["settings"]["themes"]["templates"];
+                        $templates_dir = $config["template"]["front_end"]["themes"]["template"];
                         $template_name = $config["settings"]["themes"]["template"];
                         $templates_test = $themes_dir.'/'.$templates_dir.'/'.$template_name.'/layouts/'.$category['categories_template'];
                         if (file_exists($templates_test)) {

@@ -28,7 +28,7 @@ class Site
     function __construct($config)
     {
         $this->config = $config;
-        $this->template = $this->config["settings"]["themes"]["template"];
+        $this->template = $this->config["template"]["front_end"]["themes"]["template"];
     }
 
     public function get()
@@ -49,25 +49,22 @@ class Site
                 // Отправляем запрос и получаем данные
                 $response = $db->get($this->resource);
  
-                if ($response != null) {
-                    $this->site = $response["body"]["items"]["0"]["item"];
-                } else {
-                    $this->site = null;
-                }
- 
+				$this->site = null;
+				if(isset($response["body"]["items"]["0"]["item"])) {
+                    if ($response != null) {
+                        $this->site = $response["body"]["items"]["0"]["item"];
+                    }
+				}
                 if ($cache->state() == 1) {
                     $cache->set($this->site);
                 }
- 
                 return $this->site;
- 
             } else {
                 return $cache->get();
             }
         } else {
              return $cache->get();
         }
-    
     }
  
     public function template()

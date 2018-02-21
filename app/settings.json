@@ -3,7 +3,7 @@
 	"update": "pllano",
 	"cache": {
 		"driver": "filesystem",
-		"state": 1,
+		"state": 0,
 		"cache_lifetime": "3600",
 		"dynamic": 0,
 		"cpu": "80",
@@ -12,16 +12,6 @@
 		"adapter": "apishop",
 		"print": 0,
 		"clear": 0,
-		"memcached": {
-			"pool": "\\Cache\\Adapter\\Memcached\\MemcachedCachePool",
-			"host": "127.0.0.1",
-			"port": "11211"
-		},
-		"memcache": {
-			"pool": "\\Cache\\Adapter\\Memcache\\MemcacheCachePool",
-			"host": "127.0.0.1",
-			"port": "11211"
-		},
 		"filesystem": {
 			"pool": "\\Cache\\Adapter\\Filesystem\\FilesystemCachePool",
 			"filesystem_adapter": "\\League\\Flysystem\\Adapter\\Local",
@@ -31,6 +21,26 @@
 		"json": {
 			"pool": "\\ApiShop\\Adapter\\Cache\\JsonCache",
 			"path": "cache\/_json_cache"
+		},
+		"memcached": {
+			"pool": "\\Cache\\Adapter\\Memcached\\MemcachedCachePool",
+			"host": "127.0.0.1",
+			"port": "11211"
+		},
+		"predis": {
+			"pool": "\\Cache\\Adapter\\Predis\\PredisCachePool",
+			"host": "127.0.0.1",
+			"port": "6379"
+		},
+		"memcache": {
+			"pool": "\\Cache\\Adapter\\Memcache\\MemcacheCachePool",
+			"host": "127.0.0.1",
+			"port": "11211"
+		},
+		"redis": {
+			"pool": "\\Cache\\Adapter\\Redis\\RedisCachePool",
+			"host": "127.0.0.1",
+			"port": "11211"
 		},
 		"elasticsearch": {
 			"pool": "\\ApiShop\\Adapter\\Cache\\Elasticsearch",
@@ -48,16 +58,6 @@
 			"host": "localhost",
 			"port": "9200",
 			"name": "cache"
-		},
-		"redis": {
-			"pool": "\\Cache\\Adapter\\Redis\\RedisCachePool",
-			"host": "127.0.0.1",
-			"port": "11211"
-		},
-		"predis": {
-			"pool": "\\Cache\\Adapter\\Predis\\PredisCachePool",
-			"host": "127.0.0.1",
-			"port": "6379"
 		},
 		"doctrine": {
 			"pool": "\\Cache\\Adapter\\Doctrine\\DoctrineCachePool",
@@ -576,12 +576,12 @@
 			"head": "title,keywords,description,robots,og_title,og_description,og_image,og_type,og_url"
 		},
 		"site": {
-			"title": "API Shop",
+			"title": "API Shop - \u00abMade in Ukraine\u00bb",
 			"description": "\u0420\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u0447\u0435\u0440\u0435\u0437 RESTful API",
-			"keywords": "API Shop",
+			"keywords": "API Shop - \u00abMade in Ukraine\u00bb",
 			"robots": "index, follow",
-			"og_title": "API Shop",
-			"og_description": "API Shop",
+			"og_title": "API Shop - \u00abMade in Ukraine\u00bb",
+			"og_description": "API Shop - \u00abMade in Ukraine\u00bb",
 			"og_image": "",
 			"og_locale": "",
 			"og_type": "site",
@@ -590,11 +590,6 @@
 			"seo_text": "",
 			"demo_panel": 0,
 			"cookie_httponly": 1
-		},
-		"themes": {
-			"template": "mini-mo-twig",
-			"templates": "templates",
-			"dir_name": "\/..\/..\/themes"
 		},
 		"session": {
 			"name": "_session",
@@ -827,5 +822,8 @@
 				"authorization": 0
 			}
 		}
-	}
+	},
+	"text": "\r\n",
+	"files": "",
+	"seo_text": "\r\n"
 }

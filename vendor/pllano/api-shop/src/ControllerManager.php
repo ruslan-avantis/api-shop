@@ -106,7 +106,8 @@ class ControllerManager
             $siteConfig = $site->get();
             // Получаем название шаблона
             // Конфигурация шаблона
-            $templateConfig = new Template($site->template());
+ 
+            $templateConfig = new Template($config, $site->template());
             $template = $templateConfig->get();
  
             // layout по умолчанию 404
@@ -137,6 +138,7 @@ class ControllerManager
  
             if ($config["settings"]["install"]["status"] != null) {
                 $pluginsArr = [];
+				$dataArr = [];
                 $arr = [];
                 $cache = new Cache($config);
                 if ($cache->run($host.''.$params.'/'.$lang.'/'.$this->route) === null) {
@@ -184,7 +186,8 @@ class ControllerManager
                 
                 //print_r($data);
  
-            } else {
+            } 
+		    else {
 			    $render = "index.html";
                 // Если ключа доступа у нет, значит сайт еще не активирован
                 $content = '';
@@ -222,7 +225,7 @@ class ControllerManager
                 ];
             }
  
-            // Передаем данные Hooks для обработки ожидающим классам
+			// Передаем данные Hooks для обработки ожидающим классам
             $hook->get($render, $data);
             // Запись в лог
             $this->logger->info($hook->logger());
@@ -264,7 +267,7 @@ class ControllerManager
         $siteConfig = $site->get();
         // Получаем название шаблона
         // Конфигурация шаблона
-        $templateConfig = new Template($site->template());
+        $templateConfig = new Template($config, $site->template());
         $template = $templateConfig->get();
         // Подключаем мультиязычность
         $languages = new Language($request, $config);

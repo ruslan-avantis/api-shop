@@ -110,7 +110,6 @@ $app->post('/install-api-key', function ($request, $response, $args) {
                 $template = 'mini-mo-twig';
                 $template_engine = 'twig';
             }
-            $paramPost['settings']['themes']['template'] = $template;
             $paramPost['template']['front_end']['themes']['template'] = $template;
             $paramPost['template']['front_end']['template_engine'] = 'twig';
  
@@ -329,7 +328,7 @@ $app->post('/install-template', function ($request, $response, $args) {
         $dir = filter_var($post['dir'], FILTER_SANITIZE_STRING);
         $host = filter_var($post['host'], FILTER_SANITIZE_STRING);
         if ($id && $uri && $dir && $host) {
-            $template_dir = $config["settings"]["themes"]["dir"]."/".$config["settings"]["themes"]["templates"]."/".$dir;
+            $template_dir = $config["settings"]["themes"]["dir"]."/".$config["template"]["front_end"]["themes"]["template"]."/".$dir;
             if (!file_exists($template_dir)) {
                 mkdir($template_dir, 0777, true);
                 file_put_contents($template_dir."/template.zip", file_get_contents($uri));

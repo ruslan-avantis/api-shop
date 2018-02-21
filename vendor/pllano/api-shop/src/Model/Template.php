@@ -21,21 +21,19 @@ class Template {
     private $template = null;
     private $config;
  
-    function __construct($template = null)
+    function __construct($config, $template = null)
     {
-        // Устанавливаем название шаблона
-        if ($template != null) {
+        $this->config = $config;
+		// Устанавливаем название шаблона
+        if(isset($template)) {
             $this->template = $template;
         }
-        // Подключаем конфиг Settings\Config
-        $config = (new Settings())->get();
-        $this->config = $config;
     }
  
     public function get()
     {
-        if ($this->template != null) {
-            $json_dir = $this->config["settings"]["themes"]["dir"].'/'.$this->config["settings"]["themes"]["templates"].'/'.$this->template.'/config/';
+        if(isset($this->template)) {
+            $json_dir = $this->config['template']['front_end']['themes']['dir'].'/'.$this->config['template']['front_end']['themes']['templates'].'/'.$this->template.'/config/';
             if (file_exists($json_dir."config.json")) {
                 return json_decode(file_get_contents($json_dir."config.json"), true);
             } else {
