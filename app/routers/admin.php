@@ -1032,8 +1032,6 @@ $app->post($admin_uri.$admin_router.'template-install', function ($request, $res
     // Выводим заголовки
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
-
-
     // Выводим json
     return $response->write(json_encode($hook->callback($callback)));
     

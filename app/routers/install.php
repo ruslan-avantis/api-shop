@@ -31,16 +31,20 @@ $app->post('/install-api-key', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security())->token();
+        (new Security($config))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     try {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security())->csrf();
+        (new Security($config))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
+ 
+	$callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
  
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = $utility->clean($post_csrf);
@@ -119,27 +123,18 @@ $app->post('/install-api-key', function ($request, $response, $args) {
             // Сохраняем
             $settingsAdmin->put($newArr);
  
-            $callback = ['status' => 200];
- 
+            $callbackStatus = 200;
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Соообщение системы",
-                'text' => "Не валидный public_key"
-            );
+		    $callbackTitle = "Не валидный public_key";
         }
- 
-        // Выводим заголовки
-        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     } else {
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Ошибка"
-        );
-        // Выводим заголовки
-        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
+        $callbackTitle = "Ошибка";
     }
+	$callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    return $response->write(json_encode($callback));
+ 
 });
  
 // Записать в сессию
@@ -155,7 +150,7 @@ $app->post('/install-key', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security())->token();
+        (new Security($config))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -164,34 +159,30 @@ $app->post('/install-key', function ($request, $response, $args) {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security())->csrf();
+        (new Security($config))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
     // Подключаем плагины
     $utility = new Utility();
+ 
+	$callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = $utility->clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
-        
         $session->install = 10;
-            
-        $callback = array(
-            'status' => 200,
-            'title' => "Информация",
-            'text' => "Все ок"
-        );
-        // Выводим заголовки
-        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
+        $callbackStatus = 200;
     } else {
-        $callback = array(
-            'status' => 200,
-            'title' => "Ошибка",
-            'text' => "Ошибка"
-        );
-        // Выводим заголовки
-        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
+        $callbackTitle = "Ошибка";
     }
+	$callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    return $response->write(json_encode($callback));
+ 
 });
 
 // Записать в сессию
@@ -207,7 +198,7 @@ $app->post('/install-no-key', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security())->token();
+        (new Security($config))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -216,34 +207,30 @@ $app->post('/install-no-key', function ($request, $response, $args) {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security())->csrf();
+        (new Security($config))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
     // Подключаем плагины
     $utility = new Utility();
+ 
+	$callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = $utility->clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
-        
         $session->install = 0;
-            
-        $callback = array(
-            'status' => 200,
-            'title' => "Информация",
-            'text' => "Все ок"
-        );
-        // Выводим заголовки
-        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
+        $callbackStatus = 200;
     } else {
-        $callback = array(
-            'status' => 200,
-            'title' => "Ошибка",
-            'text' => "Ошибка"
-        );
-        // Выводим заголовки
-        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
+        $callbackTitle = "Ошибка";
     }
+	$callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    return $response->write(json_encode($callback));
+ 
 });
  
 // Записать выбранный магазин в сессию
@@ -259,7 +246,7 @@ $app->post('/install-store', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security())->token();
+        (new Security($config))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -268,7 +255,7 @@ $app->post('/install-store', function ($request, $response, $args) {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security())->csrf();
+        (new Security($config))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
     // Подключаем плагины
@@ -314,7 +301,7 @@ $app->post('/install-template', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security())->token();
+        (new Security($config))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -323,13 +310,18 @@ $app->post('/install-template', function ($request, $response, $args) {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security())->csrf();
+        (new Security($config))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
     // Подключаем плагины
     $utility = new Utility();
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = $utility->clean($post_csrf);
+ 
+	$callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         $id = filter_var($post['id'], FILTER_SANITIZE_STRING);
@@ -392,11 +384,7 @@ $app->post('/install-template', function ($request, $response, $args) {
                 $session->install_dir = $dir;
                 $session->install_host = $host;
  
-                $callback = array(
-                    'status' => 200,
-                    'title' => "Информация",
-                    'text' => "Все ок"
-                );
+                $callbackStatus = 200;
  
             } else {
  
@@ -415,33 +403,19 @@ $app->post('/install-template', function ($request, $response, $args) {
                 } else {
                     $session->install = null;
                 }
- 
-                $callback = array(
-                    'status' => 200,
-                    'title' => "Информация",
-                    'text' => "Этот шаблоу уже установлен"
-                );
- 
+				$callbackStatus = 200;
             }
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Информация",
-                'text' => "Ошибка"
-            );
+		    $callbackTitle = "Ошибка";
         }
- 
-        // Выводим заголовки
-        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
     } else {
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Ошибка"
-        );
-        // Выводим заголовки
-        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
+	    $callbackTitle = "Ошибка";
     }
+	$callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    return $response->write(json_encode($callback));
+ 
 });
  
 // Регистрация продавца
@@ -461,7 +435,7 @@ $app->post('/register-in-seller', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security())->token();
+        (new Security($config))->token($request);
         $token = null;
     }
     // Получаем данные отправленные нам через POST
@@ -476,7 +450,7 @@ $app->post('/register-in-seller', function ($request, $response, $args) {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security())->csrf();
+        (new Security($config))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
     // Подключаем плагины
@@ -736,7 +710,7 @@ $app->post('/start-shop', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security())->token();
+        (new Security($config))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -745,11 +719,16 @@ $app->post('/start-shop', function ($request, $response, $args) {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security())->csrf();
+        (new Security($config))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
     // Подключаем плагины
     $utility = new Utility();
+ 
+	$callbackStatus = 400;
+    $callbackTitle = 'Соообщение системы';
+    $callbackText = '';
+ 
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = $utility->clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
@@ -827,49 +806,23 @@ $app->post('/start-shop', function ($request, $response, $args) {
                     $session->public_key = null;
                     $session->platform_user_id = null;
  
-                    $callback = ['status' => 200];
- 
-                    // Выводим заголовки
-                    return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
- 
+                    $callbackStatus = 200;
                 } else {
-                    $callback = array(
-                        'status' => 400,
-                        'title' => "Ошибка",
-                        'text' => "Ошибка"
-                    );
-                    // Выводим заголовки
-                    return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
+                    $callbackTitle = "Ошибка";
                 }
             } else {
-                $callback = array(
-                    'status' => 400,
-                    'title' => "Ошибка",
-                    'text' => "Ошибка"
-                );
-                // Выводим заголовки
-                return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
+                $callbackTitle = "Ошибка";
             }
         } else {
-            $callback = array(
-                'status' => 400,
-                'title' => "Ошибка",
-                'text' => "Ошибка"
-            );
-            // Выводим заголовки
-            return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
+            $callbackTitle = "Ошибка";
         }
     } else {
-        $callback = array(
-            'status' => 400,
-            'title' => "Ошибка",
-            'text' => "Ошибка"
-        );
-        // Выводим заголовки
- 
-        // Выводим json
-        return $response->write(json_encode($callback))->withStatus(200)->withHeader('Content-type', 'application/json');
+        $callbackTitle = "Ошибка";
     }
+	$callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    $response->withStatus(200);
+    $response->withHeader('Content-type', 'application/json');
+    return $response->write(json_encode($callback));
  
 });
  
