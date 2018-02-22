@@ -35,7 +35,7 @@ define("BASE_PATH", dirname(__FILE__));
 session_start();
  
 $vendor_dir = '';
-// Указываем путь к папке vendor
+// Ищем путь к папке vendor
 if (file_exists(BASE_PATH . '/vendor')) {
     $vendor_dir = BASE_PATH . '/vendor';
 } elseif (BASE_PATH . '/../vendor') {

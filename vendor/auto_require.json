@@ -1,4 +1,5 @@
 {
+	"update": {},
 	"require": {
 		"slim.slim": {
 			"namespace": "Slim",
