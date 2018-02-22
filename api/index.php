@@ -10,12 +10,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
-// Вывод ошибок. Что бы выключить закоментируйте эти строки
-// ini_set('error_reporting', E_ALL);
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-
+ 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
     // something which should probably be served as a static file
@@ -26,64 +21,81 @@ if (PHP_SAPI == 'cli-server') {
         return false;
     }
 }
+ 
+define("BASE_PATH", dirname(__FILE__));
+ 
+$vendor_dir = '';
+// Указываем путь к папке vendor
+if (file_exists(BASE_PATH . '/../vendor')) {
+    $vendor_dir = BASE_PATH . '/../vendor';
+} elseif (BASE_PATH . '/../../vendor') {
+    $vendor_dir = BASE_PATH . '/../../vendor';
+}
 
-// Connect \AutoRequire\Autoloader
-require __DIR__ . '/../vendor/AutoRequire.php';
- 
-// instantiate the loader
-$require = new \AutoRequire\Autoloader;
- 
-// Указываем путь к папке vendor для AutoRequire
-$vendor_dir = __DIR__ . '/../vendor';
- 
+// Указываем путь к AutoRequire
+$autoRequire = $vendor_dir.'/AutoRequire.php';
 // Указываем путь к auto_require.json
-$auto_require_min = __DIR__ . '/../vendor/auto_require_min.json';
-$auto_require = __DIR__ . '/../vendor/auto_require.json';
+$auto_require = $vendor_dir.'/auto_require.json';
  
-if (file_exists(__DIR__ . '/../../vendor/_autoload.php')) {
- 
-    // Запускаем Автозагрузку
-    $require->run($vendor_dir, $auto_require_min);
- 
-    // Подключаем Composer
-    require __DIR__ . '/../../vendor/autoload.php';
- 
-} else {
- 
+if (file_exists($autoRequire) && file_exists($auto_require)) {
+	
+    // Connect \Pllano\AutoRequire\Autoloader
+    require $autoRequire;
+    // instantiate the loader
+    $require = new \Pllano\AutoRequire\Autoloader();
     // Запускаем Автозагрузку
     $require->run($vendor_dir, $auto_require);
  
-}
+    // Подключаем файл конфигурации системы
+    require BASE_PATH . '/app/settings.php';
+    $config = \ApiShop\Config\Settings::get();
  
-$loader = new \AutoRequire\Autoloader;
-$loader->register();
-$loader->addNamespace('ApiShop\\Api\\Services', __DIR__ . '/services');
+    // Получаем список и конфигурацию пакетов
+    $package = json_decode(file_get_contents($auto_require), true);
+    $slimSettings = $package['require']['slim.slim']['settings'];
  
-require __DIR__ . '/../app/config/settings.php';
-// Подключаем файл конфигурации системы
-// Получаем конфигурацию
-$settings = new \ApiShop\Config\Settings();
-$config = $settings->get();
-$slimArr = '';
-// На всякий случай, конвертируем конфигурацию в правильный формат
-foreach ($config['slim']['settings'] as $key => $value) {
-    $value = str_replace(array("1", '1', 1), true, $value);
-    $value = str_replace(array("0", '0', 0), false, $value);
-    $slimArr[$key] = $value;
-}
-$slim['settings'] = $slimArr;
-// Подключаем Slim и отдаем ему конфигурацию
-// Подключаем Slim и отдаем ему Конфиг
-$app = new \Slim\App($slim);
+    $slim = [];
+ 
+    $slim['debug'] = false;
+    $slim['displayErrorDetails'] = false;
+    $slim['addContentLengthHeader'] = false;
+    $slim['determineRouteBeforeAppMiddleware'] = false;
+ 
+/*     if (isset($slimSettings['displayErrorDetails'])) {if ((int)$slimSettings['displayErrorDetails'] == 1) {
+        ini_set('error_reporting', E_ALL);
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+    }} */
+ 
+    if (isset($slimSettings)) {
+        foreach($slimSettings as $key => $val)
+        {
+            if((int)$val == 1){
+                $slim[$key] = true;
+            } elseif((int)$val == 0) {
+                $slim[$key] = false;
+            } else {
+                $slim[$key] = $val;
+            }
+        }
+    }
+ 
+    $loader = new \Pllano\AutoRequire\Autoloader();
+    $loader->register();
+    $loader->addNamespace('ApiShop\\Api\\Services', __DIR__ . '/services');
+ 
+    // Подключаем Slim и отдаем ему конфигурацию
+    $app = new \Slim\App($slim);
 
-// Automatically register routers
-// Автоматическое подключение роутеров
-$routers = glob(__DIR__ . '/routers/*.php');
-foreach ($routers as $router) {
-require $router;
-}
-
-// Slim Run
-$app->run();
+    // Automatically register routers
+    // Автоматическое подключение роутеров
+    $routers = glob(__DIR__ . '/routers/*.php');
+    foreach ($routers as $router) {
+        require $router;
+    }
  
-    
+    // Slim Run
+    $app->run();
+ 
+}
+ 

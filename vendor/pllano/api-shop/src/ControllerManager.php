@@ -37,7 +37,7 @@ class ControllerManager
         $this->route = $route;
         $this->query = $query;
     }
-	
+    
 /*     private $container;
 
     public function __construct(ContainerInterface $container)
@@ -136,7 +136,7 @@ class ControllerManager
  
             if ($config["settings"]["install"]["status"] != null) {
                 $pluginsArr = [];
-				$dataArr = [];
+                $dataArr = [];
                 $arr = [];
                 $cache = new Cache($config);
                 if ($cache->run($host.''.$params.'/'.$lang.'/'.$this->route) === null) {
@@ -163,8 +163,8 @@ class ControllerManager
  
                 // Определяем layout
                 // Модули могут поменять layout
-				$render = $dataArr['content']['modules'][$this->route]['content']['layout'] ?? $template['layouts']['layout'];
-				
+                $render = $dataArr['content']['modules'][$this->route]['content']['layout'] ?? $template['layouts']['layout'];
+                
 /*                 if (isset($dataArr['content']['modules'][$this->route]['content']['layout'])) {
                     $render = $dataArr['content']['modules'][$this->route]['content']['layout'];
                 } elseif (isset($dataArr['content'])) {
@@ -185,8 +185,8 @@ class ControllerManager
                 //print_r($data);
  
             } 
-		    else {
-			    $render = "index.html";
+            else {
+                $render = "index.html";
                 // Если ключа доступа у нет, значит сайт еще не активирован
                 $content = '';
                 // $session->install = null;
@@ -196,8 +196,8 @@ class ControllerManager
                         $content = (new Install($config))->stores_list();
                     } elseif ($session->install == 2) {
                         $render = "templates.html";
-						
-						$install_store = $session->install_store ?? null; // php7
+                        
+                        $install_store = $session->install_store ?? null; // php7
  
                         $content = (new Install($config))->templates_list($install_store);
                     } elseif ($session->install == 3) {
@@ -224,17 +224,17 @@ class ControllerManager
                 ];
             }
  
-			// Передаем данные Hooks для обработки ожидающим классам
+            // Передаем данные Hooks для обработки ожидающим классам
             $hook->get($render, $data);
             // Запись в лог
             $this->logger->info($hook->logger());
  
         }
-		if ($config['settings']["install"]["status"] != null) {
-			return $this->view->render($hook->render(), $hook->view());
-		} else {
-		    return $this->view->render($render, $data);
-		}
+        if ($config['settings']["install"]["status"] != null) {
+            return $this->view->render($hook->render(), $hook->view());
+        } else {
+            return $this->view->render($render, $data);
+        }
  
     }
  
@@ -313,7 +313,7 @@ class ControllerManager
         }
  
         // Выводим json
-        echo json_encode($callback, JSON_PRETTY_PRINT);
+        return json_encode($callback, JSON_PRETTY_PRINT);
  
     }
  

@@ -77,7 +77,7 @@ class Image {
  
                     if (!file_exists($this->image)) {
  
-                            if (!file_exists($this->image_temp)) {
+                            if (!file_exists($this->image_temp) && (@fopen($url,"r")==true)) {
                                 file_put_contents($this->image_temp, file_get_contents($url));
                             }
                             if (file_exists($this->image_temp)) {

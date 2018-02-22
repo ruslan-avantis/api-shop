@@ -112,9 +112,9 @@ class Category
                     $head["products_sort"] = $category['products_sort'] ? $category['products_sort'] : $moduleArr['config']['sort'];
  
                     if (isset($category['categories_template'])) {
-                        $themes_dir = $config["settings"]["themes"]["dir"];
-                        $templates_dir = $config["template"]["front_end"]["themes"]["template"];
-                        $template_name = $config["settings"]["themes"]["template"];
+                        $themes_dir = $config["template"]["front_end"]["themes"]["dir"];
+                        $templates_dir = $config["template"]["front_end"]["themes"]["templates"];
+                        $template_name = $config["template"]["front_end"]["themes"]["template"];
                         $templates_test = $themes_dir.'/'.$templates_dir.'/'.$template_name.'/layouts/'.$category['categories_template'];
                         if (file_exists($templates_test)) {
                             $render = $category['categories_template'] ? $category['categories_template'] : $moduleArr['config']['view'];

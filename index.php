@@ -17,6 +17,8 @@
     * Вы можете использовать ApiShop\Adapter\ и менять vendor в конфигурации
 */
  
+declare(strict_types = 1);
+ 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
     // something which should probably be served as a static file
@@ -27,15 +29,17 @@ if (PHP_SAPI == 'cli-server') {
     }
 }
  
+define("BASE_PATH", dirname(__FILE__));
+ 
 // Запускаем сессию PHP
 session_start();
  
 $vendor_dir = '';
 // Указываем путь к папке vendor
-if (file_exists(__DIR__ . '/vendor')) {
-    $vendor_dir = __DIR__ . '/vendor';
-} elseif (__DIR__ . '/../vendor') {
-    $vendor_dir = __DIR__ . '/../vendor';
+if (file_exists(BASE_PATH . '/vendor')) {
+    $vendor_dir = BASE_PATH . '/vendor';
+} elseif (BASE_PATH . '/../vendor') {
+    $vendor_dir = BASE_PATH . '/../vendor';
 }
  
 // Указываем путь к AutoRequire
@@ -53,35 +57,38 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
     $require->run($vendor_dir, $auto_require);
  
     // Подключаем файл конфигурации системы
-    require __DIR__ . '/app/settings.php';
+    require BASE_PATH . '/app/settings.php';
     $config = \ApiShop\Config\Settings::get();
  
     // Получаем список и конфигурацию пакетов
     $package = json_decode(file_get_contents($auto_require), true);
-	$slimSettings = $package['require']['slim.slim']['settings'];
+    $slimSettings = $package['require']['slim.slim']['settings'];
  
-	$slim = [];
+    $slim = [];
  
-	$slim['debug'] = false;
-	$slim['displayErrorDetails'] = false;
-	$slim['addContentLengthHeader'] = false;
-	$slim['determineRouteBeforeAppMiddleware'] = false;
+    $slim['debug'] = false;
+    $slim['displayErrorDetails'] = false;
+    $slim['addContentLengthHeader'] = false;
+    $slim['determineRouteBeforeAppMiddleware'] = false;
  
-    if (isset($slimSettings['displayErrorDetails'])) {if ($slimSettings['displayErrorDetails'] == 1) {
+/*     if (isset($slimSettings['displayErrorDetails'])) {if ((int)$slimSettings['displayErrorDetails'] == 1) {
         ini_set('error_reporting', E_ALL);
         ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
-		$slim['displayErrorDetails'] = true;
-    }}
-	if (isset($slimSettings['debug'])) {if ($slimSettings['debug'] == 1) {
-	    $slim['debug'] = true;
-	}}
-	if (isset($slimSettings['addContentLengthHeader'])) {if ($slimSettings['addContentLengthHeader'] == 1) {
-	    $slim['addContentLengthHeader'] = true;
-	}}
-	if (isset($slimSettings['determineRouteBeforeAppMiddleware'])) {if ($slimSettings['determineRouteBeforeAppMiddleware'] == 1) {
-	    $slim['determineRouteBeforeAppMiddleware'] = true;
-	}}
+    }} */
+ 
+    if (isset($slimSettings)) {
+        foreach($slimSettings as $key => $val)
+        {
+            if((int)$val == 1){
+                $slim[$key] = true;
+            } elseif((int)$val == 0) {
+                $slim[$key] = false;
+            } else {
+                $slim[$key] = $val;
+            }
+        }
+    }
  
     // Подключаем Slim и отдаем ему конфигурацию
     $app = new \Slim\App($slim);
@@ -98,7 +105,7 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
     // Получаем конфигурацию роутеров
     $router = $config['routers']['site'];
     // Подключаем Routers и Containers
-    require __DIR__ . '/app/run.php';
+    require BASE_PATH . '/app/run.php';
     // Slim Run
     $app->run();
  

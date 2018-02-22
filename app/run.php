@@ -63,13 +63,9 @@ $container['admin'] = function ($c)
 	}
     return new \Twig_Environment($loader, $twig_config);
 };
- 
+// Регистрируем контейнеры в Slim
 $app->setContainer(new PsrContainer($container));
  
-//$controller = $config['vendor']['controllers']['controller'];
-//$app->get($router['index']['route'], $controller.':get')->add(new $controller($container))->setName('index');
-//$app->get($router['index']['route'], ['App\Controller\UserController', 'indexAction']);
-
 // GET - Главная
 $app->get($router['index']['route'], function ($request, $response, $args) {
     $controller = $this->get('config')['vendor']['controllers']['controller'];
