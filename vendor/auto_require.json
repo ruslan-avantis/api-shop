@@ -13,6 +13,17 @@
 			"state": 1,
 			"system_package": 1
 		},
+		"nikic.php-parser": {
+			"namespace": "FastRoute",
+			"dir": "\/nikic\/PhpParser\/lib\/PhpParser",
+			"link": "https:\/\/github.com\/nikic\/PHP-Parser\/archive\/master.zip",
+			"git": "https:\/\/github.com\/nikic\/PHP-Parser",
+			"name": "PHP-Parser",
+			"version": "master",
+			"vendor": "nikic",
+			"state": 1,
+			"system_package": 1
+		},
 		"slim.slim": {
 			"namespace": "Slim",
 			"dir": "\/slim\/Slim\/Slim",
@@ -743,7 +754,7 @@
 		},
 		"pllano.products-action": {
 			"namespace": "ApiShop\\Modules\\Products",
-			"dir": "\/pllano\/api-shop-packages\/products-action",
+			"dir": "\/pllano\/api-shop-modules\/products-action",
 			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/api-shop-pllano\/packages\/products-action",
 			"name": "products-action",
 			"version": "master",
@@ -778,8 +789,8 @@
 		},
 		"pllano.products-hit": {
 			"namespace": "ApiShop\\Modules\\Products",
-			"dir": "\/pllano\/api-shop-packages\/products-hit",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/products-hit",
+			"dir": "\/pllano\/api-shop-modules\/products-hit",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-modules\/products-hit",
 			"name": "products-hit",
 			"version": "master",
 			"vendor": "pllano",
@@ -797,8 +808,8 @@
 		},
 		"pllano.article": {
 			"namespace": "ApiShop\\Modules\\Articles",
-			"dir": "\/pllano\/api-shop-packages\/article",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/article",
+			"dir": "\/pllano\/api-shop-modules\/article",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-modules\/article",
 			"name": "article",
 			"version": "master",
 			"vendor": "pllano",
@@ -808,8 +819,8 @@
 		},
 		"pllano.article-category": {
 			"namespace": "ApiShop\\Modules\\Articles",
-			"dir": "\/pllano\/api-shop-packages\/article-category",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/article-category",
+			"dir": "\/pllano\/api-shop-modules\/article-category",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-modules\/article-category",
 			"name": "article-category",
 			"version": "master",
 			"vendor": "pllano",
@@ -819,8 +830,8 @@
 		},
 		"pllano.product": {
 			"namespace": "ApiShop\\Modules\\Products",
-			"dir": "\/pllano\/api-shop-packages\/product",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/product",
+			"dir": "\/pllano\/api-shop-modules\/product",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-modules\/product",
 			"name": "product",
 			"version": "master",
 			"vendor": "pllano",
@@ -833,8 +844,8 @@
 		},
 		"pllano.quick-view": {
 			"namespace": "ApiShop\\Modules\\Products",
-			"dir": "\/pllano\/api-shop-packages\/quick-view",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/quick-view",
+			"dir": "\/pllano\/api-shop-modules\/quick-view",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-modules\/quick-view",
 			"name": "quick-view",
 			"version": "master",
 			"vendor": "pllano",
@@ -847,8 +858,8 @@
 		},
 		"pllano.category": {
 			"namespace": "ApiShop\\Modules\\Categories",
-			"dir": "\/pllano\/api-shop-packages\/category",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/category",
+			"dir": "\/pllano\/api-shop-modules\/category",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-modules\/category",
 			"name": "category",
 			"version": "master",
 			"vendor": "pllano",
@@ -874,8 +885,8 @@
 		},
 		"pllano.top-menu": {
 			"namespace": "ApiShop\\Modules\\Menu",
-			"dir": "\/pllano\/api-shop-packages\/top-menu",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/api-shop-pllano\/api-shop-packages\/top-menu",
+			"dir": "\/pllano\/api-shop-modules\/top-menu",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/api-shop-pllano\/api-shop-modules\/top-menu",
 			"name": "top-menu",
 			"version": "master",
 			"vendor": "pllano",
@@ -885,8 +896,8 @@
 		},
 		"pllano.check-in": {
 			"namespace": "ApiShop\\Modules\\Account",
-			"dir": "\/pllano\/api-shop-packages\/check-in",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/check-in",
+			"dir": "\/pllano\/api-shop-modules\/check-in",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-modules\/check-in",
 			"name": "check-in",
 			"version": "master",
 			"vendor": "pllano",
@@ -896,8 +907,8 @@
 		},
 		"pllano.login": {
 			"namespace": "ApiShop\\Modules\\Account",
-			"dir": "\/pllano\/api-shop-packages\/login",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/login",
+			"dir": "\/pllano\/api-shop-modules\/login",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-modules\/login",
 			"name": "login",
 			"version": "master",
 			"vendor": "pllano",
@@ -907,8 +918,8 @@
 		},
 		"pllano.logout": {
 			"namespace": "ApiShop\\Modules\\Account",
-			"dir": "\/pllano\/api-shop-packages\/logout",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/logout",
+			"dir": "\/pllano\/api-shop-modules\/logout",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-modules\/logout",
 			"name": "logout",
 			"version": "master",
 			"vendor": "pllano",
@@ -918,8 +929,8 @@
 		},
 		"pllano.blank": {
 			"namespace": "ApiShop\\Modules",
-			"dir": "\/pllano\/api-shop-packages\/blank",
-			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-packages\/blank",
+			"dir": "\/pllano\/api-shop-modules\/blank",
+			"git": "https:\/\/github.com\/pllano\/api-shop\/vendor\/pllano\/api-shop-modules\/blank",
 			"name": "blank",
 			"version": "master",
 			"vendor": "pllano",

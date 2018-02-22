@@ -40,7 +40,7 @@ class Settings {
         $config["settings"]["keys"] = 'null';
  
         // Папка куда будут писатся логи Monolog
-        $config["settings"]["logger"]["path"] = isset($_ENV["docker"]) ? "php://stdout" : __DIR__ . "/_logs/app.log";
+        $config["settings"]["logger"]["path"] = isset($_ENV["docker"]) ? "php://stdout" : __DIR__ . "/storage/_logs/app.log";
         $config["settings"]["logger"]["name"] = "slim-app";
         $config["settings"]["logger"]["level"] = \Monolog\Logger::DEBUG;
  
@@ -49,7 +49,7 @@ class Settings {
         $config['settings']['site']['copyright']['date'] = $copyYear . (($copyYear != $curYear) ? '-' . $curYear : '');
         
         // Папка куда будет кешироваться Slim\Views\Twig
-        $config["settings"]["cache"] =  __DIR__ . "/_cache/";
+        $config["settings"]["cache"] =  __DIR__ . "/storage/_cache/";
         
         // Папка с шаблонами
         $config['template']['front_end']['themes']['dir'] = __DIR__ .''.$json['template']['front_end']['themes']['dir_name'];
