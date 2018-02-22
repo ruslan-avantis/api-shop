@@ -9,10 +9,10 @@
 - Тест скорости - https://developers.google.com/speed/pagespeed/insights/?url=https://xti.com.ua
 ## Низкий порог входа для программистов
 Самым главным преимуществом API Shop является низкий порог входа для разработчиков. Мы стараемся писать максимально просто ! За несколько дней с платформой разберется даже начинающий программист. Не важно какой шаблонизатор, кеширование или базу данных хотите использовать - `{API}$hop` из коробки поддерживает все самые популярные базы данных, кеширование и шаблонизаторы. Вы можете использовать заготовки для пакетов и расширений, чтобы написать свой обработчик для чего угодно и заменить им стандартный. Установить и подключить свой пакет очень легко.
-#### [Документация по установке](https://github.com/pllano/api-shop/blob/master/INSTALL.md)
-#### [Конфигурация](https://github.com/pllano/api-shop/blob/master/app/README.md)
-#### [Структура баз данных](https://github.com/pllano/structure-db)
-#### [Заготовки для расширений](https://github.com/pllano/skeleton-extensions)
+### [Документация по установке](https://github.com/pllano/api-shop/blob/master/INSTALL.md)
+### [Конфигурация](https://github.com/pllano/api-shop/blob/master/app/README.md)
+### [Структура баз данных](https://github.com/pllano/structure-db)
+### [Заготовки для расширений](https://github.com/pllano/skeleton-extensions)
 #### Мы ищем единомышленников ! Присоединяйтесь.
 ## API Shop — из коробки будет поддерживать:
 - Автозагрузчики и управление пакетами: [`AutoRequire`](https://github.com/pllano/auto-require) - Автозагрузка по стандартам PSR-0 и PSR-4.
