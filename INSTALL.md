@@ -90,7 +90,7 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
     
 }
 ```
-Если вы хотите сконфигурировать под себя необходимо подключить или отредактировать один из файлов [auto_require.json](https://github.com/pllano/auto-require/blob/master/auto_require.json)
+Если вы хотите сконфигурировать под себя необходимо подключить или отредактировать [auto_require.json](https://github.com/pllano/auto-require/blob/master/auto_require.json)
 
 Если у вас специфическая конфигурация структуры файлов, в файле [`/index.php`](https://github.com/pllano/api-shop/blob/master/index.php) необходимо прописать пути ко всем необходимым файлам.
 
