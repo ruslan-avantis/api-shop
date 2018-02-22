@@ -11,11 +11,16 @@
 
 Для установки Демо версии `public_key` - test
 
-### Пользователь по умолчанию:
-- телефон: 0670101010
+### Пользователи по умолчанию:
+#### 1
+- телефон: 380670101010
 - email: admin@example.com
 - пароль: admin12345
-### Обязательно поменяйте данные и пароль пользователя по умолчанию !!!
+#### 2
+- телефон: 380670010011
+- email: admin@pllano.com
+- пароль: admin@pllano.com
+### Обязательно после установки поменяйте данные и пароли пользователей по умолчанию !!!
 
 ## Установка с созданием учетной записи
 - Скачайте [`/install.php`](https://raw.githubusercontent.com/pllano/api-shop/master/install.php)
@@ -31,195 +36,64 @@
 `P.S.` Во время первого запуска, загрузка страницы может длится до 60 секунд, в связи с тем что [AutoRequire](https://github.com/pllano/auto-require) скачивает необходимые компоненты (зависимости).
 
 ## Требования к хостингу
-### Для работы API Shop рекомендуется хостинг, который поддерживает:
-- PHP версии 7 или выше
+### Для работы API Shop необходим хостинг, который поддерживает:
+- PHP версии от 7.0.25 до 7.2.2
 - Протокол HTTPS
-- расширение PHP для CGI `zip`
+- Расширение PHP: `openssl` `zip`
+- Для кеширования необходимо установить требуемое хранилище кеша (по умолчанию используется файловое кеширование) и расширение PHP: `memcache` `memcached` или другое.
+### Настройки `php.ini`
+- `max_execution_time` = 120 или 240 (по умолчанию 30)
+- `memory_limit` = 512 или 1024 (по умолчанию 128)
 
-## Пошаговая инструкция по установке API Shop
+Эти параметры нужны для установки API Shop и загрузки пакетов с помощью 
+[install.php](https://github.com/pllano/api-shop/blob/master/install.php). 
+При работе он менее требователен.
+
+## Пошаговая инструкция по ручной установке API Shop
 ### 1. Скачать дистрибутив
 Рекомендуем скачивать последнюю версию дистрибутива по ссылке: [api-shop-master.zip](https://github.com/pllano/api-shop/archive/master.zip)
 ### 2. Переместить файлы в корень сайта
 Переместите необходимы следующие директории и файлы в корень вашего сайта:
-- `/api/`
-- `/app/`
-- `/images/`
-- `/themes/`
-- `/vendor/`
+- `/api/` - API
+- `/app/` - Ядро
+- `/cache/` - папка хранения кеша
+- `/images/` - изображения
+- `/themes/` - шаблоны
+- `/vendor/` - пакеты
 - `/.htaccess`
 - `/index.php`
 ### 3. Установка зависимостей
-#### С помощью [Composer](https://getcomposer.org/)
-```php
-require __DIR__ . '/../vendor/autoload.php';
-```
-```json
-{
-  "require": {
-    "php": "^7.0",
-    "pllano/router-db": "^1.0.4",
-    "pllano/json-db": "^1.0.7",
-    "psr/http-message": "^1.0",
-    "slim/slim": "^3.0",
-    "twig/twig": "~2.0",
-    "phpunit/phpunit": "^6.4",
-    "monolog/monolog": "^1.23",
-    "guzzlehttp/guzzle": "^6.3",
-    "defuse/php-encryption": "^v2.1",
-    "adbario/slim-secure-session-middleware": "^1.3.4",
-    "sinergi/browser-detector": "^6.1.2",
-    "imagine/imagine": "~0.5.0"
-    
-  }
-}
-```
 #### С помощью [AutoRequire](https://github.com/pllano/auto-require)
-`AutoRequire` идет в комплекте с API Shop и является его компонентом. Он полностью настроен и вы можете ничего не менять. `AutoRequire` - проверит подключен ли Composer, если нет, загрузит все необходимые пакеты самостоятельно в папку `/vendor`
+`AutoRequire` идет в комплекте с API Shop и является его компонентом. Он полностью настроен и вы можете ничего не менять. `AutoRequire` - проверит и загрузит все необходимые пакеты самостоятельно в папку `/vendor`
 ``` php
-// Connect \AutoRequire\Autoloader
-require __DIR__ . '/vendor/AutoRequire.php';
- 
-// instantiate the loader
-$require = new \AutoRequire\Autoloader;
- 
-// Указываем путь к папке vendor для AutoRequire
-$vendor_dir = __DIR__ . '/vendor';
- 
+$vendor_dir = '';
+// Ищем путь к папке vendor
+if (file_exists(BASE_PATH . '/vendor')) {
+    $vendor_dir = BASE_PATH . '/vendor';
+} elseif (BASE_PATH . '/../vendor') {
+    $vendor_dir = BASE_PATH . '/../vendor';
+}
+
+// Указываем путь к AutoRequire
+$autoRequire = $vendor_dir.'/AutoRequire.php';
 // Указываем путь к auto_require.json
-// Использовать стабильные версии пакетов
-$auto_require = __DIR__ . '/vendor/auto_require.json';
-// Использовать master версии пакетов
-$auto_require_master = __DIR__ . '/vendor/auto_require_master.json';
-// Для подключения ядра API Shop
-$auto_require_min = __DIR__ . '/vendor/auto_require_min.json';
+$auto_require = $vendor_dir.'/auto_require.json';
  
-if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
+if (file_exists($autoRequire) && file_exists($auto_require)) {
  
+    // Connect \Pllano\AutoRequire\Autoloader
+    require $autoRequire;
+    // instantiate the loader
+    $require = new \Pllano\AutoRequire\Autoloader();
     // Запускаем Автозагрузку
-    $require->run($vendor_dir, $auto_require_min);
- 
-    // Подключаем Composer
-    require __DIR__ . '/../vendor/autoload.php';
- 
-} else {
- 
-    // Запускаем Автозагрузку без Composer
     $require->run($vendor_dir, $auto_require);
- 
-}
-```
-Если вы хотите сконфигурировать под себя необходимо подключить или отредактировать один из файлов [auto_require.json](https://github.com/pllano/auto-require/blob/master/auto_require.json) или [auto_require_master.json](https://github.com/pllano/auto-require/blob/master/auto_require_master.json).
-
-В файле [`/index.php`](https://github.com/pllano/api-shop/blob/master/index.php) необходимо прописать пути ко всем необходимым файлам.
-
-### 4. Конфигурация
-За конфигурацию API Shop отвечает файл [`/app/config/settings.php`](https://github.com/pllano/api-shop/blob/master/app/config/settings.php)
-#### Конфигурация `jsonDB` и `routerDb`
-Большую часть в файле [`/app/config/settings.php`](https://github.com/pllano/api-shop/blob/master/app/config/settings.php) занимают настройки для:
-- [jsonDB](https://github.com/pllano/router-db)
-- [routerDb](https://github.com/pllano/json-db)
-## Конструктор - Настраивай так как привык
-### Конфигурация
-```php
-namespace ApiShop\Config;
- 
-class Settings {
- 
-    public static function get() {
     
-        return [
-            "settings" => [
-                "debug" => 0
-                "displayErrorDetails" => 0,
-            ],
-            "vendor" => [
-                "template_engine" => "\\Pllano\\Adapter\\TemplateEngine"
-            ],
-            "template" => [
-                "front_end" => [
-                    "template_engine" => "twig",
-                    "themes" => [
-                       "template" => "mini-mo",
-                        "templates" => "templates",
-                        "dir_name" => "\/..\/themes"
-                    ]
-                ],
-                "twig" => [
-                    "cache_state" => 0,
-                    "strict_variables" => 0,
-                    "cache_dir" => "\/..\/cache\/_twig_cache"
-                ]
-            ],
-            "routers" => [
-                "site" => [
-                    "index" => [
-                        "route" => "\/",
-                        "controller" => "\\ApiShop\\Controller\\Index",
-                        "function" => "get",
-                    ],
-                    "article" => [
-                        "route" => "\/{alias:[a-z0-9_-]+}.html",
-                        "controller" => "\\ApiShop\\Controller\\Article",
-                        "function" => "get",
-                    ]
-                ]
-            ]
-        ];
-    }
 }
 ```
-### Вы можете заменить контроллер, шаблонизатор или базу данных
-```php
-use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
-use ApiShop\Config\Settings;
-use Monolog\Processor\UidProcessor;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use Slim\App;
- 
-$config = Settings::get();
- 
-$app = new App($config);
- 
-$container = $app->getContainer();
- 
-// Конфигурация
-$container['config'] = function () {
-    return Settings::get();
-};
- 
-// Monolog
-$container['logger'] = function ($logger) {
-    $config = Settings::get();
-    $settings = $config['settings']['logger'];
-    $logger = new Logger($settings['name']);
-    $logger->pushProcessor(new UidProcessor());
-    $logger->pushHandler(new StreamHandler($settings['path'], $settings['level']));
-    return $logger;
-};
- 
-// Register \Pllano\Adapter\TemplateEngine
-$container['view'] = function ($view) {
-    $config = Settings::get();
-    // Получаем название шаблона
-    $template = $config['template']['front_end']['themes']["template"]; // По умолчанию mini-mo
-    return new $config['vendor']['template_engine']($config, $template);
-};
- 
-$app->get($config['routers']['site']['index']['route'], function (Request $req, Response $res, $args = []) {
-    // Получаем настройки из конфигурации
-    $router = $this->config['routers']['site']['index'];
-    // Назначает контроллер
-    $controller = $router['controller'];
-    // Назначает функцию вызова
-    $function = $router['function'];
-    // Отдаем контроллеру конфигурацию, шаблонизатор и класс обработки логов
-    $class = new $controller($this->config, $this->view, $this->logger);
-    // Получаем ответ и выводим на страницу
-    return $class->$function($req, $res, $args);
-});
- 
-$app->run();
-```
- 
+Если вы хотите сконфигурировать под себя необходимо подключить или отредактировать один из файлов [auto_require.json](https://github.com/pllano/auto-require/blob/master/auto_require.json)
+
+Если у вас специфическая конфигурация структуры файлов, в файле [`/index.php`](https://github.com/pllano/api-shop/blob/master/index.php) необходимо прописать пути ко всем необходимым файлам.
+
+## Конструктор - Настраивай так как привык
+### 4. Конфигурация
+За конфигурацию API Shop отвечает файл [`/app/settings.php`](https://github.com/pllano/api-shop/blob/master/app/settings.php), сама конфигурация хранится в файле [`/app/settings.json`](https://github.com/pllano/api-shop/blob/master/app/settings.json)
