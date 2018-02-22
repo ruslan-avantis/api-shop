@@ -26,6 +26,40 @@
 - `[template]` - Управление шаблонами
 - `[settings]` - Настройки
 - `[db]` - Базы данных
+
+### `[admin]` - Настройки админ панели
+- `[admin][language]` - Язык админ панели по умолчанию `ru`, ua, de, en
+- `[admin][index_widget]` - виджеты на главной странице админ панели `article,user,templates`
+- `[admin][editor]` - визуальный редактор `summernote`, nicedit, ckeditor, ckeditor5, tinymce
+- `[admin][resource_list]` - список разрешонных ресурсов `user,role,article,article_category,category,currency,address,contact`
+- `[admin][auto_update]` - автообновление движка
+
+### `[template]` - Управление шаблонами и шаблонизаторами
+#### `[template][front_end]` - Сайт
+- `[template][front_end][template_engine]` - Шаблонизатор: `twig`, phprenderer, smarty, dwoo, fenom, mustache, blade
+- `[template][front_end][cache]` - Кеширование шаблонизатором да: 1 или нет: 0
+- `[template][front_end][themes][template]` - название шаблона `mini-mo-twig`
+- `[template][front_end][themes][templates]` - название папки с шаблонами `templates`
+- `[template][front_end][themes][dir_name]` - глобальная папка шаблонов `/../themes`
+#### `[template][back_end]` - Админ панель
+- `[template][back_end][template_engine]` - Шаблонизатор: twig
+- `[template][back_end][cache]` - Кеширование шаблонизатором - отключено
+- `[template][back_end][themes][template]` - название шаблона `admin`
+- `[template][back_end][themes][templates]` - название папки с шаблонами `templates`
+- `[template][back_end][themes][dir_name]` - глобальная папка шаблонов `/../themes`
+
+### `[admin]` - Кэширование
+- `[cache][driver]` - драйвер кэша - `filesystem`, json, memcached, memcache, predis, redis, elasticsearch, mongodb, array, apcu, apc, void, doctrine, illuminate
+- `[cache][state]` - активировать кэширование `1` или выключить `0`
+- `[cache][cache_lifetime]` - время жизни кэша
+- `[cache][dynamic]` - динамическое включение кэширования
+- `[cache][cpu]` - при какой нагрузке в % на cpu включиться кэширование
+- `[cache][memory]` - при какой нагрузке в % на memory включиться кэширование
+- `[cache][vendor]` - пакет управления кэшем `cache.cache`
+- `[cache][adapter]` - встроенный адаптер кэша `apishop` вы можете подключить свой
+- `[cache][print]` - вывести информации о кэше
+- `[cache][clear]` - очистить кэш. По умолчанию `0` если необходимо очистить кэш `1` не забудьте вернуть в 0 после очистки
+
 ### `[seller]` - Настройки продавца
 - `[seller][name]` - название вкладки - по умолчанию: seller
 - `[seller][public_key]` - публичный ключ продавца
