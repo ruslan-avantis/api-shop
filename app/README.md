@@ -59,6 +59,11 @@
 - `[cache][adapter]` - встроенный адаптер кэша `apishop` вы можете подключить свой
 - `[cache][print]` - вывести информации о кэше
 - `[cache][clear]` - очистить кэш. По умолчанию `0` если необходимо очистить кэш `1` не забудьте вернуть в 0 после очистки
+#### `[cache][memcached]`
+У каждого драйвера кэша есть своя личная конфигурация `[cache][driver_name]`
+- `[cache][memcached][pool]` - `\Cache\Adapter\Memcached\MemcachedCachePool`
+- `[cache][memcached][host]` - `127.0.0.1`
+- `[cache][memcached][port]` - `11211`
 
 ### `[seller]` - Настройки продавца
 - `[seller][name]` - название вкладки - по умолчанию: seller
