@@ -48,7 +48,7 @@
 - `[template][back_end][themes][templates]` - название папки с шаблонами `templates`
 - `[template][back_end][themes][dir_name]` - глобальная папка шаблонов `/../themes`
 
-### `[admin]` - Кэширование
+### `[cache]` - Кэширование
 - `[cache][driver]` - драйвер кэша - `filesystem`, json, memcached, memcache, predis, redis, elasticsearch, mongodb, array, apcu, apc, void, doctrine, illuminate
 - `[cache][state]` - активировать кэширование `1` или выключить `0`
 - `[cache][cache_lifetime]` - время жизни кэша
@@ -64,6 +64,62 @@
 - `[cache][memcached][pool]` - `\Cache\Adapter\Memcached\MemcachedCachePool`
 - `[cache][memcached][host]` - `127.0.0.1`
 - `[cache][memcached][port]` - `11211`
+
+### `[vendor]` - Глобальные пакеты
+API Shop позволяет заменить глобальные обработчики, при условии что они имею все необходимые методы и функции.
+- `[vendor][modules][manager]` - Менеджер модулей - `\ApiShop\ModuleManager`
+- `[vendor][controllers][controller]` - Глобальный контролер - `\ApiShop\ControllerManager`
+- `[vendor][hooks][hook]` - Управление хуками - `\Pllano\Hooks\Hook`
+- `[vendor][templates][template_engine]` - Менеджер шаблонизаторов - `\Pllano\Adapter\TemplateEngine`
+- `[vendor][session]` - Сессия
+- `[vendor][session][run]` - Запуск сессии - `\Adbar\Session`
+- `[vendor][session][session]` - Управление сессией - `\Adbar\Session`
+- `[vendor][session][session_name]` - Префикс сессии - `_session`
+- `[vendor][session][cookie]` - Управление кукисами - `\ApiShop\Model\User`
+- `[vendor][detector][language]` - Детектор языка браузера пользователя - `\Sinergi\BrowserDetector\Language`
+- `[vendor][language][multilanguage]` - Мультиязычность - `\ApiShop\Model\Language`
+- `[vendor][http_client][client]` - Http Client - `\GuzzleHttp\Client`
+- `[vendor][image][thumbnail]` - Создание миниатюр изображений - `\Imagine\Gd\Imagine`
+- `[vendor][image][thumbnail_mode]` - Режим работы thumbnail - `THUMBNAIL_INSET`
+- `[vendor][image][optimize]` - Оптимизация изображений - `\ImageOptimizer\OptimizerFactory`
+- `[vendor][crypto][crypt]` - Шифрование - `Defuse\Crypto\Crypto`
+- `[vendor][crypto][random_key]` - Генератор ключей - `Defuse\Crypto\Key::createNewRandomKey`
+- `[vendor][crypto][load_key]` - Загрузчик ключей - `Defuse\Crypto\Key::loadFromAsciiSafeString`
+
+### `[routers]` - Роутинг
+API Shop позволяет управлять роутингом и менять логику URI на ваше усмотрение. Вы также можете управлять блоками на странице. Для каждого роутера должен быть свой блок с названием идентичным роутеру: для `[routers][site][article]` блок `article` благодаря этому в массиве `[content]` будудут модили только для этой страницы. По сути мы таким образом реализовали модульность и дали возможность вам настроить ее под ваши задачи.
+- `[routers][site][index][route]` - Главная страница - `/`
+- `[routers][site][index][blocks]` - Блоки на роутера index - `header,nav,footer,index`
+- `[routers][site][article][route]` - Страница статьи - `/{alias:[a-z0-9_-]+}.html`
+- `[routers][site][article][blocks]` - Блоки для роутера article - `header,nav,footer,article,left_sidebar,right_sidebar`
+- `[routers][site][article_category][route]` - Категории статей - `/content/{alias:[a-z0-9_-]+}.html`
+- `[routers][site][article_category][blocks]` - Блоки для роутера article_category - `header,nav,footer,article_category`
+- `[routers][site][product][route]` - Страница товара - `/product/{alias:[a-z0-9_]+}/{name}.html`
+- `[routers][site][product][blocks]` - Блоки для роутера product - `header,nav,footer,product`
+- `[routers][site][product][route]` - Страница товара - `/product/{alias:[a-z0-9_]+}/{name}.html`
+- `[routers][site][product][blocks]` - Блоки для роутера product - `header,nav,footer,product`
+- `[routers][site][quick_view][route]` - Всплывающее окно с товаром - `/quick-view/product/{alias:[a-z0-9_]+}/{name}.html`
+- `[routers][site][quick_view][blocks]` - Блоки для роутера quick_view - `header,nav,footer,product`
+- `[routers][site][category][route]` - Категория товара - `/category[\{alias:[a-z0-9_-]+}]` или `/category[\{alias:[a-z0-9_-]+}].html`
+- `[routers][site][category][blocks]` - Блоки для роутера category - `header,nav,footer,category`
+- `[routers][site][sign_in][route]` - Войти в систему - `/sign-in`
+- `[routers][site][sign_in][blocks]` - Блоки для роутера sign_in - `sign_in`
+- `[routers][site][sign_up][route]` - Зарегистрироваться - `/sign-up`
+- `[routers][site][sign_up][blocks]` - Блоки для роутера sign_up - `sign_up`
+- `[routers][site][cart][route]` - Корзина - `/cart/`
+- `[routers][site][cart][controller]` - Контроллер корзины - `ApiShop\Controller\Cart`
+- `[routers][site][cart][blocks]` - Блоки для роутера cart - `header,nav,footer,cart`
+- `[routers][site][logout][route]` - Выйти из системы - `/logout`
+- `[routers][site][logout][blocks]` - Блоки для роутера logout - `logout`
+- `[routers][site][login][route]` - Войти в систему - `/login`
+- `[routers][site][login][blocks]` - Блоки для роутера login - `login`
+- `[routers][site][check_in][route]` - Регистрация - `/check-in`
+- `[routers][site][check_in][blocks]` - Блоки для роутера check_in - `check_in`
+- `[routers][site][language][route]` - Мультиязычность - `/language`
+- `[routers][site][language][controller]` - Контроллер корзины - `ApiShop\Controller\Language`
+- `[routers][site][language][blocks]` - Блоки для роутера cart - `language`
+- `[routers][site][error][controller]` - Контроллер страницы 404 - `\ApiShop\Controller\Error`
+- `[routers][site][error][blocks]` - Блоки для роутера error - `header,nav,footer,error`
 
 ### `[seller]` - Настройки продавца
 - `[seller][name]` - название вкладки - по умолчанию: seller
