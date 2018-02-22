@@ -1,6 +1,18 @@
 {
 	"update": {},
 	"require": {
+		"nikic.fastroute": {
+			"namespace": "FastRoute",
+			"files": "functions.php",
+			"dir": "\/nikic\/FastRoute\/src",
+			"link": "https:\/\/github.com\/nikic\/FastRoute\/archive\/v1.3.0.zip",
+			"git": "https:\/\/github.com\/nikic\/FastRoute",
+			"name": "FastRoute",
+			"version": "1.3.0",
+			"vendor": "nikic",
+			"state": 1,
+			"system_package": 1
+		},
 		"slim.slim": {
 			"namespace": "Slim",
 			"dir": "\/slim\/Slim\/Slim",
@@ -384,18 +396,6 @@
 			"name": "DeepCopy",
 			"version": "1.7.0",
 			"vendor": "myclabs",
-			"state": 1,
-			"system_package": 1
-		},
-		"nikic.fastroute": {
-			"namespace": "FastRoute",
-			"files": "functions.php",
-			"dir": "\/nikic\/FastRoute\/src",
-			"link": "https:\/\/github.com\/nikic\/FastRoute\/archive\/v1.2.0.zip",
-			"git": "https:\/\/github.com\/nikic\/FastRoute",
-			"name": "FastRoute",
-			"version": "1.2.0",
-			"vendor": "nikic",
 			"state": 1,
 			"system_package": 1
 		},
