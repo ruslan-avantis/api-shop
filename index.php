@@ -16,9 +16,11 @@
     * Вы можете использовать контроллеры по умолчанию и вносить изменения с помощью \Pllano\Hooks\Hook
     * Вы можете использовать ApiShop\Adapter\ и менять vendor в конфигурации
 */
- 
+
 declare(strict_types = 1);
- 
+
+$startTime = microtime(true);
+
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
     // something which should probably be served as a static file
@@ -28,12 +30,12 @@ if (PHP_SAPI == 'cli-server') {
         return false;
     }
 }
- 
+
 define("BASE_PATH", dirname(__FILE__));
- 
+
 // Запускаем сессию PHP
 session_start();
- 
+
 $vendor_dir = '';
 // Ищем путь к папке vendor
 if (file_exists(BASE_PATH . '/vendor')) {
@@ -41,77 +43,73 @@ if (file_exists(BASE_PATH . '/vendor')) {
 } elseif (BASE_PATH . '/../vendor') {
     $vendor_dir = BASE_PATH . '/../vendor';
 }
- 
+
 // Указываем путь к AutoRequire
 $autoRequire = $vendor_dir.'/AutoRequire.php';
 // Указываем путь к auto_require.json
 $auto_require = $vendor_dir.'/auto_require.json';
- 
+
 if (file_exists($autoRequire) && file_exists($auto_require)) {
- 
+
     // Connect \Pllano\AutoRequire\Autoloader
     require $autoRequire;
     // instantiate the loader
     $require = new \Pllano\AutoRequire\Autoloader();
     // Запускаем Автозагрузку
     $require->run($vendor_dir, $auto_require);
- 
+
     // Подключаем файл конфигурации системы
     require BASE_PATH . '/app/settings.php';
     $config = \ApiShop\Config\Settings::get();
- 
+
     // Получаем список и конфигурацию пакетов
     $package = json_decode(file_get_contents($auto_require), true);
-    $slimSettings = $package['require']['slim.slim']['settings'];
- 
-    $slim = [];
- 
-    $slim['debug'] = false;
-    $slim['displayErrorDetails'] = false;
-    $slim['addContentLengthHeader'] = false;
-    $slim['determineRouteBeforeAppMiddleware'] = false;
- 
-/*     if (isset($slimSettings['displayErrorDetails'])) {if ((int)$slimSettings['displayErrorDetails'] == 1) {
-        ini_set('error_reporting', E_ALL);
-        ini_set('display_errors', 1);
-        ini_set('display_startup_errors', 1);
-    }} */
- 
-    if (isset($slimSettings)) {
-        foreach($slimSettings as $key => $val)
+    $routingSettings = $package['require']['slim.slim']['settings'];
+
+    $routingConfig = [];
+
+    $routingConfig['debug'] = true;
+    $routingConfig['displayErrorDetails'] = true;
+    $routingConfig['addContentLengthHeader'] = false;
+    $routingConfig['determineRouteBeforeAppMiddleware'] = false;
+
+    if (isset($routingSettings)) {
+        foreach($routingSettings as $key => $val)
         {
             if((int)$val == 1){
-                $slim[$key] = true;
+                $routingConfig[$key] = true;
             } elseif((int)$val == 0) {
-                $slim[$key] = false;
+                $routingConfig[$key] = false;
             } else {
-                $slim[$key] = $val;
+                $routingConfig[$key] = $val;
             }
         }
     }
- 
+    if ($routingConfig['debug'] === true) {
+        error_reporting(E_ALL ^ E_NOTICE);
+    }
+
     // Подключаем Slim и отдаем ему конфигурацию
-    $app = new \Slim\App($slim);
- 
-    // Для POST запросов вначале url генерируем post_id
-    // Если у пользователя нет сессии он не сможет отправлять POST запросы
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
-    $post_id = '/_'; if(isset($session->post_id)){$post_id = '/'.$session->post_id;}
- 
+    $routing = new \Slim\App($routingConfig);
+
     // Run User Session
     // Запускаем сессию пользователя
     (new \ApiShop\Model\User())->run();
- 
+
     // Получаем конфигурацию роутеров
     $router = $config['routers']['site'];
     // Подключаем Routers и Containers
     require BASE_PATH . '/app/run.php';
-    // Slim Run
-    $app->run();
- 
+
+    $container['time'] = microtime(true) - $startTime;
+	// теперь в контейнере $time содержится float со значением выполнения скрипта в секундах. дело осталось за банальными number_format() и echo.
+
+    // Routing Run
+    $routing->run();
+
 } else {
-    ini_set('error_reporting', E_ALL);
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL ^ E_NOTICE);
+    ini_set('display_errors', '1');
+    ini_set('display_startup_errors', '1');
 }
  

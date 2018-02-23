@@ -23,18 +23,23 @@ class Language
     private $language = "en";
     private $resource = "language";
     private $config;
+	private $session;
     protected $request;
     private $cache_lifetime = 30*24*60*60;
  
-    function __construct(Request $request, $config)
+    function __construct(array $config = [], $session)
     {
         $this->config = $config;
-        $this->request = $request;
-        $getParams = $this->request->getQueryParams();
-        
-        // Подключаем сессию, берет название класса из конфигурации
-        $session = new $this->config['vendor']['session']['session']($this->config['settings']['session']['name']);
+		$this->session = $session;
+    }
  
+    // Ресурс language доступен только на чтение
+    public function get(Request $request)
+    {
+        $session = $this->session;
+		$this->request = $request;
+        $getParams = $this->request->getQueryParams();
+
         // Подключаем определение языка в браузере
         $langs = new $this->config['vendor']['detector']['language']();
         // Получаем массив данных из таблицы language на языке из $session->language
@@ -52,11 +57,7 @@ class Language
         } else {
             $this->language = $langs->getLanguage();
         }
-    }
- 
-    // Ресурс language доступен только на чтение
-    public function get()
-    {
+
         $host = $this->request->getUri()->getHost();
         $cache = new Cache($this->config);
         $cache_run = $cache->run($host.'/'.$this->resource.'/'.$this->language, $this->cache_lifetime);
@@ -78,7 +79,7 @@ class Language
                 if ($cache->state() == 1) {
                     $cache->set($arr);
                 }
- 
+
                 return $arr;
  
             } else {
@@ -98,7 +99,7 @@ class Language
     public function setResource($resource)
     {
         $this->resource = $resource;
-    }
+		}
  
     public function setLanguage($language)
     {

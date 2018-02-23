@@ -26,7 +26,7 @@ class SessionUser
     // Получаем данные из session
     public function get()
     {
-        // Подключаем сессию, берет название класса из конфигурации
+        // Подключаем сессию
         $session = new $this->config['vendor']['session']['session']($this->config['settings']['session']['name']);
         // Определяем язык интерфейса пользователя
  

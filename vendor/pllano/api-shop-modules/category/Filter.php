@@ -77,14 +77,14 @@ class Filter {
     public function order()
     {
         $response = [];
-        $key = "ASC";
+        $key = "asc";
         $icon = "fa fa-sort-amount-asc";
-        if ($this->order == "DESC") {
-            $key = "ASC";
+        if ($this->order == "desc") {
+            $key = "asc";
             $icon = "fa fa-sort-amount-asc";
         }
-        if ($this->order == "ASC") {
-            $key = "DESC";
+        if ($this->order == "asc") {
+            $key = "desc";
             $icon = "fa fa-sort-amount-desc";
         }
         if (isset($this->offset)){$arr['offset'] = $this->offset;}

@@ -308,6 +308,13 @@
 				"package": "pllano.article",
 				"function": "get",
 				"view": "modules\/articles\/article.html"
+			},
+			"breadcrumbs": {
+				"state": 0,
+				"vendor": "\\ApiShop\\Modules\\Breadcrumbs",
+				"package": "pllano.breadcrumbs",
+				"function": "get",
+				"view": "modules\/breadcrumbs.html"
 			}
 		},
 		"product": {
@@ -319,6 +326,13 @@
 				"view": "modules\/products\/product.html",
 				"image_width": "600",
 				"image_height": "600"
+			},
+			"breadcrumbs": {
+				"state": 0,
+				"vendor": "\\ApiShop\\Modules\\Breadcrumbs",
+				"package": "pllano.breadcrumbs",
+				"function": "get",
+				"view": "modules\/breadcrumbs.html"
 			}
 		},
 		"quick_view": {
@@ -342,6 +356,13 @@
 				"href": "\/category",
 				"background": "\/themes\/templates\/mini-mo-twig\/images\/home\/4.jpg"
 			},
+			"breadcrumbs": {
+				"state": 0,
+				"vendor": "\\ApiShop\\Modules\\Breadcrumbs",
+				"package": "pllano.breadcrumbs",
+				"function": "get",
+				"view": "modules\/breadcrumbs.html"
+			},
 			"category": {
 				"state": 1,
 				"view": "modules\/category\/category.html",
@@ -351,11 +372,13 @@
 				"vendors": {
 					"products": "\\ApiShop\\Modules\\Categories\\Products",
 					"paginator": "\\ApiShop\\Modules\\Categories\\Pagination",
-					"filter": "\\ApiShop\\Modules\\Categories\\Filter"
+					"filter": "\\ApiShop\\Modules\\Categories\\Filter",
+					"properties": "\\ApiShop\\Modules\\Categories\\Properties"
 				},
 				"helper": {
 					"products_list": "modules\/category\/products_list.html",
-					"paginator": "modules\/category\/paginator.html"
+					"paginator": "modules\/category\/paginator.html",
+					"properties": "modules\/category\/properties.html"
 				},
 				"limit": "30",
 				"sort": "price",

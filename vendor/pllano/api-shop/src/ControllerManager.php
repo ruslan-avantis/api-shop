@@ -21,19 +21,26 @@ use Pllano\Caching\Cache;
  
 class ControllerManager
 {
+
     private $config = [];
     private $package = [];
-    protected $logger;
-    protected $view;
-    protected $route;
-    protected $query;
+    private $session;
+	private $languages;
+	private $logger;
+    private $template;
+	private $view;
+    private $route;
+    private $query;
  
-    function __construct($query, $route, $config, $package, $view, $logger)
+    function __construct($query, $route, $config, $package, $session, $languages, $template, $view, $logger)
     {
         $this->config = $config;
         $this->package = $package;
+		$this->session = $session;
+		$this->languages = $languages;
         $this->logger = $logger;
-        $this->view = $view;
+        $this->template = $template;
+		$this->view = $view;
         $this->route = $route;
         $this->query = $query;
     }
@@ -55,12 +62,10 @@ class ControllerManager
         // $routess = $request->getAttribute('route'); // Работает - Отдает огромный массив информации
         // $getMethod = $request->getMethod();
         // $getParsedBody = $request->getParsedBody();
- 
-        // Конфигурация
-        $config = $this->config;
+
         // Передаем данные Hooks для обработки ожидающим классам
         // Default Pllano\Hooks\Hook
-        $hook = new $config['vendor']['hooks']['hook']($config, $this->query, $this->route, 'site');
+        $hook = new $this->config['vendor']['hooks']['hook']($this->config, $this->query, $this->route, 'site');
         $hook->http($request);
         $request = $hook->request();
  
@@ -78,79 +83,70 @@ class ControllerManager
             $params = '';
             // Параметры из URL
             $params_query = str_replace('q=/', '', $request->getUri()->getQuery());
-            
+
             if ($params_query) {
                 $params = '/'.$params_query;
             }
- 
-            // Подключаем сессию, берет название класса из конфигурации
-            // Default Adbar\Session
-            $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+
             // Данные пользователя из сессии
-            $sessionUser =(new SessionUser($config))->get();
+            $sessionUser =(new SessionUser($this->config))->get();
             // Подключаем временное хранилище
             // Default Adbar\Session
-            $sessionTemp = new $config['vendor']['session']['session']("_temp");
+            $sessionTemp = new $this->config['vendor']['session']['session']("_temp");
             // Генерируем токен. Читаем ключ. Записываем токен в сессию.
             // Default Defuse\Crypto\Crypto
-            $session->token = $config['vendor']['crypto']['crypt']::encrypt($utility->random_token(), $config['key']['token']);
- 
-            // Подключаем мультиязычность
-            $languages = new Language($request, $config);
-            $language = $languages->get();
-            $lang = $languages->lang();
+            $this->session->token = $this->config['vendor']['crypto']['crypt']::encrypt($utility->random_token(), $this->config['key']['token']);
+
+            $language = $this->languages->get($request);
+            $lang = $this->languages->lang();
+
             // Настройки сайта
-            $site = new Site($config);
+            $site = new Site($this->config);
             $siteConfig = $site->get();
             // Получаем название шаблона
             // Конфигурация шаблона
  
-            $templateConfig = new Template($config, $site->template());
-            $template = $templateConfig->get();
- 
             // layout по умолчанию 404
-            $render = $template['layouts']['404'] ? $template['layouts']['404'] : '404.html';
- 
+            $render = $this->template['layouts']['404'] ? $this->template['layouts']['404'] : '404.html';
+
             // Конфигурация роутинга
-            $routers = $config['routers'];
- 
+            $routers = $this->config['routers'];
+
             $admin_uri = '/_';
-            if(!empty($session->admin_uri)) {
-                $admin_uri = '/'.$session->admin_uri;
+            if(!empty($this->session->admin_uri)) {
+                $admin_uri = '/'.$this->session->admin_uri;
             }
             $post_id = '/_';
-            if(!empty($session->post_id)) {
-                $post_id = '/'.$session->post_id;
+            if(!empty($this->session->post_id)) {
+                $post_id = '/'.$this->session->post_id;
             }
-            
-            //print("<br>query: {$host}{$params}/{$lang}/{$this->route}<br>");
- 
+
             // Заголовки по умолчанию из конфигурации
-            $headArr = explode(',', str_replace([" ", "'"], "", $config['settings']['seo']['head']));
-            $head = ["page" => $this->route, "host" => $host, "path" => $path, "scheme" => $config["server"]["scheme"].'://'];
+            $headArr = explode(',', str_replace([" ", "'"], "", $this->config['settings']['seo']['head']));
+            $head = ["page" => $this->route, "host" => $host, "path" => $path, "scheme" => $this->config["server"]["scheme"].'://'];
             foreach($headArr as $headKey => $headVal)
             {
-                $head_arr[$headVal] = $config['settings']['site'][$headVal];
+                $head_arr[$headVal] = $this->config['settings']['site'][$headVal];
                 $head = array_replace_recursive($head, $head_arr);
             }
- 
-            if ($config["settings"]["install"]["status"] != null) {
+
+            if ($this->config["settings"]["install"]["status"] != null) {
                 $pluginsArr = [];
                 $dataArr = [];
                 $arr = [];
-                $cache = new Cache($config);
+                $cache = new Cache($this->config);
                 if ($cache->run($host.''.$params.'/'.$lang.'/'.$this->route) === null) {
                     $dataArr = [
                         "head" => $head,
                         "routers" => $routers,
                         "site" => $siteConfig,
-                        "config" => $config['settings']['site'],
-                        "template" => $template
+                        "config" => $this->config['settings']['site'],
+                        "template" => $this->template
                     ];
-                    $mods = explode(',', str_replace([" ", "'"], "", $config['routers']['site'][$this->route]['blocks']));
+                    $mods = explode(',', str_replace([" ", "'"], "", $this->config['routers']['site'][$this->route]['blocks']));
                     foreach($mods as $key => $block)
                     {
-                        $modules = new $config['vendor']['modules']['manager']($config, $this->package, $template, $block, $this->route, $lang, $language);
+                        $modules = new $this->config['vendor']['modules']['manager']($this->config, $this->package, $this->template, $block, $this->route, $lang, $language);
                         $arr = $modules->get($request);
                         $dataArr = array_replace_recursive($dataArr, $arr);
                     }
@@ -160,21 +156,21 @@ class ControllerManager
                 } else {
                     $dataArr = $cache->get();
                 }
- 
+
                 // Определяем layout
                 // Модули могут поменять layout
-                $render = $dataArr['content']['modules'][$this->route]['content']['layout'] ?? $template['layouts']['layout'];
-                
-/*                 if (isset($dataArr['content']['modules'][$this->route]['content']['layout'])) {
+                $render = $dataArr['content']['modules'][$this->route]['content']['layout'] ?? $this->template['layouts']['layout'];
+
+                if (isset($dataArr['content']['modules'][$this->route]['content']['layout'])) {
                     $render = $dataArr['content']['modules'][$this->route]['content']['layout'];
                 } elseif (isset($dataArr['content'])) {
-                    $render = $template['layouts']['layout'];
-                } */
- 
+                    $render = $this->template['layouts']['layout'];
+                }
+
                 // Массив данных который нельзя кешировать
                 $userArr = [
                     "language" => $language,
-                    "token" => $session->token,
+                    "token" => $this->session->token,
                     "post_id" => $post_id,
                     "admin_uri" => $admin_uri,
                     "session" => $sessionUser
@@ -189,93 +185,87 @@ class ControllerManager
                 $render = "index.html";
                 // Если ключа доступа у нет, значит сайт еще не активирован
                 $content = '';
-                // $session->install = null;
-                if (isset($session->install)) {
-                    if ($session->install == 1) {
+                // $this->session->install = null;
+                if (isset($this->session->install)) {
+                    if ($this->session->install == 1) {
                         $render = "stores.html";
-                        $content = (new Install($config))->stores_list();
-                    } elseif ($session->install == 2) {
+                        $content = (new Install($this->config))->stores_list();
+                    } elseif ($this->session->install == 2) {
                         $render = "templates.html";
                         
-                        $install_store = $session->install_store ?? null; // php7
+                        $install_store = $this->session->install_store ?? null; // php7
  
-                        $content = (new Install($config))->templates_list($install_store);
-                    } elseif ($session->install == 3) {
+                        $content = (new Install($this->config))->templates_list($install_store);
+                    } elseif ($this->session->install == 3) {
                         $render = "welcome.html";
-                    } elseif ($session->install == 10) {
+                    } elseif ($this->session->install == 10) {
                         $render = "templates.html";
-                        $content = (new Install($config))->templates_list(null);
-                    } elseif ($session->install == 11) {
+                        $content = (new Install($this->config))->templates_list(null);
+                    } elseif ($this->session->install == 11) {
                         $render = "key.html";
                     }
                 }
- 
+
                 $data = [
                     "head" => $head,
                     "template" => "install",
                     "routers" => $routers,
-                    "config" => $config['settings']['site'],
+                    "config" => $this->config['settings']['site'],
                     "language" => $language,
-                    "token" => $session->token,
+                    "token" => $this->session->token,
                     "post_id" => $post_id,
                     "session" => $sessionUser,
                     "session_temp" => $sessionTemp,
                     "content" => $content
                 ];
             }
- 
+
             // Передаем данные Hooks для обработки ожидающим классам
             $hook->get($render, $data);
             // Запись в лог
             $this->logger->info($hook->logger());
- 
+
         }
-        if ($config['settings']["install"]["status"] != null) {
+        if ($this->config['settings']["install"]["status"] != null) {
             return $this->view->render($hook->render(), $hook->view());
         } else {
             return $this->view->render($render, $data);
         }
- 
+
     }
  
     public function post(Request $request, Response $response)
     {
-        $config = $this->config;
         $method = $request->getMethod();
         $post = $request->getParsedBody();
- 
+
         $today = date("Y-m-d H:i:s");
         // Получаем данные отправленные нам через POST
- 
+
         // Передаем данные Hooks для обработки ожидающим классам
-        $hook = new $config['vendor']['hooks']['hook']($config);
+        $hook = new $this->config['vendor']['hooks']['hook']($this->config);
         $hook->http($request, $method, 'site');
         $request = $hook->request();
- 
+
         // Подключаем утилиты
         $utility = new Utility();
-        // Подключаем сессию, берет название класса из конфигурации
-        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+
         // Читаем ключи
-        $token_key = $config['key']['token'];
+        $token_key = $this->config['key']['token'];
         // Подключаем систему безопасности
-        $security = new Security($config);
- 
+        $security = new Security($this->config);
+
         // Настройки сайта
-        $site = new Site($config);
+        $site = new Site($this->config);
         $siteConfig = $site->get();
-        // Получаем название шаблона
-        // Конфигурация шаблона
-        $templateConfig = new Template($config, $site->template());
-        $template = $templateConfig->get();
+
         // Подключаем мультиязычность
-        $languages = new Language($request, $config);
-        $language = $languages->get();
-        $lang = $languages->lang();
- 
+        $language = $this->languages->get($request);
+        $lang = $this->languages->lang();
+
         try {
             // Получаем токен из сессии
-            $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
+            $token = $this->config['vendor']['crypto']['crypt']::decrypt($this->session->token, $token_key);
         } catch (\Exception $ex) {
             $token = 0;
             // Сообщение об Атаке или подборе токена
@@ -283,7 +273,7 @@ class ControllerManager
         }
         try {
             // Получаем токен из POST
-            $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+            $post_csrf = $this->config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
             // Чистим данные на всякий случай пришедшие через POST
             $csrf = $utility->clean($post_csrf);
         } catch (\Exception $ex) {
@@ -291,7 +281,7 @@ class ControllerManager
             // Сообщение об Атаке или подборе csrf
             $security->csrf($request);
         }
- 
+
         $callbackStatus = 400;
         $callbackTitle = 'Соообщение системы';
         $callbackText = 'Действие запрещено !';
@@ -299,23 +289,23 @@ class ControllerManager
         // Выводим заголовки
         $response->withStatus(200);
         $response->withHeader('Content-type', 'application/json');
- 
+
         if ($csrf == $token) {
-            $mods = explode(',', str_replace([" ", "'"], "", $config['routers']['site'][$this->route]['blocks']));
+            $mods = explode(',', str_replace([" ", "'"], "", $this->config['routers']['site'][$this->route]['blocks']));
             foreach($mods as $key => $block)
             {
-                $modules = new $config['vendor']['modules']['manager']($config, $template, $block, $this->route, $lang, $language);
+                $modules = new $this->config['vendor']['modules']['manager']($this->config, $this->template, $block, $this->route, $lang, $language);
                 $callback = $modules->post($request);
             }
         } else {
             $callbackText = 'Перегрузите страницу';
             $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
         }
- 
+
         // Выводим json
         return json_encode($callback, JSON_PRETTY_PRINT);
- 
+
     }
- 
+
 }
  

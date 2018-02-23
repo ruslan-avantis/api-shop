@@ -26,7 +26,7 @@ class Logout
     public function post(Request $request)
     {
         $config = $this->config;
-        // Подключаем сессию, берет название класса из конфигурации
+        // Подключаем сессию
         $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
         $session->authorize = null;
         $session->post_id = null;

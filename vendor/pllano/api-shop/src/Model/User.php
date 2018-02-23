@@ -29,7 +29,7 @@ class User {
         $config = (new Settings())->get();
         // Подключаем утилиты
         $utility = new Utility();
-        // Подключаем сессию, берет название класса из конфигурации
+        // Подключаем сессию
         $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
         // Читаем ключи
         $session_key = $config['key']['session'];
@@ -164,7 +164,7 @@ class User {
     {
         // Получаем конфигурацию \ApiShop\Config\Settings
         $config = (new Settings())->get();
-        // Подключаем сессию, берет название класса из конфигурации
+        // Подключаем сессию
         $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
  
         // Текущая дата

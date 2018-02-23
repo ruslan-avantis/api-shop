@@ -1,6 +1,17 @@
 {
 	"update": {},
 	"require": {
+		"pllano.api-shop": {
+			"namespace": "ApiShop",
+			"dir": "\/pllano\/api-shop\/src",
+			"git": "https:\/\/github.com\/pllano\/api-shop",
+			"name": "api-shop",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 1,
+			"settings": {}
+		},
 		"nikic.fastroute": {
 			"namespace": "FastRoute",
 			"files": "functions.php",
@@ -49,17 +60,6 @@
 			"name": "Slim-Http",
 			"version": "master",
 			"vendor": "slim",
-			"state": 1,
-			"system_package": 1,
-			"settings": {}
-		},
-		"pllano.api-shop": {
-			"namespace": "ApiShop",
-			"dir": "\/pllano\/api-shop\/src",
-			"git": "https:\/\/github.com\/pllano\/api-shop",
-			"name": "api-shop",
-			"version": "master",
-			"vendor": "pllano",
 			"state": 1,
 			"system_package": 1,
 			"settings": {}

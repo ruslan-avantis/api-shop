@@ -15,13 +15,13 @@ use ApiShop\Model\{Security, User, Install};
 use ApiShop\Utilities\Utility;
  
 // Активация с помощью public_key
-$app->post('/install-api-key', function ($request, $response, $args) {
+$routing->post('/install-api-key', function ($request, $response, $args) {
     // Конфигурация
     $config = $this->get('config');
     // Подключаем плагины
     $utility = new Utility();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Получаем данные отправленные нам через POST
@@ -137,11 +137,11 @@ $app->post('/install-api-key', function ($request, $response, $args) {
 });
  
 // Записать в сессию
-$app->post('/install-key', function ($request, $response, $args) {
+$routing->post('/install-key', function ($request, $response, $args) {
     // Конфигурация
     $config = $this->get('config');
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -185,11 +185,11 @@ $app->post('/install-key', function ($request, $response, $args) {
 });
 
 // Записать в сессию
-$app->post('/install-no-key', function ($request, $response, $args) {
+$routing->post('/install-no-key', function ($request, $response, $args) {
     // Конфигурация
     $config = $this->get('config');
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -233,11 +233,11 @@ $app->post('/install-no-key', function ($request, $response, $args) {
 });
  
 // Записать выбранный магазин в сессию
-$app->post('/install-store', function ($request, $response, $args) {
+$routing->post('/install-store', function ($request, $response, $args) {
     // Конфигурация
     $config = $this->get('config');
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -288,11 +288,11 @@ $app->post('/install-store', function ($request, $response, $args) {
 });
  
 // Записать выбранный шаблон в сессию
-$app->post('/install-template', function ($request, $response, $args) {
+$routing->post('/install-template', function ($request, $response, $args) {
     // Конфигурация
     $config = $this->get('config');
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -419,7 +419,7 @@ $app->post('/install-template', function ($request, $response, $args) {
 });
  
 // Регистрация продавца
-$app->post('/register-in-seller', function ($request, $response, $args) {
+$routing->post('/register-in-seller', function ($request, $response, $args) {
     $today = date("Y-m-d H:i:s");
     // Конфигурация
     $config = $this->get('config');
@@ -429,8 +429,8 @@ $app->post('/register-in-seller', function ($request, $response, $args) {
     $session_key = $config['key']['session'];
     $cookie_key = $config['key']['cookie'];
     $token_key = $config['key']['token'];
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     try {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
@@ -698,11 +698,11 @@ $app->post('/register-in-seller', function ($request, $response, $args) {
 });
  
 // Запуск магазина
-$app->post('/start-shop', function ($request, $response, $args) {
+$routing->post('/start-shop', function ($request, $response, $args) {
     // Конфигурация
     $config = $this->get('config');
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     

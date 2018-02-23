@@ -14,7 +14,6 @@ namespace ApiShop\Modules\Categories;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Pllano\RouterDb\{Db, Router};
-use Pllano\RouterDb\{Filter, Pagination};
 use ApiShop\Utilities\Utility;
 
 class Category
@@ -52,7 +51,6 @@ class Category
         $language = $this->language;
         $host = $request->getUri()->getHost();
         $path = $request->getUri()->getPath();
-        $getParams = $request->getQueryParams();
         // Подключаем утилиты
         $utility = new Utility();
         // Получаем alias из url
@@ -206,7 +204,11 @@ class Category
         $contentArr['content']['url_path'] = $url_path;
         $contentArr['content']['render'] = $render;
         $contentArr['content']['template'] = $template;
-        
+		
+        // Получаем свойства товаров
+        $vendorProperties = new $moduleArr['config']['vendors']['properties']($config);
+        $contentArr['content']['properties'] = $vendorProperties->get($request, $contentArr, $moduleArr);
+ 
         $content['content']['modules'][$this->module] = array_replace_recursive($contentArr, $moduleArr);
         $return = array_replace_recursive($heads, $content);
  

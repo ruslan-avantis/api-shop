@@ -14,34 +14,38 @@
 namespace ApiShop\Controller;
  
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
-use ApiShop\Model\Language as Languages;
- 
+
 class Language
 {
  
-    private $config;
-    private $query;
-    private $route;
+    private $config = [];
+    private $package = [];
+    private $session;
+	private $languages;
+	private $logger;
     private $view;
-    private $logger;
-    
-    function __construct($query, $route, $config = [], $view, $logger)
+    private $route;
+    private $query;
+ 
+    function __construct($query, $route, $config, $package, $session, $languages, $view, $logger)
     {
         $this->config = $config;
-        $this->query = $query;
-        $this->route = $route;
-        $this->view = $view;
+        $this->package = $package;
+		$this->session = $session;
+		$this->languages = $languages;
         $this->logger = $logger;
+        $this->view = $view;
+        $this->route = $route;
+        $this->query = $query;
     }
  
     public function get(Request $request, Response $response)
     {
         $config = $this->config;
-        // Подключаем сессию, берет название класса из конфигурации
-        // $session = new Session();
-        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+        $session = $this->session;
+		$language = $this->languages->get($request);
         $langs = new $config['vendor']['detector']['language']();
-        // Получаем массив данных из таблицы language на языке из $session->language
+
         if (isset($session->language)) {
             $lang = $session->language;
         } elseif ($langs->getLanguage()) {
@@ -49,8 +53,7 @@ class Language
         } else {
             $lang = $config['settings']['language'];
         }
-        $languages = new Languages($request, $config);
-        $language = $languages->get();
+
         foreach($language as $key => $value)
         {
             $arr["id"] = $key;
@@ -75,12 +78,10 @@ class Language
     public function post(Request $request, Response $response)
     {
         $config = $this->config;
- 
-        // Подключаем сессию, берет название класса из конфигурации
-        // $session = new Session();
-        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+        $session = $this->session;
+		$language = $this->languages->get($request);
         $langs = new $config['vendor']['detector']['language']();
-        // Получаем массив данных из таблицы language на языке из $session->language
+
         if (isset($session->language)) {
             $lang = $session->language;
         } elseif ($langs->getLanguage()) {
@@ -98,8 +99,7 @@ class Language
             if ($lg == 3) {$session->language = "en";}
             if ($lg == 4) {$session->language = "de";}
         }
-        $languages = new Languages($request, $config);
-        $language = $languages->get();
+
         foreach($language as $key => $value)
         {
             $arr["id"] = $key;

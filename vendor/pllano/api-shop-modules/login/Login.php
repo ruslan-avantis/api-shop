@@ -29,7 +29,7 @@ class Login
     public function post(Request $request)
     {
         $config = $this->config;
-        // Подключаем сессию, берет название класса из конфигурации
+        // Подключаем сессию
         $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
         // Получаем данные отправленные нам через POST
         $post = $request->getParsedBody();

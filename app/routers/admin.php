@@ -15,10 +15,10 @@ use Pllano\Hooks\Hook;
 use ApiShop\Model\{Language, Site, Template, SessionUser, Security, Filter, Pagination, Install};
 use ApiShop\Admin\{Control, AdminDatabase, Resources, Packages};
 use ApiShop\Utilities\Utility;
- 
+
 $admin_router = $config['routers']['admin']['all']['route'];
 $admin_index = $config['routers']['admin']['index']['route'];
-$session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+
 $admin_uri = '/0';
 $post_id = '/0';
 if(isset($session->admin_uri)) {
@@ -29,31 +29,33 @@ if(isset($session->post_id)) {
 }
  
 // Главная страница админ панели
-$app->get($admin_uri.$admin_index.'', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
+	// Подключаем мультиязычность
+	$language = $this->get('languages')->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
+    // Конфигурация роутинга
+    $routers = $config['routers'];
+    // Подключаем плагины
+    $utility = new Utility();
+
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
- 
-    // Подключаем плагины
-    $utility = new Utility();
+
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-    // Конфигурация роутинга
-    $routers = $config['routers'];
+
     // Конфигурация шаблона
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
-    // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -102,32 +104,32 @@ $app->get($admin_uri.$admin_index.'', function ($request, $response, $args) {
     }
     
     $head = [
-    "page" => $render,
-    "title" => $title,
-    "keywords" => $keywords,
-    "description" => $description,
-    "robots" => $robots,
-    "og_title" => $og_title,
-    "og_description" => $og_description,
-    "og_image" => $og_image,
-    "og_type" => $og_type,
-    "og_locale" => $og_locale,
-    "og_url" => $og_url,
-    "host" => $host,
-    "path" => $path
+        "page" => $render,
+        "title" => $title,
+        "keywords" => $keywords,
+        "description" => $description,
+        "robots" => $robots,
+        "og_title" => $og_title,
+        "og_description" => $og_description,
+        "og_image" => $og_image,
+        "og_type" => $og_type,
+        "og_locale" => $og_locale,
+        "og_url" => $og_url,
+        "host" => $host,
+        "path" => $path
     ];
     
     $view = [
-    "head" => $head,
-    "routers" => $routers,
-    "config" => $config,
-    "language" => $language,
-    "template" => $template,
-    "token" => $session->token_admin,
-    "admin_uri" => $admin_uri,
-    "post_id" => $post_id,
-    "session" => $sessionUser,
-    "content" => $content
+        "head" => $head,
+        "routers" => $routers,
+        "config" => $config,
+        "language" => $language,
+        "template" => $template,
+        "token" => $session->token_admin,
+        "admin_uri" => $admin_uri,
+        "post_id" => $post_id,
+        "session" => $sessionUser,
+        "content" => $content
     ];
     
     // Передаем данные Hooks для обработки ожидающим классам
@@ -141,7 +143,7 @@ $app->get($admin_uri.$admin_index.'', function ($request, $response, $args) {
 });
 
 // Список items указанного resource
-$app->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
@@ -177,10 +179,10 @@ $app->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -306,7 +308,7 @@ $app->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9
 });
 
 // Содать запись в resource
-$app->post($admin_uri.$admin_router.'resource-post', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'resource-post', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
     $config = $this->get('config');
@@ -321,8 +323,8 @@ $app->post($admin_uri.$admin_router.'resource-post', function ($request, $respon
     $post = $request->getParsedBody();
     // Подключаем плагины
     $utility = new Utility();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Подключаем систему безопасности
@@ -469,7 +471,7 @@ $app->post($admin_uri.$admin_router.'resource-post', function ($request, $respon
 });
 
 // Удалить запись в resource
-$app->post($admin_uri.$admin_router.'resource-delete', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
     $config = $this->get('config');
@@ -481,8 +483,8 @@ $app->post($admin_uri.$admin_router.'resource-delete', function ($request, $resp
     
     // Подключаем плагины
     $utility = new Utility();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Подключаем систему безопасности
@@ -599,7 +601,7 @@ $app->post($admin_uri.$admin_router.'resource-delete', function ($request, $resp
 });
 
 // Редактируем запись в resource
-$app->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
     $config = $this->get('config');
@@ -611,8 +613,8 @@ $app->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a
     
     // Подключаем плагины
     $utility = new Utility();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -763,7 +765,7 @@ $app->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a
 });
 
 // Активировать заказ
-$app->post($admin_uri.$admin_router.'order-activate', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'order-activate', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
     $config = $this->get('config');
@@ -773,8 +775,8 @@ $app->post($admin_uri.$admin_router.'order-activate', function ($request, $respo
     $request = $hook->request();
 
     
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -860,7 +862,7 @@ $app->post($admin_uri.$admin_router.'order-activate', function ($request, $respo
 });
 
 // Купить и установить шаблон
-$app->post($admin_uri.$admin_router.'template-buy', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'template-buy', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
     $config = $this->get('config');
@@ -870,8 +872,8 @@ $app->post($admin_uri.$admin_router.'template-buy', function ($request, $respons
     $request = $hook->request();
 
     
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -925,7 +927,7 @@ $app->post($admin_uri.$admin_router.'template-buy', function ($request, $respons
 });
 
 // Установить шаблон
-$app->post($admin_uri.$admin_router.'template-install', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'template-install', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
     $config = $this->get('config');
@@ -937,8 +939,8 @@ $app->post($admin_uri.$admin_router.'template-install', function ($request, $res
     
     // Подключаем плагины
     $utility = new Utility();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Получаем данные отправленные нам через POST
@@ -1038,7 +1040,7 @@ $app->post($admin_uri.$admin_router.'template-install', function ($request, $res
 });
 
 // Активировать шаблон
-$app->post($admin_uri.$admin_router.'template-activate', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'template-activate', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
     $config = $this->get('config');
@@ -1050,8 +1052,8 @@ $app->post($admin_uri.$admin_router.'template-activate', function ($request, $re
     
     // Подключаем плагины
     $utility = new Utility();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Получаем данные отправленные нам через POST
@@ -1134,7 +1136,7 @@ $app->post($admin_uri.$admin_router.'template-activate', function ($request, $re
 });
 
 // Удалить шаблон
-$app->post($admin_uri.$admin_router.'template-delete', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'template-delete', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
     $config = $this->get('config');
@@ -1144,8 +1146,8 @@ $app->post($admin_uri.$admin_router.'template-delete', function ($request, $resp
     $request = $hook->request();
 
     
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -1207,7 +1209,7 @@ $app->post($admin_uri.$admin_router.'template-delete', function ($request, $resp
 });
 
 // Список шаблонов
-$app->get($admin_uri.$admin_router.'template', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'template', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
@@ -1228,10 +1230,10 @@ $app->get($admin_uri.$admin_router.'template', function ($request, $response, $a
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -1323,7 +1325,7 @@ $app->get($admin_uri.$admin_router.'template', function ($request, $response, $a
 });
 
 // Страница шаблона
-$app->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
@@ -1351,10 +1353,10 @@ $app->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($re
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -1439,7 +1441,7 @@ $app->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($re
 });
 
 // Редактируем настройки шаблона
-$app->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
@@ -1467,10 +1469,10 @@ $app->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($r
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -1566,7 +1568,7 @@ $app->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($r
 });
 
 // Станица пакета
-$app->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function ($request, $response, $args) {
+$routing->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function ($request, $response, $args) {
     // Получаем конфигурацию
     $config = $this->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
@@ -1598,10 +1600,10 @@ $app->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -1693,7 +1695,7 @@ $app->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+
 });
  
 // Изменение статуса пакета
-$app->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function ($request, $response, $args) {
     
     // Подключаем конфиг Settings\Config
     $config = $this->get('config');
@@ -1723,8 +1725,8 @@ $app->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-
     }
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -1812,7 +1814,7 @@ $app->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-
 });
 
 // Список пакетов
-$app->get($admin_uri.$admin_router.'packages', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'packages', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
@@ -1833,10 +1835,10 @@ $app->get($admin_uri.$admin_router.'packages', function ($request, $response, $a
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -1923,7 +1925,7 @@ $app->get($admin_uri.$admin_router.'packages', function ($request, $response, $a
 });
 
 // Репозиторий
-$app->get($admin_uri.$admin_router.'packages-install', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'packages-install', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
@@ -1945,10 +1947,10 @@ $app->get($admin_uri.$admin_router.'packages-install', function ($request, $resp
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -2035,7 +2037,7 @@ $app->get($admin_uri.$admin_router.'packages-install', function ($request, $resp
 });
 
 // Страница установки из json файла
-$app->get($admin_uri.$admin_router.'packages-install-json', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'packages-install-json', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
@@ -2057,10 +2059,10 @@ $app->get($admin_uri.$admin_router.'packages-install-json', function ($request, 
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -2147,7 +2149,7 @@ $app->get($admin_uri.$admin_router.'packages-install-json', function ($request, 
 });
 
 // Глобальные настройки
-$app->get($admin_uri.$admin_router.'config', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'config', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
@@ -2169,10 +2171,10 @@ $app->get($admin_uri.$admin_router.'config', function ($request, $response, $arg
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -2260,7 +2262,7 @@ $app->get($admin_uri.$admin_router.'config', function ($request, $response, $arg
 });
 
 // Редактируем глобальные настройки
-$app->post($admin_uri.$admin_router.'config', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'config', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
@@ -2282,10 +2284,10 @@ $app->post($admin_uri.$admin_router.'config', function ($request, $response, $ar
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -2378,7 +2380,7 @@ $app->post($admin_uri.$admin_router.'config', function ($request, $response, $ar
 });
 
 // Список баз данных
-$app->get($admin_uri.$admin_router.'db', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'db', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
@@ -2400,10 +2402,10 @@ $app->get($admin_uri.$admin_router.'db', function ($request, $response, $args) {
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -2487,7 +2489,7 @@ $app->get($admin_uri.$admin_router.'db', function ($request, $response, $args) {
 });
 
 // Страница таблицы (ресурса)
-$app->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
@@ -2515,10 +2517,10 @@ $app->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', f
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -2693,7 +2695,7 @@ $app->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', f
 });
 
 // Глобально
-$app->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) {
     
     // Получаем конфигурацию
     $config = $this->get('config');
@@ -2727,10 +2729,10 @@ $app->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', 
     $templateConfig = new Template($config, $config['admin']['template']);
     $template = $templateConfig->get();
     // Подключаем мультиязычность
-    $languages = new Language($request, $config);
-    $language = $languages->get();
-    // Подключаем сессию, берет название класса из конфигурации
-    $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+    $languages = $this->get('languages');
+    $language = $languages->get($request);
+    // Подключаем сессию
+    $session = $this->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи

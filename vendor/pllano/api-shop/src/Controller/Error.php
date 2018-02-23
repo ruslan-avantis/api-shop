@@ -64,7 +64,7 @@ class Error
         $language = $languages->get();
         // Меню, берет название класса из конфигурации
         $menu = (new Menu($config))->get();
-        // Подключаем сессию, берет название класса из конфигурации
+        // Подключаем сессию
         $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
         // Данные пользователя из сессии
         $sessionUser =(new SessionUser($config))->get();
