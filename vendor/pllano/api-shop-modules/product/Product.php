@@ -13,7 +13,7 @@
 namespace ApiShop\Modules\Products;
  
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\Router as RouterDb;
 use ApiShop\Utilities\Utility;
 use ApiShop\Adapter\Image;
  
@@ -71,21 +71,20 @@ class Product
  
         // Ресурс (таблица) к которому обращаемся
         $resource = "price";
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($config);
-        // Получаем название базы для указанного ресурса
-        $name_db = $router->ping($resource);
-        // Подключаемся к базе
-        $db = new Db($name_db, $config);
-        // Отправляем запрос и получаем данные
-        $resp = $db->get($resource, [], $alias);
- 
-        if (isset($resp["headers"]["code"])) {
-            if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == "200") {
+        // Отдаем роутеру RouterDb конфигурацию
+        $routerDb = new RouterDb($config, 'Apis');
+        // Пингуем для ресурса указанную и доступную базу данных
+        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+        $db = $routerDb->run($routerDb->ping($resource));
+        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+        $responseArr = $db->get($resource, [], $alias);
+
+        if (isset($responseArr["headers"]["code"])) {
+            if ($responseArr["headers"]["code"] == 200 || $responseArr["headers"]["code"] == "200") {
  
                 $image = new Image($config);
  
-                $item = $resp["body"]['items']['0']['item'];
+                $item = $responseArr["body"]['items']['0']['item'];
                 $protocol_uri = $config["server"]["scheme"].'://'.$host;
  
                 // Если ответ не пустой

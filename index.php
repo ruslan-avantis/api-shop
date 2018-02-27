@@ -73,7 +73,7 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
     $routingConfig['addContentLengthHeader'] = false;
     $routingConfig['determineRouteBeforeAppMiddleware'] = false;
 
-    if (isset($routingSettings)) {
+/*     if (isset($routingSettings)) {
         foreach($routingSettings as $key => $val)
         {
             if((int)$val == 1){
@@ -84,7 +84,7 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
                 $routingConfig[$key] = $val;
             }
         }
-    }
+    } */
     if ($routingConfig['debug'] === true) {
         error_reporting(E_ALL ^ E_NOTICE);
     }

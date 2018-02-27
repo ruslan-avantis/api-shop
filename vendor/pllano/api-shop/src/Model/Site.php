@@ -13,8 +13,7 @@
 
 namespace ApiShop\Model;
  
-use Pllano\RouterDb\Db;
-use Pllano\RouterDb\Router;
+use Pllano\RouterDb\Router as RouterDb;
 use Pllano\Caching\Cache;
  
 class Site
@@ -34,34 +33,29 @@ class Site
     public function get()
     {
         $config = $this->config;
-        $cache = new Cache($config);
+        $cache = new Cache($this->config);
         $cache_run = $cache->run($this->resource, $this->cache_lifetime);
         if ($cache_run === null) {
- 
-            // Отдаем роутеру RouterDb конфигурацию.
-            $router = new Router($config);
-            // Получаем название базы для указанного ресурса
-            $db_name = $router->ping($this->resource);
 
-            if ($db_name != null) {
-                // Подключаемся к базе
-                $db = new Db($db_name, $config);
-                // Отправляем запрос и получаем данные
-                $response = $db->get($this->resource);
- 
-				$this->site = null;
-				if(isset($response["body"]["items"]["0"]["item"])) {
-                    if ($response != null) {
-                        $this->site = $response["body"]["items"]["0"]["item"];
-                    }
-				}
-                if ($cache->state() == 1) {
-                    $cache->set($this->site);
-                }
-                return $this->site;
-            } else {
-                return $cache->get();
-            }
+			// Отдаем роутеру RouterDb конфигурацию
+			$routerDb = new RouterDb($this->config, 'APIS');
+			// Пингуем для ресурса указанную и доступную базу данных
+			// Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+			$db = $routerDb->run($routerDb->ping($this->resource));
+			// Отправляем запрос к БД в формате адаптера. В этом случае Apis
+			$responseArr = $db->get($this->resource);
+
+			$this->site = null;
+			if(isset($responseArr["body"]["items"]["0"]["item"])) {
+			    if ($responseArr != null) {
+			        $this->site = $responseArr["body"]["items"]["0"]["item"];
+			    }
+			}
+			if ($cache->state() == 1) {
+			    $cache->set($this->site);
+			}
+			return $this->site;
+
         } else {
              return $cache->get();
         }

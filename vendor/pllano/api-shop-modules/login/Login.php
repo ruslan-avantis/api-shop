@@ -13,7 +13,7 @@
 namespace ApiShop\Modules\Account;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\Router as RouterDb;
 use ApiShop\Utilities\Utility;
 use ApiShop\Model\User;
 
@@ -63,26 +63,26 @@ class Login
                         if($cookie == 1) {
                             // Ресурс (таблица) к которому обращаемся
                             $resource = "user";
-                            // Отдаем роутеру RouterDb конфигурацию.
-                            $router = new Router($config);
-                            // Получаем название базы для указанного ресурса
-                            $name_db = $router->ping($resource);
-                            // Подключаемся к базе
-                            $db = new Db($name_db, $config);
-                            // Отправляем запрос и получаем данные
-                            $resp = $db->get($resource, [], $user_id);
-                            
+							
+                            // Отдаем роутеру RouterDb конфигурацию
+                            $routerDb = new RouterDb($config, 'Apis');
+                            // Пингуем для ресурса указанную и доступную базу данных
+                            // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+                            $db = $routerDb->run($routerDb->ping($resource));
+                            // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+                            $responseArr = $db->get($resource, [], $user_id);
+
                             //print("<br>");
-                            //print_r($resp);
-                            if (isset($resp["headers"]["code"])) {
-                                if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == "200") {
+                            //print_r($responseArr);
+                            if (isset($responseArr["headers"]["code"])) {
+                                if ($responseArr["headers"]["code"] == 200 || $responseArr["headers"]["code"] == "200") {
                                     
-                                    if(is_object($resp["body"]["items"]["0"]["item"])) {
-                                        $user = (array)$resp["body"]["items"]["0"]["item"];
-                                    } elseif (is_array($resp["body"]["items"]["0"]["item"])) {
-                                        $user = $resp["body"]["items"]["0"]["item"];
+                                    if(is_object($responseArr["body"]["items"]["0"]["item"])) {
+                                        $user = (array)$responseArr["body"]["items"]["0"]["item"];
+                                    } elseif (is_array($responseArr["body"]["items"]["0"]["item"])) {
+                                        $user = $responseArr["body"]["items"]["0"]["item"];
                                     }
-                                    
+
                                     if ($user["state"] == 1) {
                                         
                                         $session->authorize = 1;

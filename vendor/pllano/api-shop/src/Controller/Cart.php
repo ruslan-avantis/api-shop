@@ -13,7 +13,7 @@
 namespace ApiShop\Controller;
 
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
-use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\Router as RouterDb;
 use ApiShop\Model\Language;
 use ApiShop\Utilities\Utility;
 use ApiShop\Controller\Error;
@@ -48,15 +48,15 @@ class Cart
 		// Подключаем утилиты
 		$utility = new Utility();
 		// Читаем ключи
-		$session_key = $config['key']['session'];
-		$cookie_key = $config['key']['cookie'];
+		$session_key = $this->config['key']['session'];
+		$cookie_key = $this->config['key']['cookie'];
 		// Разбираем post
 		$post = $request->getParsedBody();
 		$id = filter_var($post['id'], FILTER_SANITIZE_STRING);
 		$product_id = filter_var($post['product_id'], FILTER_SANITIZE_STRING);
 		$price = filter_var($post['price'], FILTER_SANITIZE_STRING);
 		$num = filter_var($post['num'], FILTER_SANITIZE_STRING);
-		$cookie = $config['vendor']['crypto']['crypt']::decrypt($_COOKIE[$config['settings']['session']['name']], $cookie_key);
+		$cookie = $this->config['vendor']['crypto']['crypt']::decrypt($_COOKIE[$this->config['settings']['session']['name']], $cookie_key);
 		
 		$callbackStatus = 400;
 		$callbackTitle = 'Соообщение системы';
@@ -67,30 +67,30 @@ class Cart
 		} else {
 			$user_id = 0;
 		}
-		
-		$cartArr = [
+
+		// Ресурс (таблица) к которому обращаемся
+		$resource = "cart";
+		// Отдаем роутеру RouterDb конфигурацию
+		$routerDb = new RouterDb($this->config, 'APIS');
+		// Пингуем для ресурса указанную и доступную базу данных
+		// Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+		$db = $routerDb->run($routerDb->ping($resource));
+		// Массив для запроса
+		$query = [
 		    'user_id' => $user_id,
 		    'cookie' => $cookie,
 		    'product_id' => $product_id,
 		    'num' => $num,
 		    'price' => $price,
-		    'currency_id' => $config['seller']['currency_id'],
+		    'currency_id' => $this->config['seller']['currency_id'],
 		    'order_id' => null,
 		    'status_id' => 1,
 		    'state' => 1
 		];
-		
-		// Ресурс (таблица) к которому обращаемся
-		$resource = "cart";
-		// Отдаем роутеру RouterDb конфигурацию.
-		$router = new Router($config);
-		// Получаем название базы для указанного ресурса
-		$name_db = $router->ping($resource);
-		// Подключаемся к базе
-		$db = new Db($name_db, $config);
-		// Отправляем запрос в базу
-		$dbState = $db->post($resource, $cartArr);
-		if ($dbState >= 1) {
+		// Отправляем запрос к БД в формате адаптера. В этом случае Apis
+		$responseArr = $db->post($resource, $query);
+
+		if ($responseArr >= 1) {
 			$callbackStatus = 200;
 			$callbackTitle = $language["23"];
 			$callbackText = $language["126"]." ".$language["124"]."<br>".$language["194"]." ".$price;
@@ -104,7 +104,7 @@ class Cart
 		$response->withHeader('Content-type', 'application/json');
 		// Выводим json
 		echo json_encode($callback);
-		
+
 	}
 	
 	public function post_new_order(Request $request, Response $response)
@@ -154,9 +154,16 @@ class Cart
 		
 		if ($this->session->authorize == 1) {
 			$user_id = $this->config['vendor']['crypto']['crypt']::decrypt($this->session->user_id, $session_key);
-			} else {
-			
-			$userArr = [
+		} else {
+            // Ресурс (таблица) к которому обращаемся
+            $resource = "user";
+            // Отдаем роутеру RouterDb конфигурацию
+            $routerDb = new RouterDb($this->config, 'APIS');
+            // Пингуем для ресурса указанную и доступную базу данных
+            // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+            $db = $routerDb->run($routerDb->ping($resource));
+            // Массив для запроса
+            $query = [
 				"site_id" => 1,
 				"cookie" => $cookie,
 				"iname" => $iname,
@@ -164,19 +171,10 @@ class Cart
 				"phone" => $phone,
 				"email" => $email,
 				"password" => ""
-			];
-			
-			// Ресурс (таблица) к которому обращаемся
-			$resource = "user";
-			// Отдаем роутеру RouterDb конфигурацию.
-			$router = new Router($this->config);
-			// Получаем название базы для указанного ресурса
-			$name_db = $router->ping($resource);
-			// Подключаемся к базе
-			$db = new Db($name_db, $this->config);
-			// Отправляем запрос и получаем данные
-			$user = $db->post($resource, $userArr);
-			
+            ];
+            // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+            $user = $db->post($resource, $query);
+
 			if (isset($user['response']['id'])) {
 				$this->session->user_id = $this->config['vendor']['crypto']['crypt']::encrypt($user['response']['id'], $session_key);
 				$user_id = $user['response']['id'];

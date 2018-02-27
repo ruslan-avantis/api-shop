@@ -10,7 +10,7 @@
     * file that was distributed with this source code.
 */
  
-use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\Router as RouterDb;
 use ApiShop\Model\{Security, User, Install};
 use ApiShop\Utilities\Utility;
  
@@ -350,12 +350,11 @@ $routing->post('/install-template', function ($request, $response, $args) {
                             // Обновляем название шаблона в ресурсе site
                             // Ресурс (таблица) к которому обращаемся
                             $resource = "site";
-                            // Отдаем роутеру RouterDb конфигурацию.
-                            $router = new Router($config);
-                            // Получаем название базы для указанного ресурса
-                            $name_db = $router->ping($resource);
-                            // Подключаемся к базе
-                            $db = new Db($name_db, $config);
+                            // Отдаем роутеру RouterDb конфигурацию
+                            $routerDb = new RouterDb($config, 'Apis');
+                            // Пингуем для ресурса указанную и доступную базу данных
+                            // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+                            $db = $routerDb->run($routerDb->ping($resource));
                             // Отправляем запрос и получаем данные
                             $response = $db->put($resource, ["template" => $dir], $session->site_id);
                         }
@@ -390,7 +389,7 @@ $routing->post('/install-template', function ($request, $response, $args) {
  
                 // Обновляем название шаблона в базе
                 // Подключаемся к базе
-                $db = new Db("json", $config);
+				$db = $routerDb->run("json");
                 // Обновляем название шаблона в базе
                 $db->put("db", ["template" => $dir], 1);
  
@@ -423,8 +422,6 @@ $routing->post('/register-in-seller', function ($request, $response, $args) {
     $today = date("Y-m-d H:i:s");
     // Конфигурация
     $config = $this->get('config');
-    // Отдаем роутеру RouterDb конфигурацию.
-    $router = new Router($config);
     // Читаем ключи
     $session_key = $config['key']['session'];
     $cookie_key = $config['key']['cookie'];
@@ -526,10 +523,11 @@ $routing->post('/register-in-seller', function ($request, $response, $args) {
  
                     // Регистрируем магазин и продавца на платформе
                     $resource = "install";
-                    // Получаем название базы для указанного ресурса
-                    $name_db = $router->ping($resource);
-                    // Подключаемся к базе
-                    $db = new Db($name_db, $config);
+                    // Отдаем роутеру RouterDb конфигурацию
+                    $routerDb = new RouterDb($config, 'Apis');
+                    // Пингуем для ресурса указанную и доступную базу данных
+                    // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+                    $db = $routerDb->run($routerDb->ping($resource));
                     // Отправляем запрос и получаем данные
                     $records = $db->post($resource, $install);
                     
@@ -569,10 +567,11 @@ $routing->post('/register-in-seller', function ($request, $response, $args) {
  
                                 // Ресурс (таблица) к которому обращаемся
                                 $resource = "user";
-                                // Получаем название базы для указанного ресурса
-                                $name_db = $router->ping($resource);
-                                // Подключаемся к базе
-                                $db = new Db($name_db, $config);
+                                // Отдаем роутеру RouterDb конфигурацию
+                                $routerDb = new RouterDb($config, 'Apis');
+                                // Пингуем для ресурса указанную и доступную базу данных
+                                // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+                                $db = $routerDb->run($routerDb->ping($resource));
                                 // Отправляем запрос и получаем данные
                                 $user = $db->post($resource, $arr);
                         
@@ -743,12 +742,11 @@ $routing->post('/start-shop', function ($request, $response, $args) {
  
             // Регистрируем магазин и продавца на платформе
             $resource = "install";
-            // Отдаем роутеру RouterDb конфигурацию.
-            $router = new Router($config);
-            // Получаем название базы для указанного ресурса
-            $name_db = $router->ping($resource);
-            // Подключаемся к базе
-            $db = new Db($name_db, $config);
+            // Отдаем роутеру RouterDb конфигурацию
+            $routerDb = new RouterDb($config, 'Apis');
+            // Пингуем для ресурса указанную и доступную базу данных
+            // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+            $db = $routerDb->run($routerDb->ping($resource));
             // Отправляем запрос и получаем данные
             $records = $db->put($resource, $putArr);
             

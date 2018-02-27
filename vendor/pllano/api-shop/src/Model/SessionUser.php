@@ -65,7 +65,7 @@ class SessionUser
                     if (isset($session->fname)) {$response["fname"] = $this->config['vendor']['crypto']['crypt']::decrypt($session->fname, $session_key);}
                     if (isset($session->phone)) {$response['phone'] = $this->config['vendor']['crypto']['crypt']::decrypt($session->phone, $session_key);}
                     if (isset($session->email)) {$response['email'] = $this->config['vendor']['crypto']['crypt']::decrypt($session->email, $session_key);}
- 
+					
                 } catch (\Exception $ex) {
  
                     // Если не можем расшифровать, чистим сессию

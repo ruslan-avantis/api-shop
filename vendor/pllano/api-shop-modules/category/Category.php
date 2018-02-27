@@ -13,7 +13,7 @@
 namespace ApiShop\Modules\Categories;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\Router as RouterDb;
 use ApiShop\Utilities\Utility;
 
 class Category
@@ -78,19 +78,22 @@ class Category
  
         if (isset($alias)) {
             // Ресурс (таблица) к которому обращаемся
-            $category_resource = "category";
-            // Отдаем роутеру RouterDb конфигурацию.
-            $router = new Router($config);
-            // Получаем название базы для указанного ресурса
-            $category_db = $router->ping($category_resource);
-            // Подключаемся к базе
-            $db = new Db($category_db, $config);
-            // Отправляем запрос и получаем данные
-            $resp = $db->get($category_resource, ['alias' => $alias]);
- 
-            if (isset($resp["headers"]["code"])) {
-                if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == '200') {
-                    $category = $resp['body']['items']['0']['item'];
+            $resource = "category";
+            // Отдаем роутеру RouterDb конфигурацию
+            $routerDb = new RouterDb($config, 'Apis');
+            // Пингуем для ресурса указанную и доступную базу данных
+            // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+            $db = $routerDb->run($routerDb->ping($resource));
+            // Массив для запроса
+            $query = [
+                "alias" => $alias
+            ];
+            // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+            $responseArr = $db->get($resource, $query);
+
+            if (isset($responseArr["headers"]["code"])) {
+                if ($responseArr["headers"]["code"] == 200 || $responseArr["headers"]["code"] == '200') {
+                    $category = $responseArr['body']['items']['0']['item'];
  
                     if(is_object($category)) {
                         $category = (array)$category;

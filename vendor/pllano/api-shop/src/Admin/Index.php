@@ -13,7 +13,7 @@
  
 namespace ApiShop\Admin;
  
-use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\Router as RouterDb;
  
 class Index
 {
@@ -61,21 +61,24 @@ class Index
                    }
                 }
             } else {
-                // Отдаем роутеру RouterDb конфигурацию.
-                $router = new Router($this->config);
-                // Получаем название базы для указанного ресурса
-                $name_db = $router->ping($resource);
-                // Подключаемся к базе
-                $db = new Db($name_db, $this->config);
-                // Получаем массив
-                $resourceGet = $db->get($resource, [
+			
+			    // Отдаем роутеру RouterDb конфигурацию
+                $routerDb = new RouterDb($this->config, 'Apis');
+                // Пингуем для ресурса указанную и доступную базу данных
+				// Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+				$db = $routerDb->run($routerDb->ping($resource));
+                // Массив для запроса
+				$query = [
                     "offset" => 0,
                     "limit" => 5,
                     "sort" => "id",
                     "order" => "DESC"
-                ]);
+                ];
+				// Отправляем запрос к БД в формате адаптера. В этом случае Apis
+                $responseArr = $db->get($resource, $query);
+
                 // Убираем body items
-                $resp[$resource] = $resourceGet['body']['items'];
+                $resp[$resource] = $responseArr['body']['items'];
             }
         }
 

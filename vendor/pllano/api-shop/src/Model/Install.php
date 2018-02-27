@@ -13,8 +13,7 @@
  
 namespace ApiShop\Model;
  
-use Pllano\RouterDb\Db;
-use Pllano\RouterDb\Router;
+use Pllano\RouterDb\Router as RouterDb;
  
 class Install {
  
@@ -29,36 +28,36 @@ class Install {
     {
         // Ресурс к которому обращаемся
         $resource = "stores_list";
- 
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($this->config);
-        // Получаем название базы для указанного ресурса
-        $db_name = $router->ping($resource);
-        // Подключаемся к базе
-        $db = new Db($db_name, $this->config);
-        // Отправляем запрос и получаем данные
-        $response = $db->get($resource);
- 
-        return $response["body"]["items"];
+
+        // Отдаем роутеру RouterDb конфигурацию
+        $routerDb = new RouterDb($this->config, 'APIS');
+        // Пингуем для ресурса указанную и доступную базу данных
+        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+        $db = $routerDb->run($routerDb->ping($resource));
+        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+        $responseArr = $db->get($resource);
+
+        return $responseArr["body"]["items"];
     }
  
     public function templates_list($store = null)
     {
         // Ресурс к которому обращаемся
         $resource = "templates_list";
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($this->config);
-        // Получаем название базы для указанного ресурса
-        $db_name = $router->ping($resource);
-        // Подключаемся к базе
-        $db = new Db($db_name, $this->config);
-        // Отправляем запрос и получаем данные
+        // Отдаем роутеру RouterDb конфигурацию
+        $routerDb = new RouterDb($this->config, 'APIS');
+        // Пингуем для ресурса указанную и доступную базу данных
+        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+        $db = $routerDb->run($routerDb->ping($resource));
+        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+        $responseArr = $db->get($resource);
+
         if (isset($store)) {
-            $response = $db->get($resource, ["store_id" => $store]);
+			$responseArr = $db->get($resource, ["store_id" => $store]);
         } else {
-            $response = $db->get($resource);
+            $responseArr = $db->get($resource);
         }
-        return $response["body"]["items"];
+        return $responseArr["body"]["items"];
     }
  
 }

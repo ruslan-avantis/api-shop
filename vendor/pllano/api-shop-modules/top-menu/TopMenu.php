@@ -14,7 +14,7 @@
 namespace ApiShop\Modules\Menu;
  
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\Router as RouterDb;
  
 class TopMenu {
  
@@ -53,13 +53,14 @@ class TopMenu {
         // Конфигурация пакета
         $moduleArr['config'] = $config['modules']['nav'][$this->module];
         //$moduleArr = $template['modules']['nav'][$this->module];
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($config);
-        // Получаем название базы для указанного ресурса
-        $this->db_name = $router->ping($this->resource);
-        // Подключаемся к базе
-        $db = new Db($this->db_name, $this->config);
-        // Отправляем запрос и получаем данные
+
+        // Отдаем роутеру RouterDb конфигурацию
+        $routerDb = new RouterDb($config, 'Apis');
+        // Пингуем для ресурса указанную и доступную базу данных
+        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+        $db = $routerDb->run($routerDb->ping($this->resource));
+
+        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
         $menuArr = $db->get($this->resource, ["menu" => 1, "state" => 1, "sort" => "sort", "order" => "ASC", "offset" => 0, "limit" => 5]);
  
         if (isset($menuArr['headers']['code'])) {

@@ -13,7 +13,7 @@
 namespace ApiShop\Modules\Account;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\Router as RouterDb;
 use ApiShop\Utilities\Utility;
 use ApiShop\Model\User;
 
@@ -81,33 +81,32 @@ class Login
                         }
                         // Пишем в сессию identificator cookie
  
-                        $arr["role_id"] = 1;
-                        $arr["password"] = password_hash($password, PASSWORD_DEFAULT);
-                        $arr["phone"] = strval($phone);
-                        $arr["email"] = $email;
-                        $arr["language"] = $session->language;
-                        $arr["ticketed"] = 1;
-                        $arr["admin_access"] = 0;
-                        $arr["iname"] = $iname;
-                        $arr["fname"] = $fname;
-                        $arr["cookie"] = $cookie;
-                        $arr["created"] = $today;
-                        $arr["authorized"] = $today;
-                        $arr["alias"] = $utility->random_alias_id();
-                        $arr["state"] = 1;
-                        $arr["score"] = 1;
+                        $query["role_id"] = 1;
+                        $query["password"] = password_hash($password, PASSWORD_DEFAULT);
+                        $query["phone"] = strval($phone);
+                        $query["email"] = $email;
+                        $query["language"] = $session->language;
+                        $query["ticketed"] = 1;
+                        $query["admin_access"] = 0;
+                        $query["iname"] = $iname;
+                        $query["fname"] = $fname;
+                        $query["cookie"] = $cookie;
+                        $query["created"] = $today;
+                        $query["authorized"] = $today;
+                        $query["alias"] = $utility->random_alias_id();
+                        $query["state"] = 1;
+                        $query["score"] = 1;
  
                         // Ресурс (таблица) к которому обращаемся
                         $resource = "user";
-                        // Отдаем роутеру RouterDb конфигурацию.
-                        $router = new Router($config);
-                        // Получаем название базы для указанного ресурса
-                        $name_db = $router->ping($resource);
-                        // Подключаемся к базе
-                        $db = new Db($name_db, $config);
-                        // Отправляем запрос и получаем данные
-                        $user_id = $db->post($resource, $arr);
-                        
+						// Отдаем роутеру RouterDb конфигурацию
+                        $routerDb = new RouterDb($config, 'Apis');
+                        // Пингуем для ресурса указанную и доступную базу данных
+                        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+                        $db = $routerDb->run($routerDb->ping($resource));
+                        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+                        $user_id = $db->post($resource, $query);
+
                         if ($user_id >= 1) {
                             // Обновляем данные в сессии
                             $session->authorize = 1;

@@ -10,7 +10,7 @@
     * file that was distributed with this source code.
 */
  
-use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\Router as RouterDb;
 use Pllano\Hooks\Hook;
 use ApiShop\Model\{Language, Site, Template, SessionUser, Security, Filter, Pagination, Install};
 use ApiShop\Admin\{Control, AdminDatabase, Resources, Packages};
@@ -227,13 +227,12 @@ $routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-
             
             if (array_key_exists($resource, array_flip($resource_list))) {
                 
-                // Отдаем роутеру RouterDb конфигурацию.
-                $router = new Router($config);
-                // Получаем название базы для указанного ресурса
-                $name_db = $router->ping($resource);
-                // Подключаемся к базе
-                $db = new Db($name_db, $config);
-                
+                // Отдаем роутеру RouterDb конфигурацию
+                $routerDb = new RouterDb($config, 'Apis');
+                // Пингуем для ресурса указанную и доступную базу данных
+				// Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+				$db = $routerDb->run($routerDb->ping($resource));
+
                 if($id >= 1) {
                     $render = $resource.'_id.html';
                     $type = 'edit';
@@ -420,13 +419,12 @@ $routing->post($admin_uri.$admin_router.'resource-post', function ($request, $re
                             $postArr['state'] = 1;
                         }
                         
-                        // Отдаем роутеру RouterDb конфигурацию.
-                        $router = new Router($config);
-                        // Получаем название базы для указанного ресурса
-                        $name_db = $router->ping($resource);
-                        // Подключаемся к базе
-                        $db = new Db($name_db, $config);
-                        
+                        // Отдаем роутеру RouterDb конфигурацию
+                        $routerDb = new RouterDb($config, 'Apis');
+                        // Пингуем для ресурса указанную и доступную базу данных
+                        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+                        $db = $routerDb->run($routerDb->ping($resource));
+
                         // Передаем данные Hooks для обработки ожидающим классам
                         $hook->post($resource, $name_db, 'POST', $postArr, null);
                         $hookState = $hook->state();
@@ -549,12 +547,11 @@ $routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $
                     $resource_list = explode(',', str_replace(['"', "'", " "], '', $config['admin']['resource_list']));
                     if (array_key_exists($resource, array_flip($resource_list))) {
                         
-                        // Отдаем роутеру RouterDb конфигурацию.
-                        $router = new Router($config);
-                        // Получаем название базы для указанного ресурса
-                        $name_db = $router->ping($resource);
-                        // Подключаемся к базе
-                        $db = new Db($name_db, $config);
+                        // Отдаем роутеру RouterDb конфигурацию
+                        $routerDb = new RouterDb($config, 'Apis');
+                        // Пингуем для ресурса указанную и доступную базу данных
+                        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+                        $db = $routerDb->run($routerDb->ping($resource));
                         
                         // Передаем данные Hooks для обработки ожидающим классам
                         $hook->post($resource, $name_db, 'DELETE', [], $id);
@@ -722,12 +719,11 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
                             }
                         }
                         
-                        // Отдаем роутеру RouterDb конфигурацию.
-                        $router = new Router($config);
-                        // Получаем название базы для указанного ресурса
-                        $name_db = $router->ping($resource);
-                        // Подключаемся к базе
-                        $db = new Db($name_db, $config);
+                        // Отдаем роутеру RouterDb конфигурацию
+                        $routerDb = new RouterDb($config, 'Apis');
+                        // Пингуем для ресурса указанную и доступную базу данных
+                        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+                        $db = $routerDb->run($routerDb->ping($resource));
                         // Обновляем данные
                         $requestDb = $db->put($resource, $saveArr, $id);
                         
@@ -2609,12 +2605,11 @@ $routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]
             
             $sortArray = $filter->sort($sortArr);
             
-            // Отдаем роутеру RouterDb конфигурацию.
-            $router = new Router($config);
-            // Получаем название базы для указанного ресурса
-            $name_db = $router->ping($resource);
-            // Подключаемся к базе
-            $db = new Db($name_db, $config);
+            // Отдаем роутеру RouterDb конфигурацию
+            $routerDb = new RouterDb($config, 'Apis');
+            // Пингуем для ресурса указанную и доступную базу данных
+            // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+            $db = $routerDb->run($routerDb->ping($resource));
             // Отправляем запрос и получаем данные
             $resp = $db->get($resource);
             

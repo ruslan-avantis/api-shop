@@ -13,7 +13,7 @@
  
 namespace ApiShop\Modules\Categories;
  
-use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\Router as RouterDb;
 use ApiShop\Utilities\Utility;
 use ApiShop\Adapter\Image;
  
@@ -27,7 +27,7 @@ class Products {
         $this->config = $config;
     }
  
-    public function get(array $arr = [], array $moduleArr = [], $host)
+    public function get(array $query = [], array $moduleArr = [], $host)
     {
         // Подключаем плагины
         $utility = new Utility();
@@ -35,17 +35,16 @@ class Products {
         $image = new Image($this->config);
         // Ресурс (таблица) к которому обращаемся
         $resource = "price";
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($this->config);
-        // Получаем название базы для указанного ресурса
-        $name_db = $router->ping($resource);
-        // Подключаемся к базе
-        $db = new Db($name_db, $this->config);
-        // Отправляем запрос и получаем данные
-        $response = $db->get($resource, $arr);
- 
-        if (isset($response["response"]['total'])) {
-            $this->count = $response["response"]['total'];
+		// Отдаем роутеру RouterDb конфигурацию
+		$routerDb = new RouterDb($this->config, 'APIS');
+		// Пингуем для ресурса указанную и доступную базу данных
+		// Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+		$db = $routerDb->run($routerDb->ping($resource));
+		// Отправляем запрос к БД в формате адаптера. В этом случае Apis
+		$responseArr = $db->get($resource, $query);
+
+        if (isset($responseArr["response"]['total'])) {
+            $this->count = $responseArr["response"]['total'];
         }
         
         if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
@@ -55,8 +54,8 @@ class Products {
         }
  
         // Если ответ не пустой
-        if (count($response['body']['items']) >= 1) {
-            foreach($response['body']['items'] as $item)
+        if (count($responseArr['body']['items']) >= 1) {
+            foreach($responseArr['body']['items'] as $item)
             {
                 // Обрабатываем картинки
                 $product['no_image'] = $image->get(null, $protocol_uri.'/images/no_image.png', $moduleArr['config']["image_width"], $moduleArr['config']["image_height"]);

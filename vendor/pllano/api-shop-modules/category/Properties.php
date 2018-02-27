@@ -13,7 +13,7 @@
 namespace ApiShop\Modules\Categories;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\Router as RouterDb;
 use ApiShop\Utilities\Utility;
  
 class Properties

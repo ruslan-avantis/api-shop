@@ -12,10 +12,8 @@
  */
 
 namespace ApiShop\Model;
- 
-use Pllano\RouterDb\Db;
-use Pllano\RouterDb\Router;
- 
+
+use Pllano\RouterDb\Router as RouterDb;
 use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
 use ApiShop\Model\SessionUser;
@@ -48,24 +46,28 @@ class User {
             if ($cookie != null) {
                 // Ресурс (таблица) к которому обращаемся
                 $resource = "user";
-                // Отдаем роутеру RouterDb конфигурацию.
-                $router = new Router($config);
-                // Получаем название базы для указанного ресурса
-                $name_db = $router->ping($resource);
-                // Подключаемся к базе
-                $db = new Db($name_db, $config);
-                // Отправляем запрос и получаем данные
-                $response = $db->get($resource, ["cookie" => $cookie, "state" => 1]);
- 
+                // Отдаем роутеру RouterDb конфигурацию
+                $routerDb = new RouterDb($config, 'Apis');
+                // Пингуем для ресурса указанную и доступную базу данных
+				// Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+				$db = $routerDb->run($routerDb->ping($resource));
+                // Массив для запроса
+				$query = [
+				    "cookie" => $cookie, 
+					"state" => 1
+				];
+				// Отправляем запрос к БД в формате адаптера. В этом случае Apis
+                $responseArr = $db->get($resource, $query);
+
                 //print("<br>");
-                //print_r($response);
-                if (isset($response["headers"]["code"])) {
-                    if ($response["headers"]["code"] == 200 || $response["headers"]["code"] == "200") {
+                //print_r($responseArr);
+                if (isset($responseArr["headers"]["code"])) {
+                    if ($responseArr["headers"]["code"] == 200 || $responseArr["headers"]["code"] == "200") {
  
-                        if(is_object($response["body"]["items"]["0"]["item"])) {
-                            $user = (array)$response["body"]["items"]["0"]["item"];
-                        } elseif (is_array($response["body"]["items"]["0"]["item"])) {
-                            $user = $response["body"]["items"]["0"]["item"];
+                        if(is_object($responseArr["body"]["items"]["0"]["item"])) {
+                            $user = (array)$responseArr["body"]["items"]["0"]["item"];
+                        } elseif (is_array($responseArr["body"]["items"]["0"]["item"])) {
+                            $user = $responseArr["body"]["items"]["0"]["item"];
                         }
  
                         if ($user["state"] == 1) {
@@ -136,17 +138,21 @@ class User {
  
         // Ресурс (таблица) к которому обращаемся
         $resource = "user";
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($config);
-        // Получаем название базы для указанного ресурса
-        $name_db = $router->ping($resource);
-        // Подключаемся к базе
-        $db = new Db($name_db, $config);
-        // Отправляем запрос и получаем данные
-        $response = $db->get($resource, ["phone" => $phone, "email" => $email]);
- 
-        if (isset($response["headers"]["code"])) {
-            $item = (array)$response["body"]["items"]["0"]["item"];
+        // Отдаем роутеру RouterDb конфигурацию
+        $routerDb = new RouterDb($config);
+        // Пингуем для ресурса указанную и доступную базу данных
+        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+        $db = $routerDb->run($routerDb->ping($resource));
+        // Массив для запроса
+        $query = [
+				    "phone" => $phone, 
+					"email" => $email
+        ];
+        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+        $responseArr = $db->get($resource, $query);
+
+        if (isset($responseArr["headers"]["code"])) {
+            $item = (array)$responseArr["body"]["items"]["0"]["item"];
             // Если все ок читаем пароль
             if (password_verify($password, $item["password"])) {
                 // Если все ок - отдаем user_id
@@ -176,18 +182,22 @@ class User {
  
         // Ресурс (таблица) к которому обращаемся
         $resource = "user";
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($config);
-        // Получаем название базы для указанного ресурса
-        $name_db = $router->ping($resource);
-        // Подключаемся к базе
-        $db = new Db($name_db, $config);
-        // Отправляем запрос и получаем данные
-        $response = $db->put($resource, ["cookie" => $cookie, "authorized" => $today], $user_id);
- 
+		// Отдаем роутеру RouterDb конфигурацию
+        $routerDb = new RouterDb($config);
+        // Пингуем для ресурса указанную и доступную базу данных
+        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+        $db = $routerDb->run($routerDb->ping($resource));
+        // Массив c запросом
+        $query = [
+		    "cookie" => $cookie, 
+		    "authorized" => $today
+        ];
+        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+        $responseArr = $db->put($resource, $query, $user_id);
+
         // Если удалось обновить cookie в базе перезапишем везде
-        if (isset($response["headers"]["code"])) {
-            if ($response["headers"]["code"] == 202 || $response["headers"]["code"] == "202") {
+        if (isset($responseArr["headers"]["code"])) {
+            if ($responseArr["headers"]["code"] == 202 || $responseArr["headers"]["code"] == "202") {
                 // Читаем ключи шифрования
                 $cookie_key = $config['key']['cookie'];
                 // Шифруем cookie
@@ -222,24 +232,23 @@ class User {
     {
         // Получаем конфигурацию \ApiShop\Config\Settings
         $config = (new Settings())->get();
- 
-        $arrUser["email"] = $email;
-        $arrUser["phone"] = $phone;
- 
+
         // Ресурс (таблица) к которому обращаемся
         $resource = "user";
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($config);
-        // Получаем название базы для указанного ресурса
-        $name_db = $router->ping($resource);
-        // Подключаемся к базе
-        $db = new Db($name_db, $config);
-        // Отправляем запрос и получаем данные
-        $response = $db->get($resource, $arrUser);
+		// Отдаем роутеру RouterDb конфигурацию
+        $routerDb = new RouterDb($config);
+        // Пингуем для ресурса указанную и доступную базу данных
+        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+        $db = $routerDb->run($routerDb->ping($resource));
+        // Массив c запросом
+        $query["email"] = $email;
+        $query["phone"] = $phone;
+        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+        $responseArr = $db->get($resource, $query);
         
-        if (isset($response["headers"]["code"])) {
-            if ($response["headers"]["code"] == 200 || $response["headers"]["code"] == "200") {
-                $item = (array)$response["body"]["items"]["0"]["item"];
+        if (isset($responseArr["headers"]["code"])) {
+            if ($responseArr["headers"]["code"] == 200 || $responseArr["headers"]["code"] == "200") {
+                $item = (array)$responseArr["body"]["items"]["0"]["item"];
                 if(isset($item["user_id"])){
                     return $item["user_id"];
                 } else {

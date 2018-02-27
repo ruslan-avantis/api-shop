@@ -13,7 +13,7 @@
 namespace ApiShop\Modules\Products;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Pllano\RouterDb\{Db, Router};
+use Pllano\RouterDb\Router as RouterDb;
 use ApiShop\Utilities\Utility;
 use ApiShop\Adapter\Image;
 
@@ -53,32 +53,31 @@ class ProductsAction
         // Конфигурация пакета
         $moduleArr['config'] = $config['modules'][$this->route][$this->module];
         //$moduleArr = $template['modules'][$this->route][$this->module];
- 
-        $arr = [
-            "limit" => $moduleArr['config']['limit'],
-            "sort" => $moduleArr['config']['sort'],
-            "order" => $moduleArr['config']['order'],
-            "relations" => $moduleArr['config']['relations'],
-            "state_seller" => 1
-        ];
- 
+
         // Подключаем утилиты
         $utility = new Utility();
         // Обработка картинок
         $image = new Image($config);
         // Ресурс (таблица) к которому обращаемся
         $resource = "price";
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($config);
-        // Получаем название базы для указанного ресурса
-        $name_db = $router->ping($resource);
-        // Подключаемся к базе
-        $db = new Db($name_db, $config);
-        // Отправляем запрос и получаем данные
-        $response = $db->get($resource, $arr);
- 
-        if (isset($response["response"]['total'])) {
-            $this->count = $response["response"]['total'];
+		// Отдаем роутеру RouterDb конфигурацию
+        $routerDb = new RouterDb($config, 'Apis');
+        // Пингуем для ресурса указанную и доступную базу данных
+        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+        $db = $routerDb->run($routerDb->ping($resource));
+        // Массив для запроса
+        $query = [
+            "limit" => $moduleArr['config']['limit'],
+            "sort" => $moduleArr['config']['sort'],
+            "order" => $moduleArr['config']['order'],
+            "relations" => $moduleArr['config']['relations'],
+            "state_seller" => 1
+        ];
+        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+        $responseArr = $db->get($resource, $query);
+
+        if (isset($responseArr["response"]['total'])) {
+            $this->count = $responseArr["response"]['total'];
         }
         
         if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
@@ -90,8 +89,8 @@ class ProductsAction
         $products = [];
         $product = [];
         // Если ответ не пустой
-        if (count($response['body']['items']) >= 1) {
-            foreach($response['body']['items'] as $item)
+        if (count($responseArr['body']['items']) >= 1) {
+            foreach($responseArr['body']['items'] as $item)
             {
                 // Обрабатываем картинки
                 $product['no_image'] = $image->get(null, $protocol_uri.'/images/no_image.png', $moduleArr['config']["image_width"], $moduleArr['config']["image_height"]);

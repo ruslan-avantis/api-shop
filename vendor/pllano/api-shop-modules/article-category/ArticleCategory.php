@@ -63,27 +63,30 @@ class ArticleCategory
  
         // Ресурс (таблица) к которому обращаемся
         $resource = "article";
-        // Отдаем роутеру RouterDb конфигурацию.
-        $router = new Router($config);
-        // Получаем название базы для указанного ресурса
-        $name_db = $router->ping($resource);
-        // Подключаемся к базе
-        $db = new Db($name_db, $config);
-        // Отправляем запрос и получаем данные
-        $resp = $db->get($resource, ["alias" => $alias]);
+        // Отдаем роутеру RouterDb конфигурацию
+        $routerDb = new RouterDb($config, 'Apis');
+        // Пингуем для ресурса указанную и доступную базу данных
+        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+        $db = $routerDb->run($routerDb->ping($resource));
+        // Массив для запроса
+        $query = [
+            "alias" => $alias
+        ];
+        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+        $responseArr = $db->get($resource, $query);
  
         $content = [];
         $contentArr = [];
         $heads = [];
         $return = [];
  
-        if (isset($resp["headers"]["code"])) {
-            if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == "200") {
+        if (isset($responseArr["headers"]["code"])) {
+            if ($responseArr["headers"]["code"] == 200 || $responseArr["headers"]["code"] == "200") {
                 // Если данные в виде объекта переводим в массив
-                if(is_object($resp["body"]["items"]["0"]["item"])) {
-                    $arr = (array)$resp["body"]["items"]["0"]["item"];
-                } elseif (is_array($resp["body"]["items"]["0"]["item"])) {
-                    $arr = $resp["body"]["items"]["0"]["item"];
+                if(is_object($responseArr["body"]["items"]["0"]["item"])) {
+                    $arr = (array)$responseArr["body"]["items"]["0"]["item"];
+                } elseif (is_array($responseArr["body"]["items"]["0"]["item"])) {
+                    $arr = $responseArr["body"]["items"]["0"]["item"];
                 }
  
                 $arr["text"] = htmlspecialchars_decode($arr["text"]);

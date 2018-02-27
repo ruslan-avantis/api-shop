@@ -14,8 +14,7 @@
 namespace ApiShop\Model;
  
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Pllano\RouterDb\Db;
-use Pllano\RouterDb\Router;
+use Pllano\RouterDb\Router as RouterDb;
 use Pllano\Caching\Cache;
  
 class Language
@@ -62,16 +61,17 @@ class Language
         $cache = new Cache($this->config);
         $cache_run = $cache->run($host.'/'.$this->resource.'/'.$this->language, $this->cache_lifetime);
         if ($cache_run === null) {
-            // Отдаем роутеру RouterDb конфигурацию.
-            $router = new Router($this->config);
-            // Получаем название базы для указанного ресурса
-            $db_name = $router->ping($this->resource);
-            // Подключаемся к базе
-            $db = new Db($db_name, $this->config);
-            // Отправляем запрос и получаем данные
-            $resp = $db->get($this->resource);
-            if ($resp != null) {
-                foreach($resp['body']['items'] as $value)
+			
+            // Отдаем роутеру RouterDb конфигурацию
+            $routerDb = new RouterDb($this->config, 'APIS');
+            // Пингуем для ресурса указанную и доступную базу данных
+            // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+            $db = $routerDb->run($routerDb->ping($this->resource));
+            // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+            $responseArr = $db->get($this->resource);
+
+            if ($responseArr != null) {
+                foreach($responseArr['body']['items'] as $value)
                 {
                     $array = (array)$value['item'];
                     $arr[$array["id"]] = $array[$this->language];
