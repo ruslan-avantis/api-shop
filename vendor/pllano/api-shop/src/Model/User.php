@@ -14,17 +14,13 @@
 namespace ApiShop\Model;
 
 use Pllano\RouterDb\Router as RouterDb;
-use ApiShop\Config\Settings;
 use ApiShop\Utilities\Utility;
-use ApiShop\Model\SessionUser;
 
 class User {
 
     // Запускаем сессию пользоваетеля
-    public function run()
+    public function run($config = [])
     {
-        // Подключаем конфиг \ApiShop\Config\Settings
-        $config = (new Settings())->get();
         // Подключаем утилиты
         $utility = new Utility();
         // Подключаем сессию
@@ -129,7 +125,7 @@ class User {
             }
         }
     }
- 
+
     // Авторизвация
     public function checkLogin($email, $phone, $password)
     {

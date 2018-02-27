@@ -73,7 +73,7 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
     $routingConfig['addContentLengthHeader'] = false;
     $routingConfig['determineRouteBeforeAppMiddleware'] = false;
 
-/*     if (isset($routingSettings)) {
+    if (isset($routingSettings)) {
         foreach($routingSettings as $key => $val)
         {
             if((int)$val == 1){
@@ -84,7 +84,7 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
                 $routingConfig[$key] = $val;
             }
         }
-    } */
+    }
     if ($routingConfig['debug'] === true) {
         error_reporting(E_ALL ^ E_NOTICE);
     }
@@ -94,7 +94,7 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
 
     // Run User Session
     // Запускаем сессию пользователя
-    (new \ApiShop\Model\User())->run();
+    (new \ApiShop\Model\User())->run($config);
 
     // Получаем конфигурацию роутеров
     $router = $config['routers']['site'];
@@ -107,9 +107,4 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
     // Routing Run
     $routing->run();
 
-} else {
-    error_reporting(E_ALL ^ E_NOTICE);
-    ini_set('display_errors', '1');
-    ini_set('display_startup_errors', '1');
 }
- 
