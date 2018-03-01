@@ -114,7 +114,7 @@ $routing->post('/install-api-key', function ($request, $response, $args) {
             $paramPost['template']['front_end']['template_engine'] = 'twig';
  
             // Подключаем класс файла конфигурации
-            $settingsAdmin = new \ApiShop\Admin\Config($config);
+            $settingsAdmin = new \Pllano\ApiShop\Admin\Config($config);
             // Получаем массив конфигурации
             $arrJson = $settingsAdmin->get();
             // Соеденяем два массива
@@ -305,6 +305,7 @@ $routing->post('/install-template', function ($request, $response, $args) {
     }
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
+	$post_csrf = null;
     try {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
@@ -320,13 +321,14 @@ $routing->post('/install-template', function ($request, $response, $args) {
 	$callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
     $callbackText = '';
- 
+
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         $id = filter_var($post['id'], FILTER_SANITIZE_STRING);
         $uri = filter_var($post['uri'], FILTER_SANITIZE_STRING);
         $dir = filter_var($post['dir'], FILTER_SANITIZE_STRING);
         $host = filter_var($post['host'], FILTER_SANITIZE_STRING);
+
         if ($id && $uri && $dir && $host) {
 			
             $template_dir = $config["template"]["front_end"]["themes"]["dir"]."/".$config["template"]["front_end"]["themes"]["templates"]."/".$dir;
@@ -389,6 +391,7 @@ $routing->post('/install-template', function ($request, $response, $args) {
  
                 // Обновляем название шаблона в базе
                 // Подключаемся к базе
+				$routerDb = new RouterDb($config, 'Apis');
 				$db = $routerDb->run("json");
                 // Обновляем название шаблона в базе
                 $db->put("db", ["template" => $dir], 1);
@@ -405,10 +408,10 @@ $routing->post('/install-template', function ($request, $response, $args) {
 				$callbackStatus = 200;
             }
         } else {
-		    $callbackTitle = "Ошибка";
+		    $callbackTitle = "Ошибка - 1";
         }
     } else {
-	    $callbackTitle = "Ошибка";
+	    $callbackTitle = "Ошибка - 2";
     }
 	$callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
     $response->withStatus(200);
@@ -782,7 +785,7 @@ $routing->post('/start-shop', function ($request, $response, $args) {
                     }
  
                     // Подключаем класс
-                    $settingsAdmin = new \ApiShop\Admin\Config($config);
+                    $settingsAdmin = new \Pllano\ApiShop\Admin\Config($config);
                     // Получаем массив
                     $arrJson = $settingsAdmin->get();
                     $paramPost = [];
