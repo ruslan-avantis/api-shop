@@ -10,12 +10,12 @@
     * file that was distributed with this source code.
 */
 
-namespace ApiShop\Modules\Articles;
+namespace Pllano\ApiShop\Modules\Articles;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Pllano\RouterDb\{Db, Router};
-use ApiShop\Utilities\Utility;
-use ApiShop\Adapter\Image;
+use Pllano\RouterDb\Router as RouterDb;
+use Pllano\ApiShop\Utilities\Utility;
+use Pllano\ApiShop\Adapters\Image;
 
 class ArticleCategory
 {

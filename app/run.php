@@ -12,12 +12,15 @@
 
 use Pimple\Container;
 use Pimple\Psr11\Container as PsrContainer;
-use ApiShop\Model\{SessionUser, Language, Site, Template, Security};
+use Pllano\ApiShop\Models\{SessionUser, Language, Site, Template, Security};
 
 $container = new Container();
 
 // Создаем контейнер с глобальной конфигурацией
 $container['config'] = $config;
+
+// Создаем контейнер нача работы скрипта
+$container['time_start'] = $time_start;
 
 // Создаем контейнер с конфигурацией пакетов
 $container['package'] = $package;
@@ -31,6 +34,7 @@ $container['logger'] = function ($c)
     $logger->pushHandler(new \Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
     return $logger;
 };
+$logger = $container['logger'];
 
 // session
 $container['session'] = function ($c)
@@ -60,17 +64,17 @@ $container['languages'] = function ($c)
 };
 $languages = $container['languages'];
 
-// Register \Pllano\Adapter\TemplateEngine
+// Register \Pllano\Adapters\TemplateEngine
 $container['view'] = function ($c)
 {
 	$view = null;
 	if ($c['config']['settings']['install']['status'] != null) {
         // Получаем название шаблона из конфигурации
         $template = $c['config']['template']['front_end']['themes']['template']; // По умолчанию mini-mo-twig
-        $site = new \ApiShop\Model\Site($c['config']);
+/*         $site = new \Pllano\ApiShop\Models\Site($c['config']);
         $site->get();
         // Получаем название шаблона из конфигурации сайта
-        if ($site->template()) {$template = $site->template();}
+        if ($site->template()) {$template = $site->template();} */
         $view = new $c['config']['vendor']['templates']['template_engine']($c['config'], $c['package']['require'], $template);
 	} else {
         $loader = new \Twig_Loader_Filesystem($c['config']['template']['front_end']['themes']['dir']."/".$c['config']['template']['front_end']['themes']['templates']."/install");
@@ -116,7 +120,8 @@ $routing->get($router['index']['route'], function ($request, $response, $args) {
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
 	return $response->write($class->$function($request, $response, $args));
 });
@@ -135,7 +140,8 @@ $routing->get($router['article']['route'], function ($request, $response, $args)
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
     return $response->write($class->$function($request, $response, $args));
 });
@@ -154,7 +160,8 @@ $routing->get($router['article_category']['route'], function ($request, $respons
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
     return $response->write($class->$function($request, $response, $args));
 }); 
@@ -173,7 +180,8 @@ $routing->get($router['category']['route'], function ($request, $response, $args
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
     return $response->write($class->$function($request, $response, $args));
 });
@@ -192,7 +200,8 @@ $routing->get($router['product']['route'], function ($request, $response, $args)
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
     return $response->write($class->$function($request, $response, $args));
 });
@@ -211,7 +220,8 @@ $routing->get($router['quick_view']['route'], function ($request, $response, $ar
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
     return $response->write($class->$function($request, $response, $args));
 });
@@ -230,7 +240,8 @@ $routing->map(['GET', 'POST'], $post_id.$router['language']['route'], function (
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
     return $response->write($class->$function($request, $response, $args));
 });
@@ -254,7 +265,8 @@ $routing->map(['GET', 'POST'], $router['cart']['route'].'{function:[a-z0-9_-]+}'
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
     return $response->write($class->$function($request, $response, $args));
 });
@@ -273,7 +285,8 @@ $routing->get($router['sign_in']['route'], function ($request, $response, $args)
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
     return $response->write($class->$function($request, $response, $args));
 });
@@ -292,7 +305,8 @@ $routing->get($router['sign_up']['route'], function ($request, $response, $args)
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
     return $response->write($class->$function($request, $response, $args));
 });
@@ -311,7 +325,8 @@ $routing->map(['GET', 'POST'], $post_id.$router['login']['route'], function ($re
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
     return $response->write($class->$function($request, $response, $args));
 });
@@ -330,7 +345,8 @@ $routing->post($post_id.$router['check_in']['route'], function ($request, $respo
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
     return $response->write($class->$function($request, $response, $args));
 });
@@ -349,7 +365,8 @@ $routing->post($post_id.$router['logout']['route'], function ($request, $respons
 		$this->get('languages'),
 		$this->get('template'),
 		$this->get('view'), 
-		$this->get('logger')
+		$this->get('logger'), 
+		$this->get('time_start')
 	);
     return $response->write($class->$function($request, $response, $args));
 });

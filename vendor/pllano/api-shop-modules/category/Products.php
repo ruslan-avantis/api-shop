@@ -11,11 +11,11 @@
  * file that was distributed with this source code.
  */
  
-namespace ApiShop\Modules\Categories;
+namespace Pllano\ApiShop\Modules\Categories;
  
 use Pllano\RouterDb\Router as RouterDb;
-use ApiShop\Utilities\Utility;
-use ApiShop\Adapter\Image;
+use Pllano\ApiShop\Utilities\Utility;
+use Pllano\ApiShop\Adapters\Image;
  
 class Products {
  
@@ -36,7 +36,7 @@ class Products {
         // Ресурс (таблица) к которому обращаемся
         $resource = "price";
 		// Отдаем роутеру RouterDb конфигурацию
-		$routerDb = new RouterDb($this->config, 'APIS');
+		$routerDb = new RouterDb($this->config, 'Apis');
 		// Пингуем для ресурса указанную и доступную базу данных
 		// Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
 		$db = $routerDb->run($routerDb->ping($resource));

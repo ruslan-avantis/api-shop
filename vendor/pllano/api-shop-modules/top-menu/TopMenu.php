@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
  
-namespace ApiShop\Modules\Menu;
+namespace Pllano\ApiShop\Modules\Menu;
  
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Pllano\RouterDb\Router as RouterDb;

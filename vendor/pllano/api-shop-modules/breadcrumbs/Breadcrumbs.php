@@ -10,7 +10,7 @@
     * file that was distributed with this source code.
 */
 
-namespace ApiShop\Modules;
+namespace Pllano\ApiShop\Modules;
  
 use Psr\Http\Message\ServerRequestInterface as Request;
  

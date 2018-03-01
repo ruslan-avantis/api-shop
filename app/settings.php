@@ -10,7 +10,7 @@
     * file that was distributed with this source code.
 */
  
-namespace ApiShop\Config;
+namespace Pllano\ApiShop\Config;
  
 class Settings {
  
@@ -40,8 +40,8 @@ class Settings {
         $config["settings"]["keys"] = 'null';
  
         // Папка куда будут писатся логи Monolog
-        $config["settings"]["logger"]["path"] = isset($_ENV["docker"]) ? "php://stdout" : __DIR__ . "/storage/_logs/app.log";
-        $config["settings"]["logger"]["name"] = "slim-app";
+        $config["settings"]["logger"]["path"] = isset($_ENV["docker"]) ? "php://stdout" : __DIR__ . "/../storage/_logs/app.log";
+        $config["settings"]["logger"]["name"] = "app";
         $config["settings"]["logger"]["level"] = \Monolog\Logger::DEBUG;
  
         $copyYear = 2017; // Set your website start date
@@ -76,24 +76,25 @@ class Settings {
         $key_user = $key."/user.txt";
         $key_card = $key."/card.txt";
  
+        $random_key = $json['vendor']['crypto']['random_key']();
         // Генерируем ключи шифрования, если их нет
         if (!file_exists($key_session)) {
-            file_put_contents($key_session, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
+            file_put_contents($key_session, $random_key->saveToAsciiSafeString());
         }
         if (!file_exists($key_cookie)) {
-            file_put_contents($key_cookie, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
+            file_put_contents($key_cookie, $random_key->saveToAsciiSafeString());
         }
         if (!file_exists($key_token)) {
-            file_put_contents($key_token, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
+            file_put_contents($key_token, $random_key->saveToAsciiSafeString());
         }
         if (!file_exists($key_password)) {
-            file_put_contents($key_password, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
+            file_put_contents($key_password, $random_key->saveToAsciiSafeString());
         }
         if (!file_exists($key_user)) {
-            file_put_contents($key_user, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
+            file_put_contents($key_user,  $random_key->saveToAsciiSafeString());
         }
         if (!file_exists($key_card)) {
-            file_put_contents($key_card, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
+            file_put_contents($key_card, $random_key->saveToAsciiSafeString());
         }
  
         $config["key"]["session"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_session, true));
@@ -103,11 +104,11 @@ class Settings {
         $config["key"]["user"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_user, true));
         $config["key"]["card"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_card, true));
         // Динамический ключ шифрования для ajax
-        $config["key"]["ajax"] = ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString();
+        $config["key"]["ajax"] = $random_key->saveToAsciiSafeString();
  
         $key_db = $key."/db.txt";
         if (!file_exists($key_db)) {
-            file_put_contents($key_db, ($json['vendor']['crypto']['random_key']())->saveToAsciiSafeString());
+            file_put_contents($key_db, $random_key->saveToAsciiSafeString());
         }
         // Ключ шифрования в базах данных. Отдаем в чистом виде.
         $config["db"]["key"] = file_get_contents($key_db, true);

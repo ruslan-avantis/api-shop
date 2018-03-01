@@ -10,11 +10,11 @@
     * file that was distributed with this source code.
 */
 
-namespace ApiShop\Modules\Categories;
+namespace Pllano\ApiShop\Modules\Categories;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Pllano\RouterDb\Router as RouterDb;
-use ApiShop\Utilities\Utility;
+use Pllano\ApiShop\Utilities\Utility;
 
 class Category
 {

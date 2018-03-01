@@ -11,8 +11,8 @@
 */
  
 use Pllano\RouterDb\Router as RouterDb;
-use ApiShop\Model\{Security, User, Install};
-use ApiShop\Utilities\Utility;
+use Pllano\ApiShop\Models\{Security, User, Install};
+use Pllano\ApiShop\Utilities\Utility;
  
 // Активация с помощью public_key
 $routing->post('/install-api-key', function ($request, $response, $args) {

@@ -11,9 +11,9 @@
  * file that was distributed with this source code.
  */
  
-namespace ApiShop\Api\Services;
+namespace Pllano\ApiShop\Api\Services;
  
-use ApiShop\Config\Settings;
+use Pllano\ApiShop\Config\Settings;
  
 /**
  * Пример промежуточного интерфейса для взаимодействия платежной системы и API Shop

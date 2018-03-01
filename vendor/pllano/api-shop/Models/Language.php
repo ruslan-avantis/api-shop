@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
  
-namespace ApiShop\Model;
+namespace Pllano\ApiShop\Models;
  
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Pllano\RouterDb\Router as RouterDb;
@@ -63,7 +63,7 @@ class Language
         if ($cache_run === null) {
 			
             // Отдаем роутеру RouterDb конфигурацию
-            $routerDb = new RouterDb($this->config, 'APIS');
+            $routerDb = new RouterDb($this->config, 'Apis');
             // Пингуем для ресурса указанную и доступную базу данных
             // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
             $db = $routerDb->run($routerDb->ping($this->resource));

@@ -11,9 +11,9 @@
  * file that was distributed with this source code.
  */
  
-namespace ApiShop\Modules\Categories;
+namespace Pllano\ApiShop\Modules\Categories;
  
-use ApiShop\Modules\Categories\Pagination;
+use Pllano\ApiShop\Modules\Categories\Pagination;
  
 class Filter {
  

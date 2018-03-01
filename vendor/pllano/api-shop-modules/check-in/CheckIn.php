@@ -10,12 +10,12 @@
     * file that was distributed with this source code.
 */
 
-namespace ApiShop\Modules\Account;
+namespace Pllano\ApiShop\Modules\Account;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Pllano\RouterDb\Router as RouterDb;
-use ApiShop\Utilities\Utility;
-use ApiShop\Model\User;
+use Pllano\ApiShop\Utilities\Utility;
+use Pllano\ApiShop\Models\User;
 
 class Login
 {

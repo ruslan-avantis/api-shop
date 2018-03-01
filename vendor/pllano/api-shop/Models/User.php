@@ -11,10 +11,10 @@
  * file that was distributed with this source code.
  */
 
-namespace ApiShop\Model;
+namespace Pllano\ApiShop\Models;
 
 use Pllano\RouterDb\Router as RouterDb;
-use ApiShop\Utilities\Utility;
+use Pllano\ApiShop\Utilities\Utility;
 
 class User {
 
@@ -59,7 +59,7 @@ class User {
                 //print_r($responseArr);
                 if (isset($responseArr["headers"]["code"])) {
                     if ($responseArr["headers"]["code"] == 200 || $responseArr["headers"]["code"] == "200") {
- 
+
                         if(is_object($responseArr["body"]["items"]["0"]["item"])) {
                             $user = (array)$responseArr["body"]["items"]["0"]["item"];
                         } elseif (is_array($responseArr["body"]["items"]["0"]["item"])) {
@@ -73,10 +73,11 @@ class User {
                                 $session->admin_uri = $utility->random_alias_id();
                             }
                             $session->user_id = $user["id"];
-                            $session->iname = $config['vendor']['crypto']['crypt']::encrypt($user["iname"], $session_key);
-                            $session->fname = $config['vendor']['crypto']['crypt']::encrypt($user["fname"], $session_key);
-                            $session->phone = $config['vendor']['crypto']['crypt']::encrypt($user["phone"], $session_key);
-                            $session->email = $config['vendor']['crypto']['crypt']::encrypt($user["email"], $session_key);
+							$crypt = $config['vendor']['crypto']['crypt']::encrypt;
+                            $session->iname = $crypt($user["iname"], $session_key);
+                            $session->fname = $crypt($user["fname"], $session_key);
+                            $session->phone = $crypt($user["phone"], $session_key);
+                            $session->email = $crypt($user["email"], $session_key);
                         } else {
                             $session->authorize = null;
                             $session->role_id = null;

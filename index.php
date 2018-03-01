@@ -14,12 +14,17 @@
     * API Shop дает полную свободу с выбора классов обработки страниц
     * При установке пекетов или шаблонов вы можете перезаписать в конфиге класс и функцию обработки
     * Вы можете использовать контроллеры по умолчанию и вносить изменения с помощью \Pllano\Hooks\Hook
-    * Вы можете использовать ApiShop\Adapter\ и менять vendor в конфигурации
+    * Вы можете использовать ApiShop\Adapters\ и менять vendor в конфигурации
 */
 
 declare(strict_types = 1);
 
-$startTime = microtime(true);
+function microtime_float()
+{
+    list($usec, $sec) = explode(" ", microtime());
+    return ((float)$usec + (float)$sec);
+}
+$time_start = microtime_float();
 
 if (PHP_SAPI == 'cli-server') {
     // To help the built-in PHP dev server, check if the request was actually for
@@ -60,14 +65,13 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
 
     // Подключаем файл конфигурации системы
     require BASE_PATH . '/app/settings.php';
-    $config = \ApiShop\Config\Settings::get();
+    $config = \Pllano\ApiShop\Config\Settings::get();
 
     // Получаем список и конфигурацию пакетов
     $package = json_decode(file_get_contents($auto_require), true);
     $routingSettings = $package['require']['slim.slim']['settings'];
 
     $routingConfig = [];
-
     $routingConfig['debug'] = true;
     $routingConfig['displayErrorDetails'] = true;
     $routingConfig['addContentLengthHeader'] = false;
@@ -85,26 +89,40 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
             }
         }
     }
-    if ($routingConfig['debug'] === true) {
-        error_reporting(E_ALL ^ E_NOTICE);
-    }
+
+	// http://qaru.site/questions/11671/get-the-full-url-in-php
+	//$uri = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://{$_SERVER[HTTP_HOST]}{$_SERVER[REQUEST_URI]}";
+	//$uri =  "//{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+	$uri = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+	$escaped_url = htmlspecialchars($uri, ENT_QUOTES, 'UTF-8');
 
     // Подключаем Slim и отдаем ему конфигурацию
     $routing = new \Slim\App($routingConfig);
 
     // Run User Session
     // Запускаем сессию пользователя
-    (new \ApiShop\Model\User())->run($config);
+    (new \Pllano\ApiShop\Models\User())->run($config);
 
     // Получаем конфигурацию роутеров
     $router = $config['routers']['site'];
     // Подключаем Routers и Containers
     require BASE_PATH . '/app/run.php';
 
-    $container['time'] = microtime(true) - $startTime;
-	// теперь в контейнере $time содержится float со значением выполнения скрипта в секундах. дело осталось за банальными number_format() и echo.
-
     // Routing Run
     $routing->run();
 
+	$time = number_format(microtime_float() - $time_start, 4);
+	if ($time >= 0.25) {
+		$container['logger']->info("time >= 0.25", [
+			    "source" => "index.php",
+				"time" => $time,
+				"uri" => $escaped_url
+		]);
+	}
+	if ($routingConfig['debug'] === true) {
+		error_reporting(E_ALL ^ E_NOTICE);
+	    print("{$time} seconds - {$escaped_url}");
+	}
+
 }
+ 

@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
  
-namespace ApiShop\Model;
+namespace Pllano\ApiShop\Models;
  
 use Pllano\RouterDb\Router as RouterDb;
  
@@ -30,7 +30,7 @@ class Install {
         $resource = "stores_list";
 
         // Отдаем роутеру RouterDb конфигурацию
-        $routerDb = new RouterDb($this->config, 'APIS');
+        $routerDb = new RouterDb($this->config, 'Apis');
         // Пингуем для ресурса указанную и доступную базу данных
         // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
         $db = $routerDb->run($routerDb->ping($resource));
@@ -45,7 +45,7 @@ class Install {
         // Ресурс к которому обращаемся
         $resource = "templates_list";
         // Отдаем роутеру RouterDb конфигурацию
-        $routerDb = new RouterDb($this->config, 'APIS');
+        $routerDb = new RouterDb($this->config, 'Apis');
         // Пингуем для ресурса указанную и доступную базу данных
         // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
         $db = $routerDb->run($routerDb->ping($resource));

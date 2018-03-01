@@ -1,15 +1,15 @@
 {
-	"date_time": "2018-02-19 23:59:59",
+	"date_time": "",
 	"update": "pllano",
 	"cache": {
 		"driver": "filesystem",
 		"state": 1,
-		"cache_lifetime": "3600",
+		"cache_lifetime": "360",
 		"dynamic": 0,
 		"cpu": "80",
 		"memory": "80",
-		"vendor": "cache",
-		"adapter": "apishop",
+		"vendor": "cache.cache",
+		"adapter": "pllano.cache",
 		"print": 0,
 		"clear": 0,
 		"filesystem": {
@@ -19,7 +19,7 @@
 			"path": "cache\/_file_cache"
 		},
 		"json": {
-			"pool": "\\ApiShop\\Adapter\\Cache\\JsonCache",
+			"pool": "\\Pllano\\ApiShop\\Adapters\\Cache\\JsonCache",
 			"path": "cache\/_json_cache"
 		},
 		"memcached": {
@@ -43,7 +43,7 @@
 			"port": "11211"
 		},
 		"elasticsearch": {
-			"pool": "\\ApiShop\\Adapter\\Cache\\Elasticsearch",
+			"pool": "\\Pllano\\ApiShop\\Adapters\\Cache\\Elasticsearch",
 			"host": "localhost",
 			"port": "9200",
 			"type": "api_shop",
@@ -84,11 +84,11 @@
 	},
 	"seller": {
 		"name": "seller",
-		"public_key": null,
-		"private_key": null,
-		"alias": null,
-		"download_dir": null,
-		"download_alias": null,
+		"public_key": "",
+		"private_key": "",
+		"alias": "",
+		"download_dir": "",
+		"download_alias": "",
 		"terms_of_delivery": 1,
 		"currency_code": "UAH",
 		"currency_id": 1,
@@ -143,28 +143,28 @@
 	},
 	"vendor": {
 		"modules": {
-			"manager": "\\ApiShop\\ModuleManager"
+			"manager": "\\Pllano\\ApiShop\\ModulesManager"
 		},
 		"controllers": {
-			"controller": "\\ApiShop\\ControllerManager"
+			"controller": "\\Pllano\\ApiShop\\ControllersManager"
 		},
 		"hooks": {
 			"hook": "\\Pllano\\Hooks\\Hook"
 		},
 		"templates": {
-			"template_engine": "\\Pllano\\Adapter\\TemplateEngine"
+			"template_engine": "\\Pllano\\Adapters\\Template\\TemplateEngine"
 		},
 		"session": {
 			"run": "\\Adbar\\Session",
 			"session": "\\Adbar\\Session",
 			"session_name": "_session",
-			"cookie": "\\ApiShop\\Model\\User"
+			"cookie": "\\Pllano\\ApiShop\\Models\\User"
 		},
 		"detector": {
 			"language": "\\Sinergi\\BrowserDetector\\Language"
 		},
 		"language": {
-			"multilanguage": "\\ApiShop\\Model\\Language"
+			"multilanguage": "\\Pllano\\ApiShop\\Models\\Language"
 		},
 		"http_client": {
 			"client": "\\GuzzleHttp\\Client"
@@ -216,12 +216,12 @@
 			},
 			"cart": {
 				"route": "\/cart\/",
-				"controller": "\\ApiShop\\Controller\\Cart",
+				"controller": "\\Pllano\\ApiShop\\Controller\\Cart",
 				"blocks": "header,nav,footer,cart"
 			},
 			"language": {
 				"route": "\/language",
-				"controller": "\\ApiShop\\Controller\\Language",
+				"controller": "\\Pllano\\ApiShop\\Controller\\Language",
 				"blocks": "language"
 			},
 			"logout": {
@@ -237,7 +237,7 @@
 				"blocks": "check_in"
 			},
 			"error": {
-				"controller": "\\ApiShop\\Controller\\Error",
+				"controller": "\\Pllano\\ApiShop\\Controllers\\Error",
 				"blocks": "header,nav,footer,error"
 			}
 		},
@@ -270,7 +270,7 @@
 			},
 			"products_action": {
 				"state": 1,
-				"vendor": "\\ApiShop\\Modules\\Products\\ProductsAction",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Products\\ProductsAction",
 				"package": "pllano.products-action",
 				"function": "get",
 				"view": "modules\/products\/products_action.html",
@@ -286,7 +286,7 @@
 			},
 			"products_hit": {
 				"state": 1,
-				"vendor": "\\ApiShop\\Modules\\Products\\ProductsHits",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Products\\ProductsHits",
 				"package": "pllano.products-hit",
 				"function": "get",
 				"view": "modules\/products\/products_hit.html",
@@ -304,14 +304,14 @@
 		"article": {
 			"article": {
 				"state": 1,
-				"vendor": "\\ApiShop\\Modules\\Articles\\Article",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Articles\\Article",
 				"package": "pllano.article",
 				"function": "get",
 				"view": "modules\/articles\/article.html"
 			},
 			"breadcrumbs": {
 				"state": 0,
-				"vendor": "\\ApiShop\\Modules\\Breadcrumbs",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Breadcrumbs",
 				"package": "pllano.breadcrumbs",
 				"function": "get",
 				"view": "modules\/breadcrumbs.html"
@@ -320,7 +320,7 @@
 		"product": {
 			"product": {
 				"state": 1,
-				"vendor": "\\ApiShop\\Modules\\Products\\Product",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Products\\Product",
 				"package": "pllano.product",
 				"function": "get",
 				"view": "modules\/products\/product.html",
@@ -329,7 +329,7 @@
 			},
 			"breadcrumbs": {
 				"state": 0,
-				"vendor": "\\ApiShop\\Modules\\Breadcrumbs",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Breadcrumbs",
 				"package": "pllano.breadcrumbs",
 				"function": "get",
 				"view": "modules\/breadcrumbs.html"
@@ -338,7 +338,7 @@
 		"quick_view": {
 			"quick_view": {
 				"state": 1,
-				"vendor": "\\ApiShop\\Modules\\Products\\ProductQuickView",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Products\\ProductQuickView",
 				"package": "pllano.quick-view",
 				"function": "get",
 				"view": "modules\/products\/quick_view.html",
@@ -358,7 +358,7 @@
 			},
 			"breadcrumbs": {
 				"state": 0,
-				"vendor": "\\ApiShop\\Modules\\Breadcrumbs",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Breadcrumbs",
 				"package": "pllano.breadcrumbs",
 				"function": "get",
 				"view": "modules\/breadcrumbs.html"
@@ -366,14 +366,14 @@
 			"category": {
 				"state": 1,
 				"view": "modules\/category\/category.html",
-				"vendor": "\\ApiShop\\Modules\\Categories\\Category",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Categories\\Category",
 				"package": "pllano.category",
 				"function": "get",
 				"vendors": {
-					"products": "\\ApiShop\\Modules\\Categories\\Products",
-					"paginator": "\\ApiShop\\Modules\\Categories\\Pagination",
-					"filter": "\\ApiShop\\Modules\\Categories\\Filter",
-					"properties": "\\ApiShop\\Modules\\Categories\\Properties"
+					"products": "\\Pllano\\ApiShop\\Modules\\Categories\\Products",
+					"paginator": "\\Pllano\\ApiShop\\Modules\\Categories\\Pagination",
+					"filter": "\\Pllano\\ApiShop\\Modules\\Categories\\Filter",
+					"properties": "\\Pllano\\ApiShop\\Modules\\Categories\\Properties"
 				},
 				"helper": {
 					"products_list": "modules\/category\/products_list.html",
@@ -391,7 +391,7 @@
 		"sign_in": {
 			"sign_in": {
 				"state": 1,
-				"vendor": "\\ApiShop\\Modules\\Blank",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Blank",
 				"package": "pllano.blank",
 				"function": "get",
 				"view": "sign-in.html"
@@ -400,7 +400,7 @@
 		"sign_up": {
 			"sign_up": {
 				"state": 1,
-				"vendor": "\\ApiShop\\Modules\\Blank",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Blank",
 				"package": "pllano.blank",
 				"function": "get",
 				"view": "sign-up.html"
@@ -409,7 +409,7 @@
 		"login": {
 			"login": {
 				"state": 1,
-				"vendor": "\\ApiShop\\Modules\\Account\\Login",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Account\\Login",
 				"package": "pllano.login",
 				"function": "post"
 			}
@@ -417,7 +417,7 @@
 		"logout": {
 			"logout": {
 				"state": 1,
-				"vendor": "\\ApiShop\\Modules\\Account\\Logout",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Account\\Logout",
 				"package": "pllano.logout",
 				"function": "post"
 			}
@@ -425,7 +425,7 @@
 		"check_in": {
 			"check_in": {
 				"state": 1,
-				"vendor": "\\ApiShop\\Modules\\Account\\CheckIn",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Account\\CheckIn",
 				"package": "pllano.check-in",
 				"function": "post"
 			}
@@ -438,7 +438,7 @@
 			},
 			"top_menu": {
 				"state": 1,
-				"vendor": "\\ApiShop\\Modules\\Menu\\TopMenu",
+				"vendor": "\\Pllano\\ApiShop\\Modules\\Menu\\TopMenu",
 				"package": "pllano.top-menu",
 				"function": "get"
 			}
@@ -539,7 +539,7 @@
 		"front_end": {
 			"template_engine": "twig",
 			"template_package": "twig.twig",
-			"cache": 1,
+			"cache": 0,
 			"themes": {
 				"template": "mini-mo-twig",
 				"templates": "templates",
@@ -604,20 +604,23 @@
 		"http-codes": "https:\/\/github.com\/pllano\/APIS-2018\/tree\/master\/http-codes\/",
 		"pllanoapi": {
 			"config": 1,
+			"http-codes": "https:\/\/github.com\/pllano\/APIS-2018\/tree\/master\/http-codes\/",
 			"url": "https:\/\/api.pllano.com\/",
 			"auth": "QueryKeyAuth",
-			"public_key": null,
+			"public_key": "",
 			"private_key": ""
 		},
 		"api": {
 			"url": "https:\/\/ua.pllano.com\/api\/v1\/json\/",
+			"http-codes": "https:\/\/github.com\/pllano\/APIS-2018\/tree\/master\/http-codes\/",
 			"auth": "QueryKeyAuth",
-			"public_key": null,
+			"public_key": "",
 			"private_key": "",
 			"config": 1
 		},
 		"json": {
 			"dir_name": "\/_json_db_\/",
+			"http-codes": "https:\/\/github.com\/pllano\/APIS-2018\/tree\/master\/http-codes\/",
 			"cached": 0,
 			"cache_lifetime": "60",
 			"temp": 0,

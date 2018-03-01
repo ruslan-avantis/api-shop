@@ -12,9 +12,9 @@
  
 use Pllano\RouterDb\Router as RouterDb;
 use Pllano\Hooks\Hook;
-use ApiShop\Model\{Language, Site, Template, SessionUser, Security, Filter, Pagination, Install};
-use ApiShop\Admin\{Control, AdminDatabase, Resources, Packages};
-use ApiShop\Utilities\Utility;
+use Pllano\ApiShop\Models\{Language, Site, Template, SessionUser, Security, Filter, Pagination, Install};
+use Pllano\ApiShop\Admin\{Control, AdminDatabase, Resources, Packages};
+use Pllano\ApiShop\Utilities\Utility;
 
 $admin_router = $config['routers']['admin']['all']['route'];
 $admin_index = $config['routers']['admin']['index']['route'];

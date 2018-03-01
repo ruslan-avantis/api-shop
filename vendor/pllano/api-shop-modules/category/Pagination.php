@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace ApiShop\Modules\Categories;
+namespace Pllano\ApiShop\Modules\Categories;
 
 class Pagination
 {

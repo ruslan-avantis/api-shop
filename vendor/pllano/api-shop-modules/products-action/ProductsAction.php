@@ -10,12 +10,12 @@
     * file that was distributed with this source code.
 */
 
-namespace ApiShop\Modules\Products;
+namespace Pllano\ApiShop\Modules\Products;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Pllano\RouterDb\Router as RouterDb;
-use ApiShop\Utilities\Utility;
-use ApiShop\Adapter\Image;
+use Pllano\ApiShop\Utilities\Utility;
+use Pllano\ApiShop\Adapters\Image;
 
 class ProductsAction
 {

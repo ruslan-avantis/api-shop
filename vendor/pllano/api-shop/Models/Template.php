@@ -11,10 +11,10 @@
  * file that was distributed with this source code.
  */
  
-namespace ApiShop\Model;
+namespace Pllano\ApiShop\Models;
  
-use ApiShop\Config\Settings;
-use ApiShop\Model\Site;
+use Pllano\ApiShop\Config\Settings;
+use Pllano\ApiShop\Models\Site;
  
 class Template {
  
