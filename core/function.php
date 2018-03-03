@@ -27,7 +27,7 @@ function sanitize($value = null)
 {
     if (isset($value)) {
         $value = filter_var(clean($value), FILTER_SANITIZE_STRING);
-    }
+	}
     return $value;
 }
 
@@ -45,7 +45,7 @@ function clean($value = null)
         // Заменяем служебные символы HTML на эквиваленты
         // Преобразует специальные символы в HTML-сущности
         $value = htmlspecialchars($value, ENT_QUOTES);
-    }
+	}
     return $value;
 }
 
@@ -56,9 +56,9 @@ function set_cookie($session_name, $identificator, $period = 60*60*24*365)
 {
     if (https() === true) {
         setcookie($session_name, $identificator, time() + $period, '/', domain(), true, true);
-    } else {
+		} else {
         setcookie($session_name, $identificator, time() + $period, '/', domain());
-    }
+	}
 }
 
 // get cookie
@@ -75,8 +75,8 @@ function data_cookie_0($name, $type = 'str', $json_decode = false)
             $name = htmlspecialchars($name);
             $value = htmlspecialchars($value);
             //echo "$name : $value <br />\n";
-        }
-    }
+		}
+	}
 }
 
 // Данные из COOKIE
@@ -86,19 +86,19 @@ function data_cookie($name, $type = 'str', $json_decode = false)
     $data = $json_decode ? json_decode($_COOKIE[$name]) : $_COOKIE[$name];
     if (!isset($data)) {
         return null;
-    }
+	}
     if (is_array($data)) {
         $result = grd_array($data, $type);
-    } elseif (is_object($data)) {
+		} elseif (is_object($data)) {
         $result = grd_object($data, $type);
-    } else {
+		} else {
         $result = strip_tags(trim($data));
         if ($type == 'str') {
             $result = addslashes($result);
-        } elseif ($type == 'int') {
+			} elseif ($type == 'int') {
             $result = intval($result);
-        }
-    }
+		}
+	}
     return $result;
 }
 
@@ -110,7 +110,7 @@ function ban_htaccess($path, $ip, $mask = null)
     $ip_mask = $ip;
     if (isset($mask)) {
         $ip_mask = $ip.'/'.$mask;
-    }
+	}
     file_put_contents($path.'/.htaccess', PHP_EOL . 'Deny from '.$ip_mask, FILE_APPEND | LOCK_EX);
 }
 
@@ -124,13 +124,13 @@ function routing_config($routing_settings_arr = []): array
         {
             if((int)$val == 1){
                 $routingConfig[$key] = true;
-            } elseif((int)$val == 0) {
+				} elseif((int)$val == 0) {
                 $routingConfig[$key] = false;
-            } else {
+				} else {
                 $routingConfig[$key] = $val;
-            }
-        }
-    }
+			}
+		}
+	}
     return $routingConfig;
 }
 
@@ -148,6 +148,31 @@ function microtime_float()
 {
     list($usec, $sec)=explode(" ", microtime());
     return ((float)$usec+(float)$sec);
+}
+
+function date_arr($date)
+{
+    $date = strtotime($date);
+    $arr = [];
+    $arr['y'] = date("Y", $date);
+    $arr['m'] = date("m", $date);
+    $arr['d'] = date("d", $date);
+    $arr['h'] = date("H", $date);
+    $arr['i'] = date("i", $date);
+    $arr['s'] = date("s", $date);
+    return $arr;
+}
+
+// date_rand_min(1000, 5000);
+function date_rand_min($from = null, $up_to = null)
+{
+    if (isset($from) && isset($up_to)){
+        $rand = rand($from, $up_to);
+		} else {
+        $rand = rand(1000, 5000);
+	}
+    $date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")." +".$rand." minutes"));
+    return $date;
 }
 
 // вывод только числа и месяца
@@ -174,18 +199,18 @@ function https()
 {
     if ($_SERVER['HTTPS'] != "on") {
         return false;
-    } else {
+		} else {
         return true;
-    }
+	}
 }
 
 function http_host()
 {
     if (https() === true) {
         return 'https://' . $_SERVER['HTTP_HOST'];
-    } else {
+		} else {
         return 'http://' . $_SERVER['HTTP_HOST'];
-    }
+	}
 }
 
 //Получаем реальный IP
@@ -193,13 +218,13 @@ function get_ip()
 {
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
         $ip = $_SERVER['HTTP_CLIENT_IP'];
-    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-    } elseif (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+		} elseif (!empty($_SERVER['HTTP_X_REAL_IP'])) {
         $ip = $_SERVER['HTTP_X_REAL_IP'];
-    } else {
+		} else {
         $ip = $_SERVER['REMOTE_ADDR'];
-    }
+	}
     return $ip;
 }
 
@@ -218,7 +243,7 @@ function GetURI(){
     $this_page = basename($_SERVER['REQUEST_URI']);
     if (strpos($this_page, "?") !== false) {
         $this_page = reset(explode("?", $this_page));
-    }
+	}
     return $this_page;
 }
 
@@ -249,41 +274,15 @@ function grd($name, $type = 'str')
     $result = null;
     if (is_array($_REQUEST[$name])) {
         $result = grd_array($_REQUEST[$name], $type);
-    } else {
+		} else {
         $result = strip_tags(trim($_REQUEST[$name]));
         if ($type == 'str') {
             $result = addslashes($result);
-        } elseif ($type == 'int') {
+			} elseif ($type == 'int') {
             $result = intval($result);
-        }
-    }
+		}
+	}
     return $result;
-}
-
-/* ----------- DATE ---------- */
-function date_arr($date)
-{
-    $date = strtotime($date);
-    $arr = [];
-    $arr['y'] = date("Y", $date);
-    $arr['m'] = date("m", $date);
-    $arr['d'] = date("d", $date);
-    $arr['h'] = date("H", $date);
-    $arr['i'] = date("i", $date);
-    $arr['s'] = date("s", $date);
-    return $arr;
-}
-
-// date_rand_min(1000, 5000);
-function date_rand_min($from = null, $up_to = null)
-{
-    if (isset($from) && isset($up_to)){
-        $rand = rand($from, $up_to);
-    } else {
-        $rand = rand(1000, 5000);
-    }
-    $date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")." +".$rand." minutes"));
-    return $date;
 }
 
 /* ----------- RANDOM ---------- */
@@ -292,16 +291,16 @@ function random_token($length = 32)
 {
     if(!isset($length) || intval($length) <= 8 ){
         $length = 32;
-    }
+	}
     if (function_exists('random_bytes')) {
         return bin2hex(random_bytes($length));
-    }
+	}
     if (function_exists('mcrypt_create_iv')) {
         return bin2hex(mcrypt_create_iv($length, MCRYPT_DEV_URANDOM));
-    }
+	}
     if (function_exists('openssl_random_pseudo_bytes')) {
         return bin2hex(openssl_random_pseudo_bytes($length));
-    }
+	}
 }
 
 // Функция генерации короткого токена длиной 12 символов
@@ -309,19 +308,81 @@ function random_alias_id($length = 6)
 {
     if(!isset($length) || intval($length) <= 5 ){
         $length = 6;
-    }
+	}
     if (function_exists('random_bytes')) {
         return bin2hex(random_bytes($length));
-    }
+	}
     if (function_exists('mcrypt_create_iv')) {
         return bin2hex(mcrypt_create_iv($length, MCRYPT_DEV_URANDOM));
-    }
+	}
     if (function_exists('openssl_random_pseudo_bytes')) {
         return bin2hex(openssl_random_pseudo_bytes($length));
-    }
+	}
 }
 
 /* ----------- FILE ---------- */
+
+// Загрузить архив по ссылке
+// Распаковать в указанную директорию
+function archive_load($link, $dir)
+{
+	$link = filter_var($link, FILTER_VALIDATE_URL);
+	$pathinfo = pathinfo($link);
+	if (isset($pathinfo["extension"]) && isset($pathinfo["basename"])) {
+        $file = $dir.'/'.$pathinfo["basename"].'.'.$pathinfo["extension"];
+	file_put_contents($file, file_get_contents($link));
+	// Подключаем архиватор
+	$zip = new \ZipArchive;
+	$res = $zip->open($file);
+	    if ($res === TRUE) {
+	        $zip->extractTo($dir);
+	        $zip->close();
+	        unlink($file);
+	    }
+	}
+}
+
+function archive_create($tmpdir, $uploaddir, $arFiles, $outfilename)
+{
+    if(extension_loaded('zip')) {
+        $zip = new ZipArchive();
+        $zip_name = $uploaddir.$outfilename.".zip";
+        $zip->open($zip_name, ZIPARCHIVE::CREATE);
+        if($zip->open($zip_name, ZIPARCHIVE::CREATE)!== true){
+            $result['errors'] = "Error, ZIP creation failed at this time\n";
+		}
+        foreach($arFiles as $file)
+        {
+            $zip->addFile($tmpdir.$file, $file);
+		}
+        $zip->close();
+        if(file_exists($zip_name)){                    
+            return $zip_name;
+		}                    
+    } else {
+        echo "You dont have ZIP extension";
+	}
+}
+
+function dir_delete($dir)
+{
+	$files = array_diff(scandir($dir), ['.','..']);
+	foreach ($files as $file) {
+		(is_dir("$dir/$file")) ? $this->delete("$dir/$file") : unlink("$dir/$file");
+	}
+	return rmdir($dir);
+}
+
+// Загрузка и преобразование в массив файла
+function get_json_decode($json)
+{
+	if (file_exists($json)) {
+		return json_decode(file_get_contents($json), true);
+    } else {
+		return null;
+	}
+}
+
 // Получаем файл
 function get_file($file)
 {
@@ -342,31 +403,9 @@ function upload_files($uploaddir, $filename)
         $uploadfile = $uploaddir. basename($_FILES['FILES']['name'][$k]);                
         if(move_uploaded_file($_FILES[$filename]['tmp_name'][$k], $uploadfile)) {
             $arFiles[]= $_FILES[$filename]['name'][$k];
-        }
-    }
+		}
+	}
     return $arFiles;
-}
-
-function create_archive($tmpdir, $uploaddir, $arFiles, $outfilename)
-{
-    if(extension_loaded('zip')) {
-        $zip = new ZipArchive();
-        $zip_name = $uploaddir.$outfilename.".zip";
-        $zip->open($zip_name, ZIPARCHIVE::CREATE);
-        if($zip->open($zip_name, ZIPARCHIVE::CREATE)!== true){
-            $result['errors'] = "Error, ZIP creation failed at this time\n";
-        }
-        foreach($arFiles as $file)
-        {
-            $zip->addFile($tmpdir.$file, $file);
-        }
-        $zip->close();
-        if(file_exists($zip_name)){                    
-            return $zip_name;
-        }                    
-    } else {
-        echo "You dont have ZIP extension";
-    }
 }
 
 /* Protection against SQL injections */
@@ -377,11 +416,11 @@ function search_injections(string $value = null, array $add_keywords = [], array
     if (isset($value)) {
         if (isset($new_keywords)) {
             $list_keywords = $new_keywords;
-            } else {
+			} else {
             $plus_keywords = [];
             if (isset($add_keywords)) {
                 $plus_keywords = $add_keywords;
-            }
+			}
             $list_keywords = [
             '*', 
             'SELECT', 
@@ -419,12 +458,12 @@ function search_injections(string $value = null, array $add_keywords = [], array
             'onclick'
             ];
             $keywords = array_replace_recursive($list_keywords, $plus_keywords);
-        }
+		}
         $value = str_ireplace($keywords, "👌", $value, $i);
         return $i;
-        } else {
+		} else {
         return 0;
-    }
+	}
 }
 
 /* ----------- CLEANER ---------- */
@@ -433,11 +472,11 @@ function clean_json($json = null)
 {
     for ($i = 0; $i <= 31; ++$i) {
         $json = str_replace(chr($i), "", $json);
-    }
+	}
     $json = str_replace(chr(127), "", $json);
     if (0 === strpos(bin2hex($json), "efbbbf")) {
         $json = substr($json, 3);
-    }
+	}
     return $json;
 }
 
@@ -484,7 +523,6 @@ function clean_phone($value = "")
 // Функция очистки для xml
 function clean_xml($value = "")
 {
-    
     $value = str_replace("&", "&amp;", $value);
     $value = str_replace("<", "&lt;", $value);
     $value = str_replace(">", "&gt;", $value);
@@ -492,16 +530,7 @@ function clean_xml($value = "")
     $value = str_replace("}", "&#125;", $value);
     $value = str_replace('"', '&quot;', $value);
     $value = str_replace("'", "&apos;", $value);
-    // Убираем пробелы вначале и в конце
-    $value = trim($value);
-    // Убираем слеши, если надо
-    // Удаляет экранирование символов
-    $value = stripslashes($value);
-    // Удаляет HTML и PHP-теги из строки
-    $value = strip_tags($value);
-    // Заменяем служебные символы HTML на эквиваленты
-    // Преобразует специальные символы в HTML-сущности
-    $value = htmlspecialchars($value, ENT_QUOTES);
+	$value = clean($value);
     return $value;
     
 }
@@ -511,9 +540,9 @@ function clean_xml($value = "")
 function check_phone($phone)
 {
 	if(check_length(sanitize($phone), 8, 25) === true) {
-	$pattern = "/^[\+0-9\-\(\)\s]*$/";
-	$phone = preg_match($pattern, $phone);
-    return $phone;
+		$pattern = "/^[\+0-9\-\(\)\s]*$/";
+		$phone = preg_match($pattern, $phone);
+		return $phone;
 	}
 }
 
@@ -529,16 +558,16 @@ function valid_email($email)
 {
     if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return false;
-    } else {
+		} else {
         return true;
-    }
+	}
 }
 
 function validate_email($email = null)
 {
     if (isset($email)) {
         $email = filter_var($email, FILTER_VALIDATE_EMAIL);
-    }
+	}
     return $email;
 }
 
@@ -548,7 +577,7 @@ function check_mail($email)
     //$email = "phil.taylor@a_domain.tv";
     if (preg_match("/^[^@]*@[^@]*\.[^@]*$/", $email)) {
         return true;
-    }
+	}
 }
 
 function is_url($url)
@@ -638,7 +667,7 @@ function get_new_alias($str, $charset = 'UTF-8')
     {
         $glyphs = explode(',', $glyphs);
         $str = str_replace($glyphs, $letter, $str);
-    }
+	}
     $str = preg_replace('/[^A-Za-z0-9-]+/', '', $str);
     $str = preg_replace('/\s[\s]+/', '-', $str);
     $str = preg_replace('/_[_]+/', '-', $str);
@@ -702,7 +731,7 @@ function get_alias($str, $charset = 'UTF-8')
     {
         $glyphs = explode(',', $glyphs);
         $str = str_replace($glyphs, $letter, $str);
-    }
+	}
     $str = preg_replace('/[^A-Za-z0-9-]+/', '', $str);
     $str = preg_replace('/\s[\s]+/', '-', $str);
     $str = preg_replace('/_[_]+/', '-', $str);
@@ -714,43 +743,43 @@ function get_alias($str, $charset = 'UTF-8')
 }
 
 /**
-* Transliteration function
-* Функция транслитерации текста
-* @param string $text
-* @param string $direct
-* @return string
+	* Transliteration function
+	* Функция транслитерации текста
+	* @param string $text
+	* @param string $direct
+	* @return string
 */
 // Use 
 // translateIt($text, $direct = 'ru_en');
 function translateIt($text, $direct = 'ru_en')
 {
     $arr['ru'] = [
-        'Ё', 'Ж', 'Ц', 'Ч', 'Щ', 'Ш', 'Ы', 'Э', 'Ю', 'Я', 'ё', 'ж', 'ц', 'ч',
-        'ш', 'щ', 'ы', 'э', 'ю', 'я', 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'З', 'И',
-        'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ъ',
-        'Ь', 'а', 'б', 'в', 'г', 'д', 'е', 'з', 'и', 'й', 'к', 'л', 'м', 'н',
-        'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ъ', 'ь'
+	'Ё', 'Ж', 'Ц', 'Ч', 'Щ', 'Ш', 'Ы', 'Э', 'Ю', 'Я', 'ё', 'ж', 'ц', 'ч',
+	'ш', 'щ', 'ы', 'э', 'ю', 'я', 'А', 'Б', 'В', 'Г', 'Д', 'Е', 'З', 'И',
+	'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ъ',
+	'Ь', 'а', 'б', 'в', 'г', 'д', 'е', 'з', 'и', 'й', 'к', 'л', 'м', 'н',
+	'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ъ', 'ь'
     ];
     $arr['en'] = [
-        "YO", "ZH",  "CZ", "CH", "SHH","SH", "Y'", "E'", "YU",  "YA", "yo", "zh", "cz", "ch",
-        "sh", "shh", "y'", "e'", "yu", "ya", "A", "B" , "V" ,  "G",  "D",  "E",  "Z",  "I",
-        "J",  "K",   "L",  "M",  "N",  "O",  "P", "R",  "S",   "T",  "U",  "F",  "X",  "''",
-        "'",  "a",   "b",  "v",  "g",  "d",  "e", "z",  "i",   "j",  "k",  "l",  "m",  "n",
-        "o",  "p",   "r",  "s",  "t",  "u",  "f", "x",  "''",  "'"
+	"YO", "ZH",  "CZ", "CH", "SHH","SH", "Y'", "E'", "YU",  "YA", "yo", "zh", "cz", "ch",
+	"sh", "shh", "y'", "e'", "yu", "ya", "A", "B" , "V" ,  "G",  "D",  "E",  "Z",  "I",
+	"J",  "K",   "L",  "M",  "N",  "O",  "P", "R",  "S",   "T",  "U",  "F",  "X",  "''",
+	"'",  "a",   "b",  "v",  "g",  "d",  "e", "z",  "i",   "j",  "k",  "l",  "m",  "n",
+	"o",  "p",   "r",  "s",  "t",  "u",  "f", "x",  "''",  "'"
     ];
-
+	
     // Конвертируем
     if($direct == 'en_ru') {
         $translated = str_replace($arr['en'], $arr['ru'], $text);
         // Теперь осталось проверить регистр мягкого и твердого знаков.
         $translated = preg_replace('/(?<=[а-яё])Ь/u', 'ь', $translated);
         $translated = preg_replace('/(?<=[а-яё])Ъ/u', 'ъ', $translated);
-    } else {
+		} else {
         // И наоборот
         $translated = str_replace($arr['ru'], $arr['en'], $text);
         // Заменяем пробел на нижнее подчеркивание
         $translated = str_replace(' ', '_', $translated);
-    }
+	}
     // Возвращаем
     return $translated;
 }
@@ -759,18 +788,18 @@ function translateIt($text, $direct = 'ru_en')
 function translit_rus($string)
 {
     $converter = [
-        'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 
-        'ё' => 'e', 'ж' => 'zh', 'з' => 'z', 'и' => 'i', 'й' => 'y', 'к' => 'k', 
-        'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o', 'п' => 'p', 'р' => 'r', 
-        'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'h', 'ц' => 'c', 
-        'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sch', 'ь' => "'", 'ы' => 'y', 
-        'ъ' => "'", 'э' => 'e', 'ю' => 'yu', 'я' => 'ya',
-        'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D', 'Е' => 'E', 
-        'Ё' => 'E', 'Ж' => 'Zh', 'З' => 'Z', 'И' => 'I', 'Й' => 'Y', 'К' => 'K', 
-        'Л' => 'L', 'М' => 'M', 'Н' => 'N', 'О' => 'O', 'П' => 'P', 'Р' => 'R', 
-        'С' => 'S', 'Т' => 'T', 'У' => 'U', 'Ф' => 'F', 'Х' => 'H', 'Ц' => 'C', 
-        'Ч' => 'Ch', 'Ш' => 'Sh', 'Щ' => 'Sch', 'Ь' => "'", 'Ы' => 'Y', 
-        'Ъ' => "'", 'Э' => 'E', 'Ю' => 'Yu', 'Я' => 'Ya'
+	'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 
+	'ё' => 'e', 'ж' => 'zh', 'з' => 'z', 'и' => 'i', 'й' => 'y', 'к' => 'k', 
+	'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o', 'п' => 'p', 'р' => 'r', 
+	'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'h', 'ц' => 'c', 
+	'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sch', 'ь' => "'", 'ы' => 'y', 
+	'ъ' => "'", 'э' => 'e', 'ю' => 'yu', 'я' => 'ya',
+	'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D', 'Е' => 'E', 
+	'Ё' => 'E', 'Ж' => 'Zh', 'З' => 'Z', 'И' => 'I', 'Й' => 'Y', 'К' => 'K', 
+	'Л' => 'L', 'М' => 'M', 'Н' => 'N', 'О' => 'O', 'П' => 'P', 'Р' => 'R', 
+	'С' => 'S', 'Т' => 'T', 'У' => 'U', 'Ф' => 'F', 'Х' => 'H', 'Ц' => 'C', 
+	'Ч' => 'Ch', 'Ш' => 'Sh', 'Щ' => 'Sch', 'Ь' => "'", 'Ы' => 'Y', 
+	'Ъ' => "'", 'Э' => 'E', 'Ю' => 'Yu', 'Я' => 'Ya'
     ];
     return strtr($string, $converter);
 }
@@ -779,21 +808,86 @@ function translit_rus($string)
 function translit_to_rus($string)
 {
     $table = [
-        'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D', 'Е' => 'E', 'Ё' => 'YO', 
-        'Ж' => 'ZH', 'З' => 'Z', 'И' => 'I', 'Й' => 'J', 'К' => 'K', 'Л' => 'L', 'М' => 'M', 
-        'Н' => 'N', 'О' => 'O', 'П' => 'P', 'Р' => 'R', 'С' => 'S', 'Т' => 'T', 'У' => 'U', 
-        'Ф' => 'F', 'Х' => 'H', 'Ц' => 'C', 'Ч' => 'CH', 'Ш' => 'SH', 'Щ' => 'CSH', 'Ь' => '', 
-        'Ы' => 'Y', 'Ъ' => '', 'Э' => 'E', 'Ю' => 'YU', 'Я' => 'YA', 'а' => 'a', 'б' => 'b', 
-        'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ё' => 'yo', 'ж' => 'zh', 'з' => 'z', 
-        'и' => 'i', 'й' => 'j', 'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o', 
-        'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'h',
-        'ц' => 'c', 'ч' => 'ch', 'ш' => 'sh', 'щ' => 'csh', 'ь' => '', 'ы' => 'y', 'ъ' => '', 
-        'э' => 'e', 'ю' => 'yu', 'я' => 'ya'
+	'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D', 'Е' => 'E', 'Ё' => 'YO', 
+	'Ж' => 'ZH', 'З' => 'Z', 'И' => 'I', 'Й' => 'J', 'К' => 'K', 'Л' => 'L', 'М' => 'M', 
+	'Н' => 'N', 'О' => 'O', 'П' => 'P', 'Р' => 'R', 'С' => 'S', 'Т' => 'T', 'У' => 'U', 
+	'Ф' => 'F', 'Х' => 'H', 'Ц' => 'C', 'Ч' => 'CH', 'Ш' => 'SH', 'Щ' => 'CSH', 'Ь' => '', 
+	'Ы' => 'Y', 'Ъ' => '', 'Э' => 'E', 'Ю' => 'YU', 'Я' => 'YA', 'а' => 'a', 'б' => 'b', 
+	'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ё' => 'yo', 'ж' => 'zh', 'з' => 'z', 
+	'и' => 'i', 'й' => 'j', 'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o', 
+	'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'h',
+	'ц' => 'c', 'ч' => 'ch', 'ш' => 'sh', 'щ' => 'csh', 'ь' => '', 'ы' => 'y', 'ъ' => '', 
+	'э' => 'e', 'ю' => 'yu', 'я' => 'ya'
     ];
     $output = str_replace(array_keys($table), array_values($table), $string);
     return $output;
 }
- 
+
+/* ----------- FORMAT ---------- */
+
+function format_size($size, $type = 'KB', $text = null)
+{
+	if ($type == 'bytes') {$metrics = ['bytes', 'KB', 'MB', 'GB', 'TB'];}
+	if ($type == 'KB') {$metrics = ['KB', 'MB', 'GB', 'TB'];}
+	if ($type == 'MB') {$metrics = ['MB', 'GB', 'TB'];}
+	$metric = 0;
+	while(floor($size/1024) > 0){
+		++$metric;
+		$size /= 1024;
+	}
+	if ($text == null) {
+		$ret = round($size,2);
+		} else {
+		$ret = round($size,2)." ".(isset($metrics[$metric])?$metrics[$metric]:'??');
+	}
+	return $ret;
+}
+
+/* ----------- EXEC ---------- */
+function meminfo()
+{
+	@exec('cat /proc/meminfo', $meminfo);
+	if (isset($meminfo['0'])) {
+		//print_r($meminfo);
+		$arr['MemTotal'] = $this->format_size(str_replace(['MemTotal:', 'kB', ' '], '', $meminfo['0']));
+		$arr['MemFree'] = $this->format_size(str_replace(['MemFree:', 'kB', ' '], '', $meminfo['1']));
+		$arr['MemAvailable'] = $this->format_size(str_replace(['MemAvailable:', 'kB', ' '], '', $meminfo['2']));
+		$arr['Buffers'] = $this->format_size(str_replace(['Buffers:', 'kB', ' '], '', $meminfo['3']));
+		$arr['Cached'] = $this->format_size(str_replace(['Cached:', 'kB', ' '], '', $meminfo['4']));
+		$arr['SwapTotal'] = $this->format_size(str_replace(['SwapTotal:', 'kB', ' '], '', $meminfo['14']));
+		$arr['SwapFree'] = $this->format_size(str_replace(['SwapFree:', 'kB', ' '], '', $meminfo['15']));
+		//print_r($arr);
+		return $arr;
+		} else {
+		return null;
+	}
+}
+
+function cpuinfo()
+{
+	@exec('cat /proc/cpuinfo', $cpuinfo);
+	if (isset($cpuinfo['0'])) {
+		return $cpuinfo;
+		} else {
+		return null;
+	}
+}
+
+function nproc()
+{
+	@exec('nproc', $nproc);
+	@exec('cat /proc/cpuinfo | grep ^processor |wc -l', $cpuinfo);
+	if (isset($nproc['0']) && isset($cpuinfo['0'])) {
+		if ($nproc['0'] <= $cpuinfo['0']) {
+			return $cpuinfo['0'];
+            } else {
+			return $nproc['0'];
+		}
+		} else {
+		return null;
+	}
+}
+
 /* ----------- WHOIS ---------- */
 
 // Whois
@@ -815,49 +909,49 @@ function whois_query($domain)
     // http://de.wikipedia.org/wiki/Whois
     //
     $servers = [
-        "biz" => "whois.neulevel.biz",
-        "com" => "whois.internic.net",
-        "us" => "whois.nic.us",
-        "coop" => "whois.nic.coop",
-        "info" => "whois.nic.info",
-        "name" => "whois.nic.name",
-        "net" => "whois.internic.net",
-        "gov" => "whois.nic.gov",
-        "edu" => "whois.internic.net",
-        "mil" => "rs.internic.net",
-        "int" => "whois.iana.org",
-        "ac" => "whois.nic.ac",
-        "ae" => "whois.uaenic.ae",
-        "at" => "whois.ripe.net",
-        "au" => "whois.aunic.net",
-        "be" => "whois.dns.be",
-        "bg" => "whois.ripe.net",
-        "br" => "whois.registro.br",
-        "bz" => "whois.belizenic.bz",
-        "ca" => "whois.cira.ca",
-        "cc" => "whois.nic.cc",
-        "ch" => "whois.nic.ch",
-        "cl" => "whois.nic.cl",
-        "cn" => "whois.cnnic.net.cn",
-        "cz" => "whois.nic.cz",
-        "de" => "whois.nic.de",
-        "fr" => "whois.nic.fr",
-        "hu" => "whois.nic.hu",
-        "ie" => "whois.domainregistry.ie",
-        "il" => "whois.isoc.org.il",
-        "in" => "whois.ncst.ernet.in",
-        "ir" => "whois.nic.ir",
-        "mc" => "whois.ripe.net",
-        "to" => "whois.tonic.to",
-        "tv" => "whois.tv",
-        "ru" => "whois.ripn.net",
-        "org" => "whois.pir.org",
-        "aero" => "whois.information.aero",
-        "nl" => "whois.domain-registry.nl"
+	"biz" => "whois.neulevel.biz",
+	"com" => "whois.internic.net",
+	"us" => "whois.nic.us",
+	"coop" => "whois.nic.coop",
+	"info" => "whois.nic.info",
+	"name" => "whois.nic.name",
+	"net" => "whois.internic.net",
+	"gov" => "whois.nic.gov",
+	"edu" => "whois.internic.net",
+	"mil" => "rs.internic.net",
+	"int" => "whois.iana.org",
+	"ac" => "whois.nic.ac",
+	"ae" => "whois.uaenic.ae",
+	"at" => "whois.ripe.net",
+	"au" => "whois.aunic.net",
+	"be" => "whois.dns.be",
+	"bg" => "whois.ripe.net",
+	"br" => "whois.registro.br",
+	"bz" => "whois.belizenic.bz",
+	"ca" => "whois.cira.ca",
+	"cc" => "whois.nic.cc",
+	"ch" => "whois.nic.ch",
+	"cl" => "whois.nic.cl",
+	"cn" => "whois.cnnic.net.cn",
+	"cz" => "whois.nic.cz",
+	"de" => "whois.nic.de",
+	"fr" => "whois.nic.fr",
+	"hu" => "whois.nic.hu",
+	"ie" => "whois.domainregistry.ie",
+	"il" => "whois.isoc.org.il",
+	"in" => "whois.ncst.ernet.in",
+	"ir" => "whois.nic.ir",
+	"mc" => "whois.ripe.net",
+	"to" => "whois.tonic.to",
+	"tv" => "whois.tv",
+	"ru" => "whois.ripn.net",
+	"org" => "whois.pir.org",
+	"aero" => "whois.information.aero",
+	"nl" => "whois.domain-registry.nl"
     ];
     if (!isset($servers[$ext])){
         die('Error: No matching nic server found!');
-    }
+	}
     $nic_server = $servers[$ext];
     $output = '';
     // connect to whois server:
@@ -865,50 +959,50 @@ function whois_query($domain)
         fputs($conn, $domain."\r\n");
         while(!feof($conn)) {
             $output .= fgets($conn,128);
-        }
+		}
         fclose($conn);
-    }
+	}
     else {die('Error: Could not connect to ' . $nic_server . '!');}
     return $output;
 }
- 
+
 // Определения города
 function detect_city($ip)
 {
     $default = 'UNKNOWN';
     if (!is_string($ip) || strlen($ip) < 1 || $ip == '127.0.0.1' || $ip == 'localhost') {
         $ip = '8.8.8.8';
-    }
+	}
     $curlopt_useragent = 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2) Gecko/20100115 Firefox/3.6 (.NET CLR 3.5.30729)';
     $url = 'https://ipinfodb.com/ip_locator.php?ip='.urlencode($ip);
     $ch = curl_init();
     $curl_opt = [
-        CURLOPT_FOLLOWLOCATION => 1,
-        CURLOPT_HEADER => 0,
-        CURLOPT_RETURNTRANSFER => 1,
-        CURLOPT_USERAGENT => $curlopt_useragent,
-        CURLOPT_URL => $url,
-        CURLOPT_TIMEOUT => 1,
-        CURLOPT_REFERER => http_host(),
+	CURLOPT_FOLLOWLOCATION => 1,
+	CURLOPT_HEADER => 0,
+	CURLOPT_RETURNTRANSFER => 1,
+	CURLOPT_USERAGENT => $curlopt_useragent,
+	CURLOPT_URL => $url,
+	CURLOPT_TIMEOUT => 1,
+	CURLOPT_REFERER => http_host(),
     ];
     curl_setopt_array($ch, $curl_opt);
     $content = curl_exec($ch);
     if (!is_null($curl_info)) {
         $curl_info = curl_getinfo($ch);
-    }
+	}
     curl_close($ch);
     if ( preg_match('{<li>City : ([^<]*)</li>}i', $content, $regs) )  {
         $city = $regs[1];
-    }
+	}
     if ( preg_match('{<li>State/Province : ([^<]*)</li>}i', $content, $regs) )  {
         $state = $regs[1];
-    }
+	}
     if( $city!='' && $state!='' ) {
         $location = $city.', '.$state;
         return $location;
-    } else {
+		} else {
         return $default;
-    }
+	}
 }
 
 /* ----------- Other ---------- */
@@ -933,7 +1027,7 @@ function declension($digit,$expr,$onlyword=false)
         if($i==1) $res=$digit.' '.$expr[0];
         elseif($i>=2 && $i<=4) $res=$digit.' '.$expr[1];
         else $res=$digit.' '.$expr[2];
-    }
+	}
     return trim($res);
 }
 
@@ -948,6 +1042,5 @@ function downcounter($date)
     $check_time = time() - strtotime($date);
     if($check_time <= 0) {
         return false;
-    }
+	}
 }
- 

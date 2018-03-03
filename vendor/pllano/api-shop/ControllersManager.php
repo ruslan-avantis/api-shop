@@ -272,9 +272,6 @@ class ControllersManager
         // Подключаем мультиязычность
         $language = $this->languages->get($request);
         $lang = $this->languages->lang();
-		
-		//$csrf = 1;
-		//$token = 1;
 
         try {
             // Получаем токен из сессии
