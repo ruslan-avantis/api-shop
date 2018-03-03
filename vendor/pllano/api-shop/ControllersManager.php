@@ -3,55 +3,59 @@
     *
     * @license http://opensource.org/licenses/MIT
     * @link https://github.com/pllano/api-shop
-    * @version 1.1.1
+    * @version 1.0.1
     * @package pllano.api-shop
     *
     * For the full copyright and license information, please view the LICENSE
     * file that was distributed with this source code.
 */
- 
+
 namespace Pllano\ApiShop;
 
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
-use Psr\Container\ContainerInterface;
-use Pllano\ApiShop\Models\{User, Install, SessionUser, Language, Site, Template, Security};
-use Pllano\ApiShop\Utilities\Utility;
-use Pllano\ApiShop\Adapters\Menu;
+use Psr\Container\ContainerInterface as Container;
+use Pllano\ApiShop\Models\{
+    Install, 
+    SessionUser, 
+    Site, 
+    Security
+};
 use Pllano\Caching\Cache;
- 
+
 class ControllersManager
 {
 
+    private $app;
     private $config = [];
-	private $time_start;
+    private $time_start;
     private $package = [];
     private $session;
-	private $languages;
-	private $logger;
+    private $languages;
+    private $logger;
     private $template;
-	private $view;
+    private $view;
     private $route;
     private $query;
- 
-    function __construct($query, $route, $config, $package, $session, $languages, $template, $view, $logger, $time_start)
+
+    function __construct(Container $app, $route)
     {
-        $this->config = $config;
-		$this->time_start = $time_start;
-        $this->package = $package;
-		$this->session = $session;
-		$this->languages = $languages;
-        $this->logger = $logger;
-        $this->template = $template;
-		$this->view = $view;
+        $this->app = $app;
         $this->route = $route;
-        $this->query = $query;
+        $this->config = $app->get('config');
+        $this->time_start = $app->get('time_start');
+        $this->package = $app->get('package');
+        $this->session = $app->get('session');
+        $this->languages = $app->get('languages');
+        $this->logger = $app->get('logger');
+        $this->template = $app->get('template');
+        $this->view = $app->get('view');
     }
 
     public function get(Request $request, Response $response, array $args)
     {
         $time_start = microtime_float();
-		
-		// $getScheme = $request->getUri()->getScheme(); // Работает
+        $this->query = $request->getMethod();
+        // $getScheme = $request->getUri()->getScheme(); // Работает
         // $getParams = $request->getQueryParams(); // Работает
         // $getQuery = $request->getUri()->getQuery(); // Работает
         // $getHost = $request->getUri()->getHost(); // Работает
@@ -68,9 +72,6 @@ class ControllersManager
  
         // true - Если все хуки отказались подменять контент
         if($hook->state() === true) {
-            // Подключаем утилиты
-            $utility = new Utility();
- 
             // Получаем параметры из URL
             $host = $request->getUri()->getHost();
             $path = '';
@@ -92,7 +93,7 @@ class ControllersManager
             $sessionTemp = new $this->config['vendor']['session']['session']("_temp");
             // Генерируем токен. Читаем ключ. Записываем токен в сессию.
             // Default Defuse\Crypto\Crypto
-            $this->session->token = $this->config['vendor']['crypto']['crypt']::encrypt($utility->random_token(), $this->config['key']['token']);
+            $this->session->token = $this->config['vendor']['crypto']['crypt']::encrypt(random_token(), $this->config['key']['token']);
 
             $language = $this->languages->get($request);
             $lang = $this->languages->lang();
@@ -143,7 +144,7 @@ class ControllersManager
                     $mods = explode(',', str_replace([" ", "'"], "", $this->config['routers']['site'][$this->route]['blocks']));
                     foreach($mods as $key => $block)
                     {
-                        $modules = new $this->config['vendor']['modules']['manager']($this->config, $this->package, $this->template, $block, $this->route, $lang, $language, $this->logger, $this->time_start);
+                        $modules = new $this->config['vendor']['modules']['manager']($this->app, $this->route, $block);
                         $arr = $modules->get($request);
                         $dataArr = array_replace_recursive($dataArr, $arr);
                     }
@@ -220,49 +221,47 @@ class ControllersManager
             // Передаем данные Hooks для обработки ожидающим классам
             $hook->get($render, $data);
         }
+        
+        //print_r($data);
+        
         $time = number_format(microtime_float() - $this->time_start, 4);
-		$time_get_start = number_format(microtime_float() - $time_start, 4);
-        if ($time >= 0.25) {
-            $uri = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-            $escaped_url = htmlspecialchars($uri, ENT_QUOTES, 'UTF-8');
-			// Запись в лог
-			$this->logger->info("time >= 0.25", [
-			    "source" => "ControllerManager",
-			    "getMethod" => $request->getMethod(),
-			    "time" => $time,
-				"time_start" => $this->time_start,
-				"ControllerManagerStart" => $time_start,
-				"uri" => $escaped_url
-			]);
+        $time_get_start = number_format(microtime_float() - $time_start, 4);
+        if ($time >= 1) {
+            // Запись в лог
+            $this->logger->info("time", [
+                "source" => "ControllerManager",
+                "getMethod" => $request->getMethod(),
+                "time" => $time,
+                "time_start" => $this->time_start,
+                "ControllerManagerStart" => $time_start,
+                "uri" => escaped_url()
+            ]);
         }
         if ($this->config['settings']["install"]["status"] != null) {
-            return $this->view->render($hook->render(), $hook->view());
+            return $response->write($this->view->render($hook->render(), $hook->view()));
         } else {
-            return $this->view->render($render, $data);
+            return $response->write($this->view->render($render, $data));
         }
 
     }
  
-    public function post(Request $request, Response $response)
+    public function post(Request $request, Response $response, array $args)
     {
         $time_start = microtime_float();
-		
-		$method = $request->getMethod();
+        $method = $request->getMethod();
         $post = $request->getParsedBody();
-
-        $today = date("Y-m-d H:i:s");
-        // Получаем данные отправленные нам через POST
+        
+        //print_r($post);
 
         // Передаем данные Hooks для обработки ожидающим классам
         $hook = new $this->config['vendor']['hooks']['hook']($this->config);
         $hook->http($request, $method, 'site');
         $request = $hook->request();
 
-        // Подключаем утилиты
-        $utility = new Utility();
-
         // Читаем ключи
         $token_key = $this->config['key']['token'];
+        $crypt = $this->config['vendor']['crypto']['crypt'];
+
         // Подключаем систему безопасности
         $security = new Security($this->config);
 
@@ -273,10 +272,13 @@ class ControllersManager
         // Подключаем мультиязычность
         $language = $this->languages->get($request);
         $lang = $this->languages->lang();
+		
+		//$csrf = 1;
+		//$token = 1;
 
         try {
             // Получаем токен из сессии
-            $token = $this->config['vendor']['crypto']['crypt']::decrypt($this->session->token, $token_key);
+            $token = $crypt::decrypt($this->session->token, $token_key);
         } catch (\Exception $ex) {
             $token = 0;
             // Сообщение об Атаке или подборе токена
@@ -284,9 +286,9 @@ class ControllersManager
         }
         try {
             // Получаем токен из POST
-            $post_csrf = $this->config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+            $post_csrf = $crypt::decrypt(sanitize($post['csrf']), $token_key);
             // Чистим данные на всякий случай пришедшие через POST
-            $csrf = $utility->clean($post_csrf);
+            $csrf = clean($post_csrf);
         } catch (\Exception $ex) {
             $csrf = 1;
             // Сообщение об Атаке или подборе csrf
@@ -305,7 +307,7 @@ class ControllersManager
             $mods = explode(',', str_replace([" ", "'"], "", $this->config['routers']['site'][$this->route]['blocks']));
             foreach($mods as $key => $block)
             {
-                $modules = new $this->config['vendor']['modules']['manager']($this->config, $this->template, $block, $this->route, $lang, $language, $this->logger, $this->time_start);
+                $modules = new $this->config['vendor']['modules']['manager']($this->app, $this->route, $block);
                 $callback = $modules->post($request);
             }
         } else {
@@ -313,24 +315,22 @@ class ControllersManager
             $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
         }
 
-		$time = number_format(microtime_float() - $this->time_start, 4);
-		$time_get_start = number_format(microtime_float() - $time_start, 4);
-        if ($time >= 0.25) {
-            $uri = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-            $escaped_url = htmlspecialchars($uri, ENT_QUOTES, 'UTF-8');
-			// Запись в лог
-            $this->logger->info("time >= 0.25", [
-			    "source" => "ControllerManager",
-			    "getMethod" => $request->getMethod(),
-			    "time" => $time,
-				"time_start" => $this->time_start,
-				"ControllerManagerStart" => $time_start,
-				"uri" => $escaped_url
-			]);
+        $time = number_format(microtime_float() - $this->time_start, 4);
+        $time_get_start = number_format(microtime_float() - $time_start, 4);
+        if ($time >= 1) {
+            // Запись в лог
+            $this->logger->info("time", [
+                "source" => "ControllerManager",
+                "getMethod" => $request->getMethod(),
+                "time" => $time,
+                "time_start" => $this->time_start,
+                "ControllerManagerStart" => $time_start,
+                "uri" => escaped_url()
+            ]);
         }
 
         // Выводим json
-        return json_encode($callback, JSON_PRETTY_PRINT);
+        return $response->write(json_encode($callback));
 
     }
 

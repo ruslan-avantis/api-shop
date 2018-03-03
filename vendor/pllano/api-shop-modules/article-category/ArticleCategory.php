@@ -12,59 +12,45 @@
 
 namespace Pllano\ApiShop\Modules\Articles;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Container\ContainerInterface as Container;
 use Pllano\RouterDb\Router as RouterDb;
-use Pllano\ApiShop\Utilities\Utility;
-use Pllano\ApiShop\Adapters\Image;
 
 class ArticleCategory
 {
-    private $config;
-    private $package;
-    private $template;
+    private $app;
+	private $block;
     private $route;
-    private $block;
-    private $module;
-    private $lang = null;
-    private $language = null;
-    private $count = 0;
+    private $modulKey;
+	private $modulVal;
+	private $config;
     
-    function __construct($config = [], $package = [], $template = [], $module, $block, $route, $lang = null, $language = null)
+    function __construct(Container $app, $route = null, $block = null, $modulKey = null, $modulVal = [])
     {
-        $this->config = $config;
-        $this->package = $package;
-        $this->template = $template;
-        $this->route = $route;
+        $this->app = $app;
         $this->block = $block;
-        $this->module = $module;
-        if (isset($lang)) {
-            $this->lang = $lang;
-        }
-        if (isset($language)) {
-            $this->language = $language;
-        }
+        $this->route = $route;
+		$this->modulKey = $modulKey;
+		$this->modulVal = $modulVal;
+		$this->config = $app->get('config');
     }
     
     public function get(Request $request)
     {
-        $config = $this->config;
-        $template = $this->template;
         $host = $request->getUri()->getHost();
-        // Подключаем утилиты
-        $utility = new Utility();
         // Получаем alias из url
         if ($request->getAttribute('alias')) {
-            $alias = $utility->clean($request->getAttribute('alias'));
+            $alias = clean($request->getAttribute('alias'));
         } else {
             $alias = null;
         }
- 
-        $moduleArr = $template['modules'][$this->route][$this->module];
- 
+        // Конфигурация пакета
+        $moduleArr['config'] = $this->modulVal;
+
         // Ресурс (таблица) к которому обращаемся
-        $resource = "article";
+        $resource = "article_category";
         // Отдаем роутеру RouterDb конфигурацию
-        $routerDb = new RouterDb($config, 'Apis');
+        $routerDb = new RouterDb($this->config, 'Apis');
         // Пингуем для ресурса указанную и доступную базу данных
         // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
         $db = $routerDb->run($routerDb->ping($resource));
@@ -74,12 +60,12 @@ class ArticleCategory
         ];
         // Отправляем запрос к БД в формате адаптера. В этом случае Apis
         $responseArr = $db->get($resource, $query);
- 
+
         $content = [];
         $contentArr = [];
         $heads = [];
         $return = [];
- 
+
         if (isset($responseArr["headers"]["code"])) {
             if ($responseArr["headers"]["code"] == 200 || $responseArr["headers"]["code"] == "200") {
                 // Если данные в виде объекта переводим в массив
@@ -95,7 +81,7 @@ class ArticleCategory
                 $arr["text_en"] = htmlspecialchars_decode($arr["text_en"]);
                 $arr["text_de"] = htmlspecialchars_decode($arr["text_de"]);
                 $contentArr['content'] = $arr;
- 
+
                 $head["title"] = $arr["title"];
                 $head["seo_title"] = $arr["seo_title"];
                 $head["seo_keywords"] = $arr["seo_keywords"];
@@ -108,7 +94,7 @@ class ArticleCategory
             }
         }
  
-        $content['content']['modules'][$this->module] = $contentArr + $moduleArr;
+        $content['content']['modules'][$this->modulKey] = $contentArr + $moduleArr;
         $return = array_replace_recursive($heads, $content);
         return $return;
     }

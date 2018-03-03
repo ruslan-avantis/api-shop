@@ -12,27 +12,28 @@
 
 namespace Pllano\ApiShop\Modules\Categories;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Container\ContainerInterface as Container;
 use Pllano\RouterDb\Router as RouterDb;
-use Pllano\ApiShop\Utilities\Utility;
- 
+
 class Properties
 {
 
-    private $config;
-	private $module;
+    private $app;
+	private $config;
 
-    function __construct(array $config = [], $module = [])
+    function __construct(Container $app)
     {
-        $this->config = $config;
-		$this->module = $module;
+        $this->app = $app;
+		$this->config = $app->get('config');
     }
 
     // Лимит товаров на страницу
     public function get(Request $request, $contentArr)
     {
         $response = [];
-/*         foreach($contentArr as $key => $unit)
+        /*         
+	    foreach($contentArr as $key => $unit)
         {
             if (isset($this->offset)){$arr['offset'] = $this->offset;}
             if (isset($this->order)){$arr['order'] = $this->order;}
@@ -49,7 +50,8 @@ class Properties
             $resp["key"] = $key;
             $resp["name"] = $unit;
             $response[] = $resp;
-        } */
+        } 
+		*/
         return $response;
 
     }

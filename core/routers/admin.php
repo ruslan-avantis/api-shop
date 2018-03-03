@@ -16,9 +16,6 @@ use Pllano\ApiShop\Models\{Language, Site, Template, SessionUser, Security, Filt
 use Pllano\ApiShop\Admin\{Control, AdminDatabase, Resources, Packages};
 use Pllano\ApiShop\Utilities\Utility;
 
-$admin_router = $config['routers']['admin']['all']['route'];
-$admin_index = $config['routers']['admin']['index']['route'];
-
 $admin_uri = '/0';
 $post_id = '/0';
 if(isset($session->admin_uri)) {
@@ -27,7 +24,10 @@ if(isset($session->admin_uri)) {
 if(isset($session->post_id)) {
     $post_id = '/'.$session->post_id.'/';
 }
- 
+
+$admin_router = $config['routers']['admin']['all']['route'];
+$admin_index = $config['routers']['admin']['index']['route'];
+
 // Главная страница админ панели
 $routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) {
     
@@ -39,8 +39,6 @@ $routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) 
     $session = $this->get('session');
     // Конфигурация роутинга
     $routers = $config['routers'];
-    // Подключаем плагины
-    $utility = new Utility();
 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
@@ -61,7 +59,7 @@ $routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) 
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -93,7 +91,7 @@ $routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) 
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $index = new \ApiShop\Admin\Index($config);
+            $index = new \Pllano\ApiShop\Admin\Index($config);
             // Получаем массив с настройками шаблона
             $content = $index->get();
             // Получаем название шаблона
@@ -152,18 +150,15 @@ $routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Получаем resource из url
     if ($request->getAttribute('resource')) {
-        $resource = $utility->clean($request->getAttribute('resource'));
+        $resource = clean($request->getAttribute('resource'));
     } else {
         $resource = null;
     }
     // Получаем id из url
     if ($request->getAttribute('id')) {
-        $id = $utility->clean($request->getAttribute('id'));
+        $id = clean($request->getAttribute('id'));
     } else {
         $id = null;
     }
@@ -188,7 +183,7 @@ $routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -316,7 +311,6 @@ $routing->post($admin_uri.$admin_router.'resource-post', function ($request, $re
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
-    
     $today = date("Y-m-d H:i:s");
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
@@ -354,7 +348,7 @@ $routing->post($admin_uri.$admin_router.'resource-post', function ($request, $re
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
-        $csrf = $utility->clean($post_csrf);
+        $csrf = clean($post_csrf);
     } catch (\Exception $ex) {
         $csrf = 1;
         if (isset($session->authorize)) {
@@ -381,14 +375,14 @@ $routing->post($admin_uri.$admin_router.'resource-post', function ($request, $re
                     if (array_key_exists($resource, array_flip($resource_list))) {
                         
                         $postArr = [];
-                        $random_alias_id = $utility->random_alias_id();
+                        $random_alias_id = random_alias_id();
                         
                         if ($resource == 'article') {
                             $postArr['title'] = 'New Article';
                             $postArr['text'] = '<div class="text-red font_56">New Text Article</div>';
                             $postArr['alias'] = 'alias-'.$random_alias_id;
                             $postArr['alias_id'] = $random_alias_id;
-                            $postArr['created'] = $today;
+                            $postArr['created'] = today();
                             $postArr['category_id'] = 0;
                             $postArr['state'] = 1;
                             } elseif ($resource == 'article_category' || $resource == 'category') {
@@ -397,14 +391,14 @@ $routing->post($admin_uri.$admin_router.'resource-post', function ($request, $re
                             $postArr['alias'] = 'alias-'.$random_alias_id;
                             $postArr['parent_id'] = 0;
                             $postArr['alias_id'] = $random_alias_id;
-                            $postArr['created'] = $today;
+                            $postArr['created'] = today();
                             $postArr['state'] = 1;
                             } elseif ($resource == 'currency') {
                             $postArr['name'] = 'New Article';
                             $postArr['course'] = 'course';
                             $postArr['iso_code'] = 'iso_code';
                             $postArr['iso_code_num'] = 'iso_code_num';
-                            $postArr['modified'] = $today;
+                            $postArr['modified'] = today();
                             $postArr['state'] = 1;
                             } elseif ($resource == 'user') {
                             $postArr['iname'] = 'New';
@@ -423,7 +417,8 @@ $routing->post($admin_uri.$admin_router.'resource-post', function ($request, $re
                         $routerDb = new RouterDb($config, 'Apis');
                         // Пингуем для ресурса указанную и доступную базу данных
                         // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-                        $db = $routerDb->run($routerDb->ping($resource));
+						$name_db = $routerDb->ping($resource);
+                        $db = $routerDb->run($name_db);
 
                         // Передаем данные Hooks для обработки ожидающим классам
                         $hook->post($resource, $name_db, 'POST', $postArr, null);
@@ -478,9 +473,6 @@ $routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Подключаем сессию
     $session = $this->get('session');
     // Читаем ключи
@@ -521,7 +513,7 @@ $routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
-        $csrf = $utility->clean($post_csrf);
+        $csrf = clean($post_csrf);
     } catch (\Exception $ex) {
         $csrf = 1;
         if (isset($session->authorize)) {
@@ -551,8 +543,9 @@ $routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $
                         $routerDb = new RouterDb($config, 'Apis');
                         // Пингуем для ресурса указанную и доступную базу данных
                         // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-                        $db = $routerDb->run($routerDb->ping($resource));
-                        
+						$name_db = $routerDb->ping($resource);
+                        $db = $routerDb->run($name_db);
+						
                         // Передаем данные Hooks для обработки ожидающим классам
                         $hook->post($resource, $name_db, 'DELETE', [], $id);
                         $hookState = $hook->state();
@@ -607,9 +600,6 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Подключаем сессию
     $session = $this->get('session');
     // Читаем ключи
@@ -618,7 +608,7 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
     // Получаем resource из url
     if ($request->getAttribute('resource')) {
         $resource_list = explode(',', str_replace(['"', "'", " "], '', $config['admin']['resource_list']));
-        $resource = $utility->clean($request->getAttribute('resource'));
+        $resource = clean($request->getAttribute('resource'));
         if (array_key_exists($resource, array_flip($resource_list))) {
             $table = json_decode(file_get_contents($config["db"]["json"]["dir"].'/'.$resource.'.config.json'), true);
             // Получаем данные отправленные нам через POST
@@ -633,7 +623,7 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
     
     // Получаем id из url
     if ($request->getAttribute('id')) {
-        $id = intval($utility->clean($request->getAttribute('id')));
+        $id = intval(clean($request->getAttribute('id')));
         } else {
         $id = null;
     }
@@ -658,7 +648,7 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
-        $csrf = $utility->clean($post_csrf);
+        $csrf = clean($post_csrf);
     } catch (\Exception $ex) {
         $csrf = 1;
         if (isset($session->authorize)) {
@@ -689,13 +679,13 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
                         {
                             if (array_key_exists($key, $table["schema"]) && $value != "" && $key != "id") {
                                 if($key == "text" || $key == "text_ru" || $key == "text_ua" || $key == "text_de" || $key == "text_en") {
-                                    $saveArr[$key] = $utility->cleanText($value);
+                                    $saveArr[$key] = cleanText($value);
                                 } elseif ($key == $resource_id) {
                                     $value = str_replace(['"', "'", " "], '', $value);
-                                    $saveArr[$key] = intval($utility->clean($value));
+                                    $saveArr[$key] = intval(clean($value));
                                 } elseif ($key == "phone") {
                                     $value = str_replace(['"', "'", " "], '', $value);
-                                    $saveArr[$key] = strval($utility->clean($value));
+                                    $saveArr[$key] = strval(clean($value));
                                 } elseif ($key == "password") {
                                     if(strlen($value) >= 55 && strlen($value) <= 65) {
                                         $saveArr[$key] = filter_var($value, FILTER_SANITIZE_STRING);
@@ -703,16 +693,16 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
                                         $saveArr[$key] = password_hash(filter_var($value, FILTER_SANITIZE_STRING), PASSWORD_DEFAULT);
                                     }
                                 } else {
-                                    if (is_numeric($utility->clean($value))) {
+                                    if (is_numeric(clean($value))) {
                                         $value = str_replace(['"', "'", " "], '', $value);
-                                        $saveArr[$key] = intval($utility->clean($value));
-                                        } elseif (is_float($utility->clean($value))) {
+                                        $saveArr[$key] = intval(clean($value));
+                                        } elseif (is_float(clean($value))) {
                                         $value = str_replace(['"', "'", " "], '', $value);
-                                        $saveArr[$key] = float($utility->clean($value));
-                                        } elseif (is_bool($utility->clean($value))) {
+                                        $saveArr[$key] = float(clean($value));
+                                        } elseif (is_bool(clean($value))) {
                                         $value = str_replace(['"', "'", " "], '', $value);
-                                        $saveArr[$key] = boolval($utility->clean($value));
-                                        } elseif (is_string($utility->clean($value))) {
+                                        $saveArr[$key] = boolval(clean($value));
+                                        } elseif (is_string(clean($value))) {
                                         $saveArr[$key] = filter_var(strval($value), FILTER_SANITIZE_STRING);
                                     }
                                 }
@@ -770,7 +760,6 @@ $routing->post($admin_uri.$admin_router.'order-activate', function ($request, $r
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
-    
     // Подключаем сессию
     $session = $this->get('session');
     // Читаем ключи
@@ -778,9 +767,6 @@ $routing->post($admin_uri.$admin_router.'order-activate', function ($request, $r
     
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
-    
-    // Подключаем плагины
-    $utility = new Utility();
     
     try {
         // Получаем токен из сессии
@@ -802,7 +788,7 @@ $routing->post($admin_uri.$admin_router.'order-activate', function ($request, $r
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
-        $csrf = $utility->clean($post_csrf);
+        $csrf = clean($post_csrf);
     } catch (\Exception $ex) {
         $csrf = 1;
         if (isset($session->authorize)) {
@@ -867,7 +853,6 @@ $routing->post($admin_uri.$admin_router.'template-buy', function ($request, $res
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
-    
     // Подключаем сессию
     $session = $this->get('session');
     // Читаем ключи
@@ -892,7 +877,7 @@ $routing->post($admin_uri.$admin_router.'template-buy', function ($request, $res
     // Подключаем плагины
     $utility = new Utility();
     // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+    $csrf = clean($post_csrf);
     
     $callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
@@ -932,9 +917,6 @@ $routing->post($admin_uri.$admin_router.'template-install', function ($request, 
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Подключаем сессию
     $session = $this->get('session');
     // Читаем ключи
@@ -962,7 +944,7 @@ $routing->post($admin_uri.$admin_router.'template-install', function ($request, 
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
-        $csrf = $utility->clean($post_csrf);
+        $csrf = clean($post_csrf);
         } catch (\Exception $ex) {
         $csrf = 1;
         if (isset($session->authorize)) {
@@ -1003,7 +985,7 @@ $routing->post($admin_uri.$admin_router.'template-install', function ($request, 
                         
                         if(isset($dir) && isset($uri) && isset($name)) {
                             // Подключаем глобальную конфигурацию
-                            $glob_config = new \ApiShop\Admin\Config($config);
+                            $glob_config = new \Pllano\ApiShop\Admin\Config($config);
                             // Устанавливаем шаблон
                             $template_install = $glob_config->template_install($name, $dir, $uri);
                             
@@ -1045,9 +1027,6 @@ $routing->post($admin_uri.$admin_router.'template-activate', function ($request,
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Подключаем сессию
     $session = $this->get('session');
     // Читаем ключи
@@ -1075,7 +1054,7 @@ $routing->post($admin_uri.$admin_router.'template-activate', function ($request,
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
-        $csrf = $utility->clean($post_csrf);
+        $csrf = clean($post_csrf);
         } catch (\Exception $ex) {
         $csrf = 1;
         if (isset($session->authorize)) {
@@ -1103,7 +1082,7 @@ $routing->post($admin_uri.$admin_router.'template-activate', function ($request,
                     $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
                     
                     // Активируем шаблон
-                    (new \ApiShop\Admin\Config($config))->template_activate($dir, $alias);
+                    (new \Pllano\ApiShop\Admin\Config($config))->template_activate($dir, $alias);
                     
                     $callbackStatus = 200;
                     
@@ -1141,7 +1120,6 @@ $routing->post($admin_uri.$admin_router.'template-delete', function ($request, $
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
-    
     // Подключаем сессию
     $session = $this->get('session');
     // Читаем ключи
@@ -1166,7 +1144,7 @@ $routing->post($admin_uri.$admin_router.'template-delete', function ($request, $
     // Подключаем плагины
     $utility = new Utility();
     // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+    $csrf = clean($post_csrf);
     
     $callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
@@ -1180,7 +1158,7 @@ $routing->post($admin_uri.$admin_router.'template-delete', function ($request, $
             
             $directory = $config["settings"]["themes"]["dir"].'/'.$config["template"]["front_end"]["themes"]["template"].'/'.$dir;
             // Подключаем класс
-            $admin = new \ApiShop\Admin\Control();
+            $admin = new \Pllano\ApiShop\Admin\Control();
             // Получаем массив
             $admin->delete($directory);
             
@@ -1213,9 +1191,7 @@ $routing->get($admin_uri.$admin_router.'template', function ($request, $response
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
- 
-    // Подключаем плагины
-    $utility = new Utility();
+
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
@@ -1235,7 +1211,7 @@ $routing->get($admin_uri.$admin_router.'template', function ($request, $response
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -1269,7 +1245,7 @@ $routing->get($admin_uri.$admin_router.'template', function ($request, $response
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $templates = new \ApiShop\Admin\Template($config);
+            $templates = new \Pllano\ApiShop\Admin\Template($config);
             // Получаем массив с настройками шаблона
             $content = $templates->get();
             $api = (new Install($config))->templates_list($config['seller']['store']);
@@ -1330,12 +1306,9 @@ $routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function 
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Получаем alias из url
     if ($request->getAttribute('alias')) {
-        $alias = $utility->clean($request->getAttribute('alias'));
+        $alias = clean($request->getAttribute('alias'));
     } else {
         $alias = null;
     }
@@ -1358,7 +1331,7 @@ $routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function 
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -1390,7 +1363,7 @@ $routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function 
     if (isset($session->authorize) && isset($alias)) {
         if ($session->role_id) {
             // Подключаем класс
-            $templates = new \ApiShop\Admin\Template($config, $alias);
+            $templates = new \Pllano\ApiShop\Admin\Template($config, $alias);
             $content = $templates->getOne();
             $render = $template['layouts']['template'] ? $template['layouts']['template'] : 'template.html';
         }
@@ -1446,12 +1419,9 @@ $routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Получаем alias из url
     if ($request->getAttribute('alias')) {
-        $alias = $utility->clean($request->getAttribute('alias'));
+        $alias = clean($request->getAttribute('alias'));
         } else {
         $alias = null;
     }
@@ -1474,7 +1444,7 @@ $routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -1506,7 +1476,7 @@ $routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function
     if (isset($session->authorize) && isset($alias)) {
         if ($session->role_id) {
             // Подключаем класс
-            $templates = new \ApiShop\Admin\Template($config, $alias);
+            $templates = new \Pllano\ApiShop\Admin\Template($config, $alias);
             // Получаем массив
             $arrJson = $templates->getOne();
             //print_r($content);
@@ -1572,17 +1542,14 @@ $routing->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Получаем vendor из url
     if ($request->getAttribute('vendor')) {
-        $vendor = $utility->clean($request->getAttribute('vendor'));
+        $vendor = clean($request->getAttribute('vendor'));
     } else {
         $vendor = null;
     }
     if ($request->getAttribute('package')) {
-        $package = $utility->clean($request->getAttribute('package'));
+        $package = clean($request->getAttribute('package'));
     } else {
         $package = null;
     }
@@ -1605,7 +1572,7 @@ $routing->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -1700,22 +1667,18 @@ $routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
- 
-    // Подключаем плагины
-    $utility = new Utility();
- 
     if ($args['querys']) {
-        $querys = $utility->clean($args['querys']);
+        $querys = clean($args['querys']);
     } else {
         $querys = null;
     }
     if ($args['vendor']) {
-        $vendor = $utility->clean($args['vendor']);
+        $vendor = clean($args['vendor']);
     } else {
         $vendor = null;
     }
     if ($args['package']) {
-        $package = $utility->clean($args['package']);
+        $package = clean($args['package']);
     } else {
         $package = null;
     }
@@ -1745,7 +1708,7 @@ $routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
-        $csrf = $utility->clean($post_csrf);
+        $csrf = clean($post_csrf);
         } catch (\Exception $ex) {
         $csrf = 1;
         if (isset($session->authorize)) {
@@ -1818,9 +1781,7 @@ $routing->get($admin_uri.$admin_router.'packages', function ($request, $response
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
- 
-    // Подключаем плагины
-    $utility = new Utility();
+
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
@@ -1840,7 +1801,7 @@ $routing->get($admin_uri.$admin_router.'packages', function ($request, $response
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -1930,9 +1891,6 @@ $routing->get($admin_uri.$admin_router.'packages-install', function ($request, $
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
@@ -1952,7 +1910,7 @@ $routing->get($admin_uri.$admin_router.'packages-install', function ($request, $
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -2042,9 +2000,6 @@ $routing->get($admin_uri.$admin_router.'packages-install-json', function ($reque
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
@@ -2064,7 +2019,7 @@ $routing->get($admin_uri.$admin_router.'packages-install-json', function ($reque
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -2154,9 +2109,6 @@ $routing->get($admin_uri.$admin_router.'config', function ($request, $response, 
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
@@ -2176,7 +2128,7 @@ $routing->get($admin_uri.$admin_router.'config', function ($request, $response, 
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -2208,7 +2160,7 @@ $routing->get($admin_uri.$admin_router.'config', function ($request, $response, 
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $settings = new \ApiShop\Admin\Config($config);
+            $settings = new \Pllano\ApiShop\Admin\Config($config);
             // Получаем массив с настройками шаблона
             $content = $settings->get();
             $render = $template['layouts']['config'] ? $template['layouts']['config'] : 'config.html';
@@ -2267,9 +2219,6 @@ $routing->post($admin_uri.$admin_router.'config', function ($request, $response,
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
@@ -2289,7 +2238,7 @@ $routing->post($admin_uri.$admin_router.'config', function ($request, $response,
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -2321,7 +2270,7 @@ $routing->post($admin_uri.$admin_router.'config', function ($request, $response,
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $settings = new \ApiShop\Admin\Config($config);
+            $settings = new \Pllano\ApiShop\Admin\Config($config);
             // Массив из POST
             $paramPost = $request->getParsedBody();
             // Сохраняем в файл
@@ -2385,9 +2334,6 @@ $routing->get($admin_uri.$admin_router.'db', function ($request, $response, $arg
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
@@ -2407,7 +2353,7 @@ $routing->get($admin_uri.$admin_router.'db', function ($request, $response, $arg
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -2494,12 +2440,9 @@ $routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Получаем resource из url
     if ($request->getAttribute('resource')) {
-        $resource = $utility->clean($request->getAttribute('resource'));
+        $resource = clean($request->getAttribute('resource'));
         } else {
         $resource = null;
     }
@@ -2522,7 +2465,7 @@ $routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404
@@ -2573,7 +2516,7 @@ $routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]
                 foreach($queryParams as $key => $value)
                 {
                     if (isset($key) && isset($value)) {
-                        $arr[$key] = $utility->clean($value);
+                        $arr[$key] = clean($value);
                     }
                 }
             }
@@ -2627,7 +2570,7 @@ $routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]
                     foreach($item["item"] as $key => $value)
                     {
                         if ($value == ''){$value = "--";}
-                        $contentArr[$key] = $utility->clean($value);
+                        $contentArr[$key] = clean($value);
                     }
                     $content["items"][] = $contentArr;
                 }
@@ -2699,18 +2642,15 @@ $routing->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}
     $hook->http($request, 'GET', 'admin');
     $request = $hook->request();
 
-    
-    // Подключаем плагины
-    $utility = new Utility();
     // Получаем resource из url
     if ($request->getAttribute('resource')) {
-        $resource = $utility->clean($request->getAttribute('resource'));
+        $resource = clean($request->getAttribute('resource'));
         } else {
         $resource = null;
     }
     // Получаем id из url
     if ($request->getAttribute('id')) {
-        $id = $utility->clean($request->getAttribute('id'));
+        $id = clean($request->getAttribute('id'));
         } else {
         $id = null;
     }
@@ -2733,7 +2673,7 @@ $routing->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
-    $token = $utility->random_token();
+    $token = random_token();
     // Записываем токен в сессию
     $session->token_admin = $config['vendor']['crypto']['crypt']::encrypt($token, $token_key);
     // Шаблон по умолчанию 404

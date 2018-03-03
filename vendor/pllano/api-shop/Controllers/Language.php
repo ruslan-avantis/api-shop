@@ -14,32 +14,38 @@
 namespace Pllano\ApiShop\Controllers;
  
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Container\ContainerInterface as Container;
 
 class Language
 {
  
-    private $config = [];
+    private $app;
+	private $config = [];
+	private $time_start;
     private $package = [];
     private $session;
 	private $languages;
 	private $logger;
-    private $view;
+    private $template;
+	private $view;
     private $route;
     private $query;
- 
-    function __construct($query, $route, $config, $package, $session, $languages, $view, $logger)
+
+    function __construct(Container $app, $route)
     {
-        $this->config = $config;
-        $this->package = $package;
-		$this->session = $session;
-		$this->languages = $languages;
-        $this->logger = $logger;
-        $this->view = $view;
-        $this->route = $route;
-        $this->query = $query;
+		$this->app = $app;
+		$this->route = $route;
+		$this->config = $app->get('config');
+		$this->time_start = $app->get('time_start');
+        $this->package = $app->get('package');
+		$this->session = $app->get('session');
+		$this->languages = $app->get('languages');
+        $this->logger = $app->get('logger');
+        $this->template = $app->get('template');
+		$this->view = $app->get('view');
     }
  
-    public function get(Request $request, Response $response)
+    public function get(Request $request, Response $response, array $args)
     {
         $config = $this->config;
         $session = $this->session;
@@ -71,11 +77,11 @@ class Language
         $response->withHeader('Content-type', 'application/json');
  
         // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback));
  
     }
     
-    public function post(Request $request, Response $response)
+    public function post(Request $request, Response $response, array $args)
     {
         $config = $this->config;
         $session = $this->session;
@@ -117,7 +123,7 @@ class Language
         $response->withHeader('Content-type', 'application/json');
  
         // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback));
  
     }
  

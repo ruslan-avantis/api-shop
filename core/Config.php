@@ -9,25 +9,26 @@
     * For the full copyright and license information, please view the LICENSE
     * file that was distributed with this source code.
 */
+
+namespace App\Core;
+
+class Config
+{
  
-namespace Pllano\ApiShop\Config;
- 
-class Settings {
- 
-    public static function get() {
- 
+    public static function get() 
+	{
         $config = [];
-        // Папка файла конфигурации settings.json
-        $settings =  __DIR__ .'/settings.json';
+        // Папка файла конфигурации config.json
+        $config_dir =  __DIR__ .'/config.json';
         $json = '';
  
-        if (file_exists($settings)) {
-            $json = json_decode(file_get_contents($settings), true);
+        if (file_exists($config_dir)) {
+            $json = json_decode(file_get_contents($config_dir), true);
             if (isset($json["update"])) {
                 $config = $config + $json;
             }
         }
- 
+
         $config["dir"]["config"] = __DIR__ .'/..'.$json["dir"]["config_dir"];
         $config["dir"]["routers"] = __DIR__ .'/..'.$json["dir"]["routers_dir"];
         $config["dir"]["vendor"] = __DIR__ .'/..'.$json["dir"]["vendor_dir"];
@@ -35,12 +36,12 @@ class Settings {
         $config["dir"]["images"] = __DIR__ .'/..'.$json["dir"]["images_dir"];
         $config["dir"]["www"] = __DIR__ .'/..';
         
-        $config["settings"]["json"] = $settings;
+        $config["settings"]["json"] = $config_dir;
  
         $config["settings"]["keys"] = 'null';
  
         // Папка куда будут писатся логи Monolog
-        $config["settings"]["logger"]["path"] = isset($_ENV["docker"]) ? "php://stdout" : __DIR__ . "/../storage/_logs/app.log";
+        $config["settings"]["logger"]["path"] = isset($_ENV["docker"]) ? "php://stdout" : __DIR__ . "/../storage/_logs/".date("Y")."/".date("m")."/".date("d")."/".date("H").".log";
         $config["settings"]["logger"]["name"] = "app";
         $config["settings"]["logger"]["level"] = \Monolog\Logger::DEBUG;
  
@@ -96,13 +97,14 @@ class Settings {
         if (!file_exists($key_card)) {
             file_put_contents($key_card, $random_key->saveToAsciiSafeString());
         }
- 
-        $config["key"]["session"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_session, true));
-        $config["key"]["token"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_token, true));
-        $config["key"]["cookie"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_cookie, true));
-        $config["key"]["password"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_password, true));
-        $config["key"]["user"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_user, true));
-        $config["key"]["card"] = $json['vendor']['crypto']['load_key'](file_get_contents($key_card, true));
+
+        $load_key = $json['vendor']['crypto']['load_key'];
+        $config["key"]["session"] = $load_key(file_get_contents($key_session, true));
+        $config["key"]["token"] = $load_key(file_get_contents($key_token, true));
+        $config["key"]["cookie"] = $load_key(file_get_contents($key_cookie, true));
+        $config["key"]["password"] = $load_key(file_get_contents($key_password, true));
+        $config["key"]["user"] = $load_key(file_get_contents($key_user, true));
+        $config["key"]["card"] = $load_key(file_get_contents($key_card, true));
         // Динамический ключ шифрования для ajax
         $config["key"]["ajax"] = $random_key->saveToAsciiSafeString();
  

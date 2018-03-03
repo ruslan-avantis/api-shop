@@ -11,8 +11,10 @@
 */
 
 namespace Pllano\ApiShop\Controllers;
- 
+
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Container\ContainerInterface as Container;
+
 use Pllano\ApiShop\Models\{Language, Site, Template, SessionUser}; 
 use Pllano\ApiShop\Adapters\Menu;
 use Pllano\ApiShop\Utilities\Utility;
@@ -20,19 +22,30 @@ use Pllano\ApiShop\Utilities\Utility;
 class Error
 {
     
-    private $config;
-    private $query;
+    private $app;
+	private $config = [];
+	private $time_start;
+    private $package = [];
+    private $session;
+	private $languages;
+	private $logger;
+    private $template;
+	private $view;
     private $route;
-    private $view;
-    private $logger;
-    
-    function __construct($query, $route, $config = [], $view, $logger)
+    private $query;
+
+    function __construct(Container $app, $route)
     {
-        $this->config = $config;
-        $this->query = $query;
-        $this->route = $route;
-        $this->view = $view;
-        $this->logger = $logger;
+		$this->app = $app;
+		$this->route = $route;
+		$this->config = $app->get('config');
+		$this->time_start = $app->get('time_start');
+        $this->package = $app->get('package');
+		$this->session = $app->get('session');
+		$this->languages = $app->get('languages');
+        $this->logger = $app->get('logger');
+        $this->template = $app->get('template');
+		$this->view = $app->get('view');
     }
      
     public function post(Request $request, Response $response, array $args)

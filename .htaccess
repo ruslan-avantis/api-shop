@@ -1,8 +1,8 @@
 <IfModule mod_rewrite.c>
-RewriteEngine On
 Options -Indexes
-  #Options +FollowSymLinks
-  #Options All -Indexes
+  # Options +FollowSymLinks
+  # Options All -Indexes
+RewriteEngine On
   # Some hosts may require you to use the `RewriteBase` directive.
   # Determine the RewriteBase automatically and set it as environment variable.
   # If you are using Apache aliases to do mass virtual hosting or installed the
@@ -11,15 +11,18 @@ Options -Indexes
   # work in environments without path prefix as well, providing a safe, one-size
   # fits all solution. But as you do not need it in this case, you can comment
   # the following 2 lines to eliminate the overhead.
-  RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
-  RewriteRule ^(.*) - [E=BASE:%1]
+RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+RewriteRule ^(.*) - [E=BASE:%1]
+  # RewriteRule ^$ public/ [L]
+  # RewriteRule (.*) public/$1 [L]
   # If the above doesn't work you might need to set the `RewriteBase` directive manually, it should be the
   # absolute physical path to the directory that contains this htaccess file.
   # RewriteBase /
-  RewriteCond %{REQUEST_FILENAME} !-f
-  RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^ index.php [QSA,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
 </IfModule>
+
 ### Сжать ответ сервера для перечисленных MIME типов
 <ifModule mod_deflate.c>
   <IfModule mod_filter.c>
@@ -31,6 +34,7 @@ Options -Indexes
       AddOutputFilterByType DEFLATE application/vnd.ms-fontobject application/x-font-ttf font/opentype image/svg+xml image/x-icon
   </ifModule>
 </ifModule>
+
 ### Подсказать браузеру схему кеширования через заголовки в ответе сервера
 <ifModule mod_headers.c>
     # 43200 - день, 604800 - неделя, 2592000 - месяц
@@ -49,6 +53,7 @@ Options -Indexes
 	Header unset Cache-Control
     </FilesMatch>
 </IfModule>
+
 <ifModule mod_expires.c>
     ExpiresActive On
     #по умолчанию
@@ -73,6 +78,7 @@ Options -Indexes
     #кэшировать xml файлы на десять минут
     ExpiresByType application/xhtml+xml "access plus 600 seconds"
 </ifModule>
+
 ### Удалить заголовок ETag (иначе есть проблемы с кешированием при включенном сжатии)
 <IfModule mod_headers.c>
     Header unset ETag

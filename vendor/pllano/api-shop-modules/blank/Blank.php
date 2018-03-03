@@ -11,53 +11,46 @@
 */
 
 namespace Pllano\ApiShop\Modules;
- 
-use Psr\Http\Message\ServerRequestInterface as Request;
- 
+
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Container\ContainerInterface as Container;
+
 class Blank
 {
-    private $config;
-    private $package;
-    private $template;
+
+    private $app;
+	private $block;
     private $route;
-    private $block;
-    private $module;
-    private $lang = null;
-    private $language = null;
- 
-    function __construct($config = [], $package = [], $template = [], $module, $block, $route, $lang = null, $language = null)
+    private $modulKey;
+	private $modulVal;
+	private $config;
+
+    function __construct(Container $app, $route = null, $block = null, $modulKey = null, $modulVal = [])
     {
-        $this->config = $config;
-        $this->package = $package;
-        $this->template = $template;
-        $this->route = $route;
+        $this->app = $app;
         $this->block = $block;
-        $this->module = $module;
-        if (isset($lang)) {
-            $this->lang = $lang;
-        }
-        if (isset($language)) {
-            $this->language = $language;
-        }
+        $this->route = $route;
+		$this->modulKey = $modulKey;
+		$this->modulVal = $modulVal;
+		$this->config = $app->get('config');
     }
- 
+
     public function get(Request $request)
     {
         // Конфигурация пакета
-        $moduleArr['config'] = $this->config['modules'][$this->route][$this->module];
-        //$moduleArr = $template['modules'][$this->route][$this->module];
-        $layout['content']['modules'][$this->module]['content']['layout'] = $moduleArr['config']['view'];
-        $content['content']['modules'][$this->module] = $moduleArr;
+        $moduleArr['config'] = $this->modulVal;
+        $layout['content']['modules'][$this->modulKey]['content']['layout'] = $this->modulVal['view'];
+        $content['content']['modules'][$this->modulKey] = $moduleArr;
         $return = array_replace_recursive($layout, $content);
         return $return;
     }
- 
+
     public function post(Request $request)
     {
         $callback = ['status' => 404, 'title' => '', 'text' => ''];
         // Выводим json
-        echo json_encode($callback);
+        return json_encode($callback);
     }
- 
+
 }
  

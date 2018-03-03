@@ -9,67 +9,47 @@
     * For the full copyright and license information, please view the LICENSE
     * file that was distributed with this source code.
 */
- 
+
 namespace Pllano\ApiShop;
- 
+
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Container\ContainerInterface as Container;
  
 class ModulesManager
 {
-    private $config;
+    private $app;
     private $package;
-    private $template;
     private $route;
     private $block;
-    private $lang = null;
-    private $language = null;
     private $modules = [];
-	private $time_start;
-	private $logger;
- 
-    function __construct($config = [], $package = [], $template = [], $block, $route, $lang = null, $language = null, $logger = null, $time_start = null)
+
+    function __construct(Container $app, $route, $block)
     {
-        $this->config = $config;
-		$this->logger = $logger;
-		$this->time_start = $time_start;
-        $this->package = $package;
-        $this->template = $template;
+        $this->app = $app;
         $this->block = $block;
         $this->route = $route;
-        if (isset($lang)) {
-            $this->lang = $lang;
-        }
-        if (isset($language)) {
-            $this->language = $language;
-        }
-        if (isset($this->config['modules'][$this->block])) {
-            $this->modules = $this->config['modules'][$this->block];
+        $this->package = $app->get('package');
+        if (isset($app->get('config')['modules'][$this->block])) {
+            $this->modules = $app->get('config')['modules'][$this->block];
         }
     }
- 
+
     public function get(Request $request): array
     {
-        $time_start = microtime_float();
-		$resp = [];
+        $resp = [];
         if (isset($this->modules)) {
-            foreach($this->modules as $key => $val)
+            foreach($this->modules as $modulKey => $modulVal)
             {
-                if($val['state'] == 1) {
-                    if (isset($val['vendor'])) {
-                        $package = [];
-                        //print_r($this->package['require'][$val['package']]);
-                        if (isset($this->package['require'][$val['package']])) {
-                            $package = $this->package['require'][$val['package']];
-                        }
-                        //$conf = array_replace_recursive($this->config, $package, $this->template, $key, $this->block, $this->route, $this->lang, $this->language);
-                        $plugin = new $val['vendor']($this->config, $package, $this->template, $key, $this->block, $this->route, $this->lang, $this->language);
-                        $function = $val['function'];
+                if($modulVal['state'] == 1) {
+                    if (isset($modulVal['vendor'])) {
+                        $plugin = new $modulVal['vendor']($this->app, $this->route, $this->block, $modulKey, $modulVal);
+                        $function = $modulVal['function'];
                         $arr = $plugin->$function($request);
                     } else {
                         if ($this->block == $this->route) {
-                            $arr['content']['modules'][$key]['config'] = $this->modules[$key];
+                            $arr['content']['modules'][$modulKey]['config'] = $this->modules[$modulKey];
                         } else {
-                            $arr[$this->block]['modules'][$key]['config'] = $this->modules[$key];
+                            $arr[$this->block]['modules'][$modulKey]['config'] = $this->modules[$modulKey];
                         }
                     }
                     $resp = array_replace_recursive($resp, $arr);
@@ -78,24 +58,19 @@ class ModulesManager
         }
         return $resp;
     }
- 
-    public function post(Request $request): array
+
+    public function post(Request $request)
     {
-        $time_start = microtime_float();
-		$resp = [];
-        if (isset($this->modules[$this->block])) {
-            if($this->modules[$this->block]['state'] == 1) {
-                if (isset($this->modules[$this->block]['vendor'])) {
-                    $package = [];
-                    if (isset($this->package['require'][$this->block])) {
-                        $package = $this->package['require'][$this->block];
-                    }
-                    $plugin = new $this->modules[$this->block]['vendor']($this->config, $package, $this->template, $this->block, $this->block, $this->route, $this->lang, $this->language);
-                    $function = $this->modules[$this->block]['function'];
-                    $arr = $plugin->$function($request);
-                }
-                $resp = array_replace_recursive($resp, $arr);
+        $resp = [];
+        $modulKey = $this->block;
+        if (isset($this->modules[$modulKey]) && $this->modules[$modulKey]['state'] == 1) {
+            if (isset($this->modules[$modulKey]['vendor'])) {
+                $modulVal = $this->modules[$modulKey];
+                $plugin = new $this->modules[$modulKey]['vendor']($this->app, $this->route, $this->block, $modulKey, $modulVal);
+                $function = $this->modules[$modulKey]['function'];
+                $arr = $plugin->$function($request);
             }
+            $resp = array_replace_recursive($resp, $arr);
         }
         return $resp;
     }

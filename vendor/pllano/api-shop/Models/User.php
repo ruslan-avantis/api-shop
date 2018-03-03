@@ -14,52 +14,60 @@
 namespace Pllano\ApiShop\Models;
 
 use Pllano\RouterDb\Router as RouterDb;
-use Pllano\ApiShop\Utilities\Utility;
+use Psr\Container\ContainerInterface as Container;
 
-class User {
+class User
+{
+    
+    private $app;
+    private $config;
+    private $session;
+
+    function __construct(Container $app)
+    {
+        $this->app = $app;
+        $this->config = $app->get('config');
+        $this->session = $app->get('session');
+    }
 
     // Запускаем сессию пользоваетеля
-    public function run($config = [])
+    public function run()
     {
-        // Подключаем утилиты
-        $utility = new Utility();
         // Подключаем сессию
-        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+        $session = $this->session;
+        $session_name = $this->config['settings']['session']['name'];
         // Читаем ключи
-        $session_key = $config['key']['session'];
-        $cookie_key = $config['key']['cookie'];
- 
-        // Читаем печеньку у юзера в браузере
-        $identificator = isset($_COOKIE[$config['settings']['session']['name']]) ? $_COOKIE[$config['settings']['session']['name']] : null;
- 
-        if ($identificator != null) {
+        $session_key = $this->config['key']['session'];
+        $cookie_key = $this->config['key']['cookie'];
+        $crypt = $this->config['vendor']['crypto']['crypt'];
+
+        $get_cookie = get_cookie($session_name);
+        if ($get_cookie != null) {
             try {
-                $cookie = $config['vendor']['crypto']['crypt']::decrypt($identificator, $cookie_key);
+                $cookie = $crypt::decrypt($get_cookie, $cookie_key);
             } catch (\Exception $ex) {
                 $cookie = null;
             }
- 
+
             if ($cookie != null) {
                 // Ресурс (таблица) к которому обращаемся
                 $resource = "user";
                 // Отдаем роутеру RouterDb конфигурацию
-                $routerDb = new RouterDb($config, 'Apis');
+                $routerDb = new RouterDb($this->config, 'Apis');
                 // Пингуем для ресурса указанную и доступную базу данных
-				// Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-				$db = $routerDb->run($routerDb->ping($resource));
+                // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
+                $db = $routerDb->run($routerDb->ping($resource));
                 // Массив для запроса
-				$query = [
-				    "cookie" => $cookie, 
-					"state" => 1
-				];
-				// Отправляем запрос к БД в формате адаптера. В этом случае Apis
+                $query = [
+                    "cookie" => $cookie, 
+                    "state" => 1
+                ];
+                // Отправляем запрос к БД в формате адаптера. В этом случае Apis
                 $responseArr = $db->get($resource, $query);
 
                 //print("<br>");
                 //print_r($responseArr);
-                if (isset($responseArr["headers"]["code"])) {
-                    if ($responseArr["headers"]["code"] == 200 || $responseArr["headers"]["code"] == "200") {
-
+                if (isset($responseArr["headers"]["code"]) && (int)$responseArr["headers"]["code"] == 200) {
                         if(is_object($responseArr["body"]["items"]["0"]["item"])) {
                             $user = (array)$responseArr["body"]["items"]["0"]["item"];
                         } elseif (is_array($responseArr["body"]["items"]["0"]["item"])) {
@@ -70,14 +78,15 @@ class User {
                             $session->authorize = 1;
                             $session->role_id = $user["role_id"];
                             if($session->role_id == 100) {
-                                $session->admin_uri = $utility->random_alias_id();
+								if(!isset($session->admin_uri)) {
+                                    $session->admin_uri = random_alias_id();
+								}
                             }
                             $session->user_id = $user["id"];
-							$crypt = $config['vendor']['crypto']['crypt']::encrypt;
-                            $session->iname = $crypt($user["iname"], $session_key);
-                            $session->fname = $crypt($user["fname"], $session_key);
-                            $session->phone = $crypt($user["phone"], $session_key);
-                            $session->email = $crypt($user["email"], $session_key);
+                            $session->iname = $crypt::encrypt($user["iname"], $session_key);
+                            $session->fname = $crypt::encrypt($user["fname"], $session_key);
+                            $session->phone = $crypt::encrypt($user["phone"], $session_key);
+                            $session->email = $crypt::encrypt($user["email"], $session_key);
                         } else {
                             $session->authorize = null;
                             $session->role_id = null;
@@ -88,7 +97,6 @@ class User {
                             $session->destroy();
                             $session->clear();
                         }
-                    }
                 } else {
                     $session->authorize = null;
                     $session->role_id = null;
@@ -100,27 +108,20 @@ class User {
             }
         } else {
             // Если cookie нет создаем новую
-            if ($identificator === null) {
+            if ($get_cookie === null) {
                 // Чистим сессию на всякий случай
                 $session->clear();
-                // Подключаем утилиту
-                $utility = new Utility();
                 // Генерируем identificator
-                $identificator = $config['vendor']['crypto']['crypt']::encrypt($utility->random_token(), $cookie_key);
+                $get_cookie = $crypt::encrypt(random_token(), $cookie_key);
                 // Записываем пользователю новый cookie
-                $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : 'localhost';
-                if ($config['settings']['site']['cookie_httponly'] == '1') {
-                    setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain, 1, true);
-                } else {
-                    setcookie($config['settings']['session']['name'], $identificator, time()+60*60*24*365, '/', $domain);
-                }
-                // Пишем в сессию identificator cookie
-                $session->cookie = $identificator;
+                set_cookie($session_name, $get_cookie, 60*60*24*365);
+                // Пишем в сессию get_cookie cookie
+                $session->cookie = $get_cookie;
             }
         }
         
         if (!isset($session->language)) {
-            $langs = new $config['vendor']['detector']['language']();
+            $langs = new $this->config['vendor']['detector']['language']();
             if ($langs->getLanguage()) {
                 $session->language = $langs->getLanguage();
             }
@@ -130,20 +131,17 @@ class User {
     // Авторизвация
     public function checkLogin($email, $phone, $password)
     {
-        // Подключаем конфиг \ApiShop\Config\Settings
-        $config = (new Settings())->get();
- 
         // Ресурс (таблица) к которому обращаемся
         $resource = "user";
         // Отдаем роутеру RouterDb конфигурацию
-        $routerDb = new RouterDb($config);
+        $routerDb = new RouterDb($this->config, 'Apis');
         // Пингуем для ресурса указанную и доступную базу данных
         // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
         $db = $routerDb->run($routerDb->ping($resource));
         // Массив для запроса
         $query = [
-				    "phone" => $phone, 
-					"email" => $email
+            "phone" => $phone, 
+            "email" => $email
         ];
         // Отправляем запрос к БД в формате адаптера. В этом случае Apis
         $responseArr = $db->get($resource, $query);
@@ -161,33 +159,27 @@ class User {
             return null;
         }
     }
- 
+
     // Обновляем cookie в базе
     public function putUserCode($user_id)
     {
-        // Получаем конфигурацию \ApiShop\Config\Settings
-        $config = (new Settings())->get();
         // Подключаем сессию
-        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
- 
-        // Текущая дата
-        $today = date("Y-m-d H:i:s");
-        // Подключаем утилиту
-        $utility = new Utility();
+        $session = $this->session;
+        $session_name = $this->config['settings']['session']['name'];
         // Генерируем новый cookie
-        $cookie = $utility->random_token();
- 
+        $cookie = random_token();
+
         // Ресурс (таблица) к которому обращаемся
         $resource = "user";
-		// Отдаем роутеру RouterDb конфигурацию
-        $routerDb = new RouterDb($config);
+        // Отдаем роутеру RouterDb конфигурацию
+        $routerDb = new RouterDb($this->config, 'Apis');
         // Пингуем для ресурса указанную и доступную базу данных
         // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
         $db = $routerDb->run($routerDb->ping($resource));
         // Массив c запросом
         $query = [
-		    "cookie" => $cookie, 
-		    "authorized" => $today
+            "cookie" => $cookie, 
+            "authorized" => today()
         ];
         // Отправляем запрос к БД в формате адаптера. В этом случае Apis
         $responseArr = $db->put($resource, $query, $user_id);
@@ -196,21 +188,14 @@ class User {
         if (isset($responseArr["headers"]["code"])) {
             if ($responseArr["headers"]["code"] == 202 || $responseArr["headers"]["code"] == "202") {
                 // Читаем ключи шифрования
-                $cookie_key = $config['key']['cookie'];
+                $cookie_key = $this->config['key']['cookie'];
+                $crypt = $this->config['vendor']['crypto']['crypt'];
                 // Шифруем cookie
-                $new_cookie = $config['vendor']['crypto']['crypt']::encrypt($cookie, $cookie_key);
- 
+                $new_cookie = $crypt::encrypt($cookie, $cookie_key);
                 // Перезаписываем cookie в сессии
                 $session->cookie = $new_cookie;
- 
                 // Перезаписываем cookie в базе
-                $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : 'localhost';
-                if ($config['settings']['site']['cookie_httponly'] == '1') {
-                    setcookie($config['settings']['session']['name'], $new_cookie, time()+60*60*24*365, '/', $domain, 1, true);
-                } else {
-                    setcookie($config['settings']['session']['name'], $new_cookie, time()+60*60*24*365, '/', $domain);
-                }
- 
+                set_cookie($session_name, $new_cookie, 60*60*24*365);
                 // Если все ок возвращаем 1
                 return 1;
  
@@ -223,17 +208,14 @@ class User {
             return null;
         }
     }
- 
+
     // Проверяем наличие пользователя по email и phone
     public function getEmailPhone($email, $phone)
     {
-        // Получаем конфигурацию \ApiShop\Config\Settings
-        $config = (new Settings())->get();
-
         // Ресурс (таблица) к которому обращаемся
         $resource = "user";
-		// Отдаем роутеру RouterDb конфигурацию
-        $routerDb = new RouterDb($config);
+        // Отдаем роутеру RouterDb конфигурацию
+        $routerDb = new RouterDb($this->config, 'Apis');
         // Пингуем для ресурса указанную и доступную базу данных
         // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
         $db = $routerDb->run($routerDb->ping($resource));
@@ -242,7 +224,7 @@ class User {
         $query["phone"] = $phone;
         // Отправляем запрос к БД в формате адаптера. В этом случае Apis
         $responseArr = $db->get($resource, $query);
-        
+
         if (isset($responseArr["headers"]["code"])) {
             if ($responseArr["headers"]["code"] == 200 || $responseArr["headers"]["code"] == "200") {
                 $item = (array)$responseArr["body"]["items"]["0"]["item"];

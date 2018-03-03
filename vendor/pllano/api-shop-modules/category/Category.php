@@ -12,56 +12,47 @@
 
 namespace Pllano\ApiShop\Modules\Categories;
 
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Container\ContainerInterface as Container;
 use Pllano\RouterDb\Router as RouterDb;
-use Pllano\ApiShop\Utilities\Utility;
 
 class Category
 {
-    private $config;
-    private $package;
-    private $template;
+    private $app;
+	private $block;
     private $route;
-    private $block;
-    private $module;
-    private $lang = null;
-    private $language = null;
-    private $count = 0;
+    private $modulKey;
+	private $modulVal;
+	private $config;
     
-    function __construct($config = [], $package = [], $template = [], $module, $block, $route, $lang = null, $language = null)
+    function __construct(Container $app, $route = null, $block = null, $modulKey = null, $modulVal = [])
     {
-        $this->config = $config;
-        $this->package = $package;
-        $this->template = $template;
-        $this->route = $route;
+        $this->app = $app;
         $this->block = $block;
-        $this->module = $module;
-        if (isset($lang)) {
-            $this->lang = $lang;
-        }
-        if (isset($language)) {
-            $this->language = $language;
-        }
+        $this->route = $route;
+		$this->modulKey = $modulKey;
+		$this->modulVal = $modulVal;
+		$this->config = $app->get('config');
     }
     
     public function get(Request $request)
     {
-        $config = $this->config;
-        $template = $this->template;
-        $language = $this->language;
+        $template = $this->app->get('template');
+		$languages = $this->app->get('languages');
+		$language = $languages->get($request);
+
         $host = $request->getUri()->getHost();
         $path = $request->getUri()->getPath();
-        // Подключаем утилиты
-        $utility = new Utility();
         // Получаем alias из url
         $alias = null;
         if ($request->getAttribute('alias')) {
-            $alias = $utility->clean($request->getAttribute('alias'));
+            $alias = clean($request->getAttribute('alias'));
         }
+
         // Конфигурация пакета
-        $moduleArr['config'] = $config['modules'][$this->route][$this->module];
-        //$moduleArr = $template['modules'][$this->route][$this->module];
- 
+		$moduleArr = [];
+        $moduleArr['config'] = $this->modulVal;
+
         $content = [];
         $contentArr = [];
         $heads = [];
@@ -75,30 +66,29 @@ class Category
         $head["products_limit"] = $moduleArr['config']['limit'];
         $head["products_order"] = $moduleArr['config']['order'];
         $head["products_sort"] = $moduleArr['config']['sort'];
- 
+
+		$product_type = null;
+
         if (isset($alias)) {
             // Ресурс (таблица) к которому обращаемся
             $resource = "category";
             // Отдаем роутеру RouterDb конфигурацию
-            $routerDb = new RouterDb($config, 'Apis');
+            $routerDb = new RouterDb($this->config, 'Apis');
             // Пингуем для ресурса указанную и доступную базу данных
             // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
             $db = $routerDb->run($routerDb->ping($resource));
             // Массив для запроса
-            $query = [
-                "alias" => $alias
-            ];
+            $query = ["alias" => $alias, "state" => 1];
             // Отправляем запрос к БД в формате адаптера. В этом случае Apis
             $responseArr = $db->get($resource, $query);
 
-            if (isset($responseArr["headers"]["code"])) {
-                if ($responseArr["headers"]["code"] == 200 || $responseArr["headers"]["code"] == '200') {
+            if (isset($responseArr["headers"]["code"]) && (int)$responseArr["headers"]["code"] == 200) {
                     $category = $responseArr['body']['items']['0']['item'];
- 
+
                     if(is_object($category)) {
                         $category = (array)$category;
                     }
- 
+
                     $head["title"] = $category['seo_title'] ? $category['seo_title'] : $category['title'];
                     $head["keywords"] = $category['seo_keywords'] ? $category['seo_keywords'] : $category['title'];
                     $head["description"] = $category['seo_description'] ? $category['seo_description'] : $category['title'];
@@ -113,9 +103,9 @@ class Category
                     $head["products_sort"] = $category['products_sort'] ? $category['products_sort'] : $moduleArr['config']['sort'];
  
                     if (isset($category['categories_template'])) {
-                        $themes_dir = $config["template"]["front_end"]["themes"]["dir"];
-                        $templates_dir = $config["template"]["front_end"]["themes"]["templates"];
-                        $template_name = $config["template"]["front_end"]["themes"]["template"];
+                        $themes_dir = $this->config["template"]["front_end"]["themes"]["dir"];
+                        $templates_dir = $this->config["template"]["front_end"]["themes"]["templates"];
+                        $template_name = $this->config["template"]["front_end"]["themes"]["template"];
                         $templates_test = $themes_dir.'/'.$templates_dir.'/'.$template_name.'/layouts/'.$category['categories_template'];
                         if (file_exists($templates_test)) {
                             $render = $category['categories_template'] ? $category['categories_template'] : $moduleArr['config']['view'];
@@ -123,16 +113,13 @@ class Category
                     }
                     // Собираем данные в массив
                     $heads['head'] = $head;
-                }
             }
             if (isset($category['product_type'])) {
                 //$product_type = explode(',', str_replace(['"', "'", " "], '', $category['product_type']));
                 $product_type = $category['product_type'];
-                } else {
-                $product_type = null;
             }
         }
-        
+
         // Получаем массив параметров uri
         $queryParams = $request->getQueryParams();
         $arr = [];
@@ -145,7 +132,7 @@ class Category
             foreach($queryParams as $key => $value)
             {
                 if (isset($key) && isset($value)) {
-                    $arr[$key] = $utility->clean($value);
+                    $arr[$key] = clean($value);
                 }
             }
         }
@@ -188,7 +175,7 @@ class Category
         $newArr = $arr + $arrPlus;
         
         // Получаем список товаров
-        $vendorCategory = new $moduleArr['config']['vendors']['products']($config);
+        $vendorCategory = new $moduleArr['config']['vendors']['products']($this->app);
         $contentArr['content']['products'] = $vendorCategory->get($newArr, $moduleArr, $host);
  
         // Даем пагинатору колличество
@@ -209,10 +196,10 @@ class Category
         $contentArr['content']['template'] = $template;
 		
         // Получаем свойства товаров
-        $vendorProperties = new $moduleArr['config']['vendors']['properties']($config);
+        $vendorProperties = new $moduleArr['config']['vendors']['properties']($this->app);
         $contentArr['content']['properties'] = $vendorProperties->get($request, $contentArr, $moduleArr);
  
-        $content['content']['modules'][$this->module] = array_replace_recursive($contentArr, $moduleArr);
+        $content['content']['modules'][$this->modulKey] = array_replace_recursive($contentArr, $moduleArr);
         $return = array_replace_recursive($heads, $content);
  
         

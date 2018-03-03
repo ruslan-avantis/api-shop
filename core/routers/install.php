@@ -42,7 +42,7 @@ $routing->post('/install-api-key', function ($request, $response, $args) {
         // Сообщение об Атаке или подборе csrf
     }
  
-	$callbackStatus = 400;
+    $callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
     $callbackText = '';
  
@@ -124,12 +124,12 @@ $routing->post('/install-api-key', function ($request, $response, $args) {
  
             $callbackStatus = 200;
         } else {
-		    $callbackTitle = "Не валидный public_key";
+            $callbackTitle = "Не валидный public_key";
         }
     } else {
         $callbackTitle = "Ошибка";
     }
-	$callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
     return $response->write(json_encode($callback));
@@ -164,7 +164,7 @@ $routing->post('/install-key', function ($request, $response, $args) {
     // Подключаем плагины
     $utility = new Utility();
  
-	$callbackStatus = 400;
+    $callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
     $callbackText = '';
  
@@ -177,7 +177,7 @@ $routing->post('/install-key', function ($request, $response, $args) {
     } else {
         $callbackTitle = "Ошибка";
     }
-	$callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
     return $response->write(json_encode($callback));
@@ -212,7 +212,7 @@ $routing->post('/install-no-key', function ($request, $response, $args) {
     // Подключаем плагины
     $utility = new Utility();
  
-	$callbackStatus = 400;
+    $callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
     $callbackText = '';
  
@@ -225,7 +225,7 @@ $routing->post('/install-no-key', function ($request, $response, $args) {
     } else {
         $callbackTitle = "Ошибка";
     }
-	$callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
     return $response->write(json_encode($callback));
@@ -305,7 +305,7 @@ $routing->post('/install-template', function ($request, $response, $args) {
     }
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
-	$post_csrf = null;
+    $post_csrf = null;
     try {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
@@ -318,7 +318,7 @@ $routing->post('/install-template', function ($request, $response, $args) {
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = $utility->clean($post_csrf);
  
-	$callbackStatus = 400;
+    $callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
     $callbackText = '';
 
@@ -330,7 +330,7 @@ $routing->post('/install-template', function ($request, $response, $args) {
         $host = filter_var($post['host'], FILTER_SANITIZE_STRING);
 
         if ($id && $uri && $dir && $host) {
-			
+            
             $template_dir = $config["template"]["front_end"]["themes"]["dir"]."/".$config["template"]["front_end"]["themes"]["templates"]."/".$dir;
             if (!file_exists($template_dir)) {
                 mkdir($template_dir, 0777, true);
@@ -391,8 +391,8 @@ $routing->post('/install-template', function ($request, $response, $args) {
  
                 // Обновляем название шаблона в базе
                 // Подключаемся к базе
-				$routerDb = new RouterDb($config, 'Apis');
-				$db = $routerDb->run("json");
+                $routerDb = new RouterDb($config, 'Apis');
+                $db = $routerDb->run("json");
                 // Обновляем название шаблона в базе
                 $db->put("db", ["template" => $dir], 1);
  
@@ -405,15 +405,15 @@ $routing->post('/install-template', function ($request, $response, $args) {
                 } else {
                     $session->install = null;
                 }
-				$callbackStatus = 200;
+                $callbackStatus = 200;
             }
         } else {
-		    $callbackTitle = "Ошибка - 1";
+            $callbackTitle = "Ошибка - 1";
         }
     } else {
-	    $callbackTitle = "Ошибка - 2";
+        $callbackTitle = "Ошибка - 2";
     }
-	$callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
     return $response->write(json_encode($callback));
@@ -727,7 +727,7 @@ $routing->post('/start-shop', function ($request, $response, $args) {
     // Подключаем плагины
     $utility = new Utility();
  
-	$callbackStatus = 400;
+    $callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
     $callbackText = '';
  
@@ -819,7 +819,7 @@ $routing->post('/start-shop', function ($request, $response, $args) {
     } else {
         $callbackTitle = "Ошибка";
     }
-	$callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
+    $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
     $response->withStatus(200);
     $response->withHeader('Content-type', 'application/json');
     return $response->write(json_encode($callback));

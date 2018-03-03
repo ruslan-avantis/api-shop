@@ -12,22 +12,33 @@
 
 namespace Pllano\ApiShop\Modules\Account;
  
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Container\ContainerInterface as Container;
  
 class Logout
 {
-    private $config;
- 
-    function __construct($config = [], $package = [], $template = [], $module, $block, $route, $lang = null, $language = null)
+    private $app;
+	private $block;
+    private $route;
+    private $modulKey;
+	private $modulVal;
+	private $config;
+
+    function __construct(Container $app, $route = null, $block = null, $modulKey = null, $modulVal = [])
     {
-        $this->config = $config;
+        $this->app = $app;
+        $this->block = $block;
+        $this->route = $route;
+		$this->modulKey = $modulKey;
+		$this->modulVal = $modulVal;
+		$this->config = $app->get('config');
     }
- 
+
     public function post(Request $request)
     {
-        $config = $this->config;
         // Подключаем сессию
-        $session = new $config['vendor']['session']['session']($config['settings']['session']['name']);
+        $session = $this->app->get('session');
+
         $session->authorize = null;
         $session->post_id = null;
         $session->cookie = '';
@@ -35,21 +46,24 @@ class Logout
         unset($session->id); // удаляем сесию
         unset($session->cookie); // удаляем сесию
         $session->destroy();
- 
-        $domain = ($_SERVER['HTTP_HOST'] != 'localhost') ? $_SERVER['HTTP_HOST'] : false;
-        if ($config['settings']['site']['cookie_httponly'] == '1'){
-            setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain, 1, true);
+
+        if ($this->config['settings']['site']['cookie_httponly'] == '1'){
+            setcookie($this->config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', domain(), 1, true);
         } else {
-            setcookie($config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', $domain);
+            setcookie($this->config['settings']['session']['name'], null, time() - ( 3600 * 24 * 31 ), '/', domain());
         }
- 
+
         $callbackStatus = 200;
         $callbackTitle = 'Информация';
         $callbackText = 'Вы вышли из системы';
-        $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
- 
+
+		$callback = [
+		    'status' => $callbackStatus,
+			'title' => $callbackTitle,
+			'text' => $callbackText
+		];
         return $callback;
     }
-    
+
 }
  

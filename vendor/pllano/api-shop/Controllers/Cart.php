@@ -13,6 +13,7 @@
 namespace Pllano\ApiShop\Controllers;
 
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Psr\Container\ContainerInterface as Container;
 use Pllano\RouterDb\Router as RouterDb;
 use Pllano\ApiShop\Model\Language;
 use Pllano\ApiShop\Utilities\Utility;
@@ -21,42 +22,49 @@ use Pllano\ApiShop\Controllers\Error;
 class Cart
 {
 	
+    private $app;
 	private $config = [];
-	private $package = [];
-	private $session;
+	private $time_start;
+    private $package = [];
+    private $session;
 	private $languages;
 	private $logger;
+    private $template;
 	private $view;
-	private $route;
-	private $query;
-	
-	function __construct($query, $route, $config, $package, $session, $languages, $view, $logger)
-	{
-		$this->config = $config;
-		$this->package = $package;
-		$this->session = $session;
-		$this->languages = $languages;
-		$this->logger = $logger;
-		$this->view = $view;
+    private $route;
+    private $query;
+
+    function __construct(Container $app, $route)
+    {
+		$this->app = $app;
 		$this->route = $route;
-		$this->query = $query;
-	}
+		$this->config = $app->get('config');
+		$this->time_start = $app->get('time_start');
+        $this->package = $app->get('package');
+		$this->session = $app->get('session');
+		$this->languages = $app->get('languages');
+        $this->logger = $app->get('logger');
+        $this->template = $app->get('template');
+		$this->view = $app->get('view');
+    }
 	
 	public function post_add_to_cart(Request $request, Response $response)
 	{
 		$language = $this->languages->get($request);
-		// Подключаем утилиты
-		$utility = new Utility();
+		
+		$session_name = $this->config['settings']['session']['name'];
+		
 		// Читаем ключи
 		$session_key = $this->config['key']['session'];
 		$cookie_key = $this->config['key']['cookie'];
+		$crypt = $this->config['vendor']['crypto']['crypt'];
 		// Разбираем post
 		$post = $request->getParsedBody();
-		$id = filter_var($post['id'], FILTER_SANITIZE_STRING);
-		$product_id = filter_var($post['product_id'], FILTER_SANITIZE_STRING);
-		$price = filter_var($post['price'], FILTER_SANITIZE_STRING);
-		$num = filter_var($post['num'], FILTER_SANITIZE_STRING);
-		$cookie = $this->config['vendor']['crypto']['crypt']::decrypt($_COOKIE[$this->config['settings']['session']['name']], $cookie_key);
+		$id = sanitize($post['id']) ?? null;
+		$product_id = sanitize($post['product_id']) ?? null;
+		$price = sanitize($post['price']) ?? null;
+		$num = sanitize($post['num']) ?? null;
+		$cookie = $crypt::decrypt(get_cookie($session_name), $cookie_key);
 		
 		$callbackStatus = 400;
 		$callbackTitle = 'Соообщение системы';
@@ -110,17 +118,21 @@ class Cart
 	public function post_new_order(Request $request, Response $response)
 	{
 		$language = $this->languages->get($request);
+		
+		$session_name = $this->config['settings']['session']['name'];
 		// Читаем ключи
 		$session_key = $this->config['key']['session'];
 		$cookie_key = $this->config['key']['cookie'];
+		$crypt = $this->config['vendor']['crypto']['crypt'];
+		
 		// Разбираем post
 		$post = $request->getParsedBody();
 		// Подключаем систему безопасности
 		$security = new Security($this->config);
-		
+
 		try {
 			// Получаем токен из сессии
-			$token = $this->config['vendor']['crypto']['crypt']::decrypt($this->session->token, $token_key);
+			$token = $crypt::decrypt($this->session->token, $token_key);
 		} catch (\Exception $ex) {
 			$token = 0;
 			// Сообщение об Атаке или подборе токена
@@ -128,32 +140,33 @@ class Cart
 		}
 		try {
 			// Получаем токен из POST
-			$post_csrf = $this->config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+			$post_csrf = $crypt::decrypt(sanitize($post['csrf']), $token_key);
 			// Чистим данные на всякий случай пришедшие через POST
-			$csrf = $utility->clean($post_csrf);
+			$csrf = clean($post_csrf);
 		} catch (\Exception $ex) {
 			$csrf = 1;
 			// Сообщение об Атаке или подборе csrf
 			$security->csrf($request, $response);
 		}
-		
-		$id = filter_var($post['id'], FILTER_SANITIZE_STRING);
-		$iname = filter_var($post['iname'], FILTER_SANITIZE_STRING);
-		$fname = filter_var($post['fname'], FILTER_SANITIZE_STRING);
-		$phone = filter_var($post['phone'], FILTER_SANITIZE_STRING);
-		$email = filter_var($post['email'], FILTER_SANITIZE_STRING);
-		$city_name = filter_var($post['city_name'], FILTER_SANITIZE_STRING);
-		$street = filter_var($post['street'], FILTER_SANITIZE_STRING);
-		$build = filter_var($post['build'], FILTER_SANITIZE_STRING);
-		$apart = filter_var($post['apart'], FILTER_SANITIZE_STRING);
-		$product_id = filter_var($post['product_id'], FILTER_SANITIZE_STRING);
-		$price = filter_var($post['price'], FILTER_SANITIZE_STRING);
-		$num = filter_var($post['num'], FILTER_SANITIZE_STRING);
-		$description = filter_var($post['description'], FILTER_SANITIZE_STRING);
-		$cookie = $this->config['vendor']['crypto']['crypt']::decrypt($_COOKIE[$this->config['settings']['session']['name']], $cookie_key);
+
+		$id = sanitize($post['id']);
+		$iname = sanitize($post['iname']);
+		$fname = sanitize($post['fname']);
+		$phone = sanitize($post['phone']);
+		$email = sanitize($post['email']);
+		$city_name = sanitize($post['city_name']);
+		$street = sanitize($post['street']);
+		$build = sanitize($post['build']);
+		$apart = sanitize($post['apart']);
+		$product_id = sanitize($post['product_id']);
+		$price = sanitize($post['price']);
+		$num = sanitize($post['num']);
+		$description = sanitize($post['description']);
+
+		$cookie = $crypt::decrypt(get_cookie($session_name), $cookie_key);
 		
 		if ($this->session->authorize == 1) {
-			$user_id = $this->config['vendor']['crypto']['crypt']::decrypt($this->session->user_id, $session_key);
+			$user_id = $crypt::decrypt($this->session->user_id, $session_key);
 		} else {
             // Ресурс (таблица) к которому обращаемся
             $resource = "user";
@@ -176,7 +189,7 @@ class Cart
             $user = $db->post($resource, $query);
 
 			if (isset($user['response']['id'])) {
-				$this->session->user_id = $this->config['vendor']['crypto']['crypt']::encrypt($user['response']['id'], $session_key);
+				$this->session->user_id = $crypt::encrypt($user['response']['id'], $session_key);
 				$user_id = $user['response']['id'];
 			}
 		}
