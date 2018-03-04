@@ -102,7 +102,6 @@ function data_cookie($name, $type = 'str', $json_decode = false)
     return $result;
 }
 
-
 /* ----------- htaccess ---------- */
 
 function ban_htaccess($path, $ip, $mask = null)
@@ -168,7 +167,7 @@ function date_rand_min($from = null, $up_to = null)
 {
     if (isset($from) && isset($up_to)){
         $rand = rand($from, $up_to);
-		} else {
+    } else {
         $rand = rand(1000, 5000);
 	}
     $date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")." +".$rand." minutes"));
@@ -218,11 +217,11 @@ function get_ip()
 {
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
         $ip = $_SERVER['HTTP_CLIENT_IP'];
-		} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+	} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-		} elseif (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+	} elseif (!empty($_SERVER['HTTP_X_REAL_IP'])) {
         $ip = $_SERVER['HTTP_X_REAL_IP'];
-		} else {
+	} else {
         $ip = $_SERVER['REMOTE_ADDR'];
 	}
     return $ip;
@@ -274,11 +273,11 @@ function grd($name, $type = 'str')
     $result = null;
     if (is_array($_REQUEST[$name])) {
         $result = grd_array($_REQUEST[$name], $type);
-		} else {
+	} else {
         $result = strip_tags(trim($_REQUEST[$name]));
         if ($type == 'str') {
             $result = addslashes($result);
-			} elseif ($type == 'int') {
+		} elseif ($type == 'int') {
             $result = intval($result);
 		}
 	}
@@ -844,23 +843,37 @@ function format_size($size, $type = 'KB', $text = null)
 }
 
 /* ----------- EXEC ---------- */
+
 function meminfo()
 {
 	@exec('cat /proc/meminfo', $meminfo);
 	if (isset($meminfo['0'])) {
 		//print_r($meminfo);
-		$arr['MemTotal'] = $this->format_size(str_replace(['MemTotal:', 'kB', ' '], '', $meminfo['0']));
-		$arr['MemFree'] = $this->format_size(str_replace(['MemFree:', 'kB', ' '], '', $meminfo['1']));
-		$arr['MemAvailable'] = $this->format_size(str_replace(['MemAvailable:', 'kB', ' '], '', $meminfo['2']));
-		$arr['Buffers'] = $this->format_size(str_replace(['Buffers:', 'kB', ' '], '', $meminfo['3']));
-		$arr['Cached'] = $this->format_size(str_replace(['Cached:', 'kB', ' '], '', $meminfo['4']));
-		$arr['SwapTotal'] = $this->format_size(str_replace(['SwapTotal:', 'kB', ' '], '', $meminfo['14']));
-		$arr['SwapFree'] = $this->format_size(str_replace(['SwapFree:', 'kB', ' '], '', $meminfo['15']));
+		$arr['MemTotal'] = format_size(str_replace(['MemTotal:', 'kB', ' '], '', $meminfo['0']));
+		$arr['MemFree'] = format_size(str_replace(['MemFree:', 'kB', ' '], '', $meminfo['1']));
+		$arr['MemAvailable'] = format_size(str_replace(['MemAvailable:', 'kB', ' '], '', $meminfo['2']));
+		$arr['Buffers'] = format_size(str_replace(['Buffers:', 'kB', ' '], '', $meminfo['3']));
+		$arr['Cached'] = format_size(str_replace(['Cached:', 'kB', ' '], '', $meminfo['4']));
+		$arr['SwapTotal'] = format_size(str_replace(['SwapTotal:', 'kB', ' '], '', $meminfo['14']));
+		$arr['SwapFree'] = format_size(str_replace(['SwapFree:', 'kB', ' '], '', $meminfo['15']));
+		$arr['MemUsed'] = $arr['MemTotal'] - $arr['MemFree'];
 		//print_r($arr);
 		return $arr;
-		} else {
+	} else {
 		return null;
 	}
+}
+
+function memory_free()
+{
+    $meminfo = meminfo();
+	return round($meminfo['MemFree'] / ($meminfo['MemTotal'] / 100), 2);
+}
+
+function memory_used()
+{
+    $meminfo = meminfo();
+	return round($meminfo['MemUsed'] / ($meminfo['MemTotal'] / 100), 2);
 }
 
 function cpuinfo()
@@ -1044,3 +1057,4 @@ function downcounter($date)
         return false;
 	}
 }
+ 

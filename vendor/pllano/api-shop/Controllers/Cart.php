@@ -15,9 +15,6 @@ namespace Pllano\ApiShop\Controllers;
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
 use Psr\Container\ContainerInterface as Container;
 use Pllano\RouterDb\Router as RouterDb;
-use Pllano\ApiShop\Model\Language;
-use Pllano\ApiShop\Utilities\Utility;
-use Pllano\ApiShop\Controllers\Error;
 
 class Cart
 {
@@ -47,13 +44,11 @@ class Cart
         $this->template = $app->get('template');
 		$this->view = $app->get('view');
     }
-	
+
 	public function post_add_to_cart(Request $request, Response $response)
 	{
 		$language = $this->languages->get($request);
-		
 		$session_name = $this->config['settings']['session']['name'];
-		
 		// Читаем ключи
 		$session_key = $this->config['key']['session'];
 		$cookie_key = $this->config['key']['cookie'];
@@ -65,7 +60,7 @@ class Cart
 		$price = sanitize($post['price']) ?? null;
 		$num = sanitize($post['num']) ?? null;
 		$cookie = $crypt::decrypt(get_cookie($session_name), $cookie_key);
-		
+
 		$callbackStatus = 400;
 		$callbackTitle = 'Соообщение системы';
 		$callbackText = '';
@@ -111,7 +106,7 @@ class Cart
 		$response->withStatus(200);
 		$response->withHeader('Content-type', 'application/json');
 		// Выводим json
-		echo json_encode($callback);
+		return $response->write(json_encode($callback));
 
 	}
 	
@@ -189,11 +184,11 @@ class Cart
             $user = $db->post($resource, $query);
 
 			if (isset($user['response']['id'])) {
-				$this->session->user_id = $crypt::encrypt($user['response']['id'], $session_key);
 				$user_id = $user['response']['id'];
+				$this->session->user_id = $crypt::encrypt($user_id, $session_key);
 			}
 		}
-		
+
 		$callbackStatus = 400;
 		$callbackTitle = 'Соообщение системы';
 		$callbackText = '';
@@ -288,8 +283,7 @@ class Cart
 		$response->withStatus(200);
 		$response->withHeader('Content-type', 'application/json');
 		// Выводим json
-		echo json_encode($callback);
-
+		return $response->write(json_encode($callback));
 	}
 
 }

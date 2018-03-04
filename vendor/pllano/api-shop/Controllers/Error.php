@@ -58,7 +58,7 @@ class Error
         $response->withStatus(200);
         $response->withHeader('Content-type', 'application/json');
         // Выводим json
-        echo json_encode($callback);
+        return $response->write(json_encode($callback));
     }
     
     public function get(Request $request, Response $response, array $args)
@@ -156,7 +156,7 @@ class Error
             "content" => $content
         ];
  
-        return $this->view->render($response, $render, $data);
+        return $response->write($this->view->render($response, $render, $data));
     }
     
 }

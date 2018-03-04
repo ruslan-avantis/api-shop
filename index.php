@@ -71,7 +71,7 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
     $routingConfig['displayErrorDetails'] = true;
     $routingConfig['addContentLengthHeader'] = false;
     $routingConfig['determineRouteBeforeAppMiddleware'] = true;
-    //$routingConfig = routing_config($package['require']['slim.slim']['settings']);
+    $routingConfig = routing_config($package['require']['slim.slim']['settings']);
 
     // Connect Slim Routing
     $routing = new \Slim\App($routingConfig);
@@ -83,16 +83,18 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
     $routing->run();
 
 }
+
 $time = number_format(microtime_float() - $time_start, 3);
+$memory_used = memory_used();
 if ($core->get('logger') !== null && $config['admin']['logger'] == 1) {
-    $core->get('logger')->info(": {$time} - IP: {$ip} - {$escaped_url}", []); // Run logger
+    $core->get('logger')->info("time: {$time} - IP: {$ip} - memory_used: {$memory_used} - {$escaped_url}", []); // Run logger
 }
-if ($routingConfig['debug'] === true || $config['admin']['debug'] == 1) {
-    error_reporting(E_ALL ^ E_NOTICE); 
-    // print("{$time} seconds - {$escaped_url}");
-}
-if ($time >= 31 && $config['admin']['DDoS'] == 1) {
+if ($time >= 31 && $memory_used >= 70 && $config['admin']['DDoS'] == 1) {
     // Blocking by IP in .htaccess, if the request lasts longer than specified
     ban_htaccess(BASE_PATH, $ip, '24');
+}
+if ($routingConfig['debug'] === true || (int)$config['admin']['debug'] == 1) {
+    error_reporting(E_ALL ^ E_NOTICE);
+    print("time: {$time} - IP: {$ip} - memory_used: {$memory_used} - {$escaped_url}<br>");
 }
  

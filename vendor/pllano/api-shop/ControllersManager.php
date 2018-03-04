@@ -53,25 +53,25 @@ class ControllersManager
 
     public function get(Request $request, Response $response, array $args)
     {
-        $time_start = microtime_float();
+        // $getScheme			= $request->getUri()->getScheme(); // Работает
+        // $getQuery			= $request->getUri()->getQuery(); // Работает
+        // $getHost				= $request->getUri()->getHost(); // Работает
+        // $getPath				= $request->getUri()->getPath(); // Работает
+		// $getParams			= $request->getQueryParams(); // Работает
+        // $getMethod			= $request->getMethod();
+        // $getParsedBody		= $request->getParsedBody();
+
+		$time_start = microtime_float();
         $this->query = $request->getMethod();
-        // $getScheme = $request->getUri()->getScheme(); // Работает
-        // $getParams = $request->getQueryParams(); // Работает
-        // $getQuery = $request->getUri()->getQuery(); // Работает
-        // $getHost = $request->getUri()->getHost(); // Работает
-        // $getPath = $request->getUri()->getPath(); // Работает
-        // $routess = $request->getAttribute('route'); // Работает - Отдает огромный массив информации
-        // $getMethod = $request->getMethod();
-        // $getParsedBody = $request->getParsedBody();
 
         // Передаем данные Hooks для обработки ожидающим классам
         // Default Pllano\Hooks\Hook
         $hook = new $this->config['vendor']['hooks']['hook']($this->config, $this->query, $this->route, 'site');
         $hook->http($request);
         $request = $hook->request();
- 
         // true - Если все хуки отказались подменять контент
         if($hook->state() === true) {
+
             // Получаем параметры из URL
             $host = $request->getUri()->getHost();
             $path = '';
@@ -81,19 +81,17 @@ class ControllersManager
             $params = '';
             // Параметры из URL
             $params_query = str_replace('q=/', '', $request->getUri()->getQuery());
-
             if ($params_query) {
                 $params = '/'.$params_query;
             }
 
             // Данные пользователя из сессии
             $sessionUser =(new SessionUser($this->config))->get();
-            // Подключаем временное хранилище
-            // Default Adbar\Session
-            $sessionTemp = new $this->config['vendor']['session']['session']("_temp");
+
             // Генерируем токен. Читаем ключ. Записываем токен в сессию.
             // Default Defuse\Crypto\Crypto
-            $this->session->token = $this->config['vendor']['crypto']['crypt']::encrypt(random_token(), $this->config['key']['token']);
+			$crypt = $this->config['vendor']['crypto']['crypt'];
+            $this->session->token = $crypt::encrypt(random_token(), $this->config['key']['token']);
 
             $language = $this->languages->get($request);
             $lang = $this->languages->lang();
@@ -101,9 +99,7 @@ class ControllersManager
             // Настройки сайта
             $site = new Site($this->config);
             $siteConfig = $site->get();
-            // Получаем название шаблона
-            // Конфигурация шаблона
- 
+
             // layout по умолчанию 404
             $render = $this->template['layouts']['404'] ? $this->template['layouts']['404'] : '404.html';
 
@@ -129,6 +125,7 @@ class ControllersManager
             }
 
             if ($this->config["settings"]["install"]["status"] != null) {
+
                 $pluginsArr = [];
                 $dataArr = [];
                 $arr = [];
@@ -155,15 +152,8 @@ class ControllersManager
                     $dataArr = $cache->get();
                 }
 
-                // Определяем layout
                 // Модули могут поменять layout
                 $render = $dataArr['content']['modules'][$this->route]['content']['layout'] ?? $this->template['layouts']['layout'];
-
-                if (isset($dataArr['content']['modules'][$this->route]['content']['layout'])) {
-                    $render = $dataArr['content']['modules'][$this->route]['content']['layout'];
-                } elseif (isset($dataArr['content'])) {
-                    $render = $this->template['layouts']['layout'];
-                }
 
                 // Массив данных который нельзя кешировать
                 $userArr = [
@@ -173,26 +163,22 @@ class ControllersManager
                     "admin_uri" => $admin_uri,
                     "session" => $sessionUser
                 ];
+
                 // Формируем данные для шаблонизатора. Склеиваем два массива.
                 $data = array_replace_recursive($userArr, $dataArr);
-                
-                //print_r($data);
- 
-            } 
-            else {
+            } else {
+
+				$sessionTemp = new $this->config['vendor']['session']['session']("_temp");
                 $render = "index.html";
                 // Если ключа доступа у нет, значит сайт еще не активирован
                 $content = '';
-                // $this->session->install = null;
                 if (isset($this->session->install)) {
                     if ($this->session->install == 1) {
                         $render = "stores.html";
                         $content = (new Install($this->config))->stores_list();
                     } elseif ($this->session->install == 2) {
                         $render = "templates.html";
-                        
-                        $install_store = $this->session->install_store ?? null; // php7
- 
+                        $install_store = $this->session->install_store ?? null;
                         $content = (new Install($this->config))->templates_list($install_store);
                     } elseif ($this->session->install == 3) {
                         $render = "welcome.html";
@@ -221,9 +207,7 @@ class ControllersManager
             // Передаем данные Hooks для обработки ожидающим классам
             $hook->get($render, $data);
         }
-        
-        //print_r($data);
-        
+
         $time = number_format(microtime_float() - $this->time_start, 4);
         $time_get_start = number_format(microtime_float() - $time_start, 4);
         if ($time >= 1) {
@@ -250,8 +234,6 @@ class ControllersManager
         $time_start = microtime_float();
         $method = $request->getMethod();
         $post = $request->getParsedBody();
-        
-        //print_r($post);
 
         // Передаем данные Hooks для обработки ожидающим классам
         $hook = new $this->config['vendor']['hooks']['hook']($this->config);
@@ -264,15 +246,6 @@ class ControllersManager
 
         // Подключаем систему безопасности
         $security = new Security($this->config);
-
-        // Настройки сайта
-        $site = new Site($this->config);
-        $siteConfig = $site->get();
-
-        // Подключаем мультиязычность
-        $language = $this->languages->get($request);
-        $lang = $this->languages->lang();
-
         try {
             // Получаем токен из сессии
             $token = $crypt::decrypt($this->session->token, $token_key);
@@ -296,7 +269,6 @@ class ControllersManager
         $callbackTitle = 'Соообщение системы';
         $callbackText = 'Действие запрещено !';
         $callback = ['status' => $callbackStatus, 'title' => $callbackTitle, 'text' => $callbackText];
-        // Выводим заголовки
         $response->withStatus(200);
         $response->withHeader('Content-type', 'application/json');
 
@@ -314,7 +286,7 @@ class ControllersManager
 
         $time = number_format(microtime_float() - $this->time_start, 4);
         $time_get_start = number_format(microtime_float() - $time_start, 4);
-        if ($time >= 1) {
+        if ($time >= 10) {
             // Запись в лог
             $this->logger->info("time", [
                 "source" => "ControllerManager",
@@ -325,10 +297,7 @@ class ControllersManager
                 "uri" => escaped_url()
             ]);
         }
-
-        // Выводим json
         return $response->write(json_encode($callback));
-
     }
 
 }

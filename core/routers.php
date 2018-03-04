@@ -74,13 +74,39 @@ $routing->get($router['sign_up']['route'], function ($request, $response, $args)
 });
 
 // GET - запросы к корзине
-$routing->map(['GET', 'POST'], $router['cart']['route'].'{function:[a-z0-9_-]+}', function ($request, $response, $args) use ($core, $app) {
-    $app = $this->get('config')['routers']['site']['cart']['controller'];
-    if ($request->getAttribute('function') && method_exists($app,'get_'.str_replace("-", "_", $request->getAttribute('function')))) {
-        $function = 'get_'.str_replace("-", "_", $request->getAttribute('function'));
+$routing->post($post_id.$router['cart']['route'].'{function:[a-z0-9_-]+}', function ($request, $response, $args) use ($core, $app) {
+    $cart = $this->get('config')['routers']['site']['cart']['controller'];
+	$error = $this->get('config')['routers']['site']['error']['controller'];
+	$function = strtolower($request->getMethod());
+    if ($request->getAttribute('function')) {
+        $method = 'post_'.str_replace("-", "_", $request->getAttribute('function'));
+        if (method_exists($cart, $method)) {
+            $function = $method;
+			$app = $cart;
+        } else {
+		    $app = $error;
+        }
     } else {
-       $app = $this->get('config')['routers']['site']['error']['controller'];
-        $function = strtolower($request->getMethod());
+        $app = $error;
+    }
+    return (new $app($core, 'cart'))->$function($request, $response, $args);
+});
+
+// GET - запросы к корзине
+$routing->get($router['cart']['route'].'{function:[a-z0-9_-]+}', function ($request, $response, $args) use ($core, $app) {
+    $cart = $this->get('config')['routers']['site']['cart']['controller'];
+	$error = $this->get('config')['routers']['site']['error']['controller'];
+	$function = strtolower($request->getMethod());
+    if ($request->getAttribute('function')) {
+        $method = 'get_'.str_replace("-", "_", $request->getAttribute('function'));
+        if (method_exists($cart, $method)) {
+            $function = $method;
+			$app = $cart;
+        } else {
+		    $app = $error;
+        }
+    } else {
+        $app = $error;
     }
     return (new $app($core, 'cart'))->$function($request, $response, $args);
 });

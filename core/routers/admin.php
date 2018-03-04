@@ -14,7 +14,6 @@ use Pllano\RouterDb\Router as RouterDb;
 use Pllano\Hooks\Hook;
 use Pllano\ApiShop\Models\{Language, Site, Template, SessionUser, Security, Filter, Pagination, Install};
 use Pllano\ApiShop\Admin\{Control, AdminDatabase, Resources, Packages};
-use Pllano\ApiShop\Utilities\Utility;
 
 $admin_uri = '/0';
 $post_id = '/0';
@@ -29,16 +28,18 @@ $admin_router = $config['routers']['admin']['all']['route'];
 $admin_index = $config['routers']['admin']['index']['route'];
 
 // Главная страница админ панели
-$routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
 	// Подключаем мультиязычность
-	$language = $this->get('languages')->get($request);
+	$language = $core->get('languages')->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Конфигурация роутинга
     $routers = $config['routers'];
+    // Конфигурация шаблона
+    $template = $core->get('admin_template');
 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
@@ -49,10 +50,6 @@ $routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) 
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
     $path = $request->getUri()->getPath();
-
-    // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
 
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
@@ -133,18 +130,18 @@ $routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
 	
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Список items указанного resource
-$routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -162,8 +159,6 @@ $routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-
     } else {
         $id = null;
     }
-    // Подключаем плагины
-    $utility = new Utility();
     // Получаем параметры из URL
     $getParams = $request->getQueryParams();
     $host = $request->getUri()->getHost();
@@ -171,13 +166,12 @@ $routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -295,17 +289,17 @@ $routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
  
 });
 
 // Содать запись в resource
-$routing->post($admin_uri.$admin_router.'resource-post', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'resource-post', function ($request, $response, $args) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -314,10 +308,8 @@ $routing->post($admin_uri.$admin_router.'resource-post', function ($request, $re
     $today = date("Y-m-d H:i:s");
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
-    // Подключаем плагины
-    $utility = new Utility();
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Подключаем систему безопасности
@@ -325,7 +317,7 @@ $routing->post($admin_uri.$admin_router.'resource-post', function ($request, $re
     
     $resource = null;
     if (isset($post['resource'])) {
-        $resource = filter_var($post['resource'], FILTER_SANITIZE_STRING);
+        $resource = sanitize($post['resource']);
     }
     
     try {
@@ -346,7 +338,7 @@ $routing->post($admin_uri.$admin_router.'resource-post', function ($request, $re
     
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(sanitize($post['csrf']), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
         $csrf = clean($post_csrf);
     } catch (\Exception $ex) {
@@ -464,17 +456,17 @@ $routing->post($admin_uri.$admin_router.'resource-post', function ($request, $re
 });
 
 // Удалить запись в resource
-$routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $response, $args) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Подключаем систему безопасности
@@ -485,7 +477,7 @@ $routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $
     
     $resource = null;
     if (isset($post['resource'])) {
-        $resource = filter_var($post['resource'], FILTER_SANITIZE_STRING);
+        $resource = sanitize($post['resource']);
     }
     
     $id = null;
@@ -511,7 +503,7 @@ $routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $
     
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(sanitize($post['csrf']), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
         $csrf = clean($post_csrf);
     } catch (\Exception $ex) {
@@ -591,17 +583,17 @@ $routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $
 });
 
 // Редактируем запись в resource
-$routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -646,7 +638,7 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
     
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(sanitize($post['csrf']), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
         $csrf = clean($post_csrf);
     } catch (\Exception $ex) {
@@ -688,9 +680,9 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
                                     $saveArr[$key] = strval(clean($value));
                                 } elseif ($key == "password") {
                                     if(strlen($value) >= 55 && strlen($value) <= 65) {
-                                        $saveArr[$key] = filter_var($value, FILTER_SANITIZE_STRING);
+                                        $saveArr[$key] = sanitize($value);
                                     } else {
-                                        $saveArr[$key] = password_hash(filter_var($value, FILTER_SANITIZE_STRING), PASSWORD_DEFAULT);
+                                        $saveArr[$key] = password_hash(sanitize($value), PASSWORD_DEFAULT);
                                     }
                                 } else {
                                     if (is_numeric(clean($value))) {
@@ -703,7 +695,7 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
                                         $value = str_replace(['"', "'", " "], '', $value);
                                         $saveArr[$key] = boolval(clean($value));
                                         } elseif (is_string(clean($value))) {
-                                        $saveArr[$key] = filter_var(strval($value), FILTER_SANITIZE_STRING);
+                                        $saveArr[$key] = sanitize(strval($value));
                                     }
                                 }
                             }
@@ -751,17 +743,17 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
 });
 
 // Активировать заказ
-$routing->post($admin_uri.$admin_router.'order-activate', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'order-activate', function ($request, $response, $args) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -786,7 +778,7 @@ $routing->post($admin_uri.$admin_router.'order-activate', function ($request, $r
     
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(sanitize($post['csrf']), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
         $csrf = clean($post_csrf);
     } catch (\Exception $ex) {
@@ -811,7 +803,7 @@ $routing->post($admin_uri.$admin_router.'order-activate', function ($request, $r
         if (isset($session->authorize)) {
             if ($session->authorize == 1 || $session->role_id == 100) {
                 if (isset($post['alias'])) {
-                    $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
+                    $alias = sanitize($post['alias']);
                     
                     if ($alias == true) {
                         // Ответ
@@ -844,17 +836,17 @@ $routing->post($admin_uri.$admin_router.'order-activate', function ($request, $r
 });
 
 // Купить и установить шаблон
-$routing->post($admin_uri.$admin_router.'template-buy', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'template-buy', function ($request, $response, $args) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -869,13 +861,12 @@ $routing->post($admin_uri.$admin_router.'template-buy', function ($request, $res
     $post = $request->getParsedBody();
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(sanitize($post['csrf']), $token_key);
         } catch (\Exception $ex) {
         (new Security())->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
-    // Подключаем плагины
-    $utility = new Utility();
+
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = clean($post_csrf);
     
@@ -887,7 +878,7 @@ $routing->post($admin_uri.$admin_router.'template-buy', function ($request, $res
     if ($csrf == $token) {
         
         if (isset($post['alias'])) {
-            $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
+            $alias = sanitize($post['alias']);
             $callbackStatus = 200;
             } else {
             $callbackText = 'Ошибка !';
@@ -908,17 +899,17 @@ $routing->post($admin_uri.$admin_router.'template-buy', function ($request, $res
 });
 
 // Установить шаблон
-$routing->post($admin_uri.$admin_router.'template-install', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'template-install', function ($request, $response, $args) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Получаем данные отправленные нам через POST
@@ -942,7 +933,7 @@ $routing->post($admin_uri.$admin_router.'template-install', function ($request, 
     
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(sanitize($post['csrf']), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
         $csrf = clean($post_csrf);
         } catch (\Exception $ex) {
@@ -970,7 +961,7 @@ $routing->post($admin_uri.$admin_router.'template-install', function ($request, 
             $uri = null;
             $name = null;
             
-            $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
+            $alias = sanitize($post['alias']);
             
             $templates_list = (new Install($config))->templates_list($config['seller']['store']);
             
@@ -1018,17 +1009,17 @@ $routing->post($admin_uri.$admin_router.'template-install', function ($request, 
 });
 
 // Активировать шаблон
-$routing->post($admin_uri.$admin_router.'template-activate', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'template-activate', function ($request, $response, $args) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Получаем данные отправленные нам через POST
@@ -1052,7 +1043,7 @@ $routing->post($admin_uri.$admin_router.'template-activate', function ($request,
     
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(sanitize($post['csrf']), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
         $csrf = clean($post_csrf);
         } catch (\Exception $ex) {
@@ -1078,8 +1069,8 @@ $routing->post($admin_uri.$admin_router.'template-activate', function ($request,
             if ($session->authorize == 1 && $session->role_id == 100) {
                 if (isset($post['dir'])) {
                     
-                    $dir = filter_var($post['dir'], FILTER_SANITIZE_STRING);
-                    $alias = filter_var($post['alias'], FILTER_SANITIZE_STRING);
+                    $dir = sanitize($post['dir']);
+                    $alias = sanitize($post['alias']);
                     
                     // Активируем шаблон
                     (new \Pllano\ApiShop\Admin\Config($config))->template_activate($dir, $alias);
@@ -1111,17 +1102,17 @@ $routing->post($admin_uri.$admin_router.'template-activate', function ($request,
 });
 
 // Удалить шаблон
-$routing->post($admin_uri.$admin_router.'template-delete', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'template-delete', function ($request, $response, $args) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
     $request = $hook->request();
 
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -1136,13 +1127,12 @@ $routing->post($admin_uri.$admin_router.'template-delete', function ($request, $
     $post = $request->getParsedBody();
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(sanitize($post['csrf']), $token_key);
         } catch (\Exception $ex) {
         (new Security())->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
-    // Подключаем плагины
-    $utility = new Utility();
+
     // Чистим данные на всякий случай пришедшие через POST
     $csrf = clean($post_csrf);
     
@@ -1154,7 +1144,7 @@ $routing->post($admin_uri.$admin_router.'template-delete', function ($request, $
     if ($csrf == $token) {
         
         if (isset($post['dir'])) {
-            $dir = filter_var($post['dir'], FILTER_SANITIZE_STRING);
+            $dir = sanitize($post['dir']);
             
             $directory = $config["settings"]["themes"]["dir"].'/'.$config["template"]["front_end"]["themes"]["template"].'/'.$dir;
             // Подключаем класс
@@ -1183,10 +1173,10 @@ $routing->post($admin_uri.$admin_router.'template-delete', function ($request, $
 });
 
 // Список шаблонов
-$routing->get($admin_uri.$admin_router.'template', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'template', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -1199,13 +1189,12 @@ $routing->get($admin_uri.$admin_router.'template', function ($request, $response
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -1290,17 +1279,17 @@ $routing->get($admin_uri.$admin_router.'template', function ($request, $response
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Страница шаблона
-$routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -1319,13 +1308,12 @@ $routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function 
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -1403,17 +1391,17 @@ $routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Редактируем настройки шаблона
-$routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -1432,13 +1420,12 @@ $routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -1527,16 +1514,16 @@ $routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Станица пакета
-$routing->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function ($request, $response, $args) {
+$routing->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function ($request, $response, $args) use ($core, $app) {
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -1560,13 +1547,12 @@ $routing->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -1651,17 +1637,17 @@ $routing->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
  
 });
  
 // Изменение статуса пакета
-$routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function ($request, $response, $args) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -1685,7 +1671,7 @@ $routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -1706,7 +1692,7 @@ $routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a
     }
     try {
         // Получаем токен из POST
-        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
+        $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(sanitize($post['csrf']), $token_key);
         // Чистим данные на всякий случай пришедшие через POST
         $csrf = clean($post_csrf);
         } catch (\Exception $ex) {
@@ -1773,10 +1759,10 @@ $routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a
 });
 
 // Список пакетов
-$routing->get($admin_uri.$admin_router.'packages', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'packages', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -1789,13 +1775,12 @@ $routing->get($admin_uri.$admin_router.'packages', function ($request, $response
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -1875,17 +1860,17 @@ $routing->get($admin_uri.$admin_router.'packages', function ($request, $response
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Репозиторий
-$routing->get($admin_uri.$admin_router.'packages-install', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'packages-install', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -1898,13 +1883,12 @@ $routing->get($admin_uri.$admin_router.'packages-install', function ($request, $
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -1984,17 +1968,17 @@ $routing->get($admin_uri.$admin_router.'packages-install', function ($request, $
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Страница установки из json файла
-$routing->get($admin_uri.$admin_router.'packages-install-json', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'packages-install-json', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -2007,13 +1991,12 @@ $routing->get($admin_uri.$admin_router.'packages-install-json', function ($reque
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -2093,17 +2076,17 @@ $routing->get($admin_uri.$admin_router.'packages-install-json', function ($reque
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Глобальные настройки
-$routing->get($admin_uri.$admin_router.'config', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'config', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -2116,13 +2099,12 @@ $routing->get($admin_uri.$admin_router.'config', function ($request, $response, 
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -2203,17 +2185,17 @@ $routing->get($admin_uri.$admin_router.'config', function ($request, $response, 
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Редактируем глобальные настройки
-$routing->post($admin_uri.$admin_router.'config', function ($request, $response, $args) {
+$routing->post($admin_uri.$admin_router.'config', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'POST', 'admin');
@@ -2226,13 +2208,12 @@ $routing->post($admin_uri.$admin_router.'config', function ($request, $response,
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -2318,17 +2299,17 @@ $routing->post($admin_uri.$admin_router.'config', function ($request, $response,
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Список баз данных
-$routing->get($admin_uri.$admin_router.'db', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'db', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -2341,13 +2322,12 @@ $routing->get($admin_uri.$admin_router.'db', function ($request, $response, $arg
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -2424,17 +2404,17 @@ $routing->get($admin_uri.$admin_router.'db', function ($request, $response, $arg
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Страница таблицы (ресурса)
-$routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -2453,13 +2433,12 @@ $routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -2626,17 +2605,17 @@ $routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
     
 });
 
 // Глобально
-$routing->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) {
+$routing->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) use ($core, $app) {
     
     // Получаем конфигурацию
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
     $hook = new $config['vendor']['hooks']['hook']($config);
     $hook->http($request, 'GET', 'admin');
@@ -2661,13 +2640,12 @@ $routing->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}
     // Конфигурация роутинга
     $routers = $config['routers'];
     // Конфигурация шаблона
-    $templateConfig = new Template($config, $config['admin']['template']);
-    $template = $templateConfig->get();
+    $template = $core->get('admin_template');
     // Подключаем мультиязычность
-    $languages = $this->get('languages');
+    $languages = $core->get('languages');
     $language = $languages->get($request);
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Данные пользователя из сессии
     $sessionUser =(new SessionUser($config))->get();
     // Читаем ключи
@@ -2771,9 +2749,9 @@ $routing->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
     // Запись в лог
-    $this->get('logger')->info($hook->logger());
+    $core->get('logger')->info($hook->logger());
     // Отдаем данные шаблонизатору
-    return $response->write($this->get('admin')->render($hook->render(), $hook->view()));
+    return $response->write($core->get('admin')->render($hook->render(), $hook->view()));
     
 });
  
