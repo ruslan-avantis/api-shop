@@ -3,7 +3,8 @@
 	"require": {
 		"pllano.core": {
 			"namespace": "Pllano\\Core",
-			"dir": "\/pllano\/core",
+			"dir": "\/pllano\/core\/src",
+			"link": "https:\/\/github.com\/pllano\/core\/archive\/master.zip",
 			"git": "https:\/\/github.com\/pllano\/core",
 			"name": "core",
 			"version": "master",
