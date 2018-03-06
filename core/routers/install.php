@@ -10,18 +10,27 @@
     * file that was distributed with this source code.
 */
  
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
 use Pllano\RouterDb\Router as RouterDb;
-use Pllano\ApiShop\Models\{Security, User, Install};
-use Pllano\ApiShop\Utilities\Utility;
+use Pllano\Core\Models\{
+	ModelSecurity, 
+	ModelUser, 
+	ModelInstall
+};
+use Pllano\Core\Plugins\{
+	PluginFilter, 
+	PluginPackages, 
+	PluginFile, 
+	PluginTemplate, 
+	PluginConfig
+};
  
 // Активация с помощью public_key
-$routing->post('/install-api-key', function ($request, $response, $args) {
+$routing->post('/install-api-key', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     // Конфигурация
-    $config = $this->get('config');
-    // Подключаем плагины
-    $utility = new Utility();
+    $config = $core->get('config');
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Получаем данные отправленные нам через POST
@@ -31,14 +40,14 @@ $routing->post('/install-api-key', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->token($request);
+        (new ModelSecurity($core))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     try {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->csrf($request);
+        (new ModelSecurity($core))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
  
@@ -47,7 +56,7 @@ $routing->post('/install-api-key', function ($request, $response, $args) {
     $callbackText = '';
  
     // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+    $csrf = clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
  
@@ -82,7 +91,7 @@ $routing->post('/install-api-key', function ($request, $response, $args) {
             $httpClient = new $config['vendor']['http_client']['client']();
             $httpBody = $httpClient->request('GET', $config["db"]["pllanoapi"]["url"].'api?public_key='.$public_key);
             $resp = $httpBody->getBody();
-            $output = $utility->clean_json($resp);
+            $output = clean_json($resp);
             $records = json_decode($output, true);
             if (isset($records['headers']['code'])) {
                 if(is_object($records["body"]["items"]["0"]["item"])) {
@@ -114,7 +123,7 @@ $routing->post('/install-api-key', function ($request, $response, $args) {
             $paramPost['template']['front_end']['template_engine'] = 'twig';
  
             // Подключаем класс файла конфигурации
-            $settingsAdmin = new \Pllano\ApiShop\Admin\Config($config);
+            $settingsAdmin = new PluginConfig($config);
             // Получаем массив конфигурации
             $arrJson = $settingsAdmin->get();
             // Соеденяем два массива
@@ -137,11 +146,11 @@ $routing->post('/install-api-key', function ($request, $response, $args) {
 });
  
 // Записать в сессию
-$routing->post('/install-key', function ($request, $response, $args) {
+$routing->post('/install-key', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     // Конфигурация
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -149,7 +158,7 @@ $routing->post('/install-key', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->token($request);
+        (new ModelSecurity($core))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -158,18 +167,16 @@ $routing->post('/install-key', function ($request, $response, $args) {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->csrf($request);
+        (new ModelSecurity($core))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
-    // Подключаем плагины
-    $utility = new Utility();
  
     $callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
     $callbackText = '';
  
     // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+    $csrf = clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         $session->install = 10;
@@ -185,11 +192,11 @@ $routing->post('/install-key', function ($request, $response, $args) {
 });
 
 // Записать в сессию
-$routing->post('/install-no-key', function ($request, $response, $args) {
+$routing->post('/install-no-key', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     // Конфигурация
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -197,7 +204,7 @@ $routing->post('/install-no-key', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->token($request);
+        (new ModelSecurity($core))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -206,18 +213,16 @@ $routing->post('/install-no-key', function ($request, $response, $args) {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->csrf($request);
+        (new ModelSecurity($core))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
-    // Подключаем плагины
-    $utility = new Utility();
  
     $callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
     $callbackText = '';
  
     // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+    $csrf = clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         $session->install = 0;
@@ -233,11 +238,11 @@ $routing->post('/install-no-key', function ($request, $response, $args) {
 });
  
 // Записать выбранный магазин в сессию
-$routing->post('/install-store', function ($request, $response, $args) {
+$routing->post('/install-store', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     // Конфигурация
-    $config = $this->get('config');
+    $config = $core->get('config');
     // Подключаем сессию
-    $session = $this->get('session');
+    $session = $core->get('session');
     // Читаем ключи
     $token_key = $config['key']['token'];
     
@@ -245,7 +250,7 @@ $routing->post('/install-store', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->token($request);
+        (new ModelSecurity($core))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -254,13 +259,11 @@ $routing->post('/install-store', function ($request, $response, $args) {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->csrf($request);
+        (new ModelSecurity($core))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
-    // Подключаем плагины
-    $utility = new Utility();
     // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+    $csrf = clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         $id = filter_var($post['id'], FILTER_SANITIZE_STRING);
@@ -288,7 +291,7 @@ $routing->post('/install-store', function ($request, $response, $args) {
 });
  
 // Записать выбранный шаблон в сессию
-$routing->post('/install-template', function ($request, $response, $args) {
+$routing->post('/install-template', function (Request $request, Response $response, array $args = []) {
     // Конфигурация
     $config = $this->get('config');
     // Подключаем сессию
@@ -300,7 +303,7 @@ $routing->post('/install-template', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->token($request);
+        (new ModelSecurity($core))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -310,13 +313,11 @@ $routing->post('/install-template', function ($request, $response, $args) {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->csrf($request);
+        (new ModelSecurity($core))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
-    // Подключаем плагины
-    $utility = new Utility();
     // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+    $csrf = clean($post_csrf);
  
     $callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
@@ -339,12 +340,6 @@ $routing->post('/install-template', function ($request, $response, $args) {
                 if ($zip->open($template_dir."/template.zip") === true) {
                     $zip->extractTo($template_dir);
                     $zip->close();
- 
-                    // Обновляем название шаблона в настройках базы db
-                    // Подключаемся к базе
-                    $db = new Db("json", $config);
-                    // Обновляем название шаблона в базе
-                    $db->put("db", ["template" => $dir], 1);
  
                     // Если пользователь авторизован как администратор, и у него в сессии есть site_id
                     if (isset($session->authorize) && isset($session->role_id) && isset($session->site_id)) {
@@ -421,7 +416,7 @@ $routing->post('/install-template', function ($request, $response, $args) {
 });
  
 // Регистрация продавца
-$routing->post('/register-in-seller', function ($request, $response, $args) {
+$routing->post('/register-in-seller', function (Request $request, Response $response, array $args = []) {
     $today = date("Y-m-d H:i:s");
     // Конфигурация
     $config = $this->get('config');
@@ -435,7 +430,7 @@ $routing->post('/register-in-seller', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->token($request);
+        (new ModelSecurity($core))->token($request);
         $token = null;
     }
     // Получаем данные отправленные нам через POST
@@ -450,21 +445,19 @@ $routing->post('/register-in-seller', function ($request, $response, $args) {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->csrf($request);
+        (new ModelSecurity($core))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
-    // Подключаем плагины
-    $utility = new Utility();
     // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+    $csrf = clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
-        $email = $utility->clean($post_email);
-        $new_phone = $utility->phone_clean($post_phone);
-        $password = $utility->clean($post_password);
-        $iname = $utility->clean($post_iname);
-        $fname = $utility->clean($post_fname);
-        $host = $utility->clean($post_host);
+        $email = clean($post_email);
+        $new_phone = phone_clean($post_phone);
+        $password = clean($post_password);
+        $iname = clean($post_iname);
+        $fname = clean($post_fname);
+        $host = clean($post_host);
  
         $pattern = "/^[\+0-9\-\(\)\s]*$/";
         if(preg_match($pattern, $new_phone)) {
@@ -479,14 +472,14 @@ $routing->post('/register-in-seller', function ($request, $response, $args) {
  
         if(!empty($phone) && !empty($email) && !empty($iname) && !empty($fname) && !empty($host)) {
             $email_validate = filter_var($email, FILTER_VALIDATE_EMAIL);
-            if($utility->check_length($phone, 8, 25) && $email_validate) {
+            if(check_length($phone, 8, 25) && $email_validate) {
                 // Проверяем наличие пользователя
-                $user_search = (new User())->getEmailPhone($email, $phone);
+                $user_search = (new ModelUser())->getEmailPhone($email, $phone);
                 if ($user_search == null) {
                     // Чистим сессию на всякий случай
                     //$session->clear();
                     // Создаем новую cookie
-                    $cookie = $utility->random_token();
+                    $cookie = random_token();
                     // Генерируем identificator
                     $identificator = $config['vendor']['crypto']['crypt']::encrypt($cookie, $cookie_key);
                     // Записываем пользователю новый cookie
@@ -562,7 +555,7 @@ $routing->post('/register-in-seller', function ($request, $response, $args) {
                                 $arr["cookie"] = $cookie;
                                 $arr["created"] = $today;
                                 $arr["authorized"] = $today;
-                                $arr["alias"] = $utility->random_alias_id();
+                                $arr["alias"] = random_alias_id();
                                 $arr["state"] = 1;
                                 $arr["score"] = 1;
  
@@ -700,7 +693,7 @@ $routing->post('/register-in-seller', function ($request, $response, $args) {
 });
  
 // Запуск магазина
-$routing->post('/start-shop', function ($request, $response, $args) {
+$routing->post('/start-shop', function (Request $request, Response $response, array $args = []) {
     // Конфигурация
     $config = $this->get('config');
     // Подключаем сессию
@@ -712,7 +705,7 @@ $routing->post('/start-shop', function ($request, $response, $args) {
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token, $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->token($request);
+        (new ModelSecurity($core))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -721,18 +714,16 @@ $routing->post('/start-shop', function ($request, $response, $args) {
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(filter_var($post['csrf'], FILTER_SANITIZE_STRING), $token_key);
     } catch (\Exception $ex) {
-        (new Security($config))->csrf($request);
+        (new ModelSecurity($core))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
-    // Подключаем плагины
-    $utility = new Utility();
  
     $callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
     $callbackText = '';
  
     // Чистим данные на всякий случай пришедшие через POST
-    $csrf = $utility->clean($post_csrf);
+    $csrf = clean($post_csrf);
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
         if (isset($session->install_store) && isset($session->public_key) && isset($session->template) && isset($session->site_id)) {
@@ -785,7 +776,7 @@ $routing->post('/start-shop', function ($request, $response, $args) {
                     }
  
                     // Подключаем класс
-                    $settingsAdmin = new \Pllano\ApiShop\Admin\Config($config);
+                    $settingsAdmin = new PluginConfig($config);
                     // Получаем массив
                     $arrJson = $settingsAdmin->get();
                     $paramPost = [];

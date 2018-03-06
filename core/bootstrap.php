@@ -33,8 +33,7 @@ $template = $core->get('template');
 $config = $core->get('config');
 
 // Run User Session
-// (new \Pllano\Core\Models\User())->run($config);
-(new \Pllano\ApiShop\Models\User($core))->run();
+(new \Pllano\Core\Models\ModelUser($core))->run();
 
 // Register middleware
 require CORE_PATH . '/middlewares.php';

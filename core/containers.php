@@ -12,18 +12,49 @@
 
 use Pimple\Container;
 use Pimple\Psr11\Container as PsrContainer;
-use Pllano\ApiShop\Models\{
-    Language, 
-    Template
+use Pllano\Core\Models\{
+    ModelLanguage, 
+    ModelTemplate
 };
 
 $container = new Container();
 // Создаем контейнер с глобальной конфигурацией
 $container['config'] = $config;
+$container['site_id'] = $config['settings']['site_id'] ?? 1;
 // Создаем контейнер нача работы скрипта
 $container['time_start'] = $time_start;
 // Создаем контейнер с конфигурацией пакетов
 $container['package'] = $package;
+
+$container['cache'] = function ($c)
+{
+    return new \Pllano\Caching\Cache($c['config']);
+};
+
+$container['routerDb'] = function ($c) 
+{
+    return new \Pllano\RouterDb\Router($c['config']);
+};
+
+$container['slim_pdo'] = function ($c)
+{
+    $db = $c['config']['db']['mysql'];
+    $dsn = "mysql:host={$db['host']};dbname={$db['dbname']};charset={$db['charset']}";
+    $user = $db['user'];
+    $password = $db['password'];
+    $pdo = new \Slim\PDO\Database($dsn, $user, $password);
+    return $pdo;
+};
+
+$container['pdo'] = function ($c) 
+{
+    $db = $c['config']['db']['mysql'];
+    $pdo = new PDO("mysql:host={$db['host']};dbname={$db['dbname']};charset={$db['charset']}", $db['user'], $db['pass']);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, TRUE);
+    return $pdo;
+};
 
 // monolog
 $container['logger'] = function ($c) {
@@ -39,19 +70,19 @@ $container['session'] = function ($c) {
     return new $c['config']['vendor']['session']['session']($c['config']['settings']['session']['name']);
 };
 
+// languages
+$container['languages'] = function ($c) {
+    return new ModelLanguage($c['config'], $c['routerDb'], $c['cache'], $c['session']);
+};
+
 // Конфигурация шаблона
 $container['template'] = function ($c) {
-    return (new Template($c['config'], $c['config']['template']['front_end']['themes']['template']))->get();
+    return (new ModelTemplate($c['config'], $c['config']['template']['front_end']['themes']['template']))->get();
 };
 
 // Конфигурация шаблона
 $container['admin_template'] = function ($c) {
-    return (new Template($c['config'], $c['config']['template']['back_end']['themes']['template']))->get();
-};
-
-// languages
-$container['languages'] = function ($c) {
-    return new Language($c['config'], $c['session']);
+    return (new ModelTemplate($c['config'], $c['config']['template']['back_end']['themes']['template']))->get();
 };
 
 // Register \Pllano\Adapters\TemplateEngine

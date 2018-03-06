@@ -9,12 +9,27 @@
     * For the full copyright and license information, please view the LICENSE
     * file that was distributed with this source code.
 */
- 
-use Pllano\RouterDb\Router as RouterDb;
-use Pllano\Hooks\Hook;
-use Pllano\ApiShop\Models\{Language, Site, Template, SessionUser, Security, Filter, Pagination, Install};
-use Pllano\ApiShop\Admin\{Control, AdminDatabase, Resources, Packages};
 
+use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
+use Pllano\Core\Models\{
+	ModelLanguage, 
+	ModelSite, 
+	ModelTemplate, 
+	ModelSessionUser, 
+	ModelSecurity, 
+	ModelInstall
+};
+use Pllano\Core\Models\Admin\AdminIndex;
+use Pllano\Core\Plugins\{
+	PluginFilter, 
+	PluginPackages, 
+	PluginFile, 
+	PluginTemplate, 
+	PluginConfig
+};
+use Pllano\Hooks\Hook;
+use Pllano\RouterDb\Router as RouterDb;
+ 
 $admin_uri = '/0';
 $post_id = '/0';
 if(isset($session->admin_uri)) {
@@ -28,7 +43,7 @@ $admin_router = $config['routers']['admin']['all']['route'];
 $admin_index = $config['routers']['admin']['index']['route'];
 
 // Главная страница админ панели
-$routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) use ($core, $app) {
+$routing->get($admin_uri.$admin_index.'', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -52,7 +67,7 @@ $routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) 
     $path = $request->getUri()->getPath();
 
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -88,7 +103,7 @@ $routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) 
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $index = new \Pllano\ApiShop\Admin\Index($config);
+            $index = new AdminIndex($core);
             // Получаем массив с настройками шаблона
             $content = $index->get();
             // Получаем название шаблона
@@ -138,7 +153,7 @@ $routing->get($admin_uri.$admin_index.'', function ($request, $response, $args) 
 });
 
 // Список items указанного resource
-$routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) use ($core, $app) {
+$routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -173,7 +188,7 @@ $routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -296,7 +311,7 @@ $routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-
 });
 
 // Содать запись в resource
-$routing->post($admin_uri.$admin_router.'resource-post', function ($request, $response, $args) use ($core, $app) {
+$routing->post($admin_uri.$admin_router.'resource-post', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
     $config = $core->get('config');
@@ -313,7 +328,7 @@ $routing->post($admin_uri.$admin_router.'resource-post', function ($request, $re
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Подключаем систему безопасности
-    $security = new Security($config);
+    $security = new ModelSecurity($core);
     
     $resource = null;
     if (isset($post['resource'])) {
@@ -456,7 +471,7 @@ $routing->post($admin_uri.$admin_router.'resource-post', function ($request, $re
 });
 
 // Удалить запись в resource
-$routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $response, $args) use ($core, $app) {
+$routing->post($admin_uri.$admin_router.'resource-delete', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
     $config = $core->get('config');
@@ -470,7 +485,7 @@ $routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Подключаем систему безопасности
-    $security = new Security($config);
+    $security = new ModelSecurity($core);
     
     // Получаем данные отправленные нам через POST
     $post = $request->getParsedBody();
@@ -583,7 +598,7 @@ $routing->post($admin_uri.$admin_router.'resource-delete', function ($request, $
 });
 
 // Редактируем запись в resource
-$routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) use ($core, $app) {
+$routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
     $config = $core->get('config');
@@ -628,11 +643,11 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                (new Security())->token($request);
+                (new ModelSecurity($core))->token($request);
             }
         } else {
             // Сообщение об Атаке или подборе токена
-            (new Security())->token($request);
+            (new ModelSecurity($core))->token($request);
         }
     }
     
@@ -646,11 +661,11 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                (new Security())->csrf($request);
+                (new ModelSecurity($core))->csrf($request);
             }
         } else {
             // Сообщение об Атаке или подборе csrf
-            (new Security())->csrf($request);
+            (new ModelSecurity($core))->csrf($request);
         }
     }
     
@@ -743,7 +758,7 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
 });
 
 // Активировать заказ
-$routing->post($admin_uri.$admin_router.'order-activate', function ($request, $response, $args) use ($core, $app) {
+$routing->post($admin_uri.$admin_router.'order-activate', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
     $config = $core->get('config');
@@ -768,11 +783,11 @@ $routing->post($admin_uri.$admin_router.'order-activate', function ($request, $r
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                (new Security())->token($request);
+                (new ModelSecurity($core))->token($request);
             }
         } else {
             // Сообщение об Атаке или подборе токена
-            (new Security())->token($request);
+            (new ModelSecurity($core))->token($request);
         }
     }
     
@@ -786,11 +801,11 @@ $routing->post($admin_uri.$admin_router.'order-activate', function ($request, $r
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                (new Security())->csrf($request);
+                (new ModelSecurity($core))->csrf($request);
             }
         } else {
             // Сообщение об Атаке или подборе csrf
-            (new Security())->csrf($request);
+            (new ModelSecurity($core))->csrf($request);
         }
     }
     
@@ -836,7 +851,7 @@ $routing->post($admin_uri.$admin_router.'order-activate', function ($request, $r
 });
 
 // Купить и установить шаблон
-$routing->post($admin_uri.$admin_router.'template-buy', function ($request, $response, $args) use ($core, $app) {
+$routing->post($admin_uri.$admin_router.'template-buy', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
     $config = $core->get('config');
@@ -854,7 +869,7 @@ $routing->post($admin_uri.$admin_router.'template-buy', function ($request, $res
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token_admin, $token_key);
     } catch (\Exception $ex) {
-        (new Security())->token($request);
+        (new ModelSecurity($core))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -863,7 +878,7 @@ $routing->post($admin_uri.$admin_router.'template-buy', function ($request, $res
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(sanitize($post['csrf']), $token_key);
         } catch (\Exception $ex) {
-        (new Security())->csrf($request);
+        (new ModelSecurity($core))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
 
@@ -899,7 +914,7 @@ $routing->post($admin_uri.$admin_router.'template-buy', function ($request, $res
 });
 
 // Установить шаблон
-$routing->post($admin_uri.$admin_router.'template-install', function ($request, $response, $args) use ($core, $app) {
+$routing->post($admin_uri.$admin_router.'template-install', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
     $config = $core->get('config');
@@ -923,11 +938,11 @@ $routing->post($admin_uri.$admin_router.'template-install', function ($request, 
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                (new Security())->token($request);
+                (new ModelSecurity($core))->token($request);
             }
             } else {
             // Сообщение об Атаке или подборе токена
-            (new Security())->token($request);
+            (new ModelSecurity($core))->token($request);
         }
     }
     
@@ -941,11 +956,11 @@ $routing->post($admin_uri.$admin_router.'template-install', function ($request, 
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                (new Security())->csrf($request);
+                (new ModelSecurity($core))->csrf($request);
             }
             } else {
             // Сообщение об Атаке или подборе csrf
-            (new Security())->csrf($request);
+            (new ModelSecurity($core))->csrf($request);
         }
     }
     
@@ -963,7 +978,7 @@ $routing->post($admin_uri.$admin_router.'template-install', function ($request, 
             
             $alias = sanitize($post['alias']);
             
-            $templates_list = (new Install($config))->templates_list($config['seller']['store']);
+            $templates_list = (new ModelInstall($app))->templates_list($config['seller']['store']);
             
             if (count($templates_list) >= 1) {
                 foreach($templates_list as $value)
@@ -976,7 +991,7 @@ $routing->post($admin_uri.$admin_router.'template-install', function ($request, 
                         
                         if(isset($dir) && isset($uri) && isset($name)) {
                             // Подключаем глобальную конфигурацию
-                            $glob_config = new \Pllano\ApiShop\Admin\Config($config);
+                            $glob_config = new PluginConfig($config);
                             // Устанавливаем шаблон
                             $template_install = $glob_config->template_install($name, $dir, $uri);
                             
@@ -1009,7 +1024,7 @@ $routing->post($admin_uri.$admin_router.'template-install', function ($request, 
 });
 
 // Активировать шаблон
-$routing->post($admin_uri.$admin_router.'template-activate', function ($request, $response, $args) use ($core, $app) {
+$routing->post($admin_uri.$admin_router.'template-activate', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
     $config = $core->get('config');
@@ -1033,11 +1048,11 @@ $routing->post($admin_uri.$admin_router.'template-activate', function ($request,
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                (new Security())->token($request);
+                (new ModelSecurity($core))->token($request);
             }
             } else {
             // Сообщение об Атаке или подборе токена
-            (new Security())->token($request);
+            (new ModelSecurity($core))->token($request);
         }
     }
     
@@ -1051,11 +1066,11 @@ $routing->post($admin_uri.$admin_router.'template-activate', function ($request,
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                (new Security())->csrf($request);
+                (new ModelSecurity($core))->csrf($request);
             }
             } else {
             // Сообщение об Атаке или подборе csrf
-            (new Security())->csrf($request);
+            (new ModelSecurity($core))->csrf($request);
         }
     }
     
@@ -1073,7 +1088,7 @@ $routing->post($admin_uri.$admin_router.'template-activate', function ($request,
                     $alias = sanitize($post['alias']);
                     
                     // Активируем шаблон
-                    (new \Pllano\ApiShop\Admin\Config($config))->template_activate($dir, $alias);
+                    (new PluginConfig($config))->template_activate($dir, $alias);
                     
                     $callbackStatus = 200;
                     
@@ -1102,7 +1117,7 @@ $routing->post($admin_uri.$admin_router.'template-activate', function ($request,
 });
 
 // Удалить шаблон
-$routing->post($admin_uri.$admin_router.'template-delete', function ($request, $response, $args) use ($core, $app) {
+$routing->post($admin_uri.$admin_router.'template-delete', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
     $config = $core->get('config');
@@ -1120,7 +1135,7 @@ $routing->post($admin_uri.$admin_router.'template-delete', function ($request, $
         // Получаем токен из сессии
         $token = $config['vendor']['crypto']['crypt']::decrypt($session->token_admin, $token_key);
         } catch (\Exception $ex) {
-        (new Security())->token($request);
+        (new ModelSecurity($core))->token($request);
         // Сообщение об Атаке или подборе токена
     }
     // Получаем данные отправленные нам через POST
@@ -1129,7 +1144,7 @@ $routing->post($admin_uri.$admin_router.'template-delete', function ($request, $
         // Получаем токен из POST
         $post_csrf = $config['vendor']['crypto']['crypt']::decrypt(sanitize($post['csrf']), $token_key);
         } catch (\Exception $ex) {
-        (new Security())->csrf($request);
+        (new ModelSecurity($core))->csrf($request);
         // Сообщение об Атаке или подборе csrf
     }
 
@@ -1148,9 +1163,9 @@ $routing->post($admin_uri.$admin_router.'template-delete', function ($request, $
             
             $directory = $config["settings"]["themes"]["dir"].'/'.$config["template"]["front_end"]["themes"]["template"].'/'.$dir;
             // Подключаем класс
-            $admin = new \Pllano\ApiShop\Admin\Control();
+            $admin = new PluginFile();
             // Получаем массив
-            $admin->delete($directory);
+            $admin->delete_dir($directory);
             
             $callbackStatus = 200;
             
@@ -1173,7 +1188,7 @@ $routing->post($admin_uri.$admin_router.'template-delete', function ($request, $
 });
 
 // Список шаблонов
-$routing->get($admin_uri.$admin_router.'template', function ($request, $response, $args) use ($core, $app) {
+$routing->get($admin_uri.$admin_router.'template', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -1196,7 +1211,7 @@ $routing->get($admin_uri.$admin_router.'template', function ($request, $response
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -1234,10 +1249,10 @@ $routing->get($admin_uri.$admin_router.'template', function ($request, $response
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $templates = new \Pllano\ApiShop\Admin\Template($config);
+            $templates = new PluginTemplate($config);
             // Получаем массив с настройками шаблона
             $content = $templates->get();
-            $api = (new Install($config))->templates_list($config['seller']['store']);
+            $api = (new ModelInstall($app))->templates_list($config['seller']['store']);
  
             $render = $template['layouts']['templates'] ? $template['layouts']['templates'] : 'templates.html';
         }
@@ -1286,7 +1301,7 @@ $routing->get($admin_uri.$admin_router.'template', function ($request, $response
 });
 
 // Страница шаблона
-$routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($request, $response, $args) use ($core, $app) {
+$routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -1315,7 +1330,7 @@ $routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function 
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -1351,7 +1366,7 @@ $routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function 
     if (isset($session->authorize) && isset($alias)) {
         if ($session->role_id) {
             // Подключаем класс
-            $templates = new \Pllano\ApiShop\Admin\Template($config, $alias);
+            $templates = new PluginTemplate($config, $alias);
             $content = $templates->getOne();
             $render = $template['layouts']['template'] ? $template['layouts']['template'] : 'template.html';
         }
@@ -1398,7 +1413,7 @@ $routing->get($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function 
 });
 
 // Редактируем настройки шаблона
-$routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function ($request, $response, $args) use ($core, $app) {
+$routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -1427,7 +1442,7 @@ $routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -1463,7 +1478,7 @@ $routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function
     if (isset($session->authorize) && isset($alias)) {
         if ($session->role_id) {
             // Подключаем класс
-            $templates = new \Pllano\ApiShop\Admin\Template($config, $alias);
+            $templates = new PluginTemplate($config, $alias);
             // Получаем массив
             $arrJson = $templates->getOne();
             //print_r($content);
@@ -1521,7 +1536,7 @@ $routing->post($admin_uri.$admin_router.'template/{alias:[a-z0-9_-]+}', function
 });
 
 // Станица пакета
-$routing->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function ($request, $response, $args) use ($core, $app) {
+$routing->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     // Получаем конфигурацию
     $config = $core->get('config');
     // Передаем данные Hooks для обработки ожидающим классам
@@ -1554,7 +1569,7 @@ $routing->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -1590,7 +1605,7 @@ $routing->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $packages = new Packages($config);
+            $packages = new PluginPackages($config);
             if ($request->getMethod() == 'POST') {
                 $paramPost = $request->getParsedBody();
                 $packages->put($paramPost);
@@ -1644,7 +1659,7 @@ $routing->map(['GET', 'POST'], $admin_uri.$admin_router.'package/{vendor:[a-z0-9
 });
  
 // Изменение статуса пакета
-$routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function ($request, $response, $args) use ($core, $app) {
+$routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a-z0-9_-]+}.{package:[a-z0-9_-]+}', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Подключаем конфиг Settings\Config
     $config = $core->get('config');
@@ -1683,11 +1698,11 @@ $routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе токена
-                (new Security())->token($request);
+                (new ModelSecurity($core))->token($request);
             }
             } else {
             // Сообщение об Атаке или подборе токена
-            (new Security())->token($request);
+            (new ModelSecurity($core))->token($request);
         }
     }
     try {
@@ -1700,11 +1715,11 @@ $routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a
         if (isset($session->authorize)) {
             if ($session->authorize != 1 || $session->role_id != 100) {
                 // Сообщение об Атаке или подборе csrf
-                (new Security())->csrf($request);
+                (new ModelSecurity($core))->csrf($request);
             }
             } else {
             // Сообщение об Атаке или подборе csrf
-            (new Security())->csrf($request);
+            (new ModelSecurity($core))->csrf($request);
         }
     }
     
@@ -1718,7 +1733,7 @@ $routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a
             if ($session->authorize == 1 && $session->role_id == 100) {
                 if (isset($vendor) && isset($package) && isset($querys)) {
                     // Подключаем класс
-                    $packages = new Packages($config);
+                    $packages = new PluginPackages($config);
                     if($querys == 'delete') {
                         $content = $packages->del($vendor, $package);
                     } elseif($querys == 'activate'){
@@ -1759,7 +1774,7 @@ $routing->post($admin_uri.$admin_router.'package-{querys:[a-z0-9_-]+}/{vendor:[a
 });
 
 // Список пакетов
-$routing->get($admin_uri.$admin_router.'packages', function ($request, $response, $args) use ($core, $app) {
+$routing->get($admin_uri.$admin_router.'packages', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -1782,7 +1797,7 @@ $routing->get($admin_uri.$admin_router.'packages', function ($request, $response
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -1818,7 +1833,7 @@ $routing->get($admin_uri.$admin_router.'packages', function ($request, $response
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $packages = new Packages($config);
+            $packages = new PluginPackages($config);
             // Получаем массив
             $content = $packages->get();
             $render = $template['layouts']['packages'] ? $template['layouts']['packages'] : 'packages.html';
@@ -1867,7 +1882,7 @@ $routing->get($admin_uri.$admin_router.'packages', function ($request, $response
 });
 
 // Репозиторий
-$routing->get($admin_uri.$admin_router.'packages-install', function ($request, $response, $args) use ($core, $app) {
+$routing->get($admin_uri.$admin_router.'packages-install', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -1890,7 +1905,7 @@ $routing->get($admin_uri.$admin_router.'packages-install', function ($request, $
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -1926,7 +1941,7 @@ $routing->get($admin_uri.$admin_router.'packages-install', function ($request, $
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $packages = new Packages($config);
+            $packages = new PluginPackages($config);
             // Получаем массив
             $content = $packages->get();
             $render = $template['layouts']['packages'] ? $template['layouts']['packages'] : 'packages.html';
@@ -1975,7 +1990,7 @@ $routing->get($admin_uri.$admin_router.'packages-install', function ($request, $
 });
 
 // Страница установки из json файла
-$routing->get($admin_uri.$admin_router.'packages-install-json', function ($request, $response, $args) use ($core, $app) {
+$routing->get($admin_uri.$admin_router.'packages-install-json', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -1998,7 +2013,7 @@ $routing->get($admin_uri.$admin_router.'packages-install-json', function ($reque
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2034,7 +2049,7 @@ $routing->get($admin_uri.$admin_router.'packages-install-json', function ($reque
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $packages = new Packages($config);
+            $packages = new PluginPackages($config);
             // Получаем массив
             $content = $packages->get();
             $render = $template['layouts']['packages'] ? $template['layouts']['packages'] : 'packages.html';
@@ -2083,7 +2098,7 @@ $routing->get($admin_uri.$admin_router.'packages-install-json', function ($reque
 });
 
 // Глобальные настройки
-$routing->get($admin_uri.$admin_router.'config', function ($request, $response, $args) use ($core, $app) {
+$routing->get($admin_uri.$admin_router.'config', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -2106,7 +2121,7 @@ $routing->get($admin_uri.$admin_router.'config', function ($request, $response, 
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2142,7 +2157,7 @@ $routing->get($admin_uri.$admin_router.'config', function ($request, $response, 
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $settings = new \Pllano\ApiShop\Admin\Config($config);
+            $settings = new PluginConfig($config);
             // Получаем массив с настройками шаблона
             $content = $settings->get();
             $render = $template['layouts']['config'] ? $template['layouts']['config'] : 'config.html';
@@ -2192,7 +2207,7 @@ $routing->get($admin_uri.$admin_router.'config', function ($request, $response, 
 });
 
 // Редактируем глобальные настройки
-$routing->post($admin_uri.$admin_router.'config', function ($request, $response, $args) use ($core, $app) {
+$routing->post($admin_uri.$admin_router.'config', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -2215,7 +2230,7 @@ $routing->post($admin_uri.$admin_router.'config', function ($request, $response,
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2251,7 +2266,7 @@ $routing->post($admin_uri.$admin_router.'config', function ($request, $response,
     if (isset($session->authorize)) {
         if ($session->role_id == 100) {
             // Подключаем класс
-            $settings = new \Pllano\ApiShop\Admin\Config($config);
+            $settings = new PluginConfig($config);
             // Массив из POST
             $paramPost = $request->getParsedBody();
             // Сохраняем в файл
@@ -2306,7 +2321,7 @@ $routing->post($admin_uri.$admin_router.'config', function ($request, $response,
 });
 
 // Список баз данных
-$routing->get($admin_uri.$admin_router.'db', function ($request, $response, $args) use ($core, $app) {
+$routing->get($admin_uri.$admin_router.'db', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -2329,7 +2344,7 @@ $routing->get($admin_uri.$admin_router.'db', function ($request, $response, $arg
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2364,7 +2379,7 @@ $routing->get($admin_uri.$admin_router.'db', function ($request, $response, $arg
     
     if (isset($session->authorize)) {
         if ($session->role_id) {
-            $adminDatabase = new AdminDatabase($config);
+            $adminDatabase = new PluginDatabase($config);
             $content = $adminDatabase->list();
             $render = $template['layouts']['db'] ? $template['layouts']['db'] : 'db.html';
         }
@@ -2411,7 +2426,7 @@ $routing->get($admin_uri.$admin_router.'db', function ($request, $response, $arg
 });
 
 // Страница таблицы (ресурса)
-$routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function ($request, $response, $args) use ($core, $app) {
+$routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -2440,7 +2455,7 @@ $routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2506,7 +2521,7 @@ $routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]
             //$url_path = parse_url($request->getUri(), PHP_URL_PATH);
             $url_path = $path;
             // Подключаем сортировки
-            $filter = new Filter($url_path, $arr);
+            $filter = new PluginFilter($url_path, $arr);
             $orderArray = $filter->order();
             $limitArray = $filter->limit();
             // Формируем массив по которому будем сортировать
@@ -2612,7 +2627,7 @@ $routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]
 });
 
 // Глобально
-$routing->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function ($request, $response, $args) use ($core, $app) {
+$routing->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}]', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
     // Получаем конфигурацию
     $config = $core->get('config');
@@ -2647,7 +2662,7 @@ $routing->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}
     // Подключаем сессию
     $session = $core->get('session');
     // Данные пользователя из сессии
-    $sessionUser =(new SessionUser($config))->get();
+    $sessionUser =(new ModelSessionUser($core))->get();
     // Читаем ключи
     $token_key = $config['key']['token'];
     // Генерируем токен
@@ -2680,11 +2695,11 @@ $routing->get($admin_uri.$admin_router.'_{resource:[a-z0-9_-]+}[/{id:[a-z0-9_]+}
     $og_locale = $config['settings']['site']['og_locale'];
     $og_url = $config['settings']['site']['og_url'];
     
-    $control = new Control($config);
-    $test = $control->test($resource);
+    $control = new PluginResources($config);
+    $test = $control->test_query($resource);
     if ($test === true) {
         
-        $site = new Site($config);
+        $site = new ModelSite($config);
         $site_config = $site->get();
         $site_template = $site->template();
         

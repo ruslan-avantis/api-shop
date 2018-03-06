@@ -56,8 +56,17 @@ function set_cookie($session_name, $identificator, $period = 60*60*24*365)
 {
     if (https() === true) {
         setcookie($session_name, $identificator, time() + $period, '/', domain(), true, true);
-		} else {
+	} else {
         setcookie($session_name, $identificator, time() + $period, '/', domain());
+	}
+}
+// clean cookie
+function clean_cookie($session_name, $period = 60*60*24*365)
+{
+    if (https() === true) {
+        setcookie($session_name, null, time() - $period, '/', domain(), true, true);
+	} else {
+        setcookie($session_name, null, time() - $period, '/', domain());
 	}
 }
 

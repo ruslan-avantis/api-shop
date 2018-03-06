@@ -69,7 +69,7 @@ if (file_exists($autoRequire) && file_exists($auto_require)) {
     $routingConfig = [];
     $routingConfig['debug'] = true;
     $routingConfig['displayErrorDetails'] = true;
-    $routingConfig['addContentLengthHeader'] = false;
+    $routingConfig['addContentLengthHeader'] = true;
     $routingConfig['determineRouteBeforeAppMiddleware'] = true;
     $routingConfig = routing_config($package['require']['slim.slim']['settings']);
 

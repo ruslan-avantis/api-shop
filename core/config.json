@@ -19,7 +19,7 @@
             "path": "cache\/_file_cache"
         },
         "json": {
-            "pool": "\\Pllano\\ApiShop\\Adapters\\Cache\\JsonCache",
+            "pool": "\\Pllano\\Core\\Adapters\\Cache\\JsonCache",
             "path": "cache\/_json_cache"
         },
         "memcached": {
@@ -43,7 +43,7 @@
             "port": "11211"
         },
         "elasticsearch": {
-            "pool": "\\Pllano\\ApiShop\\Adapters\\Cache\\Elasticsearch",
+            "pool": "\\Pllano\\Core\\Adapters\\Cache\\Elasticsearch",
             "host": "localhost",
             "port": "9200",
             "type": "api_shop",
@@ -143,10 +143,10 @@
     },
     "vendor": {
         "modules": {
-            "manager": "\\Pllano\\ApiShop\\ModulesManager"
+            "manager": "\\Pllano\\Core\\Managers\\Modules"
         },
         "controllers": {
-            "controller": "\\Pllano\\ApiShop\\ControllersManager"
+            "controller": "\\Pllano\\Core\\Managers\\Controllers"
         },
         "hooks": {
             "hook": "\\Pllano\\Hooks\\Hook"
@@ -158,13 +158,13 @@
             "run": "\\Adbar\\Session",
             "session": "\\Adbar\\Session",
             "session_name": "_session",
-            "cookie": "\\Pllano\\ApiShop\\Models\\User"
+            "cookie": "\\Pllano\\Core\\Models\\ModelUser"
         },
         "detector": {
             "language": "\\Sinergi\\BrowserDetector\\Language"
         },
         "language": {
-            "multilanguage": "\\Pllano\\ApiShop\\Models\\Language"
+            "multilanguage": "\\Pllano\\Core\\Models\\ModelLanguage"
         },
         "http_client": {
             "client": "\\GuzzleHttp\\Client"
@@ -216,12 +216,12 @@
             },
             "cart": {
                 "route": "\/cart\/",
-                "controller": "\\Pllano\\ApiShop\\Controllers\\Cart",
+                "controller": "\\Pllano\\Core\\Controllers\\CartController",
                 "blocks": "header,nav,footer,cart"
             },
             "language": {
                 "route": "\/language",
-                "controller": "\\Pllano\\ApiShop\\Controllers\\Language",
+                "controller": "\\Pllano\\Core\\Controllers\\LanguageController",
                 "blocks": "language"
             },
             "logout": {
@@ -237,7 +237,7 @@
                 "blocks": "check_in"
             },
             "error": {
-                "controller": "\\Pllano\\ApiShop\\Controllers\\Error",
+                "controller": "\\Pllano\\Core\\Controllers\\ErrorController",
                 "blocks": "header,nav,footer,error"
             }
         },
@@ -270,7 +270,7 @@
             },
             "products_action": {
                 "state": 1,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Products\\ProductsAction",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\Products\\ModuleProductsAction",
                 "package": "pllano.products-action",
                 "function": "get",
                 "view": "modules\/products\/products_action.html",
@@ -286,7 +286,7 @@
             },
             "products_hit": {
                 "state": 1,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Products\\ProductsHits",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\Products\\ModuleProductsHits",
                 "package": "pllano.products-hit",
                 "function": "get",
                 "view": "modules\/products\/products_hit.html",
@@ -304,14 +304,14 @@
         "article": {
             "article": {
                 "state": 1,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Articles\\Article",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\Articles\\ModuleArticle",
                 "package": "pllano.article",
                 "function": "get",
                 "view": "modules\/articles\/article.html"
             },
             "breadcrumbs": {
                 "state": 0,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Breadcrumbs",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\ModuleBreadcrumbs",
                 "package": "pllano.breadcrumbs",
                 "function": "get",
                 "view": "modules\/breadcrumbs.html"
@@ -320,7 +320,7 @@
         "product": {
             "product": {
                 "state": 1,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Products\\Product",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\Products\\ModuleProduct",
                 "package": "pllano.product",
                 "function": "get",
                 "view": "modules\/products\/product.html",
@@ -329,7 +329,7 @@
             },
             "breadcrumbs": {
                 "state": 0,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Breadcrumbs",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\ModuleBreadcrumbs",
                 "package": "pllano.breadcrumbs",
                 "function": "get",
                 "view": "modules\/breadcrumbs.html"
@@ -338,7 +338,7 @@
         "quick_view": {
             "quick_view": {
                 "state": 1,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Products\\ProductQuickView",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\Products\\ModuleProductQuickView",
                 "package": "pllano.quick-view",
                 "function": "get",
                 "view": "modules\/products\/quick_view.html",
@@ -358,7 +358,7 @@
             },
             "breadcrumbs": {
                 "state": 0,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Breadcrumbs",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\ModuleBreadcrumbs",
                 "package": "pllano.breadcrumbs",
                 "function": "get",
                 "view": "modules\/breadcrumbs.html"
@@ -366,14 +366,14 @@
             "category": {
                 "state": 1,
                 "view": "modules\/category\/category.html",
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Categories\\Category",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\Categories\\ModuleCategory",
                 "package": "pllano.category",
                 "function": "get",
                 "vendors": {
                     "products": "\\Pllano\\ApiShop\\Modules\\Categories\\Products",
-                    "paginator": "\\Pllano\\ApiShop\\Modules\\Categories\\Pagination",
-                    "filter": "\\Pllano\\ApiShop\\Modules\\Categories\\Filter",
-                    "properties": "\\Pllano\\ApiShop\\Modules\\Categories\\Properties"
+                    "properties": "\\Pllano\\ApiShop\\Modules\\Categories\\Properties",
+                    "paginator": "\\Pllano\\Core\\Plugins\\PluginPagination",
+                    "filter": "\\Pllano\\Core\\Plugins\\PluginFilter"
                 },
                 "helper": {
                     "products_list": "modules\/category\/products_list.html",
@@ -391,7 +391,7 @@
         "sign_in": {
             "sign_in": {
                 "state": 1,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Blank",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\ModuleBlank",
                 "package": "pllano.blank",
                 "function": "get",
                 "view": "sign-in.html"
@@ -400,7 +400,7 @@
         "sign_up": {
             "sign_up": {
                 "state": 1,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Blank",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\ModuleBlank",
                 "package": "pllano.blank",
                 "function": "get",
                 "view": "sign-up.html"
@@ -409,7 +409,7 @@
         "login": {
             "login": {
                 "state": 1,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Account\\Login",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\Account\\ModuleLogin",
                 "package": "pllano.login",
                 "function": "post"
             }
@@ -417,7 +417,7 @@
         "logout": {
             "logout": {
                 "state": 1,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Account\\Logout",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\Account\\ModuleLogout",
                 "package": "pllano.logout",
                 "function": "post"
             }
@@ -425,7 +425,7 @@
         "check_in": {
             "check_in": {
                 "state": 1,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Account\\CheckIn",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\Account\\ModuleCheckIn",
                 "package": "pllano.check-in",
                 "function": "post"
             }
@@ -438,7 +438,7 @@
             },
             "top_menu": {
                 "state": 1,
-                "vendor": "\\Pllano\\ApiShop\\Modules\\Menu\\TopMenu",
+                "vendor": "\\Pllano\\ApiShop\\Modules\\Menu\\ModuleTopMenu",
                 "package": "pllano.top-menu",
                 "function": "get"
             }
