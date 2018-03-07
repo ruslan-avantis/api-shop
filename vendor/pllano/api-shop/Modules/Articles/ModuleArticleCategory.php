@@ -14,7 +14,7 @@ namespace Pllano\ApiShop\Modules\Articles;
 
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
 use Psr\Container\ContainerInterface as Container;
-use Pllano\Core\Interfaces\ModuleInterface;
+use Pllano\Interfaces\ModuleInterface;
 use Pllano\Core\Module;
 
 class ModuleArticleCategory extends Module implements ModuleInterface

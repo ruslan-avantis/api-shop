@@ -11,7 +11,7 @@ namespace Pllano\ApiShop\Models;
 
 use Psr\Container\ContainerInterface as Container;
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
-use Pllano\Core\Interfaces\ModelInterface;
+use Pllano\Interfaces\ModelInterface;
 use Pllano\Core\Model;
 
 class ModelBlank extends Model implements ModelInterface

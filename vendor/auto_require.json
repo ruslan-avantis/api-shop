@@ -1,6 +1,18 @@
 {
 	"update": {},
 	"require": {
+		"pllano.interfaces": {
+			"namespace": "Pllano\\Interfaces",
+			"dir": "\/pllano\/interfaces\/src\/Interfaces",
+			"link": "https:\/\/github.com\/pllano\/interfaces\/archive\/master.zip",
+			"git": "https:\/\/github.com\/pllano\/interfaces",
+			"name": "interfaces",
+			"version": "master",
+			"vendor": "pllano",
+			"state": 1,
+			"system_package": 1,
+			"settings": {}
+		},
 		"pllano.core": {
 			"namespace": "Pllano\\Core",
 			"dir": "\/pllano\/core\/src",

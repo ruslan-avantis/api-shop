@@ -13,7 +13,7 @@
 namespace Pllano\ApiShop\Modules\Blank;
 
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
-use Pllano\Core\Interfaces\ModuleInterface;
+use Pllano\Interfaces\ModuleInterface;
 use Pllano\Core\Module;
 
 class ModuleBlank extends Module implements ModuleInterface
