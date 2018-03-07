@@ -150,20 +150,21 @@ class ModuleCategory extends Module implements ModuleInterface
             "120" => "120"
         ];
         $limitArray = $filter->limit($limitArr);
-		
+
 		$language = $this->languages->get($request);
-		
-		//print_r($language);
 
         // Формируем массив по которому будем сортировать
-        $sortArr = [
+		$sortArr = [];
+		if (isset($language)) {
+            $sortArr = [
             "name" => $language["51"],
             "type" => $language["46"],
             "brand" => $language["47"],
             "serie" => $language["48"],
             "articul" => $language["49"],
             "price" => $language["112"]
-        ];
+            ];
+		}
         $sortArray = $filter->sort($sortArr);
  
         if (isset($product_type)) {

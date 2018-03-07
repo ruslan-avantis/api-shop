@@ -31,9 +31,7 @@ $admin_template = $core->get('admin_template');
 $logger = $core->get('logger');
 $template = $core->get('template');
 $config = $core->get('config');
-
-// Run User Session
-(new \Pllano\Core\Models\ModelUser($core))->run();
+$config = $core->get('config');
 
 // Register middleware
 require CORE_PATH . '/middlewares.php';
@@ -43,9 +41,11 @@ foreach ($_middlewares as $_middleware) {
     require $_middleware;
 }
 
-// Configuration routers
-$router = $config['routers']['site'];
+// Run User Session
+(new \Pllano\Core\Models\ModelUser($core))->run();
 
+// Configuration routers
+$routes = $config['routers']['site'];
 // Register routes
 require CORE_PATH . '/routers.php';
 // Automatically register routers

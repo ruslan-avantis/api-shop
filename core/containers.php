@@ -20,7 +20,7 @@ use Pllano\Core\Models\{
 $container = new Container();
 // Создаем контейнер с глобальной конфигурацией
 $container['config'] = $config;
-$container['site_id'] = $config['settings']['site_id'] ?? 1;
+$container['siteId'] = $config['settings']['site_id'] ?? 1;
 // Создаем контейнер нача работы скрипта
 $container['time_start'] = $time_start;
 // Создаем контейнер с конфигурацией пакетов
