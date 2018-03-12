@@ -46,6 +46,12 @@ if (file_exists(APP_PATH . '/vendor')) {
 $autoRequire = VENDOR_PATH .'/AutoRequire.php';
 // Specify the path to the file auto_require.json
 $auto_require = VENDOR_PATH .'/auto_require.json';
+if (!file_exists($autoRequire)) {
+    file_put_contents($autoRequire, file_get_contents("https://raw.githubusercontent.com/pllano/auto-require/master/AutoRequire.php"));
+}
+if (!file_exists($auto_require)) {
+    file_put_contents($auto_require, file_get_contents("https://raw.githubusercontent.com/pllano/auto-require/master/auto_require.json"));
+}
 
 if (file_exists($autoRequire) && file_exists($auto_require)) {
 
