@@ -22,11 +22,10 @@ class ModuleArticleCategory extends Module implements ModuleInterface
 
     public function __construct(Container $app, $route = null, $block = null, $modulKey = null, $modulVal = [])
     {
-		parent::__construct($app, $route, $block, $modulKey, $modulVal);
-		$this->connectContainer();
-		$this->connectDatabases();
         $this->_table = 'article_category';
         $this->_idField = 'article_category_id';
+		parent::__construct($app, $route, $block, $modulKey, $modulVal);
+		$this->connectContainer();
     }
 
     public function get(Request $request)
@@ -47,47 +46,35 @@ class ModuleArticleCategory extends Module implements ModuleInterface
         // Конфигурация пакета
         $moduleArr['config'] = $this->modulVal;
 
-        $responseArr = [];
-        // Отдаем роутеру RouterDb конфигурацию
-        $this->routerDb->setConfig([], 'Apis');
-        // Пингуем для ресурса указанную и доступную базу данных
-        $this->_database = $this->routerDb->ping($this->_table);
-        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-        $this->db = $this->routerDb->run($this->_database);
-        // Массив c запросом
         $query = [
             "alias" => $alias,
 			"state" => 1
         ];
-        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
+        // Database GET
         $responseArr = $this->db->get($this->_table, $query);
 
-        if (isset($responseArr["headers"]["code"])) {
-            if ($responseArr["headers"]["code"] == 200 || $responseArr["headers"]["code"] == "200") {
+        if (isset($responseArr)) {
                 // Если данные в виде объекта переводим в массив
-                if(is_object($responseArr["body"]["items"]["0"]["item"])) {
-                    $arr = (array)$responseArr["body"]["items"]["0"]["item"];
-                } elseif (is_array($responseArr["body"]["items"]["0"]["item"])) {
-                    $arr = $responseArr["body"]["items"]["0"]["item"];
+                $data = $responseArr['0'];
+                if(is_object($data)) {
+                    $data = (array)$data;
                 }
- 
-                $arr["text"] = htmlspecialchars_decode($arr["text"]);
-                $arr["text_ru"] = htmlspecialchars_decode($arr["text_ru"]);
-                $arr["text_ua"] = htmlspecialchars_decode($arr["text_ua"]);
-                $arr["text_en"] = htmlspecialchars_decode($arr["text_en"]);
-                $arr["text_de"] = htmlspecialchars_decode($arr["text_de"]);
-                $contentArr['content'] = $arr;
 
-                $head["title"] = $arr["title"];
-                $head["seo_title"] = $arr["seo_title"];
-                $head["seo_keywords"] = $arr["seo_keywords"];
-                $head["seo_description"] = $arr["seo_description"];
-                $head["og_url"] = $arr["og_url"];
-                $head["og_title"] = $arr["og_title"];
-                $head["og_description"] = $arr["og_description"];
+                $data["text"] = htmlspecialchars_decode($data["text"]);
+                $data["text_ru"] = htmlspecialchars_decode($data["text_ru"]);
+                $data["text_ua"] = htmlspecialchars_decode($data["text_ua"]);
+                $data["text_en"] = htmlspecialchars_decode($data["text_en"]);
+                $data["text_de"] = htmlspecialchars_decode($data["text_de"]);
+                $contentArr['content'] = $data;
+
+                $head["title"] = $data["title"];
+                $head["seo_title"] = $data["seo_title"];
+                $head["seo_keywords"] = $data["seo_keywords"];
+                $head["seo_description"] = $data["seo_description"];
+                $head["og_url"] = $data["og_url"];
+                $head["og_title"] = $data["og_title"];
+                $head["og_description"] = $data["og_description"];
                 $heads['head'] = $head;
-
-            }
         }
  
         $content['content']['modules'][$this->modulKey] = $contentArr + $moduleArr;

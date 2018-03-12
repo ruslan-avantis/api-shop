@@ -146,9 +146,13 @@ function routing_config($routing_settings_arr = []): array
 
 function today() {
     return date("d-m-Y H:i:s");
+	// 0000-00-00 00:00:00
 }
 
 function today_date() {
+    return date("Y-m-d H:i:s");
+}
+function real_date() {
     return date("Y-m-d H:i:s");
 }
 

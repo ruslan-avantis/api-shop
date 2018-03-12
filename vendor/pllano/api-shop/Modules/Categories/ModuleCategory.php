@@ -22,11 +22,10 @@ class ModuleCategory extends Module implements ModuleInterface
 
     public function __construct(Container $app, $route = null, $block = null, $modulKey = null, $modulVal = [])
     {
-		parent::__construct($app, $route, $block, $modulKey, $modulVal);
-		$this->connectContainer();
-		$this->connectDatabases();
         $this->_table = 'category';
         $this->_idField = 'category_id';
+		parent::__construct($app, $route, $block, $modulKey, $modulVal);
+		$this->connectContainer();
     }
 
     public function get(Request $request)
@@ -48,7 +47,7 @@ class ModuleCategory extends Module implements ModuleInterface
         $heads = [];
         $return = [];
         $render = '';
-        $category = [];
+        $data = [];
  
         $render = $moduleArr['config']['view'] ? $moduleArr['config']['view'] : $this->template['layouts'][$this->route];
         
@@ -60,57 +59,48 @@ class ModuleCategory extends Module implements ModuleInterface
 		$product_type = null;
 
         if (isset($alias)) {
+            
 
-            $responseArr = [];
-            // Отдаем роутеру RouterDb конфигурацию
-            $this->routerDb->setConfig([], 'Apis');
-            // Пингуем для ресурса указанную и доступную базу данных
-            $this->_database = $this->routerDb->ping($this->_table);
-            // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-            $this->db = $this->routerDb->run($this->_database);
-            // Массив c запросом
             $query = [
                 "alias" => $alias,
 			    "state" => 1
             ];
-            // Отправляем запрос к БД в формате адаптера. В этом случае Apis
-            $responseArr = $this->db->get($this->_table, $query);
+            $responseArr = $this->db->get($this->_table, $query) ?? [];
 
-            if (isset($responseArr["headers"]["code"]) && (int)$responseArr["headers"]["code"] == 200) {
-                    $category = $responseArr['body']['items']['0']['item'];
-
-                    if(is_object($category)) {
-                        $category = (array)$category;
+            if (isset($responseArr['0'])) {
+                    $data = $responseArr['0'];
+                    if(is_object($data)) {
+                        $data = (array)$data;
                     }
 
-                    $head["title"] = $category['seo_title'] ? $category['seo_title'] : $category['title'];
-                    $head["keywords"] = $category['seo_keywords'] ? $category['seo_keywords'] : $category['title'];
-                    $head["description"] = $category['seo_description'] ? $category['seo_description'] : $category['title'];
-                    $head["og_title"] = $category['og_title'] ? $category['og_title'] : $category['title'];
-                    $head["og_description"] = $category['og_description'] ? $category['og_description'] : $category['title'];
-                    $head["og_image"] = $category['og_image'] ? $category['og_image'] : '';
-                    $head["og_type"] = $category['og_type'] ? $category['og_type'] : '';
-                    $head["robots"] = $category['robots'] ? $category['robots'] : 'index, follow';
-                    $head["products_template"] = $category['products_template'] ? $category['products_template'] : $moduleArr['config']['helper']['products_list'];
-                    $head["products_limit"] = $category['products_limit'] ? $category['products_limit'] : $moduleArr['config']['limit'];
-                    $head["products_order"] = $category['products_order'] ? $category['products_order'] : $moduleArr['config']['order'];
-                    $head["products_sort"] = $category['products_sort'] ? $category['products_sort'] : $moduleArr['config']['sort'];
+                    $head["title"] = $data['seo_title'] ? $data['seo_title'] : $data['title'];
+                    $head["keywords"] = $data['seo_keywords'] ? $data['seo_keywords'] : $data['title'];
+                    $head["description"] = $data['seo_description'] ? $data['seo_description'] : $data['title'];
+                    $head["og_title"] = $data['og_title'] ? $data['og_title'] : $data['title'];
+                    $head["og_description"] = $data['og_description'] ? $data['og_description'] : $data['title'];
+                    $head["og_image"] = $data['og_image'] ? $data['og_image'] : '';
+                    $head["og_type"] = $data['og_type'] ? $data['og_type'] : '';
+                    $head["robots"] = $data['robots'] ? $data['robots'] : 'index, follow';
+                    $head["products_template"] = $data['products_template'] ? $data['products_template'] : $moduleArr['config']['helper']['products_list'];
+                    $head["products_limit"] = $data['products_limit'] ? $data['products_limit'] : $moduleArr['config']['limit'];
+                    $head["products_order"] = $data['products_order'] ? $data['products_order'] : $moduleArr['config']['order'];
+                    $head["products_sort"] = $data['products_sort'] ? $data['products_sort'] : $moduleArr['config']['sort'];
  
-                    if (isset($category['categories_template'])) {
+                    if (isset($data['categories_template'])) {
                         $themes_dir = $this->config["template"]["front_end"]["themes"]["dir"];
                         $templates_dir = $this->config["template"]["front_end"]["themes"]["templates"];
                         $template_name = $this->config["template"]["front_end"]["themes"]["template"];
-                        $templates_test = $themes_dir.'/'.$templates_dir.'/'.$template_name.'/layouts/'.$category['categories_template'];
+                        $templates_test = $themes_dir.'/'.$templates_dir.'/'.$template_name.'/layouts/'.$data['categories_template'];
                         if (file_exists($templates_test)) {
-                            $render = $category['categories_template'] ? $category['categories_template'] : $moduleArr['config']['view'];
+                            $render = $data['categories_template'] ? $data['categories_template'] : $moduleArr['config']['view'];
                         }
                     }
                     // Собираем данные в массив
                     $heads['head'] = $head;
             }
-            if (isset($category['product_type'])) {
-                //$product_type = explode(',', str_replace(['"', "'", " "], '', $category['product_type']));
-                $product_type = $category['product_type'];
+            if (isset($data['product_type'])) {
+                //$product_type = explode(',', str_replace(['"', "'", " "], '', $data['product_type']));
+                $product_type = $data['product_type'];
             }
         }
 

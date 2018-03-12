@@ -59,7 +59,7 @@ class ModuleLogin extends Module implements ModuleInterface
 
                         $responseArr = [];
                         // Отдаем роутеру RouterDb конфигурацию
-                        $this->routerDb->setConfig([], 'Apis');
+                        $this->routerDb->setConfig([], 'Pllano', 'Apis');
                         // Пингуем для ресурса указанную и доступную базу данных
                         $this->_database = $this->routerDb->ping($this->_table);
                         // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
@@ -67,46 +67,44 @@ class ModuleLogin extends Module implements ModuleInterface
                         // Отправляем запрос к БД в формате адаптера. В этом случае Apis
                         $responseArr = $this->db->get($this->_table, [], $user_id);
 
-                        if (isset($responseArr["headers"]["code"]) && (int)$responseArr["headers"]["code"] == 200) {
+                        // Подключаем сессию
+                        $session = $this->app->get('session');
 
-							// Подключаем сессию
-                            $session = $this->app->get('session');
+                        if(is_object($responseArr["0"])) {
+                            $user = (array)$responseArr["0"];
+                        } elseif (is_array($responseArr["0"])) {
+                            $user = $responseArr["0"];
+                        }
 
-                            if(is_object($responseArr["body"]["items"]["0"]["item"])) {
-                                $user = (array)$responseArr["body"]["items"]["0"]["item"];
-                            } elseif (is_array($responseArr["body"]["items"]["0"]["item"])) {
-                                $user = $responseArr["body"]["items"]["0"]["item"];
+                        if ($user["state"] == 1) {
+
+                            // Читаем ключи
+                            $session_key = $this->config['key']['session'];
+                            $crypt = $this->config['vendor']['crypto']['crypt'];
+
+                            $this->session->authorize = 1;
+                            $this->session->role_id = $user["role_id"];
+                            if($this->session->role_id == 100) {
+                                $this->session->admin_uri = random_alias_id();
                             }
+                            $this->session->user_id = $user["id"];
+                            $this->session->iname = $crypt::encrypt($user["iname"], $session_key);
+                            $this->session->fname = $crypt::encrypt($user["fname"], $session_key);
+                            $this->session->phone = $crypt::encrypt($user["phone"], $session_key);
+                            $this->session->email = $crypt::encrypt($user["email"], $session_key);
 
-                            if ($user["state"] == 1) {
+                            $callbackStatus = 200;
 
-                                // Читаем ключи
-                                $session_key = $this->config['key']['session'];
-								$crypt = $this->config['vendor']['crypto']['crypt'];
+                        } else {
+                            $this->session->authorize = null;
+                            $this->session->role_id = null;
+                            $this->session->user_id = null;
+                            unset($this->session->authorize); // удаляем authorize
+                            unset($this->session->role_id); // удаляем role_id
+                            unset($this->session->user_id); // удаляем role_id
+                            $callbackText = 'Ваш аккаунт заблокирован';
+                        }
 
-                                $this->session->authorize = 1;
-                                $this->session->role_id = $user["role_id"];
-                                if($this->session->role_id == 100) {
-                                    $this->session->admin_uri = random_alias_id();
-                                }
-                                $this->session->user_id = $user["id"];
-                                $this->session->iname = $crypt::encrypt($user["iname"], $session_key);
-                                $this->session->fname = $crypt::encrypt($user["fname"], $session_key);
-                                $this->session->phone = $crypt::encrypt($user["phone"], $session_key);
-                                $this->session->email = $crypt::encrypt($user["email"], $session_key);
-
-                                $callbackStatus = 200;
-
-                            } else {
-                                $this->session->authorize = null;
-                                $this->session->role_id = null;
-                                $this->session->user_id = null;
-                                unset($this->session->authorize); // удаляем authorize
-                                unset($this->session->role_id); // удаляем role_id
-                                unset($this->session->user_id); // удаляем role_id
-                                $callbackText = 'Ваш аккаунт заблокирован';
-                            }
-						}
 					} else {
 						$callbackText = 'Ошибка cookie';
 					}

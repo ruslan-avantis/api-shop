@@ -98,7 +98,7 @@ class ModuleCheckIn extends Module implements ModuleInterface
 
                         $responseArr = [];
                         // Отдаем роутеру RouterDb конфигурацию
-                        $this->routerDb->setConfig([], 'Apis');
+                        $this->routerDb->setConfig([], 'Pllano', 'Apis');
                         // Пингуем для ресурса указанную и доступную базу данных
                         $this->_database = $this->routerDb->ping($this->_table);
                         // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)

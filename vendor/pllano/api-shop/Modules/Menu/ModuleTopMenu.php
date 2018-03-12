@@ -12,64 +12,49 @@ namespace Pllano\ApiShop\Modules\Menu;
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
 use Psr\Container\ContainerInterface as Container;
 use Pllano\Interfaces\ModuleInterface;
-use Pllano\Core\Module;
+use Pllano\Core\{Module, Model};
 
 class ModuleTopMenu extends Module implements ModuleInterface
 {
 
     public function __construct(Container $app, string $route = null, string $block = null, string $modulKey = null, array $modulVal = [])
     {
-		parent::__construct($app, $route, $block, $modulKey, $modulVal);
-		//$this->connectContainer();
-		$this->connectDatabases();
-        $this->_table = 'category';
+		$this->_table = 'category';
         $this->_idField = 'category_id';
+		parent::__construct($app, $route, $block, $modulKey, $modulVal);
     }
-	
+
     public function get(Request $request)
     {
         $return = [];
-		// Конфигурация пакета
         $moduleArr = [];
         $moduleArr['config'] = $this->modulVal;
 
-        $menuArr = [];
-        // Отдаем роутеру RouterDb конфигурацию
-        $this->routerDb->setConfig([], 'Apis');
-        // Пингуем для ресурса указанную и доступную базу данных
-        $this->_database = $this->routerDb->ping($this->_table);
-        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-        $this->db = $this->routerDb->run($this->_database);
-        // Массив c запросом
-        $query = ["menu" => 1, "state" => 1, "sort" => "sort", "order" => "ASC", "offset" => 0, "limit" => 5];
-        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
-        $menuArr = $this->db->get($this->_table, $query);
+		$query = ["menu" => 1, "state" => 1, "sort" => "sort", "order" => "ASC", "offset" => 0, "limit" => 5];
+		// Database GET
+        $responseArr = $this->db->get($this->_table, $query) ?? [];
 
-        if (isset($menuArr['headers']['code']) && (int)$menuArr['headers']['code'] == 200) {
+        if (isset($responseArr)) {
             $resp = [];
-            $item = [];
+            $data = [];
             $submenu = [];
-            foreach($menuArr['body']['items'] as $value)
+            foreach($responseArr as $val)
             {
-                $item['submenu'] = null;
-				$val = $value['item'];
+                $data['submenu'] = null;
                 if ($val->parent_id == 0) {
-                    $item['alias'] = $val->alias;
-                    $item['title'] = $val->title;
-                    $item['title_ru'] = $val->title_ru;
-                    $item['title_ua'] = $val->title_ua;
-                    $item['title_en'] = $val->title_en;
-                    $item['title_de'] = $val->title_de;
-                    $item['url'] = $val->url;
+                    $data['alias'] = $val->alias;
+                    $data['title'] = $val->title;
+                    $data['title_ru'] = $val->title_ru;
+                    $data['title_ua'] = $val->title_ua;
+                    $data['title_en'] = $val->title_en;
+                    $data['title_de'] = $val->title_de;
+                    $data['url'] = $val->url;
 
 					$parent = $this->db->get($this->_table, ["menu" => 1, "state" => 1, "parent_id" => $val->id]);
-                    
-                    if (isset($parent['headers']['code']) && (int)$parent['headers']['code'] == 200) {
+                    if (isset($parent)) {
 						$submenu['subsubmenu'] = null;
-						
-						foreach($parent['body']['items'] as $subvalue)
+						foreach($parent as $sub)
 						{
-							$sub = $subvalue['item'];
 							$submenu['alias'] = $sub->alias;
 							$submenu['title'] = $sub->title;
 							$submenu['title_ru'] = $sub->title_ru;
@@ -79,12 +64,11 @@ class ModuleTopMenu extends Module implements ModuleInterface
 							$submenu['url'] = $sub->url;
 							
 							$subparent = $this->db->get($this->_table, ["menu" => 1, "state" => 1, "parent_id" => $sub->id]);
-							if (isset($subparent['headers']['code']) && (int)$subparent['headers']['code'] == 200) {
+							if (isset($subparent)) {
 								$submenu['subsubmenu'] = [];
 								$subsubmenu = [];
-								foreach($subparent['body']['items'] as $subsubvalue)
+								foreach($subparent as $subsub)
 								{
-									$subsub = $subsubvalue['item'];
 									$subsubmenu['alias'] = $subsub->alias;
 									$subsubmenu['title'] = $subsub->title;
 									$subsubmenu['title_ru'] = $subsub->title_ru;
@@ -95,10 +79,10 @@ class ModuleTopMenu extends Module implements ModuleInterface
 									$submenu['subsubmenu'][] = $subsubmenu;
 								}
 							}
-							$item['submenu'][] = $submenu;
+							$data['submenu'][] = $submenu;
 						}
 					}
-                    $resp[] = $item;
+                    $resp[] = $data;
 				}
 			}
             $content['content'] = $resp;

@@ -50,7 +50,7 @@ class ModuleProduct extends Module implements ModuleInterface
 		
         $responseArr = [];
         // Отдаем роутеру RouterDb конфигурацию
-        $this->routerDb->setConfig([], 'Apis');
+        $this->routerDb->setConfig([], 'Pllano', 'Apis');
         // Пингуем для ресурса указанную и доступную базу данных
         $this->_database = $this->routerDb->ping($this->_table);
         // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
@@ -63,73 +63,71 @@ class ModuleProduct extends Module implements ModuleInterface
         // Отправляем запрос к БД в формате адаптера. В этом случае Apis
         $responseArr = $this->db->get($this->_table, $query);
 
-        if (isset($responseArr["headers"]["code"]) && (int)$responseArr["headers"]["code"] == 200) {
-            if(is_object($responseArr["body"]["items"]["0"]["item"])) {
-                $item = (array)$responseArr["body"]["items"]["0"]["item"];
-            } elseif (is_array($responseArr["body"]["items"]["0"]["item"])) {
-                $item = $responseArr["body"]["items"]["0"]["item"];
+        if (isset($responseArr['0']) {
+			$data = $responseArr['0'];
+            if(is_object($data)) {
+                $data = (array)$data;
             }
 
             // Если ответ не пустой
             // Обрабатываем картинки
             $images = [];
-			$arr = [];
             $image = new Image($this->app);
-            foreach($item['image'] as $value)
+            foreach($data['image'] as $value)
             {
                 $img = $value['image_path'] ?? null;
                 if (isset($img)) {
-                    $images[] = $image->get($item['product_id'], $img, $moduleArr['config']["image_width"], $moduleArr['config']["image_height"]);
+                    $images[] = $image->get($data['product_id'], $img, $moduleArr['config']["image_width"], $moduleArr['config']["image_height"]);
                 } else {
-                    $arr['images'] = $image->get(null, http_host().'/images/no_image.png', $moduleArr['config']["image_width"], $moduleArr['config']["image_height"]);
+                    $data['images'] = $image->get(null, http_host().'/images/no_image.png', $moduleArr['config']["image_width"], $moduleArr['config']["image_height"]);
                 }
             }
-            $arr['images'] = $images;
+            $data['images'] = $images;
 			
 			
 
             // Формируем URL страницы товара
-            $path_url = pathinfo($item['url']);
+            $path_url = pathinfo($data['url']);
             $basename = $path_url['basename'];
-            $baseurl = str_replace('-'.$item['product_id'].'.html', '', $basename);
-            //$arr['url'] = $scheme.'/product/'.$item['id'].'/'.$baseurl.'.html';
-            $arr['url'] = '/product/'.$item['id'].'/'.$baseurl.'.html';
-            $arr['name'] = (isset($item['name'])) ? clean($item['name']) : '';
-            $item_name = $arr['name'];
-            $arr['description'] = $item['description']['text'] ?? '';
-            $arr['type'] = $item['type'] ?? '';
-            $arr['brand'] = $item['brand'] ?? '';
-            $arr['serie'] =  $item['serie'] ?? '';
-            $arr['articul'] = $item['articul'] ?? '';
-            if ($item['serie'] && $item['articul']) {$arr['name'] = $item['serie'].' '.$item['articul'];}
-            $arr['oldprice'] = $item['oldprice'] ?? null;
-            $arr['price'] = $item['price'] ?? '';
-            $arr['available'] = $item['available'] ?? '';
-            $arr['product_id'] = $item['product_id'] ?? '';
-            $date = $item['action_date'] ?? date_rand_min(1000, 5000);
-            $contentArr['content'] = $arr + date_arr($date);
+            $baseurl = str_replace('-'.$data['product_id'].'.html', '', $basename);
+            //$data['url'] = $scheme.'/product/'.$data['id'].'/'.$baseurl.'.html';
+            $data['url'] = '/product/'.$data['id'].'/'.$baseurl.'.html';
+            $data['name'] = (isset($data['name'])) ? clean($data['name']) : '';
+            $data_name = $data['name'];
+            $data['description'] = $data['description']['text'] ?? '';
+            $data['type'] = $data['type'] ?? '';
+            $data['brand'] = $data['brand'] ?? '';
+            $data['serie'] =  $data['serie'] ?? '';
+            $data['articul'] = $data['articul'] ?? '';
+            if ($data['serie'] && $data['articul']) {$data['name'] = $data['serie'].' '.$data['articul'];}
+            $data['oldprice'] = $data['oldprice'] ?? null;
+            $data['price'] = $data['price'] ?? '';
+            $data['available'] = $data['available'] ?? '';
+            $data['product_id'] = $data['product_id'] ?? '';
+            $date = $data['action_date'] ?? date_rand_min(1000, 5000);
+            $contentArr['content'] = $data + date_arr($date);
 
             // Каждый товар может иметь свой уникальный шаблон
             // Если шаблон товара не установлен берем по умолчанию
-            if (isset($item['template'])){
+            if (isset($data['template'])){
                 $themes_dir = $this->config["settings"]["themes"]["dir"];
                 $templates_dir = $this->config["template"]["front_end"]["themes"]["template"];
                 $template_name = $this->config["settings"]["themes"]["template"];
-                $templates_test = $themes_dir.'/'.$templates_dir.'/'.$template_name.'/layouts/'.$item['template'];
+                $templates_test = $themes_dir.'/'.$templates_dir.'/'.$template_name.'/layouts/'.$data['template'];
                 if (file_exists($templates_test)) {
-                    $render['render'] = $item['template'];
+                    $render['render'] = $data['template'];
                 }
             }
 
-            $head["title"] = $item["title"] ?? $item_name;
-            $head["keywords"] = $item["keywords"] ?? $item_name;
-            $head["description"] = $item["description"] ?? $item_name;
-            $head["seo_title"] = $item["seo_title"] ?? $item_name;
-            $head["seo_keywords"] = $item["seo_keywords"] ?? $item_name;
-            $head["seo_description"] = $item["seo_description"] ?? $item_name;
-            $head["og_url"] = $item["og_url"] ?? $item_name;
-            $head["og_title"] = $item["og_title"] ?? $item_name;
-            $head["og_description"] = $item["og_description"] ?? $item_name;
+            $head["title"] = $data["title"] ?? $data_name;
+            $head["keywords"] = $data["keywords"] ?? $data_name;
+            $head["description"] = $data["description"] ?? $data_name;
+            $head["seo_title"] = $data["seo_title"] ?? $data_name;
+            $head["seo_keywords"] = $data["seo_keywords"] ?? $data_name;
+            $head["seo_description"] = $data["seo_description"] ?? $data_name;
+            $head["og_url"] = $data["og_url"] ?? $data_name;
+            $head["og_title"] = $data["og_title"] ?? $data_name;
+            $head["og_description"] = $data["og_description"] ?? $data_name;
             // Собираем данные в массив
             $heads['head'] = $head;
         }

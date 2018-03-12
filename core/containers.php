@@ -26,6 +26,8 @@ $container['time_start'] = $time_start;
 // Создаем контейнер с конфигурацией пакетов
 $container['package'] = $package;
 
+$container['modules'] = $config['modules'];
+
 $container['cache'] = function ($c)
 {
     return new \Pllano\Caching\Cache($c['config']);
