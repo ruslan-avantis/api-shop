@@ -42,6 +42,7 @@ if(isset($session->post_id)) {
 $admin_router = $config['routers']['admin']['all']['route'];
 $admin_index = $config['routers']['admin']['index']['route'];
 
+//print_r($admin_uri);
 // Главная страница админ панели
 $routing->get($admin_uri.$admin_index.'', function (Request $request, Response $response, array $args = []) use ($core, $app) {
     
@@ -141,6 +142,8 @@ $routing->get($admin_uri.$admin_index.'', function (Request $request, Response $
         "session" => $sessionUser,
         "content" => $content
     ];
+	
+	//print_r($view);
     
     // Передаем данные Hooks для обработки ожидающим классам
     $hook->get($render, $view);
@@ -230,37 +233,39 @@ $routing->get($admin_uri.$admin_router.'resource/{resource:[a-z0-9_-]+}[/{id:[a-
             $resource_list = explode(',', str_replace(['"', "'", " "], '', $config['admin']['resource_list']));
             
             if (array_key_exists($resource, array_flip($resource_list))) {
-                
-                // Отдаем роутеру RouterDb конфигурацию
-                $routerDb = new RouterDb($config, 'Apis');
-                // Пингуем для ресурса указанную и доступную базу данных
-				// Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-				$db = $routerDb->run($routerDb->ping($resource));
+
+                $routerDb = new RouterDb($config);
+				$_table = $resource;
+				$_database = $routerDb->ping($_table);
+                $resourceConfig = $config['db']['resource'][$_database] ?? null;
+			    $_driver = $resourceConfig['driver'] ?? null;
+			    $_adapter = $resourceConfig['adapter'] ?? null;
+			    $_format = $resourceConfig['format'] ?? null;
+				$routerDb->setConfig([], $_driver, $_adapter, $_format);
+				$db = $routerDb->run($_database);
 
                 if($id >= 1) {
                     $render = $resource.'_id.html';
                     $type = 'edit';
                     // Отправляем запрос и получаем данные
                     $resp = $db->get($resource, [], $id);
-                    if (isset($resp["headers"]["code"])) {
-                        if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == '200') {
-                            $content = $resp['body']['items']['0']['item'];
-                            if($resource == 'article'){
-                                $title = $content['seo_title'].'- API Shop';
-                                $keywords = $content['seo_keywords'].'- API Shop';
-                                $description = $content['seo_description'].'- API Shop';
-                            }
-                        }
+
+                    if(is_object($resp)) {
+                        $resp = (array)$resp;
+                    }
+                    if(isset($resp['0'])) {
+                        $content = $resp['0'];
+                    }
+                    if($resource == 'article'){
+                        $title = $content['seo_title'].'- API Shop';
+                        $keywords = $content['seo_keywords'].'- API Shop';
+                        $description = $content['seo_description'].'- API Shop';
                     }
                 } else {
                     $render = $resource.'.html';
                     // Отправляем запрос и получаем данные
                     $resp = $db->get($resource);
-                    if (isset($resp["headers"]["code"])) {
-                        if ($resp["headers"]["code"] == 200 || $resp["headers"]["code"] == '200') {
-                            $content = $resp['body']['items'];
-                        }
-                    }
+                    $content = $resp;
                 }
             }
         }
@@ -392,7 +397,7 @@ $routing->post($admin_uri.$admin_router.'resource-post', function (Request $requ
                             $postArr['created'] = today();
                             $postArr['category_id'] = 0;
                             $postArr['state'] = 1;
-                            } elseif ($resource == 'article_category' || $resource == 'category') {
+                        } elseif ($resource == 'article_category' || $resource == 'category') {
                             $postArr['title'] = 'New Category';
                             $postArr['text'] = '<div class="text-red font_56">New Text Category</div>';
                             $postArr['alias'] = 'alias-'.$random_alias_id;
@@ -400,14 +405,14 @@ $routing->post($admin_uri.$admin_router.'resource-post', function (Request $requ
                             $postArr['alias_id'] = $random_alias_id;
                             $postArr['created'] = today();
                             $postArr['state'] = 1;
-                            } elseif ($resource == 'currency') {
+                        } elseif ($resource == 'currency') {
                             $postArr['name'] = 'New Article';
                             $postArr['course'] = 'course';
                             $postArr['iso_code'] = 'iso_code';
                             $postArr['iso_code_num'] = 'iso_code_num';
                             $postArr['modified'] = today();
                             $postArr['state'] = 1;
-                            } elseif ($resource == 'user') {
+                        } elseif ($resource == 'user') {
                             $postArr['iname'] = 'New';
                             $postArr['fname'] = 'User';
                             $postArr['email'] = 'user.' . rand(0,9) . rand(0,9) . rand(0,9) .'@example.com';
@@ -420,31 +425,23 @@ $routing->post($admin_uri.$admin_router.'resource-post', function (Request $requ
                             $postArr['state'] = 1;
                         }
                         
-                        // Отдаем роутеру RouterDb конфигурацию
-                        $routerDb = new RouterDb($config, 'Apis');
-                        // Пингуем для ресурса указанную и доступную базу данных
-                        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-						$name_db = $routerDb->ping($resource);
-                        $db = $routerDb->run($name_db);
+                        $routerDb = new RouterDb($config);
+                        $_table = $resource;
+                        $_database = $routerDb->ping($_table);
+                        $resourceConfig = $config['db']['resource'][$_database] ?? null;
+                        $_driver = $resourceConfig['driver'] ?? null;
+                        $_adapter = $resourceConfig['adapter'] ?? null;
+                        $_format = $resourceConfig['format'] ?? null;
+                        $routerDb->setConfig([], $_driver, $_adapter, $_format);
+                        $db = $routerDb->run($_database);
 
-                        // Передаем данные Hooks для обработки ожидающим классам
-                        $hook->post($resource, $name_db, 'POST', $postArr, null);
-                        $hookState = $hook->state();
-                        // Если Hook вернул true
-                        if ($hookState == true) {
-                            // Обновленные Hooks данные
-                            $hookResource = $hook->resource();
-                            $hookPostArr = $hook->postArr();
-                            // Отправляем запрос в базу
-                            $dbState = $db->post($resource, $postArr);
-                            if ($dbState == true) {
-                                // Ответ
-                                $callbackStatus = 200;
-                            } else {
-                                $callbackText = 'Действие заблокировано - 2';
-                            }
-                        }
+                        $dbState = $db->post($resource, $postArr);
                         
+                        if (isset($dbState)) {
+                            $callbackStatus = 200;
+                        } else {
+                            $callbackText = 'Действие заблокировано - 2';
+                        }
                     } else {
                         $callbackText = 'Действие заблокировано - 1';
                     }
@@ -537,6 +534,11 @@ $routing->post($admin_uri.$admin_router.'resource-delete', function (Request $re
     $callbackStatus = 400;
     $callbackTitle = 'Соообщение системы';
     $callbackText = '';
+	
+/* 	$id = 10;
+	$resource = 'article';
+	$csrf = 1;
+	$token = 1; */
     
     // Проверка токена - Если токен не совпадает то ничего не делаем. Можем записать в лог или написать письмо админу
     if ($csrf == $token) {
@@ -546,15 +548,18 @@ $routing->post($admin_uri.$admin_router.'resource-delete', function (Request $re
                     $resource_list = explode(',', str_replace(['"', "'", " "], '', $config['admin']['resource_list']));
                     if (array_key_exists($resource, array_flip($resource_list))) {
                         
-                        // Отдаем роутеру RouterDb конфигурацию
-                        $routerDb = new RouterDb($config, 'Apis');
-                        // Пингуем для ресурса указанную и доступную базу данных
-                        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-						$name_db = $routerDb->ping($resource);
-                        $db = $routerDb->run($name_db);
+                        $routerDb = new RouterDb($config);
+                        $_table = $resource;
+                        $_database = $routerDb->ping($_table);
+                        $resourceConfig = $config['db']['resource'][$_database] ?? null;
+                        $_driver = $resourceConfig['driver'] ?? null;
+                        $_adapter = $resourceConfig['adapter'] ?? null;
+                        $_format = $resourceConfig['format'] ?? null;
+                        $routerDb->setConfig([], $_driver, $_adapter, $_format);
+                        $db = $routerDb->run($_database);
 						
                         // Передаем данные Hooks для обработки ожидающим классам
-                        $hook->post($resource, $name_db, 'DELETE', [], $id);
+                        $hook->post($resource, $_database, 'DELETE', [], $id);
                         $hookState = $hook->state();
                         // Если Hook вернул true
                         if ($hookState == true) {
@@ -562,9 +567,9 @@ $routing->post($admin_uri.$admin_router.'resource-delete', function (Request $re
                             $hookResource = $hook->resource();
                             $hookId = $hook->id();
                             // Отправляем запрос в базу
-                            $dbState = $db->delete($hookResource, [], $hookId);
-                            if ($dbState == true) {
-                                // Ответ
+                            $dbState = $db->delete($hookResource, $hookId);
+
+                            if (isset($dbState)) {
                                 $callbackStatus = 200;
                             } else {
                                 $callbackText = 'Действие заблокировано';
@@ -716,16 +721,19 @@ $routing->post($admin_uri.$admin_router.'resource-put/{resource:[a-z0-9_-]+}[/{i
                             }
                         }
                         
-                        // Отдаем роутеру RouterDb конфигурацию
-                        $routerDb = new RouterDb($config, 'Apis');
-                        // Пингуем для ресурса указанную и доступную базу данных
-                        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-                        $db = $routerDb->run($routerDb->ping($resource));
+                        $routerDb = new RouterDb($config);
+                        $_table = $resource;
+                        $_database = $routerDb->ping($_table);
+                        $resourceConfig = $config['db']['resource'][$_database] ?? null;
+                        $_driver = $resourceConfig['driver'] ?? null;
+                        $_adapter = $resourceConfig['adapter'] ?? null;
+                        $_format = $resourceConfig['format'] ?? null;
+                        $routerDb->setConfig([], $_driver, $_adapter, $_format);
+                        $db = $routerDb->run($_database);
                         // Обновляем данные
-                        $requestDb = $db->put($resource, $saveArr, $id);
-                        
-                        if ($requestDb == true) {
-                            // Ответ
+                        $requestDb = $db->put($_table, $saveArr, $id);
+
+                        if (isset($requestDb)) {
                             $callbackStatus = 200;
                         } else {
                             $callbackText = 'Действие заблокировано';
@@ -2542,11 +2550,15 @@ $routing->get($admin_uri.$admin_router.'db/{resource:[a-z0-9_-]+}[/{id:[0-9_]+}]
             
             $sortArray = $filter->sort($sortArr);
             
-            // Отдаем роутеру RouterDb конфигурацию
-            $routerDb = new RouterDb($config, 'Apis');
-            // Пингуем для ресурса указанную и доступную базу данных
-            // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-            $db = $routerDb->run($routerDb->ping($resource));
+            $routerDb = new RouterDb($config);
+            $_table = $resource;
+            $_database = $routerDb->ping($_table);
+            $resourceConfig = $config['db']['resource'][$_database] ?? null;
+            $_driver = $resourceConfig['driver'] ?? null;
+            $_adapter = $resourceConfig['adapter'] ?? null;
+            $_format = $resourceConfig['format'] ?? null;
+            $routerDb->setConfig([], $_driver, $_adapter, $_format);
+            $db = $routerDb->run($_database);
             // Отправляем запрос и получаем данные
             $resp = $db->get($resource);
             

@@ -50,7 +50,7 @@ class Config
         $config['settings']['site']['copyright']['date'] = $copyYear . (($copyYear != $curYear) ? '-' . $curYear : '');
         
         // Папка куда будет кешироваться Slim\Views\Twig
-        $config["settings"]["cache"] =  __DIR__ . "/storage/_cache/";
+        $config["settings"]["cache"] =  __DIR__ . "/../storage/_cache/";
         
         // Папка с шаблонами
         $config['template']['front_end']['themes']['dir'] = __DIR__ .''.$json['template']['front_end']['themes']['dir_name'];

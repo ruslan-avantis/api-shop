@@ -11,6 +11,10 @@
 */
 use Psr\Http\Message\{ServerRequestInterface as Request, ResponseInterface as Response};
 
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
 // Register App
 $app = $core->get('config')['vendor']['controllers']['controller'];
 // For POST requests, we first generate the url post_id
@@ -33,21 +37,6 @@ $routing->get($routes['article']['route'], function (Request $request, Response 
 // GET - Категории статей
 $routing->get($routes['article_category']['route'], function (Request $request, Response $response, array $args = []) use ($core, $app) {
     return (new $app($core, 'article_category'))->get($request, $response, $args);
-});
-
-// GET - Категории товаров
-$routing->get($routes['category']['route'], function (Request $request, Response $response, array $args = []) use ($core, $app) {
-    return (new $app($core, 'category'))->get($request, $response, $args);
-});
-
-// GET - Страница товара
-$routing->get($routes['product']['route'], function (Request $request, Response $response, array $args = []) use ($core, $app) {
-    return (new $app($core, 'product'))->get($request, $response, $args);
-});
-
-// GET - Страница товара quick_view
-$routing->get($routes['quick_view']['route'], function (Request $request, Response $response, array $args = []) use ($core, $app) {
-    return (new $app($core, 'quick_view'))->get($request, $response, $args);
 });
 
 // GET - Получить локализацию 
@@ -114,57 +103,12 @@ $routing->get($routes['cart']['route'].'{function:[a-z0-9_-]+}', function (Reque
 
 // POST - Зарегистрироваться
 $routing->post($post_id.$routes['check_in']['route'], function (Request $request, Response $response, array $args = []) use ($core, $app) {
-    $function = strtolower($request->getMethod());
+    //$function = strtolower($request->getMethod());
     return (new $app($core, 'check_in'))->post($request, $response, $args);
 });
 
 // POST - Выйти
 $routing->post($post_id.$routes['logout']['route'], function (Request $request, Response $response, array $args = []) use ($core, $app) {
-    $function = strtolower($request->getMethod());
     return (new $app($core, 'logout'))->post($request, $response, $args);
 });
-
-/*
-// Для тех кому нужны url кирилицей
-$routing->get('/' . rawurlencode('новости'), function (Request $request, Response $response, array $args = []) use ($container, $app) {
-    // it works
-    return (new $app('новости', $container))->get($request, $response, $args);
-});
-*/
-
-// Если решить эту задачку получим крутое подключение роутринга
-// Сейчас подключает но только один роутер
-// Думаю стоит взять юрл и по регулярке сравнить с конфигом если совпало выполнить
-// Возможно просто не вижу очевидного :) буду очень благодарен за дельные советы
-/* 
-foreach ($routes as $key => $val)
-{
-    if($key == 'index' || $key == '_article') {
- 
-        $rep = $container->get('settings');
-        $rep->replace(['keys' => $key]);
-        
-        $return = '';
- 
-        $routing->get($val['route'], function (Request $request, Response $response, array $args = []) {
- 
-            print("<br>{$this->settings['keys']}<br>");
- 
-            $routes = $this->config['routers']['site'][$this->settings['keys']];
-            
-           $controller = $routes['controller'];
- 
-            print("<br>{$routes['controller']}<br>");
- 
-            $function = strtolower($request->getMethod());
-            $class = new $controller($request->getMethod(), $key, $this->get('config'), $this->get('package'), $this->get('view'), $this->get('logger'));
-            
-            $return = $class->$function($request, $response, $args);
- 
-            return $return;
- 
-        });
-    }
-}
-*/
  

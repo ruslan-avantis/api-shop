@@ -1,0 +1,5896 @@
+[{
+        "id": 1,
+        "state": 1,
+        "en": "Buy",
+        "ua": "Купити",
+        "ru": "Купить",
+        "de": "Kaufen"
+    }, {
+        "id": 2,
+        "state": 1,
+        "en": "Discounts",
+        "ua": "Знижки",
+        "ru": "Скидки",
+        "de": "Rabatte"
+    }, {
+        "id": 3,
+        "state": 1,
+        "en": "To the shopping cart",
+        "ua": "В кошик",
+        "ru": "В корзину",
+        "de": "In den Warenkorb"
+    }, {
+        "id": 4,
+        "state": 1,
+        "en": "Add to Favorites",
+        "ua": "Додати в обране",
+        "ru": "Добавить в избранное",
+        "de": "Auf den Wunschzettel"
+    }, {
+        "id": 5,
+        "state": 1,
+        "en": "In the shopping cart",
+        "ua": "В кошику",
+        "ru": "В корзине",
+        "de": "In einem Korb"
+    }, {
+        "id": 6,
+        "state": 1,
+        "en": "Go to the shopping cart",
+        "ua": "Перейти в корзину",
+        "ru": "Перейти в корзину",
+        "de": "Zum Warenkorb"
+    }, {
+        "id": 7,
+        "state": 1,
+        "en": "SALE",
+        "ua": "РОЗПРОДАЖ",
+        "ru": "РАСПРОДАЖА",
+        "de": "VERKAUF"
+    }, {
+        "id": 8,
+        "state": 1,
+        "en": "terms of the promotion",
+        "ua": "умови акції",
+        "ru": "условия акции",
+        "de": "Lager Bedingungen"
+    }, {
+        "id": 9,
+        "state": 1,
+        "en": "Till the promotion expires",
+        "ua": "До закінчення дії акції",
+        "ru": "До окончания действия акции",
+        "de": "Vor dem Ende des Bedingungen"
+    }, {
+    "id": 10,
+        "state": 1,
+        "en": "Works through the RESTful API",
+        "ua": "Працює через RESTful API",
+        "ru": "Работает через RESTful API",
+        "de": "Funktioniert über die RESTful-API"
+    }, {
+        "id": 11,
+        "state": 1,
+        "en": "Product id with a markdown",
+        "ua": "Код товару з уцінкою",
+        "ru": "Код товара с уценкой",
+        "de": "Produkt-Code mit Abschlägen"
+    }, {
+        "id": 12,
+        "state": 1,
+        "en": "Sellers contact details",
+        "ua": "Контакти продавця товару",
+        "ru": "Контакты продавца товара",
+        "de": "Kontakt Verkäufer von Waren"
+    }, {
+        "id": 13,
+        "state": 1,
+        "en": "Terms of delivery",
+        "ua": "Умови доставки",
+        "ru": "Условия доставки",
+        "de": "Lieferung & Versand"
+    }, {
+        "id": 14,
+        "state": 1,
+        "en": "Product description",
+        "ua": "Опис продукту",
+        "ru": "Описание продукта",
+        "de": "Produktbeschreibung"
+    }, {
+        "id": 15,
+        "state": 1,
+        "en": "consists with",
+        "ua": "комплектується з",
+        "ru": "комплектуется из",
+        "de": "rekrutiert aus"
+    }, {
+        "id": 16,
+        "state": 1,
+        "en": "The promotion is valid as from",
+        "ua": "Акція діє з",
+        "ru": "Акция действует с",
+        "de": "Die Aktion ist gültig ab"
+    }, {
+        "id": 17,
+        "state": 1,
+        "en": "Discounted price",
+        "ua": "Ціна зі знижкою",
+        "ru": "Цена со скидкой",
+        "de": "Discount Preis"
+    }, {
+        "id": 18,
+        "state": 1,
+        "en": "Is available with markdown by the price",
+        "ua": "Є з уцінкою за ціною",
+        "ru": "Есть с уценкой по цене",
+        "de": "Es gibt einen Preis Abschlags auf"
+    }, {
+        "id": 19,
+        "state": 1,
+        "en": "to",
+        "ua": "до",
+        "ru": "до",
+        "de": "nach"
+    }, {
+        "id": 20,
+        "state": 1,
+        "en": "Product ID",
+        "ua": "Код товару",
+        "ru": "Код товара",
+        "de": "Code Waren"
+    }, {
+        "id": 21,
+        "state": 1,
+        "en": "Photo",
+        "ua": "Фото",
+        "ru": "Фото",
+        "de": "Foto"
+    }, {
+        "id": 22,
+        "state": 1,
+        "en": "The shopping cart is empty",
+        "ua": "Кошик порожній",
+        "ru": "Корзина пуста",
+        "de": "Du hast keine Artikel im Warenkorb."
+    }, {
+        "id": 23,
+        "state": 1,
+        "en": "Your shopping cart",
+        "ua": "Ваш кошик",
+        "ru": "Ваша корзина",
+        "de": "Ihr Warenkorb"
+    }, {
+        "id": 24,
+        "state": 1,
+        "en": "Home page",
+        "ua": "Головна",
+        "ru": "Главная",
+        "de": "Startseite"
+    }, {
+        "id": 25,
+        "state": 1,
+        "en": "Brands",
+        "ua": "Бренди",
+        "ru": "Бренды",
+        "de": "Marken"
+    }, {
+        "id": 26,
+        "state": 1,
+        "en": "Promotions & Discounts",
+        "ua": "Акції та знижки",
+        "ru": "Акции и Скидки",
+        "de": "Sonderangebote und Rabatte"
+    }, {
+        "id": 27,
+        "state": 1,
+        "en": "Kit is less expensive",
+        "ua": "Комплектом дешевше",
+        "ru": "Комплектом дешевле",
+        "de": "Kit billiger"
+    }, {
+        "id": 28,
+        "state": 1,
+        "en": "You have chosen",
+        "ua": "Ви вибрали",
+        "ru": "Вы выбрали",
+        "de": "Deine Auswahl"
+    }, {
+        "id": 29,
+        "state": 1,
+        "en": "Series",
+        "ua": "Серії",
+        "ru": "Серии",
+        "de": "Serie"
+    }, {
+        "id": 30,
+        "state": 1,
+        "en": "Brand",
+        "ua": "Бренд",
+        "ru": "Бренд",
+        "de": "Markenname"
+    }, {
+        "id": 31,
+        "state": 1,
+        "en": "Model",
+        "ua": "Модель",
+        "ru": "Модель",
+        "de": "Modell"
+    }, {
+        "id": 32,
+        "state": 1,
+        "en": "Selection by price",
+        "ua": "Вибір за ціною",
+        "ru": "Подбор по цене",
+        "de": "Auswahl nach Preis"
+    }, {
+        "id": 33,
+        "state": 1,
+        "en": "to",
+        "ua": "до",
+        "ru": "до",
+        "de": "bis"
+    }, {
+        "id": 34,
+        "state": 1,
+        "en": "from",
+        "ua": "від",
+        "ru": "от",
+        "de": "von"
+    }, {
+        "id": 35,
+        "state": 1,
+        "en": "Clear all filters",
+        "ua": "Очистити всі фільтри",
+        "ru": "Очистить все фильтры",
+        "de": "Alle Filter löschen"
+    }, {
+        "id": 36,
+        "state": 1,
+        "en": "Price",
+        "ua": "Ціна",
+        "ru": "Цена",
+        "de": "Preis"
+    }, {
+        "id": 37,
+        "state": 1,
+        "en": "Discount",
+        "ua": "Знижка",
+        "ru": "Скидка",
+        "de": "Rabatt"
+    }, {
+        "id": 38,
+        "state": 1,
+        "en": "Delivery time: 5-7 business days",
+        "ua": "Термін поставки: 5-7 днів",
+        "ru": "Срок поставки: 5-7 дней",
+        "de": "Lieferzeit : 5-7 Tage"
+    }, {
+        "id": 39,
+        "state": 1,
+        "en": "Delivery time: 3-5 business days",
+        "ua": "Термін поставки: 3-5 днів",
+        "ru": "Срок поставки: 3-5 дней",
+        "de": "Lieferzeit: 3-5 Werktage"
+    }, {
+        "id": 40,
+        "state": 1,
+        "en": "More than 20 pcs. are available",
+        "ua": "В наявності більше 20 шт.",
+        "ru": "В наличии более 20 шт.",
+        "de": "В наличии более 20 шт."
+    }, {
+        "id": 41,
+        "state": 1,
+        "en": "Please enter a valid",
+        "ua": "Введіть правильний",
+        "ru": "Введите правильный",
+        "de": "Gib die richtige ein"
+    }, {
+        "id": 42,
+        "state": 1,
+        "en": "Enter",
+        "ua": "Введіть",
+        "ru": "Введите",
+        "de": "Geben Sie ein"
+    }, {
+        "id": 43,
+        "state": 1,
+        "en": "Obligatory field",
+        "ua": "Обов'язкове поле",
+        "ru": "Обязательное поле",
+        "de": "Pflichtfeld"
+    }, {
+        "id": 44,
+        "state": 1,
+        "en": "The password does not meet the security requirements. The password must be at least 8 characters in length. There should always be at least one capital letter and one number. Cyrillic is excluded.",
+        "ua": "Пароль не задовольняє вимогам безпеки. Довжина пароля повинна бути не менше 8 символів. Там завжди повинна бути принаймні одна велика літера і одна цифра. Кирилиця виключена.",
+        "ru": "Пароль не удовлетворяет требованиям безопасности. Длина пароля должна быть не менее 8 символов. Там всегда должна быть по крайней мере одна заглавная буква и одна цифра. Кириллица исключена.",
+        "de": "Das Passwort entspricht nicht den Sicherheitsanforderungen. Das Passwort muss mindestens 8 Zeichen lang sein. Es sollte immer mindestens einen Großbuchstaben und eine Nummer geben. Kyrillisch ist ausgeschlossen."
+    }, {
+        "id": 45,
+        "state": 1,
+        "en": "About us",
+        "ua": "Про нас",
+        "ru": "О нас",
+        "de": "Über uns"
+    }, {
+        "id": 46,
+        "state": 1,
+        "en": "Type",
+        "ua": "За типом",
+        "ru": "По типу",
+        "de": "Nach Typ"
+    }, {
+        "id": 47,
+        "state": 1,
+        "en": "By Brand",
+        "ua": "По бренду",
+        "ru": "По бренду",
+        "de": "Nach Marke"
+    }, {
+        "id": 48,
+        "state": 1,
+        "en": "By model",
+        "ua": "За моделлю",
+        "ru": "По модели",
+        "de": "Nach Modell"
+    }, {
+        "id": 49,
+        "state": 1,
+        "en": "By article",
+        "ua": "За артикулом",
+        "ru": "По артикулу",
+        "de": "nach Artikel"
+    }, {
+        "id": 50,
+        "state": 1,
+        "en": "By popularity",
+        "ua": "за популярністю",
+        "ru": "по популярности",
+        "de": "nach Beliebtheit"
+    }, {
+        "id": 51,
+        "state": 1,
+        "en": "By name",
+        "ua": "за назвою",
+        "ru": "По названию",
+        "de": "Name aufsteigend"
+    }, {
+        "id": 52,
+        "state": 1,
+        "en": "Price ascending",
+        "ua": "Ціна за зростанням",
+        "ru": "Цена по возрастанию",
+        "de": "Preis aufsteigend"
+    }, {
+        "id": 53,
+        "state": 1,
+        "en": "Price descending",
+        "ua": "Ціна за зменшенням",
+        "ru": "Цена по убыванию",
+        "de": "Preis absteigend"
+    }, {
+        "id": 54,
+        "state": 1,
+        "en": "pcs.",
+        "ua": "шт.",
+        "ru": "шт.",
+        "de": "Stck."
+    }, {
+        "id": 55,
+        "state": 1,
+        "en": "Requested delivery date",
+        "ua": "Дата заявки доставки",
+        "ru": "Запрашиваемая дата доставки",
+        "de": "Wunschlieferdatum"
+    }, {
+        "id": 56,
+        "state": 1,
+        "en": "with a dispatchers assistance",
+        "ua": "за допомогою диспетчера",
+        "ru": "с помощью диспетчера",
+        "de": "Mit Manager"
+    }, {
+        "id": 57,
+        "state": 1,
+        "en": "Last Name",
+        "ua": "Прізвище",
+        "ru": "Фамилия",
+        "de": "Nachname"
+    }, {
+        "id": 58,
+        "state": 1,
+        "en": "First Name",
+        "ua": "Ім`я",
+        "ru": "Имя",
+        "de": "Vorname"
+    }, {
+        "id": 59,
+        "state": 1,
+        "en": "Company",
+        "ua": "Компанія",
+        "ru": "Компания",
+        "de": "Firma"
+    }, {
+        "id": 60,
+        "state": 1,
+        "en": "The shipping address",
+        "ua": "Адреса доставки",
+        "ru": "Адрес доставки",
+        "de": "Lieferadresse"
+    }, {
+        "id": 61,
+        "state": 1,
+        "en": "City \/ Town",
+        "ua": "Місто \/ Населений пункт",
+        "ru": "Город \/ Населённый пункт",
+        "de": "Stadt \/ Ort"
+    }, {
+        "id": 62,
+        "state": 1,
+        "en": "Region",
+        "ua": "Область",
+        "ru": "Область",
+        "de": "PLZ"
+    }, {
+        "id": 63,
+        "state": 1,
+        "en": "House No.",
+        "ua": "Будинок",
+        "ru": "№ дома",
+        "de": "Haus"
+    }, {
+        "id": 64,
+        "state": 1,
+        "en": "Street",
+        "ua": "Вулиця",
+        "ru": "Улица",
+        "de": "Straße"
+    }, {
+        "id": 65,
+        "state": 1,
+        "en": "Note",
+        "ua": "Примітка",
+        "ru": "Примечание",
+        "de": "Notiz"
+    }, {
+        "id": 66,
+        "state": 1,
+        "en": "Confirm the shipping address",
+        "ua": "Підтвердіть адрессу доставки",
+        "ru": "Подтвердите адрес доставки",
+        "de": "Bestätigen Lieferadresse"
+    }, {
+        "id": 67,
+        "state": 1,
+        "en": "Go to the order view",
+        "ua": "До перегляду замовлення",
+        "ru": "К просмотру заказа",
+        "de": "Um zu sehen"
+    }, {
+        "id": 69,
+        "state": 1,
+        "en": "Exclusive goods",
+        "ua": "Ексклюзивні товари",
+        "ru": "Эксклюзивные товары",
+        "de": null
+    }, {
+        "id": 70,
+        "state": 1,
+        "en": "all discounts",
+        "ua": "всі знижки",
+        "ru": "все скидки",
+        "de": "Alle Angebote"
+    }, {
+        "id": 71,
+        "state": 1,
+        "en": "Number is valid",
+        "ua": "Номер валідний",
+        "ru": "Номер валидный",
+        "de": "Die Nummer ist gültig"
+    }, {
+        "id": 72,
+        "state": 1,
+        "en": "Invalid number",
+        "ua": "Некоректний номер",
+        "ru": "Некорректный номер",
+        "de": "Ungültige Nummer"
+    }, {
+        "id": 73,
+        "state": 1,
+        "en": "Do you want to keep up to date with all the news?",
+        "ua": "Хочете бути в курсі всіх новин?",
+        "ru": "Хотите быть в курсе всех новостей ?",
+        "de": "Willst du über alle Neuigkeiten auf dem Laufenden bleiben?"
+    }, {
+        "id": 74,
+        "state": 1,
+        "en": "Subscribe to our newsletter. We promise not to bother you.",
+        "ua": "Підпишіться на нашу розсилку. Обіцяємо не набридає вам.",
+        "ru": "Подпишитесь на нашу рассылку. Обещаем не надоедать вам.",
+        "de": "Abonnieren Sie unseren Newsletter. Wir versprechen, Sie nicht zu belästigen.‎"
+    }, {
+        "id": 75,
+        "state": 1,
+        "en": "Subscribe",
+        "ua": "Підписатися",
+        "ru": "Подписаться",
+        "de": "Jetzt abonnieren"
+    }, {
+        "id": 76,
+        "state": 1,
+        "en": "You can unsubscribe at any time",
+        "ua": "Ви можете відмовитися від розсилки в будь-який момент",
+        "ru": "Вы можете отказаться от рассылки в любой момент",
+        "de": "Sie können sich jederzeit abmelden"
+    }, {
+        "id": 77,
+        "state": 1,
+        "en": "Viewed goods",
+        "ua": "Переглянуті товари",
+        "ru": "Просмотренные товары",
+        "de": "Angesehene Produkte"
+    }, {
+        "id": 78,
+        "state": 1,
+        "en": "Delivery by a parcel",
+        "ua": "Доставка в якості посилки",
+        "ru": "Доставка в качестве посылки",
+        "de": "Versand als Paket"
+    }, {
+        "id": 79,
+        "state": 1,
+        "en": "Delivery by a parcel",
+        "ua": "Доставка в якості посилки",
+        "ru": "Доставка в качестве посылки",
+        "de": "Versand als Paket"
+    }, {
+        "id": 80,
+        "state": 1,
+        "en": "Step1 - Authorization or Registration",
+        "ua": "Інформація",
+        "ru": "Шаг1 - Авторизация или Регистрация",
+        "de": "Informationen"
+    }, {
+        "id": 81,
+        "state": 1,
+        "en": "Step2 - Buyers information and shipping address",
+        "ua": "Клієнти і адреса",
+        "ru": "Шаг2 - Данные о покупателе и адрес доставки",
+        "de": "Kunden und Adress"
+    }, {
+        "id": 82,
+        "state": 1,
+        "en": "Why you need to buy from us ?",
+        "ua": "Чому потрібно купити у нас ?",
+        "ru": "Почему нужно купить у нас ?",
+        "de": "Warum müssen Sie bei uns kaufen ?"
+    }, {
+        "id": 83,
+        "state": 1,
+        "en": "Step3 - Order confirmation",
+        "ua": "Підтвердження замовлення",
+        "ru": "Шаг3 - Подтверждение заказа",
+        "de": "Auftragsbestätigung"
+    }, {
+        "id": 84,
+        "state": 1,
+        "en": "Step4 - Choice of a payment method",
+        "ua": "Метод оплати",
+        "ru": "Шаг4 - Выбор способа оплаты",
+        "de": "Zahlungsart"
+    }, {
+        "id": 85,
+        "state": 1,
+        "en": "Sign Up or Login",
+        "ua": "Зареєструватися або увійти",
+        "ru": "Зарегистрироваться или Войти",
+        "de": "Anmelden oder Registrieren"
+    }, {
+        "id": 86,
+        "state": 1,
+        "en": "Your shopping cart",
+        "ua": "Ваш кошик",
+        "ru": "Ваша корзина",
+        "de": "Ihr Warenkorb"
+    }, {
+        "id": 87,
+        "state": 1,
+        "en": "All goods",
+        "ua": "Всі товари",
+        "ru": "Все товары",
+        "de": "Alle"
+    }, {
+        "id": 88,
+        "state": 1,
+        "en": "Delivery from 3 to 7 days !",
+        "ua": "Доставка від 3 до 7 днів !",
+        "ru": "Доставка от 3 до 7 дней !",
+        "de": "Lieferung von 3 bis 7 Tagen !"
+    }, {
+        "id": 89,
+        "state": 1,
+        "en": "Payment on receipt !",
+        "ua": "Оплата при отриманні !",
+        "ru": "Оплата при получении !",
+        "de": "Bezahlung bei Erhalt !"
+    }, {
+        "id": 90,
+        "state": 1,
+        "en": "All orders",
+        "ua": "Всі замовлення",
+        "ru": "Все заказы",
+        "de": "Alle Bestellungen"
+    }, {
+        "id": 91,
+        "state": 1,
+        "en": "New orders",
+        "ua": "Нові замовлення",
+        "ru": "Новые заказы",
+        "de": "Neue Bestellungen"
+    }, {
+        "id": 92,
+        "state": 1,
+        "en": "In progress",
+        "ua": "В обробці",
+        "ru": "В обработке",
+        "de": "in Progress"
+    }, {
+        "id": 93,
+        "state": 1,
+        "en": "Fulfilled",
+        "ua": "Виконані",
+        "ru": "Выполненные",
+        "de": "Abgeschlossene"
+    }, {
+        "id": 94,
+        "state": 1,
+        "en": "Proceed with the order placement",
+        "ua": "Продовжити оформлення замовлення",
+        "ru": "Продолжить оформление заказа",
+        "de": "Weiter Kasse"
+    }, {
+        "id": 95,
+        "state": 1,
+        "en": "Account",
+        "ua": "Обліковий запис",
+        "ru": "Учетная запись",
+        "de": "Konto"
+    }, {
+        "id": 96,
+        "state": 1,
+        "en": "Unknown mode in the shopping cart",
+        "ua": "Невідомий режим в кошику",
+        "ru": "Неизвестный режим в корзине",
+        "de": "Unbekannt Modus in einem Korb"
+    }, {
+        "id": 97,
+        "state": 1,
+        "en": "Subtotal",
+        "ua": "Проміжний підсумок",
+        "ru": "Промежуточный итог",
+        "de": "Zwischensumme"
+    }, {
+        "id": 98,
+        "state": 1,
+        "en": "Shipping and handling",
+        "ua": "Доставка і обробка замовлення",
+        "ru": "Доставка и обработка заказа",
+        "de": "Versand und Bearbeitung"
+    }, {
+        "id": 99,
+        "state": 1,
+        "en": "In total",
+        "ua": "Всього",
+        "ru": "Всего",
+        "de": "Gesamtsumme"
+    }, {
+        "id": 100,
+        "state": 1,
+        "en": "Incl. VAT",
+        "ua": "включно ПДВ",
+        "ru": "включительно НДС",
+        "de": "Inkl. MwSt."
+    }, {
+        "id": 101,
+        "state": 1,
+        "en": "pcs.",
+        "ua": "шт.",
+        "ru": "шт.",
+        "de": "Stck."
+    }, {
+        "id": 102,
+        "state": 1,
+        "en": "Information about the customer",
+        "ua": "Інформація про клієнта",
+        "ru": "Информация о клиенте",
+        "de": "Ihre Bestellung"
+    }, {
+        "id": 103,
+        "state": 1,
+        "en": "First name \/ Last name",
+        "ua": "Імя \/ Прізвище",
+        "ru": "Имя \/ Фамилия",
+        "de": "Vorname \/ Nachname"
+    }, {
+        "id": 104,
+        "state": 1,
+        "en": "Company",
+        "ua": "Компанія",
+        "ru": "Компания",
+        "de": "Firma"
+    }, {
+        "id": 105,
+        "state": 1,
+        "en": "Contact details",
+        "ua": "Контакти",
+        "ru": "Контакты",
+        "de": "Kontaktdaten"
+    }, {
+        "id": 106,
+        "state": 1,
+        "en": "Delivery address",
+        "ua": "Адреса доставки",
+        "ru": "Адрес доставки",
+        "de": "Versandadresse"
+    }, {
+        "id": 107,
+        "state": 1,
+        "en": "Required field",
+        "ua": "Обовязкове поле",
+        "ru": "Обязательное поле",
+        "de": "Pflichtfeld"
+    }, {
+        "id": 108,
+        "state": 1,
+        "en": "remove goods from the shopping cart",
+        "ua": "видалити товар з кошика",
+        "ru": "удалить товар из корзины",
+        "de": "Entfernen von Elementen aus dem Papierkorb"
+    }, {
+        "id": 109,
+        "state": 1,
+        "en": "To the choice of the delivery address",
+        "ua": "До вибору адреси доставки",
+        "ru": "К выбору адреса доставки",
+        "de": "Durch die Lieferadresse der Wahl"
+    }, {
+        "id": 110,
+        "state": 1,
+        "en": "Confirm and place the order",
+        "ua": "Підтвердити і оформити замовлення",
+        "ru": "Подтвердить и оформить заказ",
+        "de": "Bestätigen und Auftrag vergeben"
+    }, {
+        "id": 111,
+        "state": 1,
+        "en": "finalize the order",
+        "ua": "остаточно оформити замовлення",
+        "ru": "окончательно оформить заказ",
+        "de": "Bestellung abzuschließen"
+    }, {
+        "id": 112,
+        "state": 1,
+        "en": "By price",
+        "ua": "За ціною",
+        "ru": "По цене",
+        "de": "Nach Preis"
+    }, {
+        "id": 113,
+        "state": 1,
+        "en": "Back to the product list",
+        "ua": "Повернутися до списку товарів",
+        "ru": "Вернуться к списку товаров",
+        "de": "Zurück zum Warenkorb"
+    }, {
+        "id": 114,
+        "state": 1,
+        "en": "Place an order",
+        "ua": "Оформити замовлення",
+        "ru": "Оформить заказ",
+        "de": "Weiter"
+    }, {
+        "id": 115,
+        "state": 1,
+        "en": "Confirm and proceed to the payment",
+        "ua": "Підтвердити і перейти до оплати",
+        "ru": "Подтвердить и перейти к оплате",
+        "de": "Bestätigen und zahlen"
+    }, {
+        "id": 116,
+        "state": 1,
+        "en": "Confirm the delivery address",
+        "ua": "Підтвердіть адрессу доставки",
+        "ru": "Подтвердите адрес доставки",
+        "de": "Weiter"
+    }, {
+        "id": 117,
+        "state": 1,
+        "en": "Confirmation of the information",
+        "ua": "підтвердження інформації",
+        "ru": "Подтверждение информации",
+        "de": "Weiter"
+    }, {
+        "id": 118,
+        "state": 1,
+        "en": "Sign Up or Sign In",
+        "ua": "Зареєструватися або увійти",
+        "ru": "Зарегистрироваться или Войти",
+        "de": "Anmelden oder Registrieren"
+    }, {
+        "id": 119,
+        "state": 1,
+        "en": "Back to the address selection",
+        "ua": "Назад до вибору адреси",
+        "ru": "Назад к выбору адреса",
+        "de": "Zurück"
+    }, {
+        "id": 120,
+        "state": 1,
+        "en": "no products",
+        "ua": "немає товарів",
+        "ru": "нет товаров",
+        "de": "keine Produkte"
+    }, {
+        "id": 121,
+        "state": 1,
+        "en": "no orders",
+        "ua": "немає замовлень",
+        "ru": "нет заказов",
+        "de": "keine Bestellungen"
+    }, {
+        "id": 122,
+        "state": 1,
+        "en": "Only for you at a special price",
+        "ua": "Тільки для Вас за спеціальною ціною",
+        "ru": "Только для Вас по специальной цене",
+        "de": "Nur für Sie zu einem Sonderpreis"
+    }, {
+        "id": 123,
+        "state": 1,
+        "en": "All goods in the shopping cart",
+        "ua": "Всі товари в кошику",
+        "ru": "Все товары в корзине",
+        "de": "Alle Produkte im Warenkorb"
+    }, {
+        "id": 124,
+        "state": 1,
+        "en": "in the shopping cart",
+        "ua": "в кошику",
+        "ru": "в корзине",
+        "de": "Gesamtbetrag"
+    }, {
+        "id": 125,
+        "state": 1,
+        "en": "Open Shopping Cart",
+        "ua": "Відкрити кошик",
+        "ru": "Открыть корзину",
+        "de": "Warenkorb anzeigen"
+    }, {
+        "id": 126,
+        "state": 1,
+        "en": "goods",
+        "ua": "товар",
+        "ru": "товар",
+        "de": "Artikel"
+    }, {
+        "id": 127,
+        "state": 1,
+        "en": "goods",
+        "ua": "товари",
+        "ru": "товара",
+        "de": "Produkt"
+    }, {
+        "id": 128,
+        "state": 1,
+        "en": "goods",
+        "ua": "товарів",
+        "ru": "товаров",
+        "de": "Artikel"
+    }, {
+        "id": 129,
+        "state": 1,
+        "en": "Deferred",
+        "ua": "Відкладено",
+        "ru": "Отложено",
+        "de": "Wunschliste"
+    }, {
+        "id": 130,
+        "state": 1,
+        "en": "there are orders",
+        "ua": "є замовлення",
+        "ru": "есть заказы",
+        "de": "bestellungen im Warenkorb"
+    }, {
+        "id": 131,
+        "state": 1,
+        "en": "Order in processing",
+        "ua": "Замовлення в обробці",
+        "ru": "Заказ в обработке",
+        "de": "Überprüfen Sie die Verarbeitung bei"
+    }, {
+        "id": 132,
+        "state": 1,
+        "en": "pending verification",
+        "ua": "очікує перевірки",
+        "ru": "ожидает проверки",
+        "de": "Prüfzwecken"
+    }, {
+        "id": 133,
+        "state": 1,
+        "en": "Order",
+        "ua": "Замовлення",
+        "ru": "Заказ",
+        "de": "Order"
+    }, {
+        "id": 134,
+        "state": 1,
+        "en": "Order Manager",
+        "ua": "Менеджер замовлення",
+        "ru": "Менеджер заказа",
+        "de": "Order Manager"
+    }, {
+        "id": 135,
+        "state": 1,
+        "en": "Order Status",
+        "ua": "Статус замовлення",
+        "ru": "Статус заказа",
+        "de": "Bestellstatus"
+    }, {
+        "id": 136,
+        "state": 1,
+        "en": "not appointed",
+        "ua": "не призначено",
+        "ru": "не назначен",
+        "de": "ist nicht ernannt"
+    }, {
+        "id": 137,
+        "state": 1,
+        "en": "tel.",
+        "ua": "тел.",
+        "ru": "тел.",
+        "de": "Tel."
+    }, {
+        "id": 138,
+        "state": 1,
+        "en": "Mobile phone number",
+        "ua": "номер мобільного телефону",
+        "ru": "номер мобильного телефона",
+        "de": "Handy-Nummer"
+    }, {
+        "id": 139,
+        "state": 1,
+        "en": "Choose a form of the order payment",
+        "ua": "Вибрати форму оплати замовлення",
+        "ru": "Выбрать форму оплаты заказа",
+        "de": "Wählen Sie als Zahlungsauftrag"
+    }, {
+        "id": 140,
+        "state": 1,
+        "en": "Your order has already been created",
+        "ua": "Ваше замовлення вже створено",
+        "ru": "Ваш заказ уже создан",
+        "de": "Wir haben Ihren Auftrag bekommen."
+    }, {
+        "id": 141,
+        "state": 1,
+        "en": "Your order",
+        "ua": "Ваше замовлення",
+        "ru": "Ваш заказ",
+        "de": "Ihre Bestellung"
+    }, {
+        "id": 142,
+        "state": 1,
+        "en": "Delivery time",
+        "ua": "Час доставки",
+        "ru": "Срок поставки",
+        "de": "Lieferzeit"
+    }, {
+        "id": 143,
+        "state": 1,
+        "en": "Wishlist",
+        "ua": "Список бажань",
+        "ru": "Список желаний",
+        "de": "Wunschliste"
+    }, {
+        "id": 144,
+        "state": 1,
+        "en": "All goods in the shopping cart",
+        "ua": "Всі товари в кошику",
+        "ru": "Все товары в корзине",
+        "de": "Alle Produkte im Warenkorb"
+    }, {
+        "id": 145,
+        "state": 1,
+        "en": "Goods in the Shopping cart and in the Wishlist",
+        "ua": "Товари в Кошику і в Бажаних",
+        "ru": "Товары в Корзине и в Желаемых",
+        "de": "Den Warenkorb und Desired"
+    }, {
+        "id": 146,
+        "state": 1,
+        "en": "All your orders",
+        "ua": "Всі ваші замовлення",
+        "ru": "Все ваши заказы",
+        "de": "Alle Bestellungen"
+    }, {
+        "id": 147,
+        "state": 1,
+        "en": "Orders in processing",
+        "ua": "Замовлення в обробці",
+        "ru": "Заказы в обработке",
+        "de": "Bestellungen in Progress"
+    }, {
+        "id": 148,
+        "state": 1,
+        "en": "New orders",
+        "ua": "Нові замовлення",
+        "ru": "Новые заказы",
+        "de": "Neue Bestellungen"
+    }, {
+        "id": 149,
+        "state": 1,
+        "en": "Fulfilled orders",
+        "ua": "Виконані замовлення",
+        "ru": "Выполненные заказы",
+        "de": "Abgeschlossene Aufträge"
+    }, {
+        "id": 150,
+        "state": 1,
+        "en": "Managing director:",
+        "ua": "Управляющий директор:",
+        "ru": "Управляющий директор:",
+        "de": "Geschäftsführer:"
+    }, {
+        "id": 151,
+        "state": 1,
+        "en": "Registered:",
+        "ua": "Зареєстрована:",
+        "ru": "Зарегистрирована:",
+        "de": "Beitritt:"
+    }, {
+        "id": 152,
+        "state": 1,
+        "en": "VAT ID",
+        "ua": "Номер ПДВ",
+        "ru": "Номер НДС",
+        "de": "MwSt."
+    }, {
+        "id": 158,
+        "state": 1,
+        "en": "Terms & Conditions",
+        "ua": "Правила та умови",
+        "ru": "Условия и положения",
+        "de": "Geschäftsbedingungen"
+    }, {
+        "id": 159,
+        "state": 1,
+        "en": "Agree with the terms",
+        "ua": "Згоден з умовами",
+        "ru": "С условиями согласен",
+        "de": "Stimme den Bedingungen zu"
+    }, {
+        "id": 160,
+        "state": 1,
+        "en": "City",
+        "ua": "Місто",
+        "ru": "Город",
+        "de": "Stadt"
+    }, {
+        "id": 161,
+        "state": 1,
+        "en": "Email",
+        "ua": "Електронна пошта",
+        "ru": "Электронная почта",
+        "de": "E-Mail Adresse"
+    }, {
+        "id": 162,
+        "state": 1,
+        "en": "Product Name",
+        "ua": "Назва товару",
+        "ru": "Название товара",
+        "de": "Produktnamen"
+    }, {
+        "id": 163,
+        "state": 1,
+        "en": "Warranty",
+        "ua": "Гарантія",
+        "ru": "Гарантия",
+        "de": "Garantie"
+    }, {
+        "id": 164,
+        "state": 1,
+        "en": "Quantity",
+        "ua": "Кількість",
+        "ru": "Количество",
+        "de": "Anzahl"
+    }, {
+        "id": 165,
+        "state": 1,
+        "en": "10 years",
+        "ua": "10 років",
+        "ru": "10 лет",
+        "de": "10 Jahre"
+    }, {
+        "id": 169,
+        "state": 1,
+        "en": "Best regards, team",
+        "ua": "З найкращими побажаннями, команда",
+        "ru": "С наилучшими пожеланиями, команда",
+        "de": "Mit freundlichen Grüßen, Team"
+    }, {
+        "id": 170,
+        "state": 1,
+        "en": "Hello",
+        "ua": "Привіт",
+        "ru": "Здравствуйте",
+        "de": "Hallo"
+    }, {
+        "id": 171,
+        "state": 1,
+        "en": "Thank you for your order.",
+        "ua": "Дякуємо за ваше замовлення.",
+        "ru": "Спасибо за ваш заказ.",
+        "de": "Danke für deine Bestellung."
+    }, {
+        "id": 172,
+        "state": 1,
+        "en": "Authorization",
+        "ua": "Авторизація",
+        "ru": "Авторизация",
+        "de": "Zulassung"
+    }, {
+        "id": 173,
+        "state": 1,
+        "en": "Imprint",
+        "ua": "Відбиток",
+        "ru": "Отпечаток",
+        "de": "Impressum"
+    }, {
+        "id": 174,
+        "state": 1,
+        "en": "PayPal",
+        "ua": "PayPal",
+        "ru": "PayPal",
+        "de": "PayPal"
+    }, {
+        "id": 175,
+        "state": 1,
+        "en": "LiqPay",
+        "ua": "LiqPay",
+        "ru": "LiqPay",
+        "de": "LiqPay"
+    }, {
+        "id": 176,
+        "state": 1,
+        "en": "RatePAY",
+        "ua": "RatePAY",
+        "ru": "RatePAY",
+        "de": "RatePAY"
+    }, {
+        "id": 177,
+        "state": 1,
+        "en": "VorKasse",
+        "ua": "VorKasse",
+        "ru": "VorKasse",
+        "de": "Zahlung per Vorkasse"
+    }, {
+        "id": 178,
+        "state": 1,
+        "en": "Invoice",
+        "ua": "Рахунок-фактура",
+        "ru": "Счет-фактура",
+        "de": "Rechnung"
+    }, {
+        "id": 179,
+        "state": 1,
+        "en": "EC-Karte",
+        "ua": "EC-Karte",
+        "ru": "EC-Karte",
+        "de": "EC-Karte"
+    }, {
+        "id": 180,
+        "state": 1,
+        "en": "Visa",
+        "ua": "Visa",
+        "ru": "Visa",
+        "de": "Visa"
+    }, {
+        "id": 181,
+        "state": 1,
+        "en": "MasterCard",
+        "ua": "MasterCard",
+        "ru": "MasterCard",
+        "de": "MasterCard"
+    }, {
+        "id": 182,
+        "state": 1,
+        "en": "There are no payment systems",
+        "ua": "Немає платіжних систем",
+        "ru": "Нет платежных систем",
+        "de": "Keine Zahlungssysteme"
+    }, {
+        "id": 183,
+        "state": 1,
+        "en": "SOFORT",
+        "ua": "SOFORT",
+        "ru": "SOFORT",
+        "de": "SOFORT"
+    }, {
+        "id": 184,
+        "state": 1,
+        "en": "Payment via",
+        "ua": "Оплата через",
+        "ru": "Оплата через",
+        "de": "Payment via"
+    }, {
+        "id": 185,
+        "state": 1,
+        "en": "Payment by a card",
+        "ua": "Оплата карткою",
+        "ru": "Оплата картой",
+        "de": "Kreditkarten"
+    }, {
+        "id": 186,
+        "state": 1,
+        "en": "Payment amount",
+        "ua": "Сума до сплати",
+        "ru": "Сумма к оплате",
+        "de": "Zahlungsbetrag"
+    }, {
+        "id": 187,
+        "state": 1,
+        "en": "Categories",
+        "ua": "Категорії",
+        "ru": "Категории",
+        "de": "Kategorien"
+    }, {
+        "id": 188,
+        "state": 1,
+        "en": "All goods",
+        "ua": "Усі товари",
+        "ru": "Все товары",
+        "de": "Alle Produkte"
+    }, {
+        "id": 189,
+        "state": 1,
+        "en": "up to",
+        "ua": "до",
+        "ru": "до",
+        "de": "bis zu"
+    }, {
+        "id": 190,
+        "state": 1,
+        "en": "Keyword \/ Product id",
+        "ua": "Ключове слово \/ Код товару",
+        "ru": "Ключевое слово \/ Код товара",
+        "de": "Suchbegriff \/ Artikelnummer"
+    }, {
+        "id": 191,
+        "state": 1,
+        "en": "Sorry: The website is under construction",
+        "ua": "Вибачте: Сайт знаходиться в розробці",
+        "ru": "Извините: Сайт находится в разработке",
+        "de": "Leider Diese Seite ist in der Entwicklung"
+    }, {
+        "id": 192,
+        "state": 1,
+        "en": "All goods are for demonstration. At this point, a purchase is impossible!",
+        "ua": "Всі товари для демонстрації. Купівля зараз неможлива!",
+        "ru": "Все товары для демонстрации. Покупка сейчас невозможна !",
+        "de": "Alle Einzelteile für die Demonstration. Kaufen ist jetzt unmöglich!"
+    }, {
+        "id": 193,
+        "state": 1,
+        "en": "Before the opening remains:",
+        "ua": "До відкриття залишається:",
+        "ru": "До открытия остается:",
+        "de": "Vor der Entdeckung von Überresten"
+    }, {
+        "id": 194,
+        "state": 1,
+        "en": "Price",
+        "ua": "Ціна",
+        "ru": "Цена",
+        "de": "Preis"
+    }, {
+        "id": 195,
+        "state": 1,
+        "en": "Grand Sale",
+        "ua": "Грандіозний розпродаж",
+        "ru": "Грандиозная распродажа",
+        "de": "Grandiose Verkauf"
+    }, {
+        "id": 196,
+        "state": 1,
+        "en": "Last day of the month.",
+        "ua": "Останній день місяця.",
+        "ru": "Последний день месяца.",
+        "de": "Am letzten Tag des Monats."
+    }, {
+        "id": 197,
+        "state": 1,
+        "en": "Time is left:",
+        "ua": "Залишилося часу:",
+        "ru": "Осталось времени:",
+        "de": "Verbleibende Zeit:"
+    }, {
+        "id": 198,
+        "state": 1,
+        "en": "Select goods",
+        "ua": "Вибрати товари",
+        "ru": "Выбрать товары",
+        "de": "Wählen Sie Produkte"
+    }, {
+        "id": 199,
+        "state": 1,
+        "en": "Selection by parameters",
+        "ua": "Підбір по параметрах",
+        "ru": "Подбор по параметрам",
+        "de": "Auswahl der Parameter"
+    }, {
+        "id": 200,
+        "state": 1,
+        "en": "Phone number",
+        "ua": "Номер телефону",
+        "ru": "Номер телефона",
+        "de": "Handynummer"
+    }, {
+        "id": 201,
+        "state": 1,
+        "en": "Password",
+        "ua": "Пароль",
+        "ru": "Пароль",
+        "de": "Passwort"
+    }, {
+        "id": 202,
+        "state": 1,
+        "en": "Exit",
+        "ua": "Вихід",
+        "ru": "Выход",
+        "de": "Ausgang"
+    }, {
+        "id": 203,
+        "state": 1,
+        "en": "Login",
+        "ua": "Увійти",
+        "ru": "Войти",
+        "de": "Einloggen"
+    }, {
+        "id": 204,
+        "state": 1,
+        "en": "Sign-in or Registration",
+        "ua": "Вхід або Реєстрація",
+        "ru": "Вход или Регистрация",
+        "de": "Einloggen oder Registrieren"
+    }, {
+        "id": 205,
+        "state": 1,
+        "en": "You can change the registration information.",
+        "ua": "Ви можете змінити реєстраційну інформацію.",
+        "ru": "Вы можете изменить регистрационную информацию.",
+        "de": "Sie können die Registrierung Informationen ändern."
+    }, {
+        "id": 206,
+        "state": 1,
+        "en": "Please enter your phone number and email address. Create a password that you can easily remember.",
+        "ua": "Будь ласка, введіть ваш номер телефону та адресу електронної пошти.",
+        "ru": "Пожалуйста, введите ваш номер телефона и адрес электронной почты. Придумайте пароль который вам легко запомнить.",
+        "de": "Bitte geben Sie Ihre Handynummer und E-Mail-Adresse ein.Erstellen Sie ein Passwort."
+    }, {
+        "id": 207,
+        "state": 1,
+        "en": "Please enter your phone number and email address, create a password or enter the current one if you already have an account on our website.",
+        "ua": "Будь ласка, введіть ваш номер телефону та адресу електронної пошти.",
+        "ru": "Пожалуйста, введите ваш номер телефона и адрес электронной почты, придумайте пароль или введите текущий если у вас уже есть учетная запись на нашем сайте.",
+        "de": "Bitte geben Sie Ihre Handynummer und E-Mail-Adresse ein.Erstellen Sie ein Passwort oder geben Sie ein gültiges Passwort ein."
+    }, {
+        "id": 208,
+        "state": 1,
+        "en": "I consent to the collection and processing of my personal data",
+        "ua": "Я даю згоду на збір і обробку моїх персональних даних",
+        "ru": "Я даю согласие на сбор и обработку моих персональных данных",
+        "de": "Ich gebe Einwilligung zur Erhebung und Verarbeitung personenbezogener Daten"
+    }, {
+        "id": 209,
+        "state": 1,
+        "en": "Please enter the temporary code. We have sent it to your email.",
+        "ua": "Введіть тимчасовий код. Ми відправили його на електронну пошту",
+        "ru": "Введите временный код. Мы отправили его на электронную почту",
+        "de": "Geben Sie den temporären Code. Wir schickten es an Ihre E-Mail"
+    }, {
+        "id": 210,
+        "state": 1,
+        "en": "In order to improve your search for goods on our website",
+        "ua": "Для того, щоб поліпшити вам пошук товарів на нашому сайті",
+        "ru": "Для того, чтобы улучшить вам поиск товаров на нашем сайте",
+        "de": "nutzt Cookies um Dir einen besseren Service zu bieten."
+    }, {
+        "id": 211,
+        "state": 1,
+        "en": "uses cookies.",
+        "ua": "использует куки-файлы.",
+        "ru": "использует куки-файлы.",
+        "de": "Cookies."
+    }, {
+        "id": 212,
+        "state": 1,
+        "en": "Do not show again",
+        "ua": "Більше не показувати",
+        "ru": "Больше не показывать",
+        "de": "Nachricht verbergen"
+    }, {
+        "id": 213,
+        "state": 1,
+        "en": "Learn more",
+        "ua": "Детальніше",
+        "ru": "Подробнее",
+        "de": "Mehr Informationen"
+    }, {
+        "id": 214,
+        "state": 1,
+        "en": "Installation completed",
+        "ua": "Установка завершена",
+        "ru": "Установка завершена",
+        "de": "Installation abgeschlossen"
+    }, {
+        "id": 215,
+        "state": 1,
+        "en": "Unfortunately, the request",
+        "ua": "На жаль запит",
+        "ru": "К сожалению запрос",
+        "de": "Es wurden keine mit deiner Suchanfrage"
+    }, {
+        "id": 216,
+        "state": 1,
+        "en": "Nothing has been found",
+        "ua": "Нічого не знайдено",
+        "ru": "ничего не найдено",
+        "de": "Nichts gefunden"
+    }, {
+        "id": 217,
+        "state": 1,
+        "en": "Recommendations",
+        "ua": "Рекомендації",
+        "ru": "Рекомендации",
+        "de": "Vorschläge"
+    }, {
+        "id": 218,
+        "state": 1,
+        "en": "Make sure all words are spelled correctly.",
+        "ua": "Переконайтеся, що всі слова написані без помилок.",
+        "ru": "Убедитесь, что все слова написаны без ошибок.",
+        "de": "Achte darauf, dass alle Wörter richtig geschrieben sind."
+    }, {
+        "id": 219,
+        "state": 1,
+        "en": "Try to use other keywords.",
+        "ua": "Спробуйте використовувати інші ключові слова.",
+        "ru": "Попробуйте использовать другие ключевые слова.",
+        "de": "Probiere es mit anderen Suchbegriffen."
+    }, {
+        "id": 220,
+        "state": 1,
+        "en": "Try to use more general words.",
+        "ua": "Спробуйте використати більш загальні слова.",
+        "ru": "Попробуйте использовать более общие слова.",
+        "de": "Probiere es mit allgemeineren Suchbegriffen."
+    }, {
+        "id": 221,
+        "state": 1,
+        "en": "Search query",
+        "ua": "Пошуковий запит",
+        "ru": "Поисковый запрос",
+        "de": "Die Suchabfrage"
+    }, {
+        "id": 222,
+        "state": 1,
+        "en": "Search by Product id format",
+        "ua": "Пошук по коду товару формат",
+        "ru": "Поиск по коду товара формат",
+        "de": "Suche nach Produkt-ID Format"
+    }, {
+        "id": 223,
+        "state": 1,
+        "en": "Extra discount",
+        "ua": "Додаткова знижка",
+        "ru": "Дополнительная скидка",
+        "de": "Zusätzlicher Rabatt"
+    }, {
+        "id": 224,
+        "state": 1,
+        "en": "Discount",
+        "ua": "Розмір знижки",
+        "ru": "Размер скидки",
+        "de": "Rabattbetrag"
+    }, {
+        "id": 225,
+        "state": 1,
+        "en": "expires",
+        "ua": "закінчується",
+        "ru": "заканчивается",
+        "de": "gültig bis"
+    }, {
+        "id": 226,
+        "state": 1,
+        "en": "Gold Discount Card",
+        "ua": "Дисконтна золота карта",
+        "ru": "Дисконтная золотая карта",
+        "de": "Discount Gold-Karte"
+    }, {
+        "id": 227,
+        "state": 1,
+        "en": "Order number",
+        "ua": "Номер замовлення",
+        "ru": "Номер заказа",
+        "de": "Bestellnummer"
+    }, {
+        "id": 228,
+        "state": 1,
+        "en": "Terms of delivery for each product are different. Detailed conditions are listed in the price offer on the product page.",
+        "ua": "Умови поставки по кожному товару відрізняються. Детальні умови розписані в ціновій пропозиції на сторінці товару.",
+        "ru": "Условия поставки по каждому товару отличаются. Подробные условия расписаны в ценовом предложении на странице товара.",
+        "de": "Die Bedingungen für jedes Los sind unterschiedlich. Detaillierte Bedingungen sind in der Beschreibung des Loses beschrieben."
+    }, {
+        "id": 229,
+        "state": 1,
+        "en": "We have sent you a copy of the order on your email. Please check the spam folder.",
+        "ua": "Ми вислали вам копію замовлення на ваш e-mail. Перевірте папку спам.",
+        "ru": "Мы выслали вам копию заказа на ваш e-mail. Проверьте папку спам.",
+        "de": "Wir können Ihnen die Rechnung gerne per E-Mail zuschicken."
+    }, {
+        "id": 230,
+        "state": 1,
+        "en": "Your Order",
+        "ua": "Ваше замовлення",
+        "ru": "Ваш заказ",
+        "de": "Ihre Bestellung"
+    }, {
+        "id": 231,
+        "state": 1,
+        "en": "Order status",
+        "ua": "Статус замовлення",
+        "ru": "Статус заказа",
+        "de": "Lieferstatus"
+    }, {
+        "id": 232,
+        "state": 1,
+        "en": "Is waiting for a payment or confirmation",
+        "ua": "Чекає оплати або підтвердження",
+        "ru": "Ожидает оплаты или подтверждения",
+        "de": "in Erwartung der Zahlung"
+    }, {
+        "id": 233,
+        "state": 1,
+        "en": "Is waiting for a confirmation of the delivery department.",
+        "ua": "В черзі відділу доставки.",
+        "ru": "Ожидает подтверждения отдела доставки.",
+        "de": "Paid. Bis zur Bestätigung der Zahlung."
+    }, {
+        "id": 234,
+        "state": 1,
+        "en": "In the process. Is being prepared for a shipment.",
+        "ua": "В обробці. Готуємо до відвантаження.",
+        "ru": "В обработке. Готовим к отгрузке.",
+        "de": "Paid. In der Verarbeitung."
+    }, {
+        "id": 235,
+        "state": 1,
+        "en": "The order has been sent.",
+        "ua": "Замовлення відправлено.",
+        "ru": "Заказ отправлен.",
+        "de": "Die Bestellung wurde gesendet."
+    }, {
+        "id": 236,
+        "state": 1,
+        "en": "The order has been delivered.",
+        "ua": "Замовлення доставлено.",
+        "ru": "Заказ доставлен.",
+        "de": "Bestellung geliefert."
+    }, {
+        "id": 237,
+        "state": 1,
+        "en": "There are no goods in the shopping cart",
+        "ua": "У кошику немає товарів",
+        "ru": "В корзине нет товаров",
+        "de": "Keine Artikel im Warenkorb"
+    }, {
+        "id": 238,
+        "state": 1,
+        "en": "Payment in advance",
+        "ua": "Авансовий платіж",
+        "ru": "Авансовый платеж",
+        "de": "Vorkasse"
+    }, {
+        "id": 239,
+        "state": 1,
+        "en": "Change an address",
+        "ua": "Змінити адресу",
+        "ru": "Сменить адрес",
+        "de": "Adresse ändern"
+    }, {
+        "id": 240,
+        "state": 1,
+        "en": "Save changes",
+        "ua": "Зберегти зміни",
+        "ru": "Сохранить изменения",
+        "de": "Änderungen speichern"
+    }, {
+        "id": 241,
+        "state": 1,
+        "en": "Promotional code or discount card",
+        "ua": "Промокод або Дисконтна карта",
+        "ru": "Промокод или Дисконтная карта",
+        "de": "Gutscheincode oder Rabatt-Karte"
+    }, {
+        "id": 242,
+        "state": 1,
+        "en": "Edit contact details",
+        "ua": "Змінити контактні дані",
+        "ru": "Изменить контактные данные",
+        "de": "Kontaktdetails bearbeiten"
+    }, {
+        "id": 243,
+        "state": 1,
+        "en": "You can change the registration information.",
+        "ua": "Ви можете змінити реєстраційну інформацію.",
+        "ru": "Вы можете изменить регистрационную информацию.",
+        "de": "Sie können die Registrierungsinformationen ändern."
+    }, {
+        "id": 244,
+        "state": 1,
+        "en": "Available until",
+        "ua": "Дійсний до",
+        "ru": "Действительный до",
+        "de": "Gültig bis"
+    }, {
+        "id": 245,
+        "state": 1,
+        "en": "Status",
+        "ua": "Статус",
+        "ru": "Статус",
+        "de": "Status"
+    }, {
+        "id": 246,
+        "state": 1,
+        "en": "Active",
+        "ua": "Активний",
+        "ru": "Активный",
+        "de": "Aktiv"
+    }, {
+        "id": 247,
+        "state": 1,
+        "en": "Not active",
+        "ua": "Не діє",
+        "ru": "Не действует",
+        "de": "Nicht aktiv"
+    }, {
+        "id": 248,
+        "state": 1,
+        "en": "Pay now!",
+        "ua": "Оплатити зараз",
+        "ru": "Оплатить сейчас",
+        "de": "Bezahlen Sie jetzt!"
+    }, {
+        "id": 249,
+        "state": 1,
+        "en": "Cash Payment",
+        "ua": "Оплата готівкою",
+        "ru": "Оплата наличными",
+        "de": "Barzahlung"
+    }, {
+        "id": 250,
+        "state": 1,
+        "en": "upon receipt of the goods",
+        "ua": "при отриманні товару",
+        "ru": "при получении товара",
+        "de": "nach Erhalt der Ware"
+    }, {
+        "id": 251,
+        "state": 1,
+        "en": "Should you want to pay in cash upon receipt of the goods, you do not need to do anything else. The payment in cash on the fact of reception of the goods is set by default. Our manager will contact you as soon as possible.",
+        "ua": "Якщо ви хочете здійснити оплату готівкою за фактом отримання товару.Вам більше нічого робити не потрібно.У нас за замовчуванням: Оплата готівкою за фактом отримання товару.З вами найближчим часом звяжеться наш менеджер.",
+        "ru": "Если вы хотите произвести оплату наличными по факту получения товара,Вам больше ничего делать не нужно.У нас по умолчанию: Оплата наличными по факту получения товара.С вами в ближайшее время свяжется наш менеджер.",
+        "de": null
+    }, {
+        "id": 252,
+        "state": 1,
+        "en": "My Orders",
+        "ua": "Мої замовлення",
+        "ru": "Мои заказы",
+        "de": "Meine Bestellungen"
+    }, {
+        "id": 253,
+        "state": 1,
+        "en": "Thank you. Your order has already been created!  We will let you know as soon as the goods are available for a shipment. An approximate delivery date is indicated below. You can review the status of your order or make changes to it by visiting My Orders on our website.",
+        "ua": "Дякуємо за ваше замовлення. Ваше замовлення вже створено !Ми дамо вам знати відразу, як тільки товар и будуть доступні до відвантаження. Орієнтовна дата поставки вказана нижче.  Ви можете переглянути статус Вашого замовлення або внести в нього зміни, відвідуючи ваші замовлення на нашому сайті.",
+        "ru": "Спасибо за ваш заказ. Ваш заказ уже создан !Мы дадим вам знать сразу, как только товары будут доступны к отгрузке. Ориентировочная дата поставки указана ниже.  Вы можете просмотреть статус Вашего заказа или внести в него изменения, посещая ваши заказы на нашем сайте.",
+        "de": "Vielen Dank für Deine Bestellung.  Bitte beachte dieses Schreiben als Gegenstandslos falls du die Bestellung bereits bezahlt haben. Du hast die Möglichkeit deine Bestellung mit einem Klick online über PayPal oder über eine Überweisung zu bezahlen. Bitte beachte, dass wir die Ware nach dem Geldeingang verschicken und das die SEPA Überweisung mehrere Tage dauern kann. "
+    }, {
+        "id": 254,
+        "state": 1,
+        "en": "In your shopping cart",
+        "ua": "У вашому кошику",
+        "ru": "В вашей корзине",
+        "de": "Dein Warenkorb"
+    }, {
+        "id": 255,
+        "state": 1,
+        "en": "You have been not authorized",
+        "ua": "Ви не авторизовані",
+        "ru": "Вы не авторизованы",
+        "de": "Sie sind nicht angemeldet"
+    }, {
+        "id": 256,
+        "state": 1,
+        "en": "Login or Register",
+        "ua": "Увійдіть або Зареєструйтеся",
+        "ru": "Войдите или Зарегистрируйтесь",
+        "de": "Anmelden oder Registrieren"
+    }, {
+        "id": 257,
+        "state": 1,
+        "en": "You can change the registration data in the shopping cart.",
+        "ua": "Змінити реєстраційні дані можна в кошику.",
+        "ru": "Изменить регистрационные данные можно в корзине.",
+        "de": "Sie können Ihre Daten in den Warenkorb ändern."
+    }, {
+        "id": 258,
+        "state": 1,
+        "en": "Thank you for your feedback",
+        "ua": "Дякую за ваш відгук",
+        "ru": "Спасибо за ваш отзыв",
+        "de": "vielen Dank für Ihre Bewertung!"
+    }, {
+        "id": 259,
+        "state": 1,
+        "en": "Please enter your phone number and email address.Enter your password.",
+        "ua": "Будь ласка, введіть ваш номер телефону та адресу електронної пошти.Введіть Ваш пароль",
+        "ru": "Пожалуйста, введите ваш номер телефона и адрес электронной почты.Введите ваш пароль",
+        "de": "Willkommen bei Boom Matratze!"
+    }, {
+        "id": 260,
+        "state": 1,
+        "en": "For total cost",
+        "ua": "На загальну сумму",
+        "ru": "На общую сумму",
+        "de": "Für Gesamtkosten"
+    }, {
+        "id": 261,
+        "state": 1,
+        "en": "An access has been denied",
+        "ua": "Доступ заборонений",
+        "ru": "В доступе отказано",
+        "de": "Zugriff verweigert"
+    }, {
+        "id": 262,
+        "state": 1,
+        "en": "You have been authorized",
+        "ua": "Ви авторизовані",
+        "ru": "Вы авторизованы",
+        "de": "Sie sind angemeldet"
+    }, {
+        "id": 263,
+        "state": 1,
+        "en": "Sign in",
+        "ua": "Увійти до системи",
+        "ru": "Войти в систему",
+        "de": "Einloggen"
+    }, {
+        "id": 264,
+        "state": 1,
+        "en": "Edit information",
+        "ua": "Редагувати інформацію",
+        "ru": "Редактировать информацию",
+        "de": "Editierinformation"
+    }, {
+        "id": 265,
+        "state": 1,
+        "en": "Update info",
+        "ua": "Оновити інформацію",
+        "ru": "Обновить информацию",
+        "de": "Update-Informationen"
+    }, {
+        "id": 266,
+        "state": 1,
+        "en": "Inactive",
+        "ua": "Неактивний",
+        "ru": "Неактивный",
+        "de": "inaktiv"
+    }, {
+        "id": 267,
+        "state": 1,
+        "en": "Active",
+        "ua": "Активний",
+        "ru": "Активный",
+        "de": "aktiv"
+    }, {
+        "id": 268,
+        "state": 1,
+        "en": "The subscription status on Newsletter",
+        "ua": "Статус підписки на розсилку",
+        "ru": "Статус подписки на рассылку",
+        "de": "Der Status Newsletter"
+    }, {
+        "id": 269,
+        "state": 1,
+        "en": "An example",
+        "ua": "Приклад",
+        "ru": "Пример",
+        "de": "Beispiel"
+    }, {
+        "id": 270,
+        "state": 1,
+        "en": "Please enter your mobile number",
+        "ua": "Введіть свій номер мобільного телефону",
+        "ru": "Введите свой номер мобильного телефона",
+        "de": "Bitte geben Sie Ihre Handynummer"
+    }, {
+        "id": 271,
+        "state": 1,
+        "en": "Please enter your email address",
+        "ua": "Введіть свою адресу електронної пошти",
+        "ru": "Введите свой адрес электронной почты",
+        "de": "Bitte geben Sie Ihre E-Mail-Adresse"
+    }, {
+        "id": 272,
+        "state": 1,
+        "en": "Please enter your password",
+        "ua": "Введіть свій пароль",
+        "ru": "Введите свой пароль",
+        "de": "Bitte geben Sie Ihr Passwort"
+    }, {
+        "id": 273,
+        "state": 1,
+        "en": "Yes, I would like to receive by email newsletter about novelties, promotions and promo codes. You can cancel this subscription any time.",
+        "ua": "Так, я хотів би отримувати розсилки по електронній пошті про новинки, акції та промо-коди. Відмовитися від підписки ви можете в будь-який час.",
+        "ru": "Да, я хотел бы получать рассылки по электронной почте о новинках, акциях и промо-кодах . Отказаться от подписки вы можете в любое время.",
+        "de": "Ja, ich möchte unseren Newsletter per E-Mail über neue Produkte, Aktionen und Promotion-Codes erhalten. Abmelden von Ihnen jederzeit ."
+    }, {
+        "id": 274,
+        "state": 1,
+        "en": "The order has been paid",
+        "ua": "Замовлення оплачено",
+        "ru": "Заказ оплачен",
+        "de": "Bestellung bezahlt"
+    }, {
+        "id": 275,
+        "state": 1,
+        "en": "Your last order",
+        "ua": "Ваше останнє замовлення",
+        "ru": "Ваш последний заказ",
+        "de": "Ihre letzte Bestellung"
+    }, {
+        "id": 276,
+        "state": 1,
+        "en": "Wishlist",
+        "ua": "Список побажань",
+        "ru": "Список пожеланий",
+        "de": "Merkzettel"
+    }, {
+        "id": 277,
+        "state": 1,
+        "en": "Orders per month",
+        "ua": "Замовлення за місяць",
+        "ru": "Заказы за месяц",
+        "de": "Aufträge für den Monat"
+    }, {
+        "id": 278,
+        "state": 1,
+        "en": "At the account",
+        "ua": "На рахунку",
+        "ru": "На счету",
+        "de": "Deinetwegen"
+    }, {
+        "id": 279,
+        "state": 1,
+        "en": "User Menu",
+        "ua": "Меню користувача",
+        "ru": "Меню пользователя",
+        "de": "Benutzermenü"
+    }, {
+        "id": 280,
+        "state": 1,
+        "en": "Your Messages",
+        "ua": "Ваші повідомлення",
+        "ru": "Ваши сообщения",
+        "de": "Ihre Beiträge"
+    }, {
+        "id": 281,
+        "state": 1,
+        "en": "My account",
+        "ua": "Мій аккаунт",
+        "ru": "Мой аккаунт",
+        "de": "Mein Konto"
+    }, {
+        "id": 282,
+        "state": 1,
+        "en": "Payments",
+        "ua": "Платежі",
+        "ru": "Платежи",
+        "de": "Zahlungen"
+    }, {
+        "id": 283,
+        "state": 1,
+        "en": "Sign Up",
+        "ua": "Реєстрація",
+        "ru": "Регистрация",
+        "de": "Anmeldung"
+    }, {
+        "id": 284,
+        "state": 1,
+        "en": "Payments & Bonuses",
+        "ua": "Платежі та Бонуси",
+        "ru": "Платежи и Бонусы",
+        "de": "Zahlungen und Boni"
+    }, {
+        "id": 285,
+        "state": 1,
+        "en": "All orders are processed",
+        "ua": "Всі замовлення в обробці",
+        "ru": "Все заказы в обработке",
+        "de": "Alle werden bearbeitet"
+    }, {
+        "id": 286,
+        "state": 1,
+        "en": "Language",
+        "ua": "Мова",
+        "ru": "Язык",
+        "de": "Sprache"
+    }, {
+        "id": 287,
+        "state": 1,
+        "en": "Admin Menu",
+        "ua": "Меню адміністратора",
+        "ru": "Меню администратора",
+        "de": "Admin-Menü"
+    }, {
+        "id": 288,
+        "state": 1,
+        "en": "Users in total",
+        "ua": "Всього користувачів",
+        "ru": "Всего пользователей",
+        "de": "Mitglieder insgesamt"
+    }, {
+        "id": 289,
+        "state": 1,
+        "en": "Goods in the orders",
+        "ua": "Товарів в замовленнях",
+        "ru": "Товаров в заказах",
+        "de": "Warenbestellungen"
+    }, {
+        "id": 290,
+        "state": 1,
+        "en": "Goods in total",
+        "ua": "Товарів всього",
+        "ru": "Товаров всего",
+        "de": "Artikel Gesamt"
+    }, {
+        "id": 291,
+        "state": 1,
+        "en": "Orders in total",
+        "ua": "Всього замовлень",
+        "ru": "Всего заказов",
+        "de": "Gesamtaufträge"
+    }, {
+        "id": 292,
+        "state": 1,
+        "en": "Messages in total",
+        "ua": "Всього повідомлень",
+        "ru": "Всего сообщений",
+        "de": "Beiträge"
+    }, {
+        "id": 293,
+        "state": 1,
+        "en": "Entries in",
+        "ua": "Записів в",
+        "ru": "Записей в",
+        "de": "Aufzeichnungen in"
+    }, {
+        "id": 294,
+        "state": 1,
+        "en": "Messages",
+        "ua": "Повідомлення",
+        "ru": "Сообщения",
+        "de": "Meldungen"
+    }, {
+        "id": 295,
+        "state": 1,
+        "en": "Messages by general questions",
+        "ua": "Повідомлення з загальних питань",
+        "ru": "Сообщения по общим вопросам",
+        "de": "Beiträge zu allgemeinen Fragen"
+    }, {
+        "id": 296,
+        "state": 1,
+        "en": "Do you have questions? Write us a message. We will respond you as soon as possible.",
+        "ua": "У вас є питання? Напишіть нам повідомлення. Ми відповімо Вам найближчим часом.",
+        "ru": " У вас есть вопросы? Напишите нам сообщение. Мы ответим Вам в ближайшее время.",
+        "de": "Haben Sie Fragen? Schreiben Sie uns eine Nachricht. Wir werden in Kürze auf Sie reagieren."
+    }, {
+        "id": 297,
+        "state": 1,
+        "en": "Message text",
+        "ua": "Текст повідомлення",
+        "ru": "Текст сообщения",
+        "de": "Meldungstext"
+    }, {
+        "id": 298,
+        "state": 1,
+        "en": "Send",
+        "ua": "Відправити",
+        "ru": "Отправить",
+        "de": "Senden"
+    }, {
+        "id": 299,
+        "state": 1,
+        "en": "A message by the order",
+        "ua": "Повідомлення по замовленню",
+        "ru": "Сообщения по заказу",
+        "de": "Bestellen Sie Nachrichten"
+    }, {
+        "id": 300,
+        "state": 1,
+        "en": "Ms",
+        "ua": "Пані",
+        "ru": "Госпожа",
+        "de": "Frau"
+    }, {
+        "id": 301,
+        "state": 1,
+        "en": "Mr",
+        "ua": "Пан",
+        "ru": "Господин",
+        "de": "Herr"
+    }, {
+        "id": 302,
+        "state": 1,
+        "en": "Payment by the invoice",
+        "ua": "Оплата за рахунком-фактурою",
+        "ru": "Оплата по счет-фактуре",
+        "de": "Begleichung einer Rechnung"
+    }, {
+        "id": 303,
+        "state": 1,
+        "en": "Information",
+        "ua": "Інформація",
+        "ru": "Информация",
+        "de": "Informationen"
+    }, {
+        "id": 304,
+        "state": 1,
+        "en": "Form of a payment by default",
+        "ua": "Форма оплати за умовчанням",
+        "ru": "Форма оплаты по умолчанию",
+        "de": "Die Standard-Zahlungsform"
+    }, {
+        "id": 305,
+        "state": 1,
+        "en": "No data",
+        "ua": "Немає даних",
+        "ru": "Нет данных",
+        "de": "keine Angabe"
+    }, {
+        "id": 306,
+        "state": 1,
+        "en": "Not indicated",
+        "ua": "Не вказано",
+        "ru": "Не указано",
+        "de": "Unbekannt"
+    }, {
+        "id": 307,
+        "state": 1,
+        "en": "Are there no account?",
+        "ua": "Не маєш облікового запису?",
+        "ru": "Нет учетной записи ?",
+        "de": "Kein Account?"
+    }, {
+        "id": 308,
+        "state": 1,
+        "en": "Sign Up Now",
+        "ua": "Зареєструватися зараз",
+        "ru": "Зарегистрироваться сейчас",
+        "de": "registrieren Sie sich jetzt"
+    }, {
+        "id": 309,
+        "state": 1,
+        "en": "Email us:",
+        "ua": "Напишіть нам e-mail:",
+        "ru": "Напишите нам e-mail:",
+        "de": "Schreiben Sie uns, E-Mail:"
+    }, {
+        "id": 310,
+        "state": 1,
+        "en": "Are there any questions?",
+        "ua": "Є питання ?",
+        "ru": "Есть вопросы ?",
+        "de": "Noch Fragen?"
+    }, {
+        "id": 311,
+        "state": 1,
+        "en": "Questions & Answers",
+        "ua": "Питання-Відповіді",
+        "ru": "Вопросы-Ответы",
+        "de": "Häufig gestellte Fragen"
+    }, {
+        "id": 312,
+        "state": 1,
+        "en": "About the Project",
+        "ua": "Про проект",
+        "ru": "О проекте",
+        "de": "Über das Projekt"
+    }, {
+        "id": 313,
+        "state": 1,
+        "en": "Terms of Use",
+        "ua": "Умови користування",
+        "ru": "Пользовательское соглашение",
+        "de": "Nutzungsbedingungen"
+    }, {
+        "id": 314,
+        "state": 1,
+        "en": "At your account:",
+        "ua": "На вашому рахунку:",
+        "ru": "На вашем счету:",
+        "de": "Auf Ihrem Konto:"
+    }, {
+        "id": 315,
+        "state": 1,
+        "en": "Item",
+        "ua": "Артикул",
+        "ru": "Артикул",
+        "de": "Artikel"
+    }, {
+        "id": 316,
+        "state": 1,
+        "en": "Items",
+        "ua": "артикулу",
+        "ru": "артикула",
+        "de": "Artikel"
+    }, {
+        "id": 317,
+        "state": 1,
+        "en": "Items",
+        "ua": "артикулів",
+        "ru": "артикулов",
+        "de": "Artikel"
+    }, {
+        "id": 318,
+        "state": 1,
+        "en": "Exit",
+        "ua": "Вийти",
+        "ru": "Выйти",
+        "de": "Ausfahrt"
+    }, {
+        "id": 319,
+        "state": 1,
+        "en": "In the Wishlist",
+        "ua": "У списку бажань",
+        "ru": "В списке желаний",
+        "de": "In jedem Artikel in der Wunschliste"
+    }, {
+        "id": 320,
+        "state": 1,
+        "en": "An order has been created! Select a form of the payment, and pay.",
+        "ua": "Замовлення створено! Виберіть форму оплати і зробіть оплату.",
+        "ru": "Заказ создан! Выберите форму оплаты и произведите оплату.",
+        "de": "Der Auftrag wurde erstellt! Wählen Sie eine Form der Zahlung und eine Zahlung leisten."
+    }, {
+        "id": 321,
+        "state": 1,
+        "en": "Pay from the personal account",
+        "ua": "Оплатити з особистого рахунку",
+        "ru": "Оплатить с личного счета",
+        "de": "Pay-Konto"
+    }, {
+        "id": 322,
+        "state": 1,
+        "en": "Payment from the personal account",
+        "ua": "Оплата з особистого рахунку",
+        "ru": "Оплата с личного счета",
+        "de": "Zahlung aus dem persönlichen Konto"
+    }, {
+        "id": 323,
+        "state": 1,
+        "en": "Total amount by the order",
+        "ua": "Загальна сума на замовлення",
+        "ru": "Общая сумма по заказу",
+        "de": "Die Gesamtmenge der Reihenfolge"
+    }, {
+        "id": 324,
+        "state": 1,
+        "en": "Available amount at your account",
+        "ua": "Доступна сума на вашому рахунку",
+        "ru": "Доступная сумма на вашем счету",
+        "de": "Der zur Verfügung stehende Betrag auf Ihrem Konto"
+    }, {
+        "id": 325,
+        "state": 1,
+        "en": "Payer",
+        "ua": "Платник",
+        "ru": "Плательщик",
+        "de": "Zahler"
+    }, {
+        "id": 326,
+        "state": 1,
+        "en": "What is your name?",
+        "ua": "Як вас звати ?",
+        "ru": "Как вас зовут ?",
+        "de": "Was ist Ihr Name ?"
+    }, {
+        "id": 327,
+        "state": 1,
+        "en": "Your contact phone.",
+        "ua": "Ваш контактний телефон.",
+        "ru": "Ваш контактный телефон.",
+        "de": "Ihre Telefonnummer."
+    }, {
+        "id": 328,
+        "state": 1,
+        "en": "Where do I send the invoice to?",
+        "ua": "Куди вислати рахунок-фактуру?",
+        "ru": "Куда выслать счет-фактуру ?",
+        "de": "Wo die Rechnung schicken?"
+    }, {
+        "id": 329,
+        "state": 1,
+        "en": "Additional information",
+        "ua": "Додаткова інформація",
+        "ru": "Дополнительная информация",
+        "de": "Weitere Informationen"
+    }, {
+        "id": 330,
+        "state": 1,
+        "en": "Pay by the invoice",
+        "ua": "Оплатити за рахунком-фактурою",
+        "ru": "Оплатить по счет-фактуре",
+        "de": "Begleichung einer Rechnung"
+    }, {
+        "id": 331,
+        "state": 1,
+        "en": "Request for an invoice",
+        "ua": "Запит рахунку-фактури",
+        "ru": "Запрос счета-фактуры",
+        "de": "Fordern Sie eine Rechnung"
+    }, {
+        "id": 332,
+        "state": 1,
+        "en": "Please indicate below all the necessary information for a billing.",
+        "ua": "Вкажіть, будь ласка нижче всю необхідну інформацію для виставлення рахунку.",
+        "ru": "Укажите пожалуйста ниже всю необходимую информацию для выставления счета.",
+        "de": "Bitte geben Sie unten alle notwendigen Informationen für die Rechnung."
+    }, {
+        "id": 333,
+        "state": 1,
+        "en": "Send documents to the email:",
+        "ua": "Документи надсилайте на електронну пошту:",
+        "ru": "Документы высылайте на электронную почту:",
+        "de": "Senden von Dokumenten per E-Mail:"
+    }, {
+        "id": 334,
+        "state": 1,
+        "en": "In the letter subject specify: Documents for the invoice",
+        "ua": "В темі листа вкажіть: Документи для рахуноку-фактури",
+        "ru": "В теме письма укажите: Документы для счет-фактуры",
+        "de": "In der Betreffzeile angeben: Unterlagen für die Rechnungsnummer"
+    }, {
+        "id": 335,
+        "state": 1,
+        "en": "In total including VAT.",
+        "ua": "Всього вкл. ПДВ.",
+        "ru": "Всего вкл. НДС.",
+        "de": "Gesamtpreis inkl. MwSt."
+    }, {
+        "id": 336,
+        "state": 1,
+        "en": "Delivery paid by a buyer",
+        "ua": "Доставка оплачується покупцем",
+        "ru": "Доставка оплачивается покупателем",
+        "de": "Lieferung vom Käufer zu zahlen"
+    }, {
+        "id": 337,
+        "state": 1,
+        "en": "Discount on the website",
+        "ua": "Знижка на сайті",
+        "ru": "Скидка на сайте",
+        "de": "Discount Online"
+    }, {
+        "id": 338,
+        "state": 1,
+        "en": "VAT",
+        "ua": "ПДВ.",
+        "ru": "НДС.",
+        "de": "MwSt."
+    }, {
+        "id": 339,
+        "state": 1,
+        "en": "Total cost including VAT.",
+        "ua": "Загальна вартість з урахуванням ПДВ.",
+        "ru": "Общая стоимость включая НДС.",
+        "de": "Gesamtpreis inkl. MwSt."
+    }, {
+        "id": 340,
+        "state": 1,
+        "en": "Paid",
+        "ua": "Оплачено",
+        "ru": "Оплачено",
+        "de": "Bezahlt"
+    }, {
+        "id": 341,
+        "state": 1,
+        "en": "Total payment",
+        "ua": "Всьго до сплати",
+        "ru": "Всего к оплате",
+        "de": "Total to Pay"
+    }, {
+        "id": 342,
+        "state": 1,
+        "en": "Payments by this order",
+        "ua": "Платежі по цьому замовленню",
+        "ru": "Платежи по этому заказу",
+        "de": "Zahlungen für diese Bestellung"
+    }, {
+        "id": 343,
+        "state": 1,
+        "en": "Payment by the order. Payment Id:",
+        "ua": "Оплата за замовленням. id платежу:",
+        "ru": "Оплата по заказу. id платежа:",
+        "de": "Zahlung auf Anfrage. id payment"
+    }, {
+        "id": 344,
+        "state": 1,
+        "en": "Next",
+        "ua": "Далі",
+        "ru": "Дальше",
+        "de": "Weiter"
+    }, {
+        "id": 345,
+        "state": 1,
+        "en": "Promo Code",
+        "ua": "Промо-код",
+        "ru": "Промо код",
+        "de": "Gutscheincode"
+    }, {
+        "id": 346,
+        "state": 1,
+        "en": "Wishlist",
+        "ua": "Список побажань",
+        "ru": "Список пожеланий",
+        "de": "Wunschliste"
+    }, {
+        "id": 347,
+        "state": 1,
+        "en": "Is filled out in the next step",
+        "ua": "Заповнюється на наступному кроці",
+        "ru": "Заполняется на следующем шаге",
+        "de": "Um im nächsten Schritt abgeschlossen sein"
+    }, {
+        "id": 348,
+        "state": 1,
+        "en": "Add to shopping cart",
+        "ua": "Перемістити в кошик",
+        "ru": "Переместить в корзину",
+        "de": "Zum Korb hinzufügen"
+    }, {
+        "id": 349,
+        "state": 1,
+        "en": "Add to Wishlist",
+        "ua": "Перемістити в список бажань",
+        "ru": "Переместить в список желаний",
+        "de": "Zur Wunschliste verschieben"
+    }, {
+        "id": 350,
+        "state": 1,
+        "en": "Region",
+        "ua": "обл.",
+        "ru": "обл.",
+        "de": null
+    }, {
+        "id": 351,
+        "state": 1,
+        "en": "Goods will not be saved in your shopping cart.  In order to save, register yourself.",
+        "ua": "Товары в корзині не захищені. Для збереження зареєструйтеся.",
+        "ru": "Товары в вашей корзине не сохраняться. Для сохранения зарегистрируйтесь.",
+        "de": "Artikel im Warenkorb werden nicht reserviert."
+    }, {
+        "id": 352,
+        "state": 1,
+        "en": "Promo codes can be entered in the last orders step Confirm.",
+        "ua": "Промо-коди можуть бути введені на останньому кроці замовлення Підтвердити.",
+        "ru": "Промо-коды могут быть введены на последнем шаге заказа Подтвердить.",
+        "de": "Gutscheincodes können im letzten Bestellschritt Bestätigen eingelöst werden."
+    }, {
+        "id": 353,
+        "state": 1,
+        "en": "Your shopping cart is empty",
+        "ua": "Ваш кошик порожній",
+        "ru": "Ваша корзина пуста",
+        "de": "Dein Korb ist leer"
+    }, {
+        "id": 354,
+        "state": 1,
+        "en": "Login to see the products in the shopping cart that you might have added from another computer or device.",
+        "ua": "Увійдіть для того, щоб побачити товари в кошику які ви можливо додавали з іншого компютера або пристрою.",
+        "ru": "Войдите для того, чтобы увидеть товары в корзине которые вы возможно добавляли из другого компьютера или устройства.",
+        "de": "Loggen Sie sich ein um Artikel zu sehen, die Sie eventuell von einem anderen Computer или Gerät hinzugefügt haben."
+    }, {
+        "id": 355,
+        "state": 1,
+        "en": "Cost per unit",
+        "ua": "Вартість одиниці",
+        "ru": "Стоимость единицы",
+        "de": "Kosten pro Einheit"
+    }, {
+        "id": 356,
+        "state": 1,
+        "en": "Total price",
+        "ua": "Загальна ціна",
+        "ru": "Общая цена",
+        "de": "Gesamtpreis"
+    }, {
+        "id": 357,
+        "state": 1,
+        "en": "Delivery date",
+        "ua": "Дата доставки",
+        "ru": "Дата доставки",
+        "de": "Lieferdatum"
+    }, {
+        "id": 358,
+        "state": 1,
+        "en": "Not determined",
+        "ua": "Не визначена",
+        "ru": "Не определена",
+        "de": "Unentschlossen"
+    }, {
+        "id": 359,
+        "state": 1,
+        "en": "or",
+        "ua": "або",
+        "ru": "или",
+        "de": "oder"
+    }, {
+        "id": 360,
+        "state": 1,
+        "en": "Send a request",
+        "ua": "Відправити запит",
+        "ru": "Отправить запрос",
+        "de": "Anfrage senden"
+    }, {
+        "id": 361,
+        "state": 1,
+        "en": "Pay with",
+        "ua": "Оплатити через",
+        "ru": "Оплатить через",
+        "de": "Bezahlen mit"
+    }, {
+        "id": 362,
+        "state": 1,
+        "en": "Welcome to the website!",
+        "ua": "Ласкаво просимо на сайт!",
+        "ru": "Добро пожаловать на сайт!",
+        "de": "Willkommen bei"
+    }, {
+        "id": 363,
+        "state": 1,
+        "en": "Your contact details have been changed!",
+        "ua": "Ваші контактні дані змінилися!",
+        "ru": "Ваши контактные данные изменились!",
+        "de": "Ihre Kontaktdaten haben sich geändert!"
+    }, {
+        "id": 364,
+        "state": 1,
+        "en": "Please login.",
+        "ua": "Будь ласка, війдіть.",
+        "ru": "Пожалуйста, войдите.",
+        "de": "Bitte anmelden."
+    }, {
+        "id": 365,
+        "state": 1,
+        "en": "Secure Login. SSL encryption is used.",
+        "ua": "Безпечний вхід. Використовується шифрування ssl",
+        "ru": "Безопасный вход. Используется шифрование ssl",
+        "de": "Sichere Eingang. Verwenden Sie SSL-Verschlüsselung"
+    }, {
+        "id": 366,
+        "state": 1,
+        "en": "Create an account",
+        "ua": "Створити обліковий запис",
+        "ru": "Создать учетную запись",
+        "de": "Ein Konto erstellen"
+    }, {
+        "id": 367,
+        "state": 1,
+        "en": "Are you already registered?",
+        "ua": "Ви вже зареєстровані?",
+        "ru": "Вы уже зарегистрированы ?",
+        "de": "Sie haben bereits ein Konto?"
+    }, {
+        "id": 368,
+        "state": 1,
+        "en": "Im a new user",
+        "ua": "Я новий користувач",
+        "ru": "Я новый пользователь",
+        "de": "Ich bin ein neuer Benutzer"
+    }, {
+        "id": 369,
+        "state": 1,
+        "en": "Think up a secure password.",
+        "ua": "Придумайте надійний пароль.",
+        "ru": "Придумайте надежный пароль.",
+        "de": "Erstellen Sie ein starkes Passwort."
+    }, {
+        "id": 370,
+        "state": 1,
+        "en": "Optional",
+        "ua": "Не обовязково",
+        "ru": "Не обязательно",
+        "de": "Nicht unbedingt"
+    }, {
+        "id": 371,
+        "state": 1,
+        "en": "Required!",
+        "ua": "Обовязково!",
+        "ru": "Обязательно!",
+        "de": "Erforderlich!"
+    }, {
+        "id": 373,
+        "state": 1,
+        "en": "Date of consent",
+        "ua": "Дата згоди",
+        "ru": "Дата согласия",
+        "de": "Datum der Zulassung"
+    }, {
+        "id": 374,
+        "state": 1,
+        "en": "Delete your account",
+        "ua": "Видалити обліковий запис",
+        "ru": "Удалить учетную запись",
+        "de": "Konto löschen"
+    }, {
+        "id": 375,
+        "state": 1,
+        "en": "Your data",
+        "ua": "Ваші дані",
+        "ru": "Ваши данные",
+        "de": "Ihre Daten"
+    }, {
+        "id": 376,
+        "state": 1,
+        "en": "Platform Policy",
+        "ua": "Політика платформи",
+        "ru": "Политика платформы",
+        "de": "Plattformpolitik"
+    }, {
+        "id": 377,
+        "state": 1,
+        "en": "Your personal invitation code",
+        "ua": "Ваш особистий інвайт-код",
+        "ru": "Ваш личный инвайт-код",
+        "de": "Ihr persönlicher Code laden"
+    }, {
+        "id": 378,
+        "state": 1,
+        "en": "Statistics on the accrual of referral bonuses",
+        "ua": "Статистика по нарахуванню реферальних бонусів",
+        "ru": "Статистика по начислению реферальных бонусов",
+        "de": "Statistiken über die Abgrenzung von Überweisungsprämien"
+    }, {
+        "id": 379,
+        "state": 1,
+        "en": null,
+        "ua": null,
+        "ru": null,
+        "de": null
+    }, {
+        "id": 380,
+        "state": 1,
+        "en": "Change of a user information",
+        "ua": "Зміна відомостей про користувача",
+        "ru": "Изменение сведений о пользователе",
+        "de": "Benutzerinformationen ändern"
+    }, {
+        "id": 381,
+        "state": 1,
+        "en": "Adding of a contact information",
+        "ua": "Додавання контактних даних",
+        "ru": "Добавление контактных данных",
+        "de": "Hinzufügen von Kontaktdaten"
+    }, {
+        "id": 382,
+        "state": 1,
+        "en": "Invitation code",
+        "ua": "Інвайт-код",
+        "ru": "Инвайт-код",
+        "de": "Invite Code"
+    }, {
+        "id": 384,
+        "state": 1,
+        "en": "User Type",
+        "ua": "Тип користувача",
+        "ru": "Тип пользователя",
+        "de": "Benutzertyp"
+    }, {
+        "id": 385,
+        "state": 1,
+        "en": "Select a form of payment",
+        "ua": "Виберіть форму оплати",
+        "ru": "Выберите форму оплаты",
+        "de": "Wählen Sie eine Form der Zahlung"
+    }, {
+        "id": 386,
+        "state": 1,
+        "en": "Important: This is not an Invitation code",
+        "ua": "Важливо: Це не Инвайт-код",
+        "ru": "Важно: Это не Инвайт-код",
+        "de": "Wichtig: Dies ist ein nicht-Code laden"
+    }, {
+        "id": 387,
+        "state": 1,
+        "en": "Your payments and referral bonuses",
+        "ua": "Ваші платежі і реферальні бонуси",
+        "ru": "Ваши платежи и реферальные бонусы",
+        "de": "Ihre Zahlungen und Überweisungsprämien"
+    }, {
+        "id": 388,
+        "state": 1,
+        "en": "The table displays all your expenses and revenues in our system.",
+        "ua": "Таблиця показує всі ваші витрати та доходи в нашій системі.",
+        "ru": "Таблица показывает все ваши расходы и доходы в нашей системе.",
+        "de": "Die Tabelle zeigt alle Ihre Aufwendungen und Erträge in unserem System."
+    }, {
+        "id": 389,
+        "state": 1,
+        "en": "Date",
+        "ua": "Дата",
+        "ru": "Дата",
+        "de": "Datum"
+    }, {
+        "id": 390,
+        "state": 1,
+        "en": "Revenue",
+        "ua": "Дохід",
+        "ru": "Доход",
+        "de": "Einkommen"
+    }, {
+        "id": 391,
+        "state": 1,
+        "en": "Costs",
+        "ua": "Витрати",
+        "ru": "Расходы",
+        "de": "Kosten"
+    }, {
+        "id": 392,
+        "state": 1,
+        "en": "Name",
+        "ua": "Найменування",
+        "ru": "Наименование",
+        "de": "Name"
+    }, {
+        "id": 393,
+        "state": 1,
+        "en": "A bonus for your registration",
+        "ua": "Бонус за вашу реєстрацію",
+        "ru": "Бонус за вашу регистрацию",
+        "de": "Bonus für Ihre Anmeldung"
+    }, {
+        "id": 394,
+        "state": 1,
+        "en": "Accrued in total:",
+        "ua": "Всього нараховано:",
+        "ru": "Всего начислено:",
+        "de": "Insgesamt entstanden:"
+    }, {
+        "id": 395,
+        "state": 1,
+        "en": "Waiting for an activation:",
+        "ua": "Очікують активації:",
+        "ru": "Ожидают активации:",
+        "de": "Warten auf Aktivierung:"
+    }, {
+        "id": 396,
+        "state": 1,
+        "en": "Available for use:",
+        "ua": "Доступно для використання:",
+        "ru": "Доступно для использования:",
+        "de": "Verfügbar für den Gebrauch:"
+    }, {
+        "id": 397,
+        "state": 1,
+        "en": "Used:",
+        "ua": "Використано:",
+        "ru": "Использовано:",
+        "de": "Verwendet:"
+    }, {
+        "id": 398,
+        "state": 1,
+        "en": "Available balance:",
+        "ua": "Доступний залишок:",
+        "ru": "Доступный остаток:",
+        "de": "Verfügbares Guthaben:"
+    }, {
+        "id": 399,
+        "state": 1,
+        "en": "Replenish your own account",
+        "ua": "Поповнити свій рахунок",
+        "ru": "Пополнить свой счет",
+        "de": "Laden Sie Ihr Konto"
+    }, {
+        "id": 400,
+        "state": 1,
+        "en": "Payment of the order",
+        "ua": "Оплата заказу",
+        "ru": "Оплата заказа",
+        "de": "Zahlungsauftrag"
+    }, {
+        "id": 401,
+        "state": 1,
+        "en": "A bonus for the users registration by the invitation code:",
+        "ua": "Бонус за реєстрацію користувача по інвайт-коду:",
+        "ru": "Бонус за регистрацию пользователя по инвайт-коду:",
+        "de": "Bonus für die Registrierung des Nutzers durch den Einladungscode:"
+    }, {
+        "id": 402,
+        "state": 1,
+        "en": "Product categories",
+        "ua": "Каталог товарів",
+        "ru": "Каталог товаров",
+        "de": "Produktkategorien"
+    }, {
+        "id": 403,
+        "state": 1,
+        "en": "General information",
+        "ua": "Загальна інформація",
+        "ru": "Общая информация",
+        "de": "Allgemeine Informationen"
+    }, {
+        "id": 404,
+        "state": 1,
+        "en": "About the Project",
+        "ua": "Про проект",
+        "ru": "О проекте",
+        "de": "Über das Projekt"
+    }, {
+        "id": 405,
+        "state": 1,
+        "en": "Payment and Delivery",
+        "ua": "Оплата і доставка",
+        "ru": "Оплата и доставка",
+        "de": "Zahlungs-und Lieferbedingungen"
+    }, {
+        "id": 406,
+        "state": 1,
+        "en": "Privacy Policy",
+        "ua": "Політика конфіденційності",
+        "ru": "Политика конфиденциальности",
+        "de": "Datenschutz-Bestimmungen"
+    }, {
+        "id": 407,
+        "state": 1,
+        "en": "Write a message",
+        "ua": "Написати повідомлення",
+        "ru": "Написать сообщение",
+        "de": "Eine Nachricht schreiben"
+    }, {
+        "id": 408,
+        "state": 1,
+        "en": "Gift certificates",
+        "ua": "Подарункові сертифікати",
+        "ru": "Подарочные сертификаты",
+        "de": "Geschenkgutscheine"
+    }, {
+        "id": 409,
+        "state": 1,
+        "en": "Feedback",
+        "ua": "Зворотній звязок",
+        "ru": "Обратная связь",
+        "de": "Rückkopplung"
+    }, {
+        "id": 410,
+        "state": 1,
+        "en": "All rights reserved",
+        "ua": "Всі права захищені",
+        "ru": "Все права защищены",
+        "de": "Alle Rechte vorbehalten"
+    }, {
+        "id": 411,
+        "state": 1,
+        "en": "Crowdfunding platform",
+        "ua": "Краудфандингова платформа",
+        "ru": "Краудфандинговая платформа",
+        "de": "Crowdfunding-Plattform"
+    }, {
+        "id": 412,
+        "state": 1,
+        "en": "for joint purchases",
+        "ua": "для спільних покупок",
+        "ru": "для совместных покупок",
+        "de": "für gemeinsame Einkäufe"
+    }, {
+        "id": 413,
+        "state": 1,
+        "en": "Product Catalog",
+        "ua": "Каталог товарів",
+        "ru": "Каталог товаров",
+        "de": "Produktkatalog"
+    }, {
+        "id": 414,
+        "state": 1,
+        "en": "gives an access to the",
+        "ua": "дає доступ в",
+        "ru": "дает доступ в",
+        "de": "erhalten Sie Zugang zu"
+    }, {
+        "id": 415,
+        "state": 1,
+        "en": "Are you a Manufacturer or a Supplier?",
+        "ua": "Ви виробник або постачальник?",
+        "ru": "Вы производитель или поставщик ?",
+        "de": "Sie sind Hersteller oder Lieferant?"
+    }, {
+        "id": 416,
+        "state": 1,
+        "en": "Sell through our platform!",
+        "ua": "Продавайте через нашу платформу!",
+        "ru": "Продавайте через нашу платформу !",
+        "de": "Verkaufe durch unsere Plattform!"
+    }, {
+        "id": 417,
+        "state": 1,
+        "en": "Sections of the website - PLLANO",
+        "ua": "Розділи сайту - PLLANO",
+        "ru": "Разделы сайта - PLLANO",
+        "de": "Abschnitte der Seite - PLLANO"
+    }, {
+        "id": 418,
+        "state": 1,
+        "en": "The access is only for registered users",
+        "ua": "Доступ тільки для зареєстрованих користувачів",
+        "ru": "Доступ только для зарегистрированных пользователей",
+        "de": "Zugang nur für registrierte Nutzer"
+    }, {
+        "id": 419,
+        "state": 1,
+        "en": "Know-how",
+        "ua": "Ноу-хау",
+        "ru": "Ноу-хау",
+        "de": "Fachwissen"
+    }, {
+        "id": 420,
+        "state": 1,
+        "en": "Ukraine",
+        "ua": "Україна",
+        "ru": "Украина",
+        "de": "Ukraine"
+    }, {
+        "id": 421,
+        "state": 1,
+        "en": "Dont you have a Facebook account?",
+        "ua": "У вас немає облікового запису Facebook?",
+        "ru": "У вас нет учетной записи Facebook?",
+        "de": "Du hast kein Facebook-Konto?"
+    }, {
+        "id": 422,
+        "state": 1,
+        "en": "Make a gift to your loved ones",
+        "ua": "Зробіть подарунок своїм близьким",
+        "ru": "Сделайте подарок своим близким",
+        "de": "Machen Sie ein Geschenk für Ihre Lieben"
+    }, {
+        "id": 423,
+        "state": 1,
+        "en": "Page",
+        "ua": "Сторінка",
+        "ru": "Страница",
+        "de": "Seite"
+    }, {
+        "id": 424,
+        "state": 1,
+        "en": "Pages",
+        "ua": "Сторінки",
+        "ru": "Страницы",
+        "de": "Seiten"
+    }, {
+        "id": 425,
+        "state": 1,
+        "en": "Authorization Bonus",
+        "ua": "Бонус за авторизацію",
+        "ru": "Бонус за авторизацию",
+        "de": "Bonus Genehmigung"
+    }, {
+        "id": 426,
+        "state": 1,
+        "en": "Thank you for being with us!",
+        "ua": "Дякуємо за те що ви з нами!",
+        "ru": "Благодарим за то что вы с нами!",
+        "de": "Vielen Dank für uns zu sein!"
+    }, {
+        "id": 427,
+        "state": 1,
+        "en": "Select",
+        "ua": "Вибрати",
+        "ru": "Выбрать",
+        "de": "Wählen"
+    }, {
+        "id": 428,
+        "state": 1,
+        "en": "Would you like to sell a lot and immediately?",
+        "ua": "Ви хочете продати відразу багато товару?",
+        "ru": "Вы хотите продать сразу много товара ?",
+        "de": "Sie wollen auf einmal viel Produkt verkaufen?"
+    }, {
+        "id": 429,
+        "state": 1,
+        "en": "We will help you with that!",
+        "ua": "Ми допоможемо вам у цьому!",
+        "ru": "Мы поможем вам в этом !",
+        "de": "Wir werden Ihnen dabei helfen!"
+    }, {
+        "id": 430,
+        "state": 1,
+        "en": "Yet you have to also compromise and offer us the best wholesale price on the market.",
+        "ua": "Але ви також повинні піти нам назустріч і запропонувати найкращу оптову ціну на ринку.",
+        "ru": "Но вы также должны пойти нам навстречу и предложить самую лучшую оптовую цену на рынке.",
+        "de": "Aber du musst auch uns treffen und den besten Großhandelspreis auf dem Markt anbieten."
+    }, {
+        "id": 431,
+        "state": 1,
+        "en": "Make sure you are aware of all our terms before you offer us your product",
+        "ua": "Перш ніж запропонувати нам свій товар, ви повинні знати всі умови",
+        "ru": "Прежде чем предложить нам свой товар, вы должны знать все условия",
+        "de": "Bevor Sie uns Ihr Produkt anbieten, müssen Sie alle Bedingungen kennen"
+    }, {
+        "id": 432,
+        "state": 1,
+        "en": "We do not work with low-quality goods!",
+        "ua": "Ми не працюємо з товарами які мають низьку якість!",
+        "ru": "Мы не работаем с товарами которые имеют низкое качество  !",
+        "de": "Wir arbeiten nicht mit Waren, die von schlechter Qualität sind!"
+    }, {
+        "id": 433,
+        "state": 1,
+        "en": "Read here",
+        "ua": "Читайте тут",
+        "ru": "Читайте здесь",
+        "de": "Lesen Sie hier"
+    }, {
+        "id": 434,
+        "state": 1,
+        "en": "Return policy",
+        "ua": "Умови повернення товару",
+        "ru": "Условия возврата товара",
+        "de": "Rücknahmegarantie"
+    }, {
+        "id": 435,
+        "state": 1,
+        "en": "Terms of work with factories",
+        "ua": "Умови роботи з фабриками",
+        "ru": "Условия работы с фабриками",
+        "de": "Arbeitsbedingungen mit Fabriken"
+    }, {
+        "id": 436,
+        "state": 1,
+        "en": "Terms of work with customers",
+        "ua": "Умови роботи з покупцями",
+        "ru": "Условия работы с покупателями",
+        "de": "Arbeitsbedingungen mit Käufern"
+    }, {
+        "id": 437,
+        "state": 1,
+        "en": "Terms of work with partners",
+        "ua": "Умови роботи з партнерами",
+        "ru": "Условия работы с партнерами",
+        "de": "Arbeitsbedingungen mit Partnern"
+    }, {
+        "id": 438,
+        "state": 1,
+        "en": "who buy the lots leftovers",
+        "ua": "які купують залишки лотів",
+        "ru": "которые покупают остатки лотов",
+        "de": "Wer kauft die Reste von Lose"
+    }, {
+        "id": 439,
+        "state": 1,
+        "en": "To continue, you must accept all the above-mentioned terms.",
+        "ua": "Для продовження роботи, ви повинні погодиться з усіма вище наведеними умовами.",
+        "ru": "Для продолжения работы, вы должны согласится со всеми выше приведенными условиями.",
+        "de": "Um die Arbeit fortzusetzen, müssen Sie mit den oben genannten Bedingungen einverstanden sein."
+    }, {
+        "id": 440,
+        "state": 1,
+        "en": "opens full access",
+        "ua": "відкриває повний доступ",
+        "ru": "открывает полный доступ",
+        "de": "Öffnet den vollen Zugriff"
+    }, {
+        "id": 441,
+        "state": 1,
+        "en": "Product catalog",
+        "ua": "Каталозі товарів",
+        "ru": "Каталоге товаров",
+        "de": "Produktkatalog"
+    }, {
+        "id": 442,
+        "state": 1,
+        "en": "Supplier",
+        "ua": "Постачальник товару",
+        "ru": "Поставщик товара",
+        "de": "Lieferant der Ware"
+    }, {
+        "id": 443,
+        "state": 1,
+        "en": "Manufacturer",
+        "ua": "Виробник",
+        "ru": "Производитель",
+        "de": "Hersteller"
+    }, {
+        "id": 445,
+        "state": 1,
+        "en": "Bestsellers",
+        "ua": "Хіти продаж",
+        "ru": "Хиты продаж",
+        "de": "Treffer von Verkäufen"
+    }, {
+        "id": 446,
+        "state": 1,
+        "en": "COMING SOON",
+        "ua": "НЕЗАБАРОМ",
+        "ru": "СКОРО",
+        "de": "DEMNÄCHST"
+    }, {
+        "id": 447,
+        "state": 1,
+        "en": "Error 404",
+        "ua": "Помилка 404",
+        "ru": "Ошибка 404",
+        "de": "Fehler 404"
+    }, {
+        "id": 448,
+        "state": 1,
+        "en": "Page Not Found",
+        "ua": "Сторінка не знайдена",
+        "ru": "Страница не найдена",
+        "de": "Seite nicht gefunden"
+    }, {
+        "id": 449,
+        "state": 1,
+        "en": "Go back",
+        "ua": "Поверніться назад",
+        "ru": "Вернитесь назад",
+        "de": "Geh zurück"
+    }, {
+        "id": 450,
+        "state": 1,
+        "en": "to the Homepage",
+        "ua": "На головну сторінку",
+        "ru": "На главную страницу",
+        "de": "Zur Startseite"
+    }, {
+        "id": 451,
+        "state": 1,
+        "en": "Add the products you like to the shopping cart",
+        "ua": "Додавайте товари, що сподобалися в кошик",
+        "ru": "Добавляйте понравившиеся товары в корзину",
+        "de": "Fügen Sie die Produkte hinzu, die Sie dem Warenkorb hinzufügen möchten"
+    }, {
+        "id": 452,
+        "state": 1,
+        "en": "Or, login if you have added previously",
+        "ua": "Або авторизуйтесь, якщо додавали раніше",
+        "ru": "Или авторизуйтесь, если добавляли ранее",
+        "de": "Oder melden Sie sich an, wenn Sie zuvor hinzugefügt haben"
+    }, {
+        "id": 453,
+        "state": 1,
+        "en": "For startups",
+        "ua": "Стартапам",
+        "ru": "Стартапам",
+        "de": "Für Startups"
+    }, {
+        "id": 454,
+        "state": 1,
+        "en": "Submit an application",
+        "ua": "Подати заявку",
+        "ru": "Подать заявку",
+        "de": "Jetzt bewerben"
+    }, {
+        "id": 455,
+        "state": 1,
+        "en": "For customers",
+        "ua": "Покупцям",
+        "ru": "Покупателям",
+        "de": "Für Kunden"
+    }, {
+        "id": 456,
+        "state": 1,
+        "en": "Gadgets",
+        "ua": "Гаджети",
+        "ru": "Гаджеты",
+        "de": "Gadgets"
+    }, {
+        "id": 457,
+        "state": 1,
+        "en": "Search for novelties",
+        "ua": "Пошук новинок",
+        "ru": "Поиск новинок",
+        "de": "Suche nach Nachrichten"
+    }, {
+        "id": 458,
+        "state": 1,
+        "en": "For inventors",
+        "ua": "Для винахідників",
+        "ru": "Для изобретателей",
+        "de": "Für Erfinder"
+    }, {
+        "id": 459,
+        "state": 1,
+        "en": "Lieferanten",
+        "ua": "Постачальникам",
+        "ru": "Поставщикам",
+        "de": "Suppliers"
+    }, {
+        "id": 460,
+        "state": 1,
+        "en": "Search for investments",
+        "ua": "Пошук інвестицій",
+        "ru": "Поиск инвестиций",
+        "de": "Suche nach Investitionen"
+    }, {
+        "id": 461,
+        "state": 1,
+        "en": "For investors",
+        "ua": "Інвесторам",
+        "ru": "Инвесторам",
+        "de": "Für Investoren"
+    }, {
+        "id": 462,
+        "state": 1,
+        "en": "Investments",
+        "ua": "Інвестиції",
+        "ru": "Инвестиции",
+        "de": "Investitionen"
+    }, {
+        "id": 463,
+        "state": 1,
+        "en": "Describe your goal and tell us about your startup in a few words.",
+        "ua": "Опишіть вашу мету і в декількох словах розкажіть про ваш стартап.",
+        "ru": "Опишите вашу цель и в нескольких словах расскажите о вашем стартапе.",
+        "de": "Beschreiben Sie Ihr Ziel und in wenigen Worten erzählen Sie von Ihrem Startup."
+    }, {
+        "id": 464,
+        "state": 1,
+        "en": "Login or Sign up",
+        "ua": "Авторизуйтесь або Зареєструйтесь",
+        "ru": "Авторизуйтесь или Зарегистрируйтесь",
+        "de": "Einloggen  oder Anmelden"
+    }, {
+        "id": 465,
+        "state": 1,
+        "en": "In order to write a message and keep all correspondence.",
+        "ua": "для того щоб мати можливість написати повідомлення і вся переписка зберігалася.",
+        "ru": "для того чтобы написать сообщение и сохранить переписку",
+        "de": "Um eine Nachricht schreiben zu können, wurde alles Korrespondenz gespeichert."
+    }, {
+        "id": 466,
+        "state": 1,
+        "en": "Describe your goal and tell us about yourself in a few words.",
+        "ua": "Опишіть вашу мету і в декількох словах розкажіть про себе.",
+        "ru": "Опишите вашу цель и в нескольких словах расскажите о себе.",
+        "de": "Beschreiben Sie Ihr Ziel und in ein paar Worten erzählen Sie uns über sich selbst."
+    }, {
+        "id": 467,
+        "state": 1,
+        "en": "Describe your product and tell us about your company in a few words.",
+        "ua": "Опишіть ваш товар і в декількох словах розкажіть про вашу компанію.",
+        "ru": "Опишите ваш товар и в нескольких словах расскажите о вашей компании.",
+        "de": "Beschreiben Sie Ihr Ziel und in wenigen Worten erzählen Sie uns über Ihr Unternehmen."
+    }, {
+        "id": 468,
+        "state": 1,
+        "en": "Product categories",
+        "ua": "Категорії товару",
+        "ru": "Категории товара",
+        "de": "Produktkategorien"
+    }, {
+        "id": 469,
+        "state": 1,
+        "en": "Units per lot",
+        "ua": "Одиниць в лоті",
+        "ru": "Единиц в лоте",
+        "de": "Gesamteinheiten in Los"
+    }, {
+        "id": 470,
+        "state": 1,
+        "en": "Accessible units",
+        "ua": "Вільних одиниць",
+        "ru": "Свободных единиц",
+        "de": "Freie Einheiten"
+    }, {
+        "id": 471,
+        "state": 1,
+        "en": "Unit price:",
+        "ua": "Ціна за одиницю:",
+        "ru": "Цена за единицу:",
+        "de": "Stückpreis:"
+    }, {
+        "id": 472,
+        "state": 1,
+        "en": "Lot name",
+        "ua": "Назва лоту",
+        "ru": "Название лота",
+        "de": "Artikelname"
+    }, {
+        "id": 473,
+        "state": 1,
+        "en": "Clarification:",
+        "ua": "Уточнення:",
+        "ru": "Уточнение:",
+        "de": "Spezifikation:"
+    }, {
+        "id": 474,
+        "state": 1,
+        "en": "Collected for now:",
+        "ua": "Зібрано на зараз:",
+        "ru": "Собрано на сейчас:",
+        "de": "Gesammelt für jetzt:"
+    }, {
+        "id": 475,
+        "state": 1,
+        "en": "out of",
+        "ua": "з",
+        "ru": "из",
+        "de": "von"
+    }, {
+        "id": 476,
+        "state": 1,
+        "en": "Login to see",
+        "ua": "Авторизуйтесь, щоб побачити",
+        "ru": "Авторизуйтесь, чтобы увидеть",
+        "de": "Anmelden zur Ansicht"
+    }, {
+        "id": 477,
+        "state": 1,
+        "en": "Collected in total",
+        "ua": "Зібрано всього",
+        "ru": "Собрано всего",
+        "de": "Gesammelt gesamt"
+    }, {
+        "id": 478,
+        "state": 1,
+        "en": "Thank you for your order.",
+        "ua": "Дякуємо Вам за ваше замовлення.",
+        "ru": "Спасибо за ваш заказ.",
+        "de": "Vielen Dank für Ihre Bestellung."
+    }, {
+        "id": 479,
+        "state": 1,
+        "en": "Link to your order",
+        "ua": "Посилання на ваше замовлення",
+        "ru": "Ссылка на ваш заказ",
+        "de": "Link zu Ihrer Bestellung"
+    }, {
+        "id": 480,
+        "state": 1,
+        "en": "You have made a payment from your personal account. Payment has been sent for review.",
+        "ua": "Ви провели оплату з особистого рахунку. Платіж відправлений на перевірку.",
+        "ru": "Вы провели оплату с личного счета. Платеж отправлен на проверку.",
+        "de": "Sie haben eine Zahlung von Ihrem persönlichen Konto gemacht. Zahlung zur Überprüfung gesendet."
+    }, {
+        "id": 481,
+        "state": 1,
+        "en": "Payment amount:",
+        "ua": "Сума платежу:",
+        "ru": "Сумма платежа:",
+        "de": "Höhe der Zahlung:"
+    }, {
+        "id": 482,
+        "state": 1,
+        "en": "As soon as the payment is verified, we will notify you immediately.",
+        "ua": "Ми повідомимо вам відразу, як тільки платіж пройде перевірку.",
+        "ru": "Мы сообщим вам сразу, как только платеж пройдет проверку.",
+        "de": "Wir werden Sie benachrichtigen, sobald die Zahlung bestätigt ist."
+    }, {
+        "id": 483,
+        "state": 1,
+        "en": "Information on payments is available in the section:",
+        "ua": "Інформація про платежі доступна в розділі:",
+        "ru": "Информация о платежах доступна в разделе:",
+        "de": "Informationen über Zahlungen finden Sie im Abschnitt:"
+    }, {
+        "id": 484,
+        "state": 1,
+        "en": "You have applied for an invoice.",
+        "ua": "Ви подали заявку на виставлення рахунку-фактури.",
+        "ru": "Вы подали заявку на выставление счет-фактуры.",
+        "de": "Sie haben eine Rechnung beantragt."
+    }, {
+        "id": 485,
+        "state": 1,
+        "en": "Contact person",
+        "ua": "Контактна особа",
+        "ru": "Контактное лицо",
+        "de": "Kontaktperson"
+    }, {
+        "id": 486,
+        "state": 1,
+        "en": "Contact phone",
+        "ua": "Номер контактного телефону",
+        "ru": "Номер контактного телефона",
+        "de": "Kontakt-Telefonnummer"
+    }, {
+        "id": 487,
+        "state": 1,
+        "en": "As soon as the invoice is formed, we will notify you.",
+        "ua": "Ми повідомимо вам як тільки рахунок-фактура буде сформована.",
+        "ru": "Мы сообщим вам как только счет-фактура будет сформирована.",
+        "de": "Wir benachrichtigen Sie, sobald eine Rechnung erzeugt wird."
+    }, {
+        "id": 488,
+        "state": 1,
+        "en": "You have asked a question on the website",
+        "ua": "Ви задали питання на сайті",
+        "ru": "Вы задали вопрос на сайте",
+        "de": "Sie stellte eine Frage auf der Seite"
+    }, {
+        "id": 489,
+        "state": 1,
+        "en": "Thank you for your question!",
+        "ua": "спасибі за ваше питання!",
+        "ru": "спасибо за ваш вопрос!",
+        "de": "Vielen Dank für Ihre Frage!"
+    }, {
+        "id": 490,
+        "state": 1,
+        "en": "We will respond to your question promptly.",
+        "ua": "Ми будемо оперативно реагувати на ваше запитання.",
+        "ru": "Мы будем оперативно реагировать на ваш вопрос.",
+        "de": "Wir werden umgehend auf Ihre Frage antworten."
+    }, {
+        "id": 491,
+        "state": 1,
+        "en": "We will answer by email.",
+        "ua": "Наша відповідь прийде, по електронній пошті.",
+        "ru": "Наш ответ придет, по электронной почте.",
+        "de": "Unsere Antwort wird kommen per E-Mail."
+    }, {
+        "id": 492,
+        "state": 1,
+        "en": "All your messages are available per link:",
+        "ua": "Всі ваші повідомлення доступні за посиланням:",
+        "ru": "Все ваши сообщения доступны по ссылке:",
+        "de": "Alle Ihre Nachrichten sind auf den folgenden Link verfügbar:"
+    }, {
+        "id": 493,
+        "state": 1,
+        "en": "Text of your message:",
+        "ua": "Текст вашого повідомлення:",
+        "ru": "Текст вашего сообщения:",
+        "de": "Text Ihrer Nachricht:"
+    }, {
+        "id": 494,
+        "state": 1,
+        "en": "A temporary password",
+        "ua": "Тимчасовий пароль",
+        "ru": "Временный пароль",
+        "de": "Ein temporäres Passwort"
+    }, {
+        "id": 495,
+        "state": 1,
+        "en": "Change the password after the authorization!",
+        "ua": "Після авторизації змініть пароль!",
+        "ru": "После авторизации измените пароль !",
+        "de": "Nach der Berechtigung das Passwort ändern!"
+    }, {
+        "id": 496,
+        "state": 1,
+        "en": "You entered an incorrect password",
+        "ua": "Ви ввели невірний пароль",
+        "ru": "Вы ввели неверный пароль",
+        "de": "Sie haben ein falsches Passwort eingegeben"
+    }, {
+        "id": 497,
+        "state": 1,
+        "en": "Unit cost in the lot",
+        "ua": "Вартість одиниці в лоті",
+        "ru": "Стоимость единицы в лоте",
+        "de": "Einheitskosten im Los"
+    }, {
+        "id": 498,
+        "state": 1,
+        "en": "Statistics",
+        "ua": "Статистика",
+        "ru": "Статистика",
+        "de": "Statistiken"
+    }, {
+        "id": 499,
+        "state": 1,
+        "en": "Other goods from this lot",
+        "ua": "Інші товари з цього лоту",
+        "ru": "Другие товары из этого лота",
+        "de": "Andere Artikel aus diesem Artikel"
+    }, {
+        "id": 500,
+        "state": 1,
+        "en": "This lot is not available!",
+        "ua": "Цей лот недоступний!",
+        "ru": "Этот лот недоступен !",
+        "de": "Dieser Artikel ist nicht verfügbar!"
+    }, {
+        "id": 501,
+        "state": 1,
+        "en": "This lot has expired or it was deactivated by the platform administration.",
+        "ua": "У цього лота закінчився термін дії або він відключений адміністрацією платформи.",
+        "ru": "У этого лота закончился срок действия или он отключен администрацией платформы.",
+        "de": "Dieses Los ist abgelaufen oder es ist von der Plattformverwaltung deaktiviert."
+    }, {
+        "id": 502,
+        "state": 1,
+        "en": "You must log in or register to be able to see prices, statistics and have the opportunity to place an order.",
+        "ua": "Необхідно авторизуватися або зареєструватися щоб бачити ціни, статистику та мати можливість оформити замовлення.",
+        "ru": "Необходимо авторизоваться или зарегистрироваться чтобы видеть цены, статистику и иметь возможность оформить заказ.",
+        "de": "Sie müssen sich anmelden oder registrieren, um Preise, Statistiken und die Möglichkeit zur Bestellung zu sehen. "
+    }, {
+        "id": 503,
+        "state": 1,
+        "en": "For online stores",
+        "ua": "Інтернет-магазинам",
+        "ru": "Интернет-магазинам",
+        "de": "Für Online-Shops"
+    }, {
+        "id": 504,
+        "state": 1,
+        "en": "Terms of Use",
+        "ua": "Умови використання сайту",
+        "ru": "Условия использования сайта",
+        "de": "Nutzungsbedingungen"
+    }, {
+        "id": 505,
+        "state": 1,
+        "en": "The world-class platform",
+        "ua": "Платформа світового рівня",
+        "ru": "Платформа мирового уровня",
+        "de": "Die Weltklasse-Plattform"
+    }, {
+        "id": 506,
+        "state": 1,
+        "en": "Real prices",
+        "ua": "Реальні ціни",
+        "ru": "Реальные цены",
+        "de": "Reale Preise"
+    }, {
+        "id": 507,
+        "state": 1,
+        "en": "Real-Time Update",
+        "ua": "Оновлення в реальному часі",
+        "ru": "Обновление в реальном времени",
+        "de": "Echtzeit-Aktualisierung"
+    }, {
+        "id": 508,
+        "state": 1,
+        "en": "All items are in stock",
+        "ua": "Всі товари в наявності",
+        "ru": "Все товары в наличии",
+        "de": "Alle Artikel sind auf Lager"
+    }, {
+        "id": 509,
+        "state": 1,
+        "en": "Real-Time Update",
+        "ua": "Оновлення в реальному часі",
+        "ru": "Обновление в реальном времени",
+        "de": "Echtzeit-Aktualisierung"
+    }, {
+        "id": 510,
+        "state": 1,
+        "en": "Search for new partners",
+        "ua": "Пошук нових партнерів",
+        "ru": "Поиск новых партнеров",
+        "de": "Suche nach neuen Partnern"
+    }, {
+        "id": 511,
+        "state": 1,
+        "en": "Search for suppliers and dealers",
+        "ua": "Пошук постачальників і дилерів",
+        "ru": "Поиск поставщиков и дилеров",
+        "de": "Suche nach Lieferanten und Händlern"
+    }, {
+        "id": 512,
+        "state": 1,
+        "en": "Safe payments",
+        "ua": "Безпечні платежі",
+        "ru": "Безопасные платежи",
+        "de": "Sichere Zahlungen"
+    }, {
+        "id": 513,
+        "state": 1,
+        "en": "Payment after receipt of goods",
+        "ua": "Оплата після отримання товару",
+        "ru": "Оплата после получения товара",
+        "de": "Zahlung nach Eingang der Ware"
+    }, {
+        "id": 514,
+        "state": 1,
+        "en": "Save time",
+        "ua": "Економія часу",
+        "ru": "Экономия времени",
+        "de": "Zeit sparen"
+    }, {
+        "id": 515,
+        "state": 1,
+        "en": "More employees are more productive",
+        "ua": "Менше співробітників більше продуктивність",
+        "ru": "Меньше сотрудников больше продуктивность",
+        "de": "Mehr Mitarbeiter sind produktiver"
+    }, {
+        "id": 516,
+        "state": 1,
+        "en": "For bloggers",
+        "ua": "Блогерам",
+        "ru": "Блогерам",
+        "de": "für Blogger"
+    }, {
+        "id": 517,
+        "state": 1,
+        "en": "Demo version",
+        "ua": "Демо версія",
+        "ru": "Демо версия",
+        "de": "Demoversion"
+    }, {
+        "id": 518,
+        "state": 1,
+        "en": "Quick links",
+        "ua": "Швидкі посилання",
+        "ru": "Быстрые ссылки",
+        "de": "Schnelle Links"
+    }, {
+        "id": 519,
+        "state": 1,
+        "en": "Buy at a wholesale price along with other people.",
+        "ua": "Купуйте за оптовою ціною разом з іншими людьми.",
+        "ru": "Покупайте по оптовой цене вместе с другими людьми.",
+        "de": null
+    }, {
+        "id": 520,
+        "state": 1,
+        "en": null,
+        "ua": null,
+        "ru": null,
+        "de": null
+    }, {
+        "id": 521,
+        "state": 1,
+        "en": "Add a Startup",
+        "ua": "Додати стартап",
+        "ru": "Добавить стартап",
+        "de": "In Start"
+    }, {
+        "id": 522,
+        "state": 1,
+        "en": "Startup name",
+        "ua": "Назва стартапа",
+        "ru": "Название стартапа",
+        "de": "Startname"
+    }, {
+        "id": 523,
+        "state": 1,
+        "en": "Your website",
+        "ua": "Ваш сайт",
+        "ru": "Ваш сайт",
+        "de": "Ihre Website"
+    }, {
+        "id": 524,
+        "state": 1,
+        "en": "The minimum amount of investments you need",
+        "ua": "Мінімальна сума інвестицій яка вам необхідна",
+        "ru": "Минимальная сумма инвестиций которая вам необходима",
+        "de": "Der Mindestbetrag der Investition, die Sie benötigen"
+    }, {
+        "id": 525,
+        "state": 1,
+        "en": "What companys percentage are you willing to give away",
+        "ua": "Який відсоток компанії ви готові віддати",
+        "ru": "Какой процент компании вы готовы отдать",
+        "de": "Какой процент компании вы готовы отдать"
+    }, {
+        "id": 526,
+        "state": 1,
+        "en": "Legal form LLC, SPD, JSC, CJSC, OJSC",
+        "ua": "Правова форма ТОВ, СПД, АТ, ЗАТ, ВАТ",
+        "ru": "Правовая форма ООО, СПД, АО, ЗАО, ОАО",
+        "de": "Rechtsform GmbH, UG, AG, GmbH& Co.KG"
+    }, {
+        "id": 527,
+        "state": 1,
+        "en": "A brief description 500 characters",
+        "ua": "Короткий опис 500 символів",
+        "ru": "Краткое описание 500 символов",
+        "de": "Kurzbeschreibung 500 Zeichen"
+    }, {
+        "id": 528,
+        "state": 1,
+        "en": "Your position in the company",
+        "ua": "Ваша посада в компанії",
+        "ru": "Ваша должность в компании",
+        "de": "Ihre Position in der Firma"
+    }, {
+        "id": 529,
+        "state": 1,
+        "en": "1.000.000 UAH",
+        "ua": "1.000.000 грн.",
+        "ru": "1.000.000 грн.",
+        "de": "1.000.000 UAH"
+    }, {
+        "id": 530,
+        "state": 1,
+        "en": "Thank you !",
+        "ua": "Дякуємо !",
+        "ru": "Спасибо !",
+        "de": "Vielen Dank !"
+    }, {
+        "id": 531,
+        "state": 1,
+        "en": "You have added your Startup!",
+        "ua": "Ви додали свій стартап!",
+        "ru": "Вы добавили свой стартап !",
+        "de": "Sie haben Ihren Start hinzugefügt!"
+    }, {
+        "id": 532,
+        "state": 1,
+        "en": "A brief description of your Startup",
+        "ua": "Короткий опис вашого стартапу",
+        "ru": "Краткое описание вашего Стартапа",
+        "de": "Eine kurze Beschreibung Ihrer Inbetriebnahme"
+    }, {
+        "id": 533,
+        "state": 1,
+        "en": "Name of your Startup",
+        "ua": "Назва вашого стартапу",
+        "ru": "Название вашего Стартапа",
+        "de": "Der Name des Starts"
+    }, {
+        "id": 534,
+        "state": 1,
+        "en": "Your position in the company",
+        "ua": "Ваша посада в компанії",
+        "ru": "Ваша должность в компании",
+        "de": "Ihre Position in der Firma"
+    }, {
+        "id": 535,
+        "state": 1,
+        "en": "Legal Form",
+        "ua": "Правова форма",
+        "ru": "Правовая форма",
+        "de": "Rechtsform"
+    }, {
+        "id": 536,
+        "state": 1,
+        "en": "In case you make a mistake while filling out the form, write us a message below.",
+        "ua": "Якщо ви допустили помилку в заповненні форми. Напишіть нам повідомлення нижче.",
+        "ru": "Если вы допустили ошибку в заполнении формы. Напишите нам сообщение ниже.",
+        "de": "Wenn Sie einen Fehler machen in die Formulare ausfüllen. Schreiben Sie uns eine Nachricht unten."
+    }, {
+        "id": 537,
+        "state": 1,
+        "en": "All correspondence with the platform representatives will occur here, through the internal messaging system.",
+        "ua": "Все листування з представниками платформи буде відбуватися тут, через внутрішню систему повідомлень.",
+        "ru": "Вся переписка с представителями платформы будет происходить здесь, через внутреннюю систему сообщений.",
+        "de": "Alle Korrespondenz mit den Plattformvertretern wird hier durch das interne Nachrichtensystem auftreten."
+    }, {
+        "id": 538,
+        "state": 1,
+        "en": "Please fill out this simple questionnaire.",
+        "ua": "Заповніть будь ласка цю просту анкету.",
+        "ru": "Заполните пожалуйста эту простую анкету.",
+        "de": "Bitte füllen Sie diesen einfachen Fragebogen aus."
+    }, {
+        "id": 539,
+        "state": 1,
+        "en": "We will answer you in any case!Even though your Startup does not meet all criteria.",
+        "ua": "Ми вам відповімо в будь-якому випадку!Навіть якщо ваш Стартап не проходить з якихось критеріям.",
+        "ru": "Мы вам ответим в любом случае!Даже если ваш Стартап не проходит по каким либо критериям.",
+        "de": "Wir werden Ihnen auf jeden Fall antworten!Auch wenn Ihr Startup keine Kriterien erfüllt."
+    }, {
+        "id": 540,
+        "state": 1,
+        "en": "LLC Limited Liability Company",
+        "ua": "ТОВ Товариство з обмеженою відповідальністю",
+        "ru": "ООО Общество с ограниченной ответственностью",
+        "de": "ТОВ Gesellschaft mit beschränkter Haftung"
+    }, {
+        "id": 541,
+        "state": 1,
+        "en": "Private Enterprise",
+        "ua": "ПП Приватне підприємство",
+        "ru": "ЧП Частное предприятие",
+        "de": "ПП privates Unternehmen"
+    }, {
+        "id": 542,
+        "state": 1,
+        "en": "JSC Joint-Stock Company",
+        "ua": "АТ Акціонерне товариство",
+        "ru": "АО Акционерное общество",
+        "de": "АТ Aktiengesellschaft"
+    }, {
+        "id": 543,
+        "state": 1,
+        "en": "OJSC Open Joint-Stock Company",
+        "ua": "ВАТ Відкрите акціонерне товариство",
+        "ru": "ОАО Открытое акционерное общество",
+        "de": "ВАТ Offene Aktiengesellschaft"
+    }, {
+        "id": 544,
+        "state": 1,
+        "en": "CJSC Closed Joint-Stock Company",
+        "ua": "ЗАТ Закрите акціонерне товариство",
+        "ru": "ЗАО Закрытое акционерное общество",
+        "de": "ЗАТ Geschlossene Aktiengesellschaft"
+    }, {
+        "id": 545,
+        "state": 1,
+        "en": "Not in the list",
+        "ua": "Немає в списку",
+        "ru": "Нет в списке",
+        "de": "nicht gelistet"
+    }, {
+        "id": 546,
+        "state": 1,
+        "en": "-- Choose --",
+        "ua": "-- Вибрати --",
+        "ru": "-- Выбрать --",
+        "de": "-- Wählen Sie -- "
+    }, {
+        "id": 547,
+        "state": 1,
+        "en": "Director",
+        "ua": "Директор",
+        "ru": "Директор",
+        "de": "Leiter"
+    }, {
+        "id": 548,
+        "state": 1,
+        "en": "Owner",
+        "ua": "Власник",
+        "ru": "Владелец",
+        "de": "Eigentümer"
+    }, {
+        "id": 549,
+        "state": 1,
+        "en": "Co-owner",
+        "ua": "Співвласник",
+        "ru": "Совладелец",
+        "de": "Mitinhaber"
+    }, {
+        "id": 550,
+        "state": 1,
+        "en": "Founder",
+        "ua": "Засновник",
+        "ru": "Основатель",
+        "de": "Gründer"
+    }, {
+        "id": 551,
+        "state": 1,
+        "en": "Co-founder",
+        "ua": "Співзасновник",
+        "ru": "Сооснователь",
+        "de": "Co-Gründer"
+    }, {
+        "id": 552,
+        "state": 1,
+        "en": "Owners wife",
+        "ua": "Дружина власника",
+        "ru": "Жена владельца",
+        "de": "Ehefrau des Eigentümers"
+    }, {
+        "id": 553,
+        "state": 1,
+        "en": "Business Model",
+        "ua": "Бізнес-модель",
+        "ru": "Бизнес модель",
+        "de": "Geschäftsmodell"
+    }, {
+        "id": 554,
+        "state": 1,
+        "en": "Which country is your company registered in?",
+        "ua": "В якій країні зареєстрована ваша компанія?",
+        "ru": "В какой стране зарегистрирована ваша компания ?",
+        "de": "In welchem Land ist Ihre Geschäftsadresse ?"
+    }, {
+        "id": 555,
+        "state": 1,
+        "en": "Russia",
+        "ua": "Росія",
+        "ru": "Россия",
+        "de": "Russland"
+    }, {
+        "id": 556,
+        "state": 1,
+        "en": "Do you need investments to develop your Startup?",
+        "ua": "Потрібні інвестиції для розвитку вашого стартапу?",
+        "ru": "Нужны инвестиции для развития вашего Стартапа ?",
+        "de": "Brauchen Sie Investitionen,  um Ihr Startup zu entwickeln?"
+    }, {
+        "id": 557,
+        "state": 1,
+        "en": "Here you can bring investors to your project!",
+        "ua": "Тут ви можете знайти інвесторів в ваш проект!",
+        "ru": "Здесь вы можете найти инвесторов в ваш проект!",
+        "de": "Hier können Sie Investoren für Ihr Projekt!"
+    }, {
+        "id": 558,
+        "state": 1,
+        "en": "Category",
+        "ua": "Категорія",
+        "ru": "Категория",
+        "de": "Kategorie"
+    }, {
+        "id": 559,
+        "state": 1,
+        "en": "Which sphere brings you the main income?",
+        "ua": "Яка сфера, приносить вам основний дохід?",
+        "ru": "Какая сфера, приносит вам основной доход ?",
+        "de": "Wie verdienen Sie?"
+    }, {
+        "id": 560,
+        "state": 1,
+        "en": "Link to the presentation in PowerPoint",
+        "ua": "Посилання на презентацію в PowerPoint",
+        "ru": "Ссылка на презентацию в PowerPoint",
+        "de": "Link zur Präsentation in Powerpoint"
+    }, {
+        "id": 561,
+        "state": 1,
+        "en": "Link to the Business Plan",
+        "ua": "Посилання на бізнес-план",
+        "ru": "Ссылка на Бизнес-План",
+        "de": "Link zum Business-Plan"
+    }, {
+        "id": 562,
+        "state": 1,
+        "en": "Supplier Registration",
+        "ua": "Реєстрація постачальника",
+        "ru": "Регистрация поставщика",
+        "de": "Lieferantenregistrierung"
+    }, {
+        "id": 563,
+        "state": 1,
+        "en": "Company name",
+        "ua": "Назва компанії",
+        "ru": "Название компании",
+        "de": "Name des Unternehmens"
+    }, {
+        "id": 564,
+        "state": 1,
+        "en": "We will answer you in any case!  Even though your offer does not meet all criteria.",
+        "ua": "Ми вам відповімо в будь-якому випадку!  Навіть якщо ваша пропозиція не проходить з якихось критеріям.",
+        "ru": "Мы вам ответим в любом случае!Даже если ваше предложение не проходит по каким либо критериям.",
+        "de": "Wir werden Ihnen auf jeden Fall antworten!  Auch wenn Ihr Vorschlag keine Kriterien erfüllt."
+    }, {
+        "id": 565,
+        "state": 1,
+        "en": "Private Entrepreneur",
+        "ua": "ФОП Фізична особа-підприємець",
+        "ru": "СПД или ФЛП физическое лицо-предприниматель",
+        "de": "FLP Einzelunternehmer "
+    }, {
+        "id": 566,
+        "state": 1,
+        "en": "Information about you and your company 500 characters.",
+        "ua": "Інформація про вас і вашу компанію 500 символів.",
+        "ru": "Информация о вас и вашей компании 500 символов.",
+        "de": "Informationen über Sie und Ihr Unternehmen 500 Zeichen."
+    }, {
+        "id": 567,
+        "state": 1,
+        "en": "Link to the offered goods",
+        "ua": "Посилання на пропонований товар",
+        "ru": "Ссылка на предлагаемый товар",
+        "de": "Link zu dem vorgeschlagenen Produkt"
+    }, {
+        "id": 568,
+        "state": 1,
+        "en": "How many units of this product did you sell over the last year?",
+        "ua": "Скільки одиниць цього товару ви продали за останній рік?",
+        "ru": "Сколько едениц этого товара вы продали за последний год ?",
+        "de": "Wie ein Gerät dieses Produkts, das Sie im vergangenen Jahr verkauft?"
+    }, {
+        "id": 569,
+        "state": 1,
+        "en": "Price per goods unit in a lot",
+        "ua": "Ціна за одиницю товару в лоті",
+        "ru": "Цена за еденицу товара в лоте",
+        "de": "Preis für eine Einheit in einem Los"
+    }, {
+        "id": 570,
+        "state": 1,
+        "en": "Quantity of goods units in а lot",
+        "ua": "Кількість одиниць товару в лоті",
+        "ru": "Количество единиц товара в лоте",
+        "de": "Die Anzahl der Einheiten in der Partie"
+    }, {
+        "id": 571,
+        "state": 1,
+        "en": "Time frame to collect pre-orders",
+        "ua": "Період часу для збору замовлень",
+        "ru": "Период времени для сбора предзаказов",
+        "de": "Der Zeitraum für die Sammlung von Vorbestellungen"
+    }, {
+        "id": 572,
+        "state": 1,
+        "en": "How much time, in your opinion, is needed to collect pre-orders for the quantity of goods specified by you.",
+        "ua": "За який період на вашу думку реально зібрати попередні замовлення на вказану вами кількість товарів.",
+        "ru": "За какой период по вашему мнению реально собрать предзаказы на указанное вами колличество товаров.",
+        "de": "Über welchen Zeitraum denken Sie tatsächlich sammeln Vorbestellungen Ihr Online-Katalog."
+    }, {
+        "id": 573,
+        "state": 1,
+        "en": "Product price. To pass the first selection stage you must offer a better price.",
+        "ua": "Ціна товару. Для того щоб пройти перший етап відбору ви повинні запропонувати кращу ціну.",
+        "ru": "Цена товара. Для того чтобы пройти первый этап отбора вы должны предложить лучшую цену.",
+        "de": "Der Preis der Waren. Um die erste Stufe der Auswahl passieren müssen, um Ihnen den besten Preis anzubieten."
+    }, {
+        "id": 574,
+        "state": 1,
+        "en": "Goods in total. How much of it at the above mentioned price do you want to sale?",
+        "ua": "Загальна кількість товару. Яку кількість цього товару при вищевказаній ціні ви хочете виставити на продаж?",
+        "ru": "Общее количество товара. Какое количество этого товара при вышеуказанной цене вы хотите выставить на продажу ?",
+        "de": "Der Gesamtbetrag der Waren. Welche Menge dieses Produkts ist bei dem obigen Preis möchten Sie verkaufen?"
+    }, {
+        "id": 575,
+        "state": 1,
+        "en": "One month",
+        "ua": "Один місяць",
+        "ru": "Один месяц",
+        "de": "Ein Monat"
+    }, {
+        "id": 576,
+        "state": 1,
+        "en": "Two months",
+        "ua": "Два місяці",
+        "ru": "Два месяца",
+        "de": "Zwei Monate"
+    }, {
+        "id": 577,
+        "state": 1,
+        "en": "Three months",
+        "ua": "Три місяці",
+        "ru": "Три месяца",
+        "de": "Drei Monate"
+    }, {
+        "id": 578,
+        "state": 1,
+        "en": "You have applied to add your company and place your products.",
+        "ua": "Ви подали заявку на додавання вашої компанії і розміщення вашого товару.",
+        "ru": "Вы подали заявку на добавление вашей компании и размещение вашего товара.",
+        "de": "Sie haben für die Zugabe Ihres Unternehmens und Ihre Produktplatzierung angewendet."
+    }, {
+        "id": 579,
+        "state": 1,
+        "en": "Quality and speed of service dealers",
+        "ua": "Якість і швидкість обслуговування ваших дилерів",
+        "ru": "Качество и скорость обслуживания ваших дилеров",
+        "de": "Qualität und Geschwindigkeit der Service-Händler"
+    }, {
+        "id": 580,
+        "state": 1,
+        "en": "Give your dealers the opportunity to receive availability and prices in real time and place orders with you in one click",
+        "ua": "Дайте своїм дилерам можливість отримувати наявність і ціни в режимі реального часу і оформляти замовлення у вас в один клік",
+        "ru": "Дайте своим дилерам возможность получать наличие и цены в режиме реального времени и оформлять заказы у вас в один клик",
+        "de": "Geben Sie Ihren Händlern die Möglichkeit, Verfügbarkeit und Preise in Echtzeit zu erhalten und Aufträge mit Ihnen in einem Klick zu platzieren"
+    }, {
+        "id": 581,
+        "state": 1,
+        "en": "Your account is not active!",
+        "ua": "Ваш аккаунт не активний!",
+        "ru": "Ваш аккаунт не активный !",
+        "de": "Ihr Konto ist nicht aktiv!"
+    }, {
+        "id": 582,
+        "state": 1,
+        "en": "Your account is not active!",
+        "ua": "Ваш аккаунт не активний!",
+        "ru": "Ваш аккаунт не активен !",
+        "de": "Ihr Konto ist nicht aktiv!"
+    }, {
+        "id": 583,
+        "state": 1,
+        "en": "To unlock the account, contact the platform administration.",
+        "ua": "Для розблокування аккаунта звяжіться з адміністрацією платформи.",
+        "ru": "Для разблокировки аккаунта свяжитесь с администрацией платформы.",
+        "de": "Um das Konto zu entsperren, wenden Sie sich an die Plattformverwaltung."
+    }, {
+        "id": 584,
+        "state": 1,
+        "en": "Add an invention",
+        "ua": "Додати винахід",
+        "ru": "Добавить изобретение",
+        "de": "Addieren Sie Erfindung"
+    }, {
+        "id": 585,
+        "state": 1,
+        "en": "Company name or name of your invention",
+        "ua": "Назва компанії або вашого винаходу",
+        "ru": "Название компании или вашего изобретения",
+        "de": "Name der Firma oder Ihrer Erfindung"
+    }, {
+        "id": 586,
+        "state": 1,
+        "en": "Here you can find funds to bring your invention to the market or launch it into production!",
+        "ua": "Тут ви можете знайти кошти для виведення на ринок або запуску у виробництво вашого винаходу!",
+        "ru": "Здесь вы можете найти средства для вывода на рынок или запуска в производство вашего изобретения!",
+        "de": "Hier können Sie die Mittel finden, um den Markt zu bringen, oder den Beginn der Produktion Ihrer Erfindung!"
+    }, {
+        "id": 587,
+        "state": 1,
+        "en": "Have you invented anything? You dont know what to do further?",
+        "ua": "Ви щось винайшли? Ви не знаєте що робити далі?",
+        "ru": "Вы что-то изобрели ? Вы не знаете что делать дальше ?",
+        "de": "Sind Sie etwas erfunden? Sie wissen nicht, was als nächstes zu tun?"
+    }, {
+        "id": 588,
+        "state": 1,
+        "en": "Active lots in the search for investments",
+        "ua": "Активні лоти в пошуку інвестицій",
+        "ru": "Активные лоты в поиске инвестиций",
+        "de": "Aktive Lose bei der Suche nach Investitionen"
+    }, {
+        "id": 589,
+        "state": 1,
+        "en": "Are you an investor? Are you looking for where to invest?",
+        "ua": "Ви інвестор? Шукайте куди інвестувати?",
+        "ru": "Вы инвестор ? Ищите куда инвестировать ?",
+        "de": "Sind Sie ein Investor? Suchen Sie nach, wo zu investieren?"
+    }, {
+        "id": 590,
+        "state": 1,
+        "en": "Invest through our platform!",
+        "ua": "Інвестуйте через нашу платформу!",
+        "ru": "Инвестируйте через нашу платформу !",
+        "de": "Investieren Sie über unsere Plattform!"
+    }, {
+        "id": 591,
+        "state": 1,
+        "en": "Investor",
+        "ua": "Інвестор",
+        "ru": "Инвестор",
+        "de": "Investor"
+    }, {
+        "id": 592,
+        "state": 1,
+        "en": "Inventor",
+        "ua": "Винахідник",
+        "ru": "Изобретатель",
+        "de": "Erfinder"
+    }, {
+        "id": 593,
+        "state": 1,
+        "en": "Startup",
+        "ua": "Стартап",
+        "ru": "Стартап",
+        "de": "Startup"
+    }, {
+        "id": 594,
+        "state": 1,
+        "en": "Your Startups",
+        "ua": "Ваші Стартапи",
+        "ru": "Ваши Стартапы",
+        "de": "Ihre Startups"
+    }, {
+        "id": 595,
+        "state": 1,
+        "en": "Start",
+        "ua": "Старт",
+        "ru": "Старт",
+        "de": "Start"
+    }, {
+        "id": 596,
+        "state": 1,
+        "en": "Finish",
+        "ua": "Фініш",
+        "ru": "Финиш",
+        "de": "Finish"
+    }, {
+        "id": 597,
+        "state": 1,
+        "en": "Amount of investment",
+        "ua": "Сума інвестицій",
+        "ru": "Сумма инвестиций",
+        "de": "Höhe der Investition"
+    }, {
+        "id": 598,
+        "state": 1,
+        "en": "Collection of information",
+        "ua": "Збір інформації",
+        "ru": "Сбор информации",
+        "de": "Sammlung von Informationen"
+    }, {
+        "id": 599,
+        "state": 1,
+        "en": "Process Status",
+        "ua": "Статус процесу",
+        "ru": "Статус процесса",
+        "de": "Prozessstatus"
+    }, {
+        "id": 600,
+        "state": 1,
+        "en": "Statistics by the lot",
+        "ua": "Статистика по лоту",
+        "ru": "Статистика по лоту",
+        "de": "Statistiken über Los"
+    }, {
+        "id": 601,
+        "state": 1,
+        "en": "Collected",
+        "ua": "Зібрано",
+        "ru": "Собрано",
+        "de": "Gesammelt"
+    }, {
+        "id": 602,
+        "state": 1,
+        "en": "Necessity",
+        "ua": "Необхідність",
+        "ru": "Необходимость",
+        "de": "Notwendigkeit"
+    }, {
+        "id": 603,
+        "state": 1,
+        "en": "Sold units from the lot",
+        "ua": "Продано одиниць з лоту",
+        "ru": "Продано единиц из лота",
+        "de": "Verkaufte Einheiten der Los"
+    }, {
+        "id": 604,
+        "state": 1,
+        "en": "Sales by lot in real time",
+        "ua": "Продажі по лоту в реальному часі",
+        "ru": "Продажи по лоту в реальном времени",
+        "de": "Verkäufe durch Los in Echtzeit"
+    }, {
+        "id": 605,
+        "state": 1,
+        "en": "User",
+        "ua": "Користувач",
+        "ru": "Пользователь",
+        "de": "Benutzer"
+    }, {
+        "id": 606,
+        "state": 1,
+        "en": "Amount",
+        "ua": "Кількість",
+        "ru": "Количество",
+        "de": "Menge"
+    }, {
+        "id": 607,
+        "state": 1,
+        "en": "While no one has purchased a single unit from your lot",
+        "ua": "Поки ніхто не придбав жодної одиниці з вашого лоту",
+        "ru": "Пока никто не приобрел ни одной единицы из вашего лота",
+        "de": "Bisher wurden noch keine Einheiten Ihrer Lose bekam"
+    }, {
+        "id": 608,
+        "state": 1,
+        "en": "User contact information and delivery addresses will be available after the successful completion of the lot.",
+        "ua": "Контактні дані користувачів і адреси доставки стануть доступні після успішного завершення лота.",
+        "ru": "Контактные данные пользователей и адреса доставки станут доступны после успешного завершения лота.",
+        "de": "Die Kontaktdaten der Nutzer und Lieferadresse wird nach dem erfolgreichen Abschluss der Partie zur Verfügung."
+    }, {
+        "id": 610,
+        "state": 1,
+        "en": "Date not defined",
+        "ua": "Дата не визначена",
+        "ru": "Дата не определена",
+        "de": "Datum bestimmt werden"
+    }, {
+        "id": 611,
+        "state": 1,
+        "en": "Start date not defined",
+        "ua": "Дата старту не визначена",
+        "ru": "Дата старта не определена",
+        "de": "Startdatum nicht definiert"
+    }, {
+        "id": 612,
+        "state": 1,
+        "en": "End date not defined",
+        "ua": "Дата закінчення не визначена",
+        "ru": "Дата окончания не определена",
+        "de": "Enddatum ist nicht definiert"
+    }, {
+        "id": 613,
+        "state": 1,
+        "en": "Startups",
+        "ua": "Стартапи",
+        "ru": "Стартапы",
+        "de": "Startups"
+    }, {
+        "id": 614,
+        "state": 1,
+        "en": "Your Products",
+        "ua": "Ваші товари",
+        "ru": "Ваши товары",
+        "de": "Ihre Waren"
+    }, {
+        "id": 615,
+        "state": 1,
+        "en": "Total cost of the lot",
+        "ua": "Загальна вартість лота",
+        "ru": "Общая стоимость лота",
+        "de": "Die Gesamtkosten der Partie"
+    }, {
+        "id": 616,
+        "state": 1,
+        "en": "New lots",
+        "ua": "Нові лоти",
+        "ru": "Новые лоты",
+        "de": "Neue Lose"
+    }, {
+        "id": 617,
+        "state": 1,
+        "en": null,
+        "ua": null,
+        "ru": null,
+        "de": null
+    }, {
+        "id": 618,
+        "state": 1,
+        "en": null,
+        "ua": "Найбільша проблема для інтернет-магазинів підтримувати інформацію на сайті в актуальному стані, основну роль в цьому відіграють постачальники і не всі вони мають технічні можливості надавати інформацію в режимі реального часу. Ми даємо таку можливість всім постачальникам! Дайте своїм дилерам доступ до ключової інформації для них і вони вам принесуть більше прибутків.",
+        "ru": "Самая большая проблема для интернет-магазинов поддерживать информацию на сайте в актуальном состоянии, основную роль в этом играют поставщики и не все они имеют технические возможности предоставлять информацию в режиме реального времени. Мы даем такую возможность всем поставщикам ! Дайте своим дилерам доступ к ключевой информации для них и они вам принесут больше дохода.",
+        "de": null
+    }, {
+        "id": 619,
+        "state": 1,
+        "en": "Are you a blogger or do you have many friends in social networks?",
+        "ua": "Ви блогер або у вас багато друзів в соціальних мережах?",
+        "ru": "Вы блогер или у вас много друзей в соцсетях ?",
+        "de": "Sind Sie ein Blogger oder haben viele Freunde in sozialen Netzwerken?"
+    }, {
+        "id": 620,
+        "state": 1,
+        "en": "За кожного користувача який зареєструється по вашому інват-коду, на ваш рахунок буде нараховано 50 грн.",
+        "ua": "За кожного користувача який зареєструється по вашому інват-коду, на ваш рахунок буде нараховано 50 грн.",
+        "ru": "За каждого пользователя который зарегистрируется по вашему инват-коду, на ваш счет будет начислено 50 грн.",
+        "de": "За кожного користувача який зареєструється по вашому інват-коду, на ваш рахунок буде нараховано 50 грн."
+    }, {
+        "id": 621,
+        "state": 1,
+        "en": "100% delivery guarantee",
+        "ua": "100% гарантія поставки",
+        "ru": "100% гарантия поставки",
+        "de": "100% Liefergarantie"
+    }, {
+        "id": 622,
+        "state": 1,
+        "en": "Register now! Get a bonus of 50 UAH. At your own expense!",
+        "ua": "Зареєструйся зараз! Отримай бонус 50 грн. на свій рахунок!",
+        "ru": "Зарегистрируйся сейчас ! Получи бонус 50 грн. на свой счет !",
+        "de": "Jetzt anmelden! Holen Sie sich einen 50 UAH. auf Ihrem Konto!"
+    }, {
+        "id": 623,
+        "state": 1,
+        "en": "Заробляйте гроші! Інвестуйте їх або купуйте за них товари!",
+        "ua": "Заробляйте гроші! Інвестуйте їх або купуйте за них товари!",
+        "ru": "Зарабатывайте деньги ! Инвестируйте их или покупайте за них товары !",
+        "de": "Geld verdienen! Investieren sie oder kaufen sie für die Waren!"
+    }, {
+        "id": 624,
+        "state": 1,
+        "en": "Share your invite code in social networks",
+        "ua": "Діліться своїм інвайт-кодом в соцмережах",
+        "ru": "Делитесь своим инвайт-кодом в соцсетях",
+        "de": "Teilen Sie Ihren Code in sozialen Netzwerken einladen"
+    }, {
+        "id": 625,
+        "state": 1,
+        "en": "Its easy!",
+        "ua": "Це легко !",
+        "ru": "Это легко !",
+        "de": "Das ist leicht !"
+    }, {
+        "id": 626,
+        "state": 1,
+        "en": "Your invite code",
+        "ua": "Ваш інвайт-код",
+        "ru": "Ваш инвайт-код",
+        "de": "Ihr Einladungscode"
+    }, {
+        "id": 627,
+        "state": 1,
+        "en": "Generated automatically during registration",
+        "ua": "Генерується автоматично під час реєстрації",
+        "ru": "Генерируется автоматически во время регистрации",
+        "de": "Automatisch während der Registrierung erzeugt"
+    }, {
+        "id": 628,
+        "state": 1,
+        "en": "A protracted result",
+        "ua": "Затяжний результат",
+        "ru": "Затяжной результат",
+        "de": "das anhaltende Ergebnis"
+    }, {
+        "id": 629,
+        "state": 1,
+        "en": "Share the code once. The result will be a long time.",
+        "ua": "Поділившись кодом одного разу. Результат буде ще довгий час.",
+        "ru": "Поделившись кодом однажды. Результат будет еще долгое время.",
+        "de": "Gemeinsame Nutzung Code einmal. Das Ergebnis wird eine lange Zeit sein."
+    }, {
+        "id": 630,
+        "state": 1,
+        "en": "Accumulation",
+        "ua": "Накопичення",
+        "ru": "Накапливание",
+        "de": "Akkumulation"
+    }, {
+        "id": 631,
+        "state": 1,
+        "en": "Money will not be lost! They are constantly accumulating.",
+        "ua": "Гроші не пропадуть! Вони постійно накопичуються.",
+        "ru": "Деньги не пропадут ! Они постоянно накапливаются.",
+        "de": "Das Geld wird nicht verschwendet werden! Sie häufen sich ständig."
+    }, {
+        "id": 632,
+        "state": 1,
+        "en": "New technologies",
+        "ua": "Нові технології",
+        "ru": "Новые технологии",
+        "de": "Neue Technologie"
+    }, {
+        "id": 633,
+        "state": 1,
+        "en": "As soon as possible, we turn to blockchain technology",
+        "ua": "Як тільки стане можливо ми перейдемо на технологію blockchain",
+        "ru": "Как только станет возможно мы перейдем на технологию blockchain",
+        "de": "So bald wie möglich werden wir auf blockchain Technologie bewegen"
+    }, {
+        "id": 634,
+        "state": 1,
+        "en": "Future",
+        "ua": "Майбутнє",
+        "ru": "Будущее",
+        "de": "die Zukunft"
+    }, {
+        "id": 635,
+        "state": 1,
+        "en": "The plans to issue your own payment card",
+        "ua": "У планах випуск власної платіжної картки",
+        "ru": "В планах выпуск собственной платежной-карты",
+        "de": "Die Pläne seine eigene Zahlungskarte zu erzeugen"
+    }, {
+        "id": 636,
+        "state": 1,
+        "en": "Share this",
+        "ua": "Поділитися",
+        "ru": "Поделиться",
+        "de": "Aktie"
+    }, {
+        "id": 637,
+        "state": 1,
+        "en": "Registering according to my invite code:",
+        "ua": "Реєструючись за моїм інвайт-кодом:",
+        "ru": "Регистрируясь по моему инвайт-коду:",
+        "de": "Mit der Registrierung auf meiner Einladung Code:"
+    }, {
+        "id": 638,
+        "state": 1,
+        "en": "You will get 100 UAH. At your own expense. Here all at wholesale prices.",
+        "ua": "ви отримаєте 100 грн. на свій рахунок. Тут все за оптовими цінами",
+        "ru": "вы получите 100 грн. на свой счет. Здесь все по оптовым ценам",
+        "de": "Sie werden 100 UAH erhalten. auf eigene Kosten. Hier werden alle zu Großhandelspreisen ."
+    }, {
+        "id": 639,
+        "state": 1,
+        "en": "For sellers",
+        "ua": "Продавцям",
+        "ru": "Продавцам",
+        "de": "für Verkäufer"
+    }, {
+        "id": 640,
+        "state": 1,
+        "en": "For shops",
+        "ua": "Магазинам",
+        "ru": "Магазинам",
+        "de": "Geschäft"
+    }, {
+        "id": 641,
+        "state": 1,
+        "en": null,
+        "ua": "Автоматизація роботи інтернет-магазинів",
+        "ru": "Автоматизация работы интернет-магазинов",
+        "de": null
+    }, {
+        "id": 642,
+        "state": 1,
+        "en": null,
+        "ua": "Точні ціни та наявність товарів у постачальників в режимі реального часу",
+        "ru": "Точные цены и наличие товаров у поставщиков в режиме реального времени",
+        "de": null
+    }, {
+        "id": 643,
+        "state": 1,
+        "en": null,
+        "ua": "Сьогодні вже недостатньо мати свій інтернет-магазин. Покупець скоріше купить там де він впевнений що ціна яку він бачить на сайті точна і товар гарантовано є в наявності. Одиниці інтернет-магазинів можуть гарантувати що інформація на сайті точна по всім товарам. Ми даємо можливість повністю автоматизувати процес оновлення цін і наявності товару на вашому сайті.",
+        "ru": "Сегодня уже недостаточно иметь свой интернет-магазин. Покупатель скорее купит там где он уверен что цена которую он видит на сайте точная и товар гарантированно есть в наличии. Единицы интернет-магазинов могут гарантировать что информация на сайте точная по всем товарам. Мы даем возможность полностью автоматизировать процесс обновления цен и наличия товара на вашем сайте.",
+        "de": null
+    }, {
+        "id": 644,
+        "state": 1,
+        "en": "Enter a new password if you want to change it, or existing if it does not.",
+        "ua": "Введіть новий пароль якщо хочете його змінити, або існуючий якщо ні.",
+        "ru": "Введите новый пароль если хотите его изменить, или существующий если нет.",
+        "de": "Geben Sie ein neues Passwort, wenn Sie es ändern möchten, oder wenn es keinen Strom."
+    }, {
+        "id": 645,
+        "state": 1,
+        "en": "Enter a new mobile number if you want to change it",
+        "ua": "Введіть новий номер мобільного телефону якщо хочете його змінити",
+        "ru": "Введите новый номер мобильного телефона если хотите его изменить",
+        "de": "Geben Sie eine neue Handynummer , wenn Sie es ändern möchten"
+    }, {
+        "id": 646,
+        "state": 1,
+        "en": "Enter a new e-mail if you want to change it.",
+        "ua": "Введіть новий e-mail якщо хочете його змінити.",
+        "ru": "Введите новый e-mail если хотите его изменить.",
+        "de": "Geben Sie eine neue E-Mail, wenn Sie es ändern möchten."
+    }, {
+        "id": 647,
+        "state": 1,
+        "en": "New User Registration",
+        "ua": "Реєстрація нового користувача",
+        "ru": "Регистрация нового пользователя",
+        "de": null
+    }, {
+        "id": 648,
+        "state": 1,
+        "en": "Retail Customer",
+        "ua": "Роздрібний покупець",
+        "ru": "Розничный покупатель",
+        "de": null
+    }, {
+        "id": 649,
+        "state": 1,
+        "en": "Wholesale buyer",
+        "ua": "Оптовий покупець",
+        "ru": "Оптовый покупатель",
+        "de": null
+    }, {
+        "id": 650,
+        "state": 1,
+        "en": "Online store",
+        "ua": "Інтернет магазин",
+        "ru": "Интернет-магазин",
+        "de": "Online-Shop"
+    }, {
+        "id": 651,
+        "state": 1,
+        "en": "Blogger",
+        "ua": "Блогер",
+        "ru": "Блогер",
+        "de": "Blogger"
+    }, {
+        "id": 652,
+        "state": 1,
+        "en": "Address",
+        "ua": "Адреса",
+        "ru": "Адрес",
+        "de": "Adresse"
+    }, {
+        "id": 653,
+        "state": 1,
+        "en": "Who you are ?",
+        "ua": "Хто ви ?",
+        "ru": "Кто вы ?",
+        "de": "Wer du bist ?"
+    }, {
+        "id": 654,
+        "state": 1,
+        "en": "Current address",
+        "ua": "Поточна адреса Адреса доставки ваших покупок",
+        "ru": "Текущий адрес Адрес доставки ваших покупок",
+        "de": "aktuelle Adresse"
+    }, {
+        "id": 655,
+        "state": 1,
+        "en": "Sq. \/ Office",
+        "ua": "Кв. \/ Офіс",
+        "ru": "Кв. \/ Офис",
+        "de": "Sq. \/ Büro"
+    }, {
+        "id": 656,
+        "state": 1,
+        "en": "Fund your account",
+        "ua": "Поповнити рахунок",
+        "ru": "Пополнить счет",
+        "de": "In Mittel"
+    }, {
+        "id": 657,
+        "state": 1,
+        "en": "Specify the amount for which you want to fund your account",
+        "ua": "Вкажіть суму на яку ви хочете поповнити свій рахунок",
+        "ru": "Укажите сумму на которую вы хотите пополнить свой счет",
+        "de": "Geben Sie den Betrag auf dem Sie Ihr Konto einzuzahlen"
+    }, {
+        "id": 658,
+        "state": 1,
+        "en": "Replenishment of personal account",
+        "ua": "Поповнення особистого рахунку",
+        "ru": "Пополнение личного счета",
+        "de": "Nachladen persönliches Konto"
+    }, {
+        "id": 659,
+        "state": 1,
+        "en": "Amount",
+        "ua": "Сума",
+        "ru": "Сумма",
+        "de": "Summe"
+    }, {
+        "id": 660,
+        "state": 1,
+        "en": "PLLANO Marketplace",
+        "ua": "PLLANO Marketplace",
+        "ru": "PLLANO Marketplace",
+        "de": "PLANO Marktplatz"
+    }, {
+        "id": 661,
+        "state": 1,
+        "en": "Plattform für Lieferanten, Verkäufer und Käufer",
+        "ua": "Платформа для постачальників, продавців і покупців",
+        "ru": "Платформа для поставщиков, продавцов и покупателей",
+        "de": "Die besten Preise! Gewährleistung des sicheren Kaufs! Verfügbarkeit von Waren in Echtzeit!"
+    }, {
+        "id": 662,
+        "state": 1,
+        "en": "Availability of goods in real time",
+        "ua": "Наявність товарів в реальному часі",
+        "ru": "Наличие товаров в реальном времени",
+        "de": "Verfügbarkeit von Waren in Echtzeit"
+    }, {
+        "id": 663,
+        "state": 1,
+        "en": "Store Settings",
+        "ua": "Налаштування магазину",
+        "ru": "Настройки магазина",
+        "de": "Einstellungen speichern"
+    }, {
+        "id": 664,
+        "state": 1,
+        "en": "You have a new order on the platform",
+        "ua": "У вас нове замовлення на платформі",
+        "ru": "У вас новый заказ на платформе",
+        "de": "Sie haben eine neue Bestellung auf der Plattform"
+    }, {
+        "id": 666,
+        "state": 1,
+        "en": "Buyer information",
+        "ua": "Інформація про покупця",
+        "ru": "Информация о покупателе",
+        "de": "Käuferinformationen"
+    }, {
+        "id": 667,
+        "state": 1,
+        "en": "Vendor Information",
+        "ua": "Інформація про продавця",
+        "ru": "Информация о продавце",
+        "de": "Lieferanteninformationen"
+    }, {
+        "id": 669,
+        "state": 1,
+        "en": "Online store registration",
+        "ua": "Реєстрація інтернет-магазину",
+        "ru": "Регистрация интернет-магазина",
+        "de": "Online-Ladenregistrierung"
+    }, {
+        "id": 670,
+        "state": 1,
+        "en": "Instructions and Information",
+        "ua": "Інструкції та інформація",
+        "ru": "Инструкции и информация",
+        "de": "Anleitung und Information"
+    }, {
+        "id": 671,
+        "state": 1,
+        "en": "Free registration",
+        "ua": "Безкоштовна реєстрація",
+        "ru": "Бесплатная регистрация ",
+        "de": "Kostenlose Registrierung"
+    }, {
+        "id": 672,
+        "state": 1,
+        "en": "There is a free mode of loading price lists",
+        "ua": "Є безкоштовний режим завантаження прайс-листів",
+        "ru": "Есть бесплатный режим загрузки прайс-листов",
+        "de": "Es gibt einen kostenlosen Modus zum Laden von Preislisten"
+    }, {
+        "id": 673,
+        "state": 1,
+        "en": "You only pay when you receive orders from the platform",
+        "ua": "Ви платите тільки коли отримуєте замовлення з платформи",
+        "ru": "Вы платите только когда получаете заказы с платформы",
+        "de": "Sie zahlen nur, wenn Sie Aufträge von der Plattform erhalten"
+    }, {
+        "id": 674,
+        "state": 1,
+        "en": "User instructions",
+        "ua": "Інструкції користувача",
+        "ru": "Инструкции пользователя",
+        "de": "Benutzeranweisungen"
+    }, {
+        "id": 675,
+        "state": 1,
+        "en": "Why do you need to buy products through the PLLANO Marketplace?",
+        "ua": "Чому потрібно купувати товари через PLLANO Marketplace?",
+        "ru": "Почему нужно покупать товары через PLLANO Marketplace ?",
+        "de": "Warum müssen Sie Produkte über den PLLANO Marketplace kaufen?"
+    }, {
+        "id": 676,
+        "state": 1,
+        "en": "We are a service that helps suppliers inform about the availability of goods of their dealers. We know what is available and in the catalog we display products only from the availability.",
+        "ua": "Ми сервіс який допомагає постачальникам інформувати про наявність товару своїх дилерів. Ми знаємо що є в наявності і в каталозі виводимо товари тільки з наявності.",
+        "ru": "Мы сервис который помогает поставщикам информировать о наличии товара своих дилеров. Мы знаем что есть в наличии и в каталоге выводим товары только из наличия.",
+        "de": "Wir sind ein Service, der Lieferanten hilft, über die Verfügbarkeit von Waren ihrer Händler zu informieren. Wir wissen was verfügbar ist und im Katalog zeigen wir Produkte nur aus der Verfügbarkeit an."
+    }, {
+        "id": 677,
+        "state": 1,
+        "en": "Verified sellers",
+        "ua": "Перевірені продавці",
+        "ru": "Проверенные продавцы",
+        "de": "Verifizierte Verkäufer"
+    }, {
+        "id": 678,
+        "state": 1,
+        "en": "All sellers undergo a rigorous test. Sellers who violate the requirements of the platform can not post their prices.",
+        "ua": "Всі продавці проходять сувору перевірку. Продавці які порушують вимоги платформи не можуть розміщувати свої ціни.",
+        "ru": "Все продавцы проходят строгую проверку. Продавцы которые нарушают требования платформы не могут размещать свои цены.",
+        "de": "Alle Verkäufer werden einem strengen Test unterzogen. Verkäufer, die gegen die Anforderungen der Plattform verstoßen, können ihre Preise nicht veröffentlichen."
+    }, {
+        "id": 679,
+        "state": 1,
+        "en": "When placing an order, the purchase amount is blocked on your account and debited only after you receive the goods, so both parties have guarantees in that they will get their own.",
+        "ua": "При оформленні замовлення сума покупки блокується на вашому рахунку і списується тільки після отримання вами товару, таким чином обидві сторони мають гарантії в тому що отримають своє.",
+        "ru": "При оформлении заказа сумма покупки блокируется на вашем счете и списывается только после получения вами товара, таким образом обе стороны имеют гарантии в том что получат свое.",
+        "de": "Bei einer Bestellung wird der Kaufbetrag auf Ihrem Konto gesperrt und erst dann belastet, wenn Sie die Ware erhalten haben, so dass beide Parteien eine Garantie haben, dass sie ihre eigenen bekommen."
+    }, {
+        "id": 680,
+        "state": 1,
+        "en": "Real feedback",
+        "ua": "Реальні відгуки",
+        "ru": "Реальные отзывы",
+        "de": "Echtes Feedback"
+    }, {
+        "id": 681,
+        "state": 1,
+        "en": "In unserem System nur echtes Feedback und sie können nur vom realen Käufer geschrieben werden, nachdem er die von uns gekauften Waren erhalten hat.",
+        "ua": "У нашій системі тільки реальні відгуки і їх може написати тільки справжній покупець після того як він отримав куплений через нас товар.",
+        "ru": "В нашей системе только реальные отзывы и их может написать только реальный покупатель после того как он получил купленный через нас товар.",
+        "de": "In unserem System nur echtes Feedback und sie können nur vom realen Käufer geschrieben werden, nachdem er die von uns gekauften Waren erhalten hat."
+    }, {
+        "id": 682,
+        "state": 1,
+        "en": "Bonus System",
+        "ua": "Бонусна система",
+        "ru": "Бонусная система",
+        "de": "Bonussystem"
+    }, {
+        "id": 683,
+        "state": 1,
+        "en": "For each registered user on your invite-code, we charge 50 UAH. You can earn bonuses and buy real goods for them.",
+        "ua": "За кожного зареєстрованого користувача на вашу інвайт-коду ми нараховуємо 50 грн. Ви можете заробляти бонуси і за них купувати реальні товари.",
+        "ru": "За каждого зарегистрировавшегося пользователя по вашему инвайт-коду мы начисляем 50 грн. Вы можете зарабатывать бонусы и за них покупать реальные товары.",
+        "de": "Für jeden registrierten Benutzer auf Ihrem Einladungscode berechnen wir 50 UAH. Sie können Boni verdienen und echte Waren für sie kaufen."
+    }, {
+        "id": 684,
+        "state": 1,
+        "en": "VIP service",
+        "ua": "VIP обслуговування",
+        "ru": "VIP обслуживание",
+        "de": "VIP-Service"
+    }, {
+        "id": 685,
+        "state": 1,
+        "en": "We do not process orders! But we are always ready to help you place your order or solve the problem in 24/7 mode",
+        "ua": "Ми не обробляємо замовлення! Але завжди готові допомогти вам оформити замовлення або вирішити проблему в режимі 24/7",
+        "ru": "Мы не обрабатываем заказы ! Но всегда готовы помочь вам оформить заказ или решить возникшую проблему в режиме 24/7",
+        "de": "Wir bearbeiten keine Bestellungen! Aber wir sind immer bereit Ihnen zu helfen, Ihre Bestellung aufzugeben oder das Problem im 24/7 Modus zu lösen"
+    }, {
+        "id": 686,
+        "state": 1,
+        "en": "Excellent shopping and safe shopping with fast delivery guarantee",
+        "ua": "Відмінний шопінг і безпечні покупки з гарантією швидкої доставки",
+        "ru": "Отличный шопинг и безопасные покупки с гарантией быстрой доставки",
+        "de": "Ausgezeichnetes Einkaufen und sicheres Einkaufen mit schneller Liefergarantie"
+    }, {
+        "id": 687,
+        "state": 1,
+        "en": "Availability of goods and current prices from suppliers in real time",
+        "ua": "Наявність товарів і актуальні ціни від постачальників в реальному часі",
+        "ru": "Наличие товаров и актуальные цены от поставщиков в реальном времени",
+        "de": "Verfügbarkeit von Waren und aktuellen Preisen von Lieferanten in Echtzeit"
+    }, {
+        "id": 688,
+        "state": 1,
+        "en": "Key Activation",
+        "ua": "Активація за допомогою ключа",
+        "ru": "Активация с помощью ключа",
+        "de": "Schlüsselaktivierung"
+    }, {
+        "id": 689,
+        "state": 1,
+        "en": "Safety of purchases and availability of goods",
+        "ua": "Безпека покупок і наявність товару",
+        "ru": "Безопасность покупок и наличие товара",
+        "de": "Sicherheit von Einkäufen und Warenverfügbarkeit"
+    }, {
+        "id": 691,
+        "state": 1,
+        "en": "User registration",
+        "ua": "Реєстрація користувача",
+        "ru": "Регистрация пользователя",
+        "de": "Benutzerregistrierung"
+    }, {
+        "id": 692,
+        "state": 1,
+        "en": "Shop Registration",
+        "ua": "Реєстрація магазину",
+        "ru": "Регистрация магазина",
+        "de": "Shop Registrierung"
+    }, {
+        "id": 693,
+        "state": 1,
+        "en": "Remember",
+        "ua": "Запамятати",
+        "ru": "Запомнить",
+        "de": "Erinnere mich"
+    }, {
+        "id": 694,
+        "state": 1,
+        "en": "Forgot password?",
+        "ua": "Забули пароль?",
+        "ru": "Забыли пароль?",
+        "de": "Passwort vergessen?"
+    }, {
+        "id": 695,
+        "state": 1,
+        "en": "Dont have an account?",
+        "ua": "Не маєте облікового запису?",
+        "ru": "У вас нет учетной записи?",
+        "de": "Haben Sie kein Konto?"
+    }, {
+        "id": 696,
+        "state": 1,
+        "en": "Platform version",
+        "ua": "Версія платформи",
+        "ru": "Версия платформы",
+        "de": "Plattformversion"
+    }, {
+        "id": 697,
+        "state": 1,
+        "en": "Support center",
+        "ua": "Центр підтримки",
+        "ru": "Центр поддержки",
+        "de": "Hilfecenter"
+    }, {
+        "id": 698,
+        "state": 1,
+        "en": "Knowledge Base",
+        "ua": "База знань",
+        "ru": "База знаний",
+        "de": "Wissensbasis"
+    }, {
+        "id": 699,
+        "state": 1,
+        "en": "Articles and news",
+        "ua": "Статті та новини",
+        "ru": "Статьи и новости",
+        "de": "Artikel und Nachrichten"
+    }, {
+        "id": 700,
+        "state": 1,
+        "en": "Here you will find answers to the most popular questions",
+        "ua": "Тут ви знайдете відповіді на найпопулярніші питання",
+        "ru": "Здесь вы найдете ответы на самые популярные вопросы",
+        "de": "Hier finden Sie Antworten auf die häufigsten Fragen"
+    }, {
+        "id": 701,
+        "state": 1,
+        "en": "We have developed step-by-step instructions for suppliers, manufacturers, stores and sellers.",
+        "ua": "Ми розробили покрокові інструкції для постачальників, виробників, магазинів і продавців.",
+        "ru": "Мы разработали пошаговые инструкции для поставщиков, производителей, магазинов и продавцов.",
+        "de": "Wir haben Schritt-für-Schritt-Anleitungen für Lieferanten, Hersteller, Geschäfte und Verkäufer entwickelt."
+    }, {
+        "id": 702,
+        "state": 1,
+        "en": "Open a ticket",
+        "ua": "Створити запит",
+        "ru": "Создать запрос",
+        "de": "Öffnen Sie ein Ticket"
+    }, {
+        "id": 703,
+        "state": 1,
+        "en": "Can not understand or need our help? Customer support will always help.",
+        "ua": "Не можете розібратися чи потрібна наша допомога? Служба підтримки завжди допоможе.",
+        "ru": "Не можете разобраться и нужна наша помощь ? Служба поддержки всегда поможет.",
+        "de": "Kannst du unsere Hilfe nicht verstehen oder brauchen? Der Kundendienst wird immer helfen."
+    }, {
+        "id": 704,
+        "state": 1,
+        "en": "Expand your opportunities by connecting free and premium Mikroservices.",
+        "ua": "Розширте свої можливості підключаючи безкоштовні і преміум Мікросервіси.",
+        "ru": "Расширьте свои возможности подключая бесплатные и премиум Микросервисы. ",
+        "de": "Erweitern Sie Ihre Möglichkeiten durch die Verbindung von kostenlosen und Premium-Mikroservices."
+    }, {
+        "id": 705,
+        "state": 1,
+        "en": "PLLANO Marketplace - Platform for suppliers, sellers and buyers",
+        "ua": "PLLANO Marketplace - Платформа для постачальників, продавців і покупців",
+        "ru": "PLLANO Marketplace - Платформа для поставщиков, продавцов и покупателей",
+        "de": "PLLANO Marketplace - Plattform für Lieferanten, Verkäufer und Käufer"
+    }, {
+        "id": 706,
+        "state": 1,
+        "en": "PLLANO Marketplace - A platform and simultaneously a marketplace where there are buyers, sellers and suppliers.",
+        "ua": "PLLANO Marketplace - Платформа і одночасно маркетплейс де є покупці, продавці і постачальники.",
+        "ru": "PLLANO Marketplace - Платформа и одновременно маркетплейс где есть покупатели, продавцы и поставщики.",
+        "de": "PLLANO Marketplace - Eine Plattform und gleichzeitig ein Marktplatz für Käufer, Verkäufer und Lieferanten."
+    }, {
+        "id": 707,
+        "state": 1,
+        "en": "Suppliers add their products and maintain current availability and prices thereby provide their dealers with price lists and availability of goods in real time. They also create lots in joint purchases on the basis of their real goods.",
+        "ua": "Постачальники додають свої товари і підтримують актуальниу наявність товарів і ціни тим самим надають своїм дилерам прайс-листи і наявність товарів в режимі реального часу. Також самі створюють лоти в спільних покупках на підставі реального свого товару.",
+        "ru": "Поставщики добавляют свои товары и поддерживают актуальное наличие и цены тем самым предоставляют своим дилерам прайс-листы и наличие товаров в режиме реального времени. Также сами создают лоты в совместных покупках на основании реального своего товара.",
+        "de": "Lieferanten fügen ihre Produkte hinzu und behalten die aktuelle Verfügbarkeit und die Preise bei, wodurch sie ihren Händlern Preislisten und Warenverfügbarkeit in Echtzeit zur Verfügung stellen. Sie erstellen auch Lose in gemeinsamen Käufen auf der Grundlage ihrer realen Waren."
+    }, {
+        "id": 708,
+        "state": 1,
+        "en": "My balance",
+        "ua": "Мій баланс",
+        "ru": "Мой баланс",
+        "de": "Mein Gleichgewicht"
+    }, {
+        "id": 709,
+        "state": 1,
+        "en": "Settings",
+        "ua": "Налаштування",
+        "ru": "Настройки",
+        "de": "Einstellungen"
+    }, {
+        "id": 710,
+        "state": 1,
+        "en": "Price-lists",
+        "ua": "Прайс-листи",
+        "ru": "Прайс-листы",
+        "de": "Preislisten"
+    }, {
+        "id": 711,
+        "state": 1,
+        "en": "Supplier",
+        "ua": "Постачальник",
+        "ru": "Поставщик",
+        "de": "Lieferanten"
+    }, {
+        "id": 712,
+        "state": 1,
+        "en": "Seller",
+        "ua": "Продавець",
+        "ru": "Продавец",
+        "de": "Verkäufer"
+    }, {
+        "id": 713,
+        "state": 1,
+        "en": "Microservices",
+        "ua": "Мікросервіси",
+        "ru": "Микросервисы",
+        "de": "Mikroservices"
+    }, {
+        "id": 714,
+        "state": 1,
+        "en": "Orders",
+        "ua": "Замовлення",
+        "ru": "Заказы",
+        "de": "Bestellungen"
+    }, {
+        "id": 715,
+        "state": 1,
+        "en": "Control",
+        "ua": "Управління",
+        "ru": "Управление",
+        "de": "Regierungsführung"
+    }, {
+        "id": 716,
+        "state": 1,
+        "en": "Create",
+        "ua": "Створення",
+        "ru": "Создание",
+        "de": "Erstellen"
+    }, {
+        "id": 717,
+        "state": 1,
+        "en": "Supplier",
+        "ua": "Постачальник",
+        "ru": "Поставщик",
+        "de": "Lieferanten"
+    }, {
+        "id": 718,
+        "state": 1,
+        "en": "Warehouse",
+        "ua": "Склад",
+        "ru": "Склад",
+        "de": "Lagerhallen"
+    }, {
+        "id": 719,
+        "state": 1,
+        "en": "Legal entities",
+        "ua": "Юридичні особи",
+        "ru": "Юридические лица",
+        "de": "Juristische Personen"
+    }, {
+        "id": 720,
+        "state": 1,
+        "en": "Dealers",
+        "ua": "Дилери",
+        "ru": "Дилеры",
+        "de": "Händler"
+    }, {
+        "id": 721,
+        "state": 1,
+        "en": "Accounts",
+        "ua": "Рахунки",
+        "ru": "Счета",
+        "de": "Konten"
+    }, {
+        "id": 722,
+        "state": 1,
+        "en": "Create supplier",
+        "ua": "Створити постачальника",
+        "ru": "Создать поставщика",
+        "de": "Anbieter anlegen"
+    }, {
+        "id": 723,
+        "state": 1,
+        "en": "Create warehouse",
+        "ua": "Створити склад",
+        "ru": "Создать склад",
+        "de": "Lager anlegen"
+    }, {
+        "id": 724,
+        "state": 1,
+        "en": "New price list",
+        "ua": "Новий прайс-лист",
+        "ru": "Новый прайс-лист",
+        "de": "Neue Preisliste"
+    }, {
+        "id": 725,
+        "state": 1,
+        "en": "Add new dealer",
+        "ua": "Додати нового дилера",
+        "ru": "Добавить нового дилера",
+        "de": "Neuen Händler"
+    }, {
+        "id": 726,
+        "state": 1,
+        "en": "Find dealer",
+        "ua": "Знайти дилера",
+        "ru": "Найти дилера",
+        "de": "Händler finden"
+    }, {
+        "id": 727,
+        "state": 1,
+        "en": "Invite dealer",
+        "ua": "Запросити дилера",
+        "ru": "Пригласить дилера",
+        "de": "Händler einladen"
+    }, {
+        "id": 728,
+        "state": 1,
+        "en": "Shipped orders",
+        "ua": "Відвантажені",
+        "ru": "Отгруженные",
+        "de": "Versendete Bestellungen"
+    }, {
+        "id": 729,
+        "state": 1,
+        "en": "Refusals",
+        "ua": "Відмови",
+        "ru": "Отказы",
+        "de": "Ablehnungen"
+    }, {
+        "id": 730,
+        "state": 1,
+        "en": "Complaints",
+        "ua": "Рекламації",
+        "ru": "Рекламации",
+        "de": "Beschwerden"
+    }, {
+        "id": 731,
+        "state": 1,
+        "en": "Payments",
+        "ua": "Оплати",
+        "ru": "Оплаты",
+        "de": "Zahlungen"
+    }, {
+        "id": 732,
+        "state": 1,
+        "en": "Default account",
+        "ua": "Рахунок за замовчуванням",
+        "ru": "Счет по умолчанию",
+        "de": "Standardkonto"
+    }, {
+        "id": 733,
+        "state": 1,
+        "en": "Update Mode",
+        "ua": "Режим поновлення",
+        "ru": "Режим обновления",
+        "de": "Aktualisierungsmodus"
+    }, {
+        "id": 734,
+        "state": 1,
+        "en": "Operating mode",
+        "ua": "Режим роботи",
+        "ru": "Режим работы",
+        "de": "Betriebsmodus"
+    }, {
+        "id": 735,
+        "state": 1,
+        "en": "Websites",
+        "ua": "Сайти",
+        "ru": "Сайты",
+        "de": "Webseiten"
+    }, {
+        "id": 736,
+        "state": 1,
+        "en": "Free",
+        "ua": "Безкоштовно",
+        "ru": "Бесплатно",
+        "de": "Kostenlos"
+    }, {
+        "id": 737,
+        "state": 1,
+        "en": "Your Subscriptions",
+        "ua": "Ваші підписки",
+        "ru": "Ваши подписки",
+        "de": "Ihre Abonnements"
+    }, {
+        "id": 738,
+        "state": 1,
+        "en": "To connect products",
+        "ua": "Для підключення товарів",
+        "ru": "Для подключения товаров",
+        "de": "Um Produkte zu verbinden"
+    }, {
+        "id": 739,
+        "state": 1,
+        "en": "Create seller",
+        "ua": "Створити продавця",
+        "ru": "Создать продавца",
+        "de": "Verkäufer anlegen"
+    }, {
+        "id": 740,
+        "state": 1,
+        "en": "Choose an activation option",
+        "ua": "Виберіть варіант активації",
+        "ru": "Выберите вариант активации",
+        "de": "Wählen Sie eine Aktivierungsoption"
+    }, {
+        "id": 741,
+        "state": 1,
+        "en": "I have an API key",
+        "ua": "У мене є ключ API",
+        "ru": "У меня есть ключ API",
+        "de": "Ich habe einen API-Schlüssel"
+    }, {
+        "id": 742,
+        "state": 1,
+        "en": "Select installation option",
+        "ua": "Виберіть варіант установки",
+        "ru": "Выберите вариант установки",
+        "de": "Wählen Sie die Installationsoption"
+    }, {
+        "id": 743,
+        "state": 1,
+        "en": "Connect store",
+        "ua": "Підключити магазин",
+        "ru": "Подключить магазин",
+        "de": "Laden verbinden"
+    }, {
+        "id": 744,
+        "state": 1,
+        "en": "Your shops",
+        "ua": "Ваші магазини",
+        "ru": "Ваши магазины",
+        "de": "Ihre Geschäfte"
+    }, {
+        "id": 745,
+        "state": 1,
+        "en": "Choose the site design in the next step",
+        "ua": "Вибір дизайну сайту на наступному кроці",
+        "ru": "Выбор дизайна сайта на следующем шаге",
+        "de": "Wählen Sie das Website-Design im nächsten Schritt"
+    }, {
+        "id": 746,
+        "state": 1,
+        "en": "Quick Product Search",
+        "ua": "Швидкий пошук товару",
+        "ru": "Быстрый поиск товара",
+        "de": "Schnelle Produktsuche"
+    }, {
+        "id": 747,
+        "state": 1,
+        "en": "Create website",
+        "ua": "Створити веб-сайт",
+        "ru": "Создать сайт",
+        "de": "Website erstellen"
+    }, {
+        "id": 748,
+        "state": 1,
+        "en": "What do you want to trade? Select a product set.",
+        "ua": "Чим ви хочете торгувати? Виберіть набір товарів.",
+        "ru": "Чем вы хотите торговать ? Выберите набор товаров.",
+        "de": "Was möchten Sie tauschen? Wählen Sie einen Produktsatz."
+    }, {
+        "id": 749,
+        "state": 1,
+        "en": "Website Templates",
+        "ua": "Шаблони для сайту",
+        "ru": "Шаблоны для сайта",
+        "de": "Website-Vorlagen"
+    }, {
+        "id": 750,
+        "state": 1,
+        "en": "Your Templates",
+        "ua": "Ваші шаблони",
+        "ru": "Ваши шаблоны",
+        "de": "Ihre Vorlagen"
+    }, {
+        "id": 751,
+        "state": 1,
+        "en": "Free Templates",
+        "ua": "Безкоштовні шаблони",
+        "ru": "Бесплатные шаблоны",
+        "de": "Kostenlose Vorlagen"
+    }, {
+        "id": 752,
+        "state": 1,
+        "en": "Premium Templates",
+        "ua": "Преміум шаблони",
+        "ru": "Премиум шаблоны",
+        "de": "Premium-Vorlagen"
+    }, {
+        "id": 753,
+        "state": 1,
+        "en": "Template Designer",
+        "ua": "Конструктор шаблонів",
+        "ru": "Конструктор шаблонов",
+        "de": "Vorlagen-Designer"
+    }, {
+        "id": 754,
+        "state": 1,
+        "en": "Download API-Shop",
+        "ua": "Завантажити API-Shop",
+        "ru": "Скачать API-Shop",
+        "de": "API-Shop herunterladen"
+    }, {
+        "id": 755,
+        "state": 1,
+        "en": "on GitHub",
+        "ua": "на GitHub",
+        "ru": "на GitHub",
+        "de": "auf GitHub"
+    }, {
+        "id": 756,
+        "state": 1,
+        "en": "Close",
+        "ua": "Закрити",
+        "ru": "Закрыть",
+        "de": "Schließen"
+    }, {
+        "id": 757,
+        "state": 1,
+        "en": "Active",
+        "ua": "Активний",
+        "ru": "Активный",
+        "de": "Aktiv"
+    }, {
+        "id": 758,
+        "state": 1,
+        "en": "Disable",
+        "ua": "Відключити",
+        "ru": "Отключить",
+        "de": "Deaktivieren"
+    }, {
+        "id": 759,
+        "state": 1,
+        "en": "Activate",
+        "ua": "Активувати",
+        "ru": "Активировать",
+        "de": "Aktivieren"
+    }, {
+        "id": 760,
+        "state": 1,
+        "en": "The template you selected is installed",
+        "ua": "Обраний вами шаблон встановлений",
+        "ru": "Выбранный вами шаблон установлен",
+        "de": "Die ausgewählte Vorlage ist installiert"
+    }, {
+        "id": 761,
+        "state": 1,
+        "en": "After selecting a template, enter the API key so that the system connects the products.",
+        "ua": "Після вибору шаблону, введіть ключ API щоб система підключила товари.",
+        "ru": "После выбора шаблона, введите ключ API чтобы система подключила товары.",
+        "de": "Nachdem Sie eine Vorlage ausgewählt haben, geben Sie den API-Schlüssel ein, damit das System die Produkte verbindet."
+    }, {
+        "id": 762,
+        "state": 1,
+        "en": "Choose a website design",
+        "ua": "Виберіть дизайн сайту",
+        "ru": "Выберите дизайн сайта",
+        "de": "Wählen Sie ein Website-Design"
+    }, {
+        "id": 763,
+        "state": 1,
+        "en": "Create a seller account",
+        "ua": "Створити обліковий запис продавця",
+        "ru": "Создать учетную запись продавца",
+        "de": "Erstellen Sie ein Verkäuferkonto"
+    }, {
+        "id": 764,
+        "state": 1,
+        "en": "You need to create a seller account, select products, select a design.",
+        "ua": "Необхідно створити акаунт продавця, вибрати товари, вибрати дизайн.",
+        "ru": "Необходимо создать аккаунт продавца, выбрать товары, выбрать дизайн.",
+        "de": "Sie müssen ein Händlerkonto erstellen, Produkte auswählen und ein Design auswählen."
+    }, {
+        "id": 765,
+        "state": 1,
+        "en": "There are only three steps left",
+        "ua": "Залишилося всього три кроки",
+        "ru": "Осталось всего три шага",
+        "de": "Es sind nur noch drei Schritte übrig"
+    }, {
+        "id": 766,
+        "state": 1,
+        "en": "Your store is installed!",
+        "ua": "Ваш магазин встановлено!",
+        "ru": "Ваш магазин установлен !",
+        "de": "Ihr Geschäft ist installiert!"
+    }, {
+        "id": 767,
+        "state": 1,
+        "en": "The future has already come!",
+        "ua": "Майбутнє вже настало!",
+        "ru": "Будущее уже наступило !",
+        "de": "Die Zukunft ist schon da!"
+    }, {
+        "id": 768,
+        "state": 1,
+        "en": "Only in 5 minutes you can create a fully automated online store filled with goods, which independently processes orders and orders goods from suppliers.",
+        "ua": "Тільки у нас за 5 хвилин ви можете створити повністю автоматизований інтернет-магазин наповнений товаром, який самостійно обробляє замовлення і замовляє товар у постачальників.",
+        "ru": "Только у нас за 5 минут вы можете создать полностью автоматизированный интернет-магазин наполненный товаром, который самостоятельно обрабатывает заказы и заказывает товар у поставщиков.",
+        "de": "Nur in 5 Minuten können Sie einen vollautomatischen, mit Waren befüllten Online-Shop erstellen, der Bestellungen selbstständig bearbeitet und Waren von Lieferanten bestellt."
+    }, {
+        "id": 769,
+        "state": 1,
+        "en": "Create online store",
+        "ua": "Створити інтернет-магазин",
+        "ru": "Создать интернет-магазин",
+        "de": "Online-Shop erstellen"
+    }, {
+        "id": 770,
+        "state": 1,
+        "en": "Help is needed ?",
+        "ua": "Потрібна допомога ?",
+        "ru": "Нужна помощь ?",
+        "de": "Brauche Hilfe ?"
+    }, {
+        "id": 771,
+        "state": 1,
+        "en": "Step-by-Step Instructions",
+        "ua": "Покрокові інструкції",
+        "ru": "Пошаговые инструкции",
+        "de": "Schritt-für-Schritt-Anleitung"
+    }, {
+        "id": 772,
+        "state": 1,
+        "en": "Want more?",
+        "ua": "Хочете більше?",
+        "ru": "Хотите больше ?",
+        "de": "Willst du mehr?"
+    }, {
+        "id": 773,
+        "state": 1,
+        "en": "Suppliers",
+        "ua": "Постачальники",
+        "ru": "Поставщики",
+        "de": "Lieferanten"
+    }, {
+        "id": 774,
+        "state": 1,
+        "en": "Automatically adding products",
+        "ua": "Автоматичне додавання товарів",
+        "ru": "Автоматическое добавление товаров",
+        "de": "Produkte automatisch hinzufügen"
+    }, {
+        "id": 775,
+        "state": 1,
+        "en": "Your site is filled with goods from your suppliers. Add suppliers and goods themselves appear on the site. You can manage prices in the section of price lists of suppliers.",
+        "ua": "Ваш сайт наповнюють товарами ваші постачальники. Додавайте постачальників і товари самі зявляться на сайті. Управляти цінами ви можете в розділі прайс-листи постачальників.",
+        "ru": "Ваш сайт наполняют товарами ваши поставщики. Добавляйте поставщиков и товары сами появятся на сайте. Управлять ценами вы можете в разделе прайс-листы поставщиков.",
+        "de": "Ihre Website ist mit Waren von Ihren Lieferanten gefüllt. Add Lieferanten und Waren selbst erscheinen auf der Website. Sie können Preise in den Preislisten der Lieferanten verwalten."
+    }, {
+        "id": 776,
+        "state": 1,
+        "en": "Vendor control panel",
+        "ua": "Панель управління постачальником",
+        "ru": "Панель управления поставщиком",
+        "de": "Herstellerbedienfeld"
+    }, {
+        "id": 777,
+        "state": 1,
+        "en": "Suppliers you manage",
+        "ua": "Постачальники якими ви керуєте",
+        "ru": "Поставщики которыми вы управляете",
+        "de": "Lieferanten, die Sie verwalten"
+    }, {
+        "id": 778,
+        "state": 1,
+        "en": "The warehouses you manage",
+        "ua": "Склади якими ви керуєте",
+        "ru": "Склады которыми вы управляете",
+        "de": "Die von Ihnen verwalteten Lager"
+    }, {
+        "id": 779,
+        "state": 1,
+        "en": "Warehouse Control Panel",
+        "ua": "Панель управління складом",
+        "ru": "Панель управления складом",
+        "de": "Warehouse-Systemsteuerung"
+    }, {
+        "id": 780,
+        "state": 1,
+        "en": "Warehouse Price List",
+        "ua": "Прайс-лист складу",
+        "ru": "Прайс-лист склада",
+        "de": "Lagerpreisliste"
+    }, {
+        "id": 781,
+        "state": 1,
+        "en": "Dealer Control Panel Seller",
+        "ua": "Панель управління дилером продавцем",
+        "ru": "Панель управления дилером продавцом",
+        "de": "Händlerbedienfeld Verkäufer"
+    }, {
+        "id": 782,
+        "state": 1,
+        "en": "Dealers sellers that you manage",
+        "ua": "Дилери продавці якими ви керуєте",
+        "ru": "Дилеры продавцы которыми вы управляете",
+        "de": "Händler Verkäufer, die Sie verwalten"
+    }, {
+        "id": 783,
+        "state": 1,
+        "en": "Price list of the dealer seller",
+        "ua": "Прайс-лист дилера продавця",
+        "ru": "Прайс-лист дилера продавца",
+        "de": "Preisliste des Händlers Verkäufer"
+    }, {
+        "id": 784,
+        "state": 1,
+        "en": "The sites you manage",
+        "ua": "Сайти якими ви керуєте",
+        "ru": "Сайты которыми вы управляете",
+        "de": "Die Websites, die Sie verwalten"
+    }, {
+        "id": 785,
+        "state": 1,
+        "en": "Dashboard",
+        "ua": "Панель управління сайтом",
+        "ru": "Панель управления сайтом",
+        "de": "Dashboard"
+    }, {
+        "id": 786,
+        "state": 1,
+        "en": "Connect brand",
+        "ua": "Підключити бренд",
+        "ru": "Подключить бренд",
+        "de": "Marke verbinden"
+    }, {
+        "id": 787,
+        "state": 1,
+        "en": "last step !",
+        "ua": "останній крок !",
+        "ru": "последний шаг !",
+        "de": "Der letzte Schritt!"
+    }, {
+        "id": 788,
+        "state": 1,
+        "en": "Install",
+        "ua": "Встановити",
+        "ru": "Установить",
+        "de": "Installieren"
+    }, {
+        "id": 789,
+        "state": 1,
+        "en": "Install the products and template ?",
+        "ua": "Встановити товари і шаблон ?",
+        "ru": "Установить товары и шаблон ?",
+        "de": "Installieren Sie die Produkte und die Vorlage ?"
+    }, {
+        "id": 790,
+        "state": 1,
+        "en": "Found",
+        "ua": "Знайдено",
+        "ru": "Найдено",
+        "de": "Gefunden"
+    }, {
+        "id": 791,
+        "state": 1,
+        "en": "To find",
+        "ua": "Знайти",
+        "ru": "Найти",
+        "de": "Finden"
+    }, {
+        "id": 792,
+        "state": 1,
+        "en": "Sort by",
+        "ua": "Сортувати за",
+        "ru": "Сортировать по",
+        "de": "Sortieren nach"
+    }, {
+        "id": 793,
+        "state": 1,
+        "en": "Filter by word",
+        "ua": "Відфільтрувати за словом",
+        "ru": "Отфильтровать по слову",
+        "de": "Nach Wort filtern"
+    }, {
+        "id": 794,
+        "state": 1,
+        "en": "Filter",
+        "ua": "Фільтр",
+        "ru": "Фильтр",
+        "de": "Filter"
+    }, {
+        "id": 795,
+        "state": 1,
+        "en": "Product type",
+        "ua": "Тип товару",
+        "ru": "Тип товара",
+        "de": "Produkttyp"
+    }, {
+        "id": 796,
+        "state": 1,
+        "en": "Product series",
+        "ua": "Серія товару",
+        "ru": "Серия товара",
+        "de": "Produktserie"
+    }, {
+        "id": 797,
+        "state": 1,
+        "en": "Enable",
+        "ua": "Увімкнути",
+        "ru": "Включить",
+        "de": "Aktivieren"
+    }, {
+        "id": 798,
+        "state": 1,
+        "en": "Switch off",
+        "ua": "Вимкнути",
+        "ru": "Выключить",
+        "de": "Deaktivieren"
+    }, {
+        "id": 799,
+        "state": 1,
+        "en": "Remove",
+        "ua": "Видалити",
+        "ru": "Удалить",
+        "de": "Entfernen"
+    }, {
+        "id": 800,
+        "state": 1,
+        "en": "Virtual office",
+        "ua": "Віртуальний офіс",
+        "ru": "Виртуальный офис",
+        "de": "Virtuelles Büro"
+    }, {
+        "id": 801,
+        "state": 1,
+        "en": "Vendor name",
+        "ua": "Назва постачальника",
+        "ru": "Название поставщика",
+        "de": "Name des Lieferanten"
+    }, {
+        "id": 802,
+        "state": 1,
+        "en": "Name of the official site of the supplier",
+        "ua": "Назва офіційного сайту постачальника",
+        "ru": "Название официального сайта поставщика",
+        "de": "Name der offiziellen Website des Lieferanten"
+    }, {
+        "id": 803,
+        "state": 1,
+        "en": "Days",
+        "ua": "Днів",
+        "ru": "Дней",
+        "de": "Tage"
+    }, {
+        "id": 804,
+        "state": 1,
+        "en": "Hours",
+        "ua": "Годин",
+        "ru": "Часов",
+        "de": "Uhr"
+    }, {
+        "id": 805,
+        "state": 1,
+        "en": "Minutes",
+        "ua": "Хвилин",
+        "ru": "Минут",
+        "de": "Minuten"
+    }, {
+        "id": 806,
+        "state": 1,
+        "en": "Seconds",
+        "ua": "Секунд",
+        "ru": "Секунд",
+        "de": "Sekunden"
+    }, {
+        "id": 807,
+        "state": 1,
+        "en": "Super Sale",
+        "ua": "Супер розпродаж",
+        "ru": "Супер распродажа",
+        "de": "Super-Verkauf"
+    }, {
+        "id": 808,
+        "state": 1,
+        "en": "We guarantee that the goods are 100% in stock!",
+        "ua": "Ми гарантуємо що товар 100% є в наявності!",
+        "ru": "Мы гарантируем что товар 100% есть в наличии !",
+        "de": "Wir garantieren, dass die Ware zu 100% vorrätig ist!"
+    }, {
+        "id": 809,
+        "state": 1,
+        "en": "We will deliver your order within 3-7 days (But not later!)",
+        "ua": "Ми доставимо вам замовлення на протязі 3-7 днів (Але не пізніше!)",
+        "ru": "Мы доставим вам заказ в течении 3-7 дней (Но не позже !)",
+        "de": "Wir liefern Ihre Bestellung innerhalb von 3-7 Tagen (aber nicht später!)"
+    }, {
+        "id": 810,
+        "state": 1,
+        "en": "You pay on receipt!",
+        "ua": "Ви платите при отриманні! (Накладений платіж)",
+        "ru": "Вы платите при получении !  (Наложенный платёж)",
+        "de": "Sie zahlen auf Quittung!"
+    }, {
+        "id": 811,
+        "state": 1,
+        "en": "Cost of delivery",
+        "ua": "Вартість доставки",
+        "ru": "Стоимость доставки",
+        "de": "Lieferpreis"
+    }, {
+        "id": 812,
+        "state": 1,
+        "en": "According to the tariffs of the carrier",
+        "ua": "За тарифами перевізника",
+        "ru": "По тарифам перевозчика",
+        "de": "Nach den Tarifen des Frachtführers"
+    }, {
+        "id": 813,
+        "state": 1,
+        "en": "Special offer",
+        "ua": "Спеціальна пропозиція діє",
+        "ru": "Специальное предложение действует",
+        "de": "Sonderangebot"
+    }, {
+        "id": 814,
+        "state": 1,
+        "en": "Template",
+        "ua": "Шаблон",
+        "ru": "Шаблон",
+        "de": "Vorlage"
+    }, {
+        "id": 815,
+        "state": 1,
+        "en": "Templates",
+        "ua": "Шаблони",
+        "ru": "Шаблоны",
+        "de": "Vorlagen"
+    }, {
+        "id": 816,
+        "state": 1,
+        "en": "Name",
+        "ua": "Назва",
+        "ru": "Название",
+        "de": "Name"
+    }, {
+        "id": 817,
+        "state": 1,
+        "en": "Folder",
+        "ua": "Папка",
+        "ru": "Папка",
+        "de": "Ordner"
+    }, {
+        "id": 818,
+        "state": 1,
+        "en": "Template version",
+        "ua": "Версія шаблону",
+        "ru": "Версия шаблона",
+        "de": "Vorlageversion"
+    }, {
+        "id": 819,
+        "state": 1,
+        "en": "Confirm order",
+        "ua": "Підтвердити замовлення",
+        "ru": "Подтвердить заказ",
+        "de": "Bestellung bestätigen"
+    }, {
+        "id": 820,
+        "state": 1,
+        "en": "Visitors",
+        "ua": "Відвідувачі",
+        "ru": "Посетители",
+        "de": "Besucher"
+    }, {
+        "id": 821,
+        "state": 1,
+        "en": "Orders",
+        "ua": "Замовлення",
+        "ru": "Заказы",
+        "de": "Aufträge"
+    }, {
+        "id": 822,
+        "state": 1,
+        "en": "Revenue",
+        "ua": "Дохід",
+        "ru": "Доход",
+        "de": "Einnahmen"
+    }, {
+        "id": 823,
+        "state": 1,
+        "en": "Users",
+        "ua": "Користувачів",
+        "ru": "Пользователей",
+        "de": "Benutzer"
+    }, {
+        "id": 824,
+        "state": 1,
+        "en": "Sales",
+        "ua": "Продажі",
+        "ru": "Продажи",
+        "de": "Verkäufe"
+    }, {
+        "id": 825,
+        "state": 1,
+        "en": "Growth on",
+        "ua": "Зростання на",
+        "ru": "Рост на",
+        "de": "Wachstum auf"
+    }, {
+        "id": 826,
+        "state": 1,
+        "en": "Product-wise sales",
+        "ua": "Продуктивні продажі",
+        "ru": "Продуктовые продажи",
+        "de": "Produktweise Verkauf"
+    }, {
+        "id": 827,
+        "state": 1,
+        "en": "Just Updated",
+        "ua": "Тільки що оновлено",
+        "ru": "Только что обновлено",
+        "de": "Gerade aktualisiert"
+    }, {
+        "id": 828,
+        "state": 1,
+        "en": "Database",
+        "ua": "Бази даних",
+        "ru": "Базы данных",
+        "de": "Datenbanken"
+    }, {
+        "id": 829,
+        "state": 1,
+        "en": "Table",
+        "ua": "Таблиця",
+        "ru": "Таблица",
+        "de": "Tabelle"
+    }, {
+        "id": 830,
+        "state": 1,
+        "en": "Seller Settings",
+        "ua": "Налаштування продавця",
+        "ru": "Настройки продавца",
+        "de": "Verkäufereinstellungen"
+    }, {
+        "id": 831,
+        "state": 1,
+        "en": "Admin panel",
+        "ua": "Адмін панель",
+        "ru": "Админ Панель",
+        "de": "Admin-Steuerfeld"
+    }, {
+        "id": 832,
+        "state": 1,
+        "en": "Shop configuration",
+        "ua": "Конфігурація магазину",
+        "ru": "Конфигурация магазина",
+        "de": "Shop-Konfiguration"
+    }, {
+        "id": 833,
+        "state": 1,
+        "en": "Installed Templates",
+        "ua": "Встановлені шаблони",
+        "ru": "Установленные шаблоны",
+        "de": "Installierte Vorlagen"
+    }, {
+        "id": 834,
+        "state": 1,
+        "en": "Available Templates",
+        "ua": "Доступні шаблони",
+        "ru": "Доступные шаблоны",
+        "de": "Verfügbare Vorlagen"
+    }, {
+        "id": 835,
+        "state": 1,
+        "en": "All Templates",
+        "ua": "Всі шаблони",
+        "ru": "Все шаблоны",
+        "de": "Alle Vorlagen"
+    }, {
+        "id": 836,
+        "state": 1,
+        "en": "Packages",
+        "ua": "Пакети",
+        "ru": "Пакеты",
+        "de": "Pakete"
+    }, {
+        "id": 837,
+        "state": 1,
+        "en": "Installierte Packages",
+        "ua": "Встановлені пакети",
+        "ru": "Установленные пакеты",
+        "de": "Installierte Pakete"
+    }, {
+        "id": 838,
+        "state": 1,
+        "en": "All Packages",
+        "ua": "Всі пакети",
+        "ru": "Все пакеты",
+        "de": "Alle Pakete"
+    }, {
+        "id": 839,
+        "state": 1,
+        "en": "Awaiting Approval",
+        "ua": "В черзі",
+        "ru": "Ожидает подтверждения",
+        "de": "Wartet auf Genehmigung"
+    }, {
+        "id": 840,
+        "state": 1,
+        "en": "Table structure",
+        "ua": "Структура таблиці",
+        "ru": "Структура таблицы",
+        "de": "Tabellenstruktur"
+    }, {
+        "id": 841,
+        "state": 1,
+        "en": "Version",
+        "ua": "Версія",
+        "ru": "Версия",
+        "de": "Version"
+    }, {
+        "id": 842,
+        "state": 1,
+        "en": "Namespace",
+        "ua": "Простір імен",
+        "ru": "Пространство имен",
+        "de": "Namespace"
+    }, {
+        "id": 843,
+        "state": 1,
+        "en": "Image",
+        "ua": "Зображення",
+        "ru": "Изображение",
+        "de": "Bild"
+    }, {
+        "id": 844,
+        "state": 1,
+        "en": "Edit",
+        "ua": "Редагувати",
+        "ru": "Редактировать",
+        "de": "Bearbeiten"
+    }, {
+        "id": 845,
+        "state": 1,
+        "en": "Article",
+        "ua": "Стаття",
+        "ru": "Статья",
+        "de": "Artikel"
+    }, {
+        "id": 846,
+        "state": 1,
+        "en": "Users",
+        "ua": "Користувачі",
+        "ru": "Пользователи",
+        "de": "Benutzer"
+    }, {
+        "id": 847,
+        "state": 1,
+        "en": "Texts",
+        "ua": "Тексти",
+        "ru": "Тексты",
+        "de": "Texte"
+    }, {
+        "id": 848,
+        "state": 1,
+        "en": "Multilanguage",
+        "ua": "Багатомовність",
+        "ru": "Мультиязычность",
+        "de": "Mehrsprachig"
+    }, {
+        "id": 849,
+        "state": 1,
+        "en": "Ooops, This Page Could Not Be Found!",
+        "ua": "Ooops, ця сторінка не знайдена!",
+        "ru": "Ooops, эта страница не найдена!",
+        "de": "Hoppla, diese Seite wurde nicht gefunden!"
+    }, {
+        "id": 850,
+        "state": 1,
+        "en": "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.",
+        "ua": "Сторінка, яку ви шукаєте, може бути вилучена, її ім'я змінилося або тимчасово недоступне.",
+        "ru": "Возможно, страница, которую вы ищете, была удалена, изменилось ее имя или временно недоступно.",
+        "de": "Die Seite, nach der Sie suchen, wurde möglicherweise entfernt, der Name wurde geändert oder ist vorübergehend nicht verfügbar."
+    }, {
+        "id": 851,
+        "state": 1,
+        "en": "Please try searching again",
+        "ua": "Будь ласка, спробуйте пошукати ще раз",
+        "ru": "Повторите попытку поиска",
+        "de": "Bitte versuchen Sie es erneut"
+    }, {
+        "id": 852,
+        "state": 1,
+        "en": "New article",
+        "ua": "Нова стаття",
+        "ru": "Новая статья",
+        "de": "Neuer Artikel"
+    }, {
+        "id": 853,
+        "state": 1,
+        "en": "When you click on the button: Create an account. The system will automatically create a new user with random data. After creation, select in the user list and edit.",
+        "ua": "При натисканні на кнопку: Створити обліковий запис. Система автоматично створить нового користувача з випадковими даними. Після створення виберіть в списку користувача і відредагуйте.",
+        "ru": "При нажатии на кнопку: Создать учетную запись. Система автоматически создаст нового пользователя с случайными данными. После создания выберите в списке пользователя и отредактируйте.",
+        "de": "Wenn Sie auf die Schaltfläche klicken: Erstellen Sie ein Konto. Das System erstellt automatisch einen neuen Benutzer mit zufälligen Daten. Nach der Erstellung wählen Sie in der Benutzerliste und bearbeiten Sie."
+    }, {
+        "id": 854,
+        "state": 1,
+        "en": "By pressing the button. The system will automatically create a new record. After creation, select it in the list and edit it.",
+        "ua": "При натисканні на кнопку. Система автоматично створить новий запис. Після створення виберіть її в списку і відредагуйте.",
+        "ru": "При нажатии на кнопку. Система автоматически создаст новую запись. После создания выберите ее в списке и отредактируйте.",
+        "de": "Durch Drücken der Taste. Das System erstellt automatisch einen neuen Datensatz. Nach der Erstellung wählen Sie es in der Liste aus und bearbeiten Sie es."
+    }, {
+        "id": 855,
+        "state": 1,
+        "en": "Article Categories",
+        "ua": "Категорії статей",
+        "ru": "Категории статей",
+        "de": "Artikel Kategorien"
+    }, {
+        "id": 856,
+        "state": 1,
+        "en": "All articles",
+        "ua": "Всі статті",
+        "ru": "Все статьи",
+        "de": "Alle Artikel"
+    }, {
+        "id": 857,
+        "state": 1,
+        "en": "New category",
+        "ua": "Нова категорія",
+        "ru": "Новая категория",
+        "de": "Neue Kategorie"
+    }, {
+        "id": 858,
+        "state": 1,
+        "en": "Menu",
+        "ua": "Меню",
+        "ru": "Меню",
+        "de": "Menü"
+    }
+]

@@ -1,0 +1,691 @@
+[{
+		"table": "stores_list",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"stores_list_id": "integer",
+			"title": "string",
+			"title_ru": "string",
+			"title_ua": "string",
+			"title_en": "string",
+			"title_de": "string",
+			"keywords": "string",
+			"description": "string",
+			"description_ru": "string",
+			"description_ua": "string",
+			"description_en": "string",
+			"description_de": "string",
+			"note": "string",
+			"image": "string",
+			"demo": "string",
+			"sort": "integer",
+			"state": "integer",
+			"score": "integer"
+		}
+	}, {
+		"table": "templates_list",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"template_id": "integer",
+			"alias": "string",
+			"store_id": "integer",
+			"title": "string",
+			"title_ru": "string",
+			"title_ua": "string",
+			"title_en": "string",
+			"title_de": "string",
+			"keywords": "string",
+			"kategorie": "string",
+			"description": "string",
+			"description_ru": "string",
+			"description_ua": "string",
+			"description_en": "string",
+			"description_de": "string",
+			"note": "string",
+			"image": "string",
+			"dir": "string",
+			"demo": "string",
+			"uri": "string",
+			"sort": "integer",
+			"price": "double",
+			"state": "integer",
+			"score": "integer"
+		}
+	}, {
+		"table": "language",
+		"action": "create",
+		"demo_data": "https://cdn.pllano.com/demo_data/db",
+		"schema": {
+			"state": "integer",
+			"en": "string",
+			"ua": "string",
+			"ru": "string",
+			"de": "string"
+		}
+	}, {
+		"table": "type",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"type_id": "integer",
+			"title": "string",
+			"category_id": "integer",
+			"property_set_id": "integer",
+			"seo_id": "integer",
+			"og_id": "integer",
+			"image_id": "integer",
+			"alias": "string",
+			"related": "string",
+			"sort": "integer",
+			"state": "integer",
+			"score": "integer"
+		},
+		"relations": {
+			"product": {
+				"type": "hasMany",
+				"keys": {
+					"local": "type_id",
+					"foreign": "type_id"
+				}
+			},
+			"category": {
+				"type": "hasMany",
+				"keys": {
+					"local": "category_id",
+					"foreign": "category_id"
+				}
+			}
+		}
+	}, {
+		"table": "brand",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"brand_id": "integer",
+			"title": "string",
+			"seo_id": "integer",
+			"og_id": "integer",
+			"image_id": "integer",
+			"alias": "string",
+			"related": "string",
+			"sort": "integer",
+			"state": "integer",
+			"score": "integer"
+		}
+	}, {
+		"table": "serie",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"serie_id": "integer",
+			"brand_id": "integer",
+			"title": "string",
+			"seo_id": "integer",
+			"og_id": "integer",
+			"alias": "string",
+			"sort": "integer",
+			"state": "integer",
+			"score": "integer"
+		},
+		"relations": {
+			"brand": {
+				"type": "hasMany",
+				"keys": {
+					"local": "brand_id",
+					"foreign": "brand_id"
+				}
+			}
+		}
+	}, {
+		"table": "image",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"image_id": "integer",
+			"site_id": "integer",
+			"table_name": "string",
+			"unit_id": "integer",
+			"image_path": "string",
+			"sort": "integer",
+			"alias": "string",
+			"state": "integer",
+			"score": "integer"
+		},
+		"relations": {
+			"product": {
+				"type": "hasMany",
+				"keys": {
+					"local": "product_id",
+					"foreign": "product_id"
+				}
+			}
+		}
+	}, {
+		"table": "seo",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"seo_id": "integer",
+			"site_id": "integer",
+			"table_name": "string",
+			"unit_id": "integer",
+			"seo_h1": "string",
+			"seo_title": "string",
+			"seo_keywords": "string",
+			"seo_description": "string",
+			"seo_text": "string",
+			"robots": "string",
+			"canonical": "string",
+			"sitemap_xml": "integer",
+			"sitemap_html": "integer",
+			"hreflang": "string",
+			"score": "integer"
+		},
+		"relations": {
+			"product": {
+				"type": "hasMany",
+				"keys": {
+					"local": "product_id",
+					"foreign": "product_id"
+				}
+			}
+		}
+	}, {
+		"table": "description",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"description_id": "integer",
+			"site_id": "integer",
+			"table_name": "string",
+			"unit_id": "integer",
+			"text": "string",
+			"sort": "integer",
+			"state": "integer",
+			"score": "integer"
+		},
+		"relations": {
+			"product": {
+				"type": "hasMany",
+				"keys": {
+					"local": "product_id",
+					"foreign": "product_id"
+				}
+			}
+		}
+	}, {
+		"table": "price",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"price_id": "integer",
+			"site_id": "integer",
+			"product_id": "integer",
+			"category_id": "integer",
+			"price": "double",
+			"oldprice": "double",
+			"price_out": "double",
+			"oldprice_out": "double",
+			"currency_id": "integer",
+			"pay_online": "integer",
+			"available": "integer",
+			"guarantee": "integer",
+			"terms_of_delivery": "string",
+			"name": "string",
+			"type": "string",
+			"brand": "string",
+			"serie": "string",
+			"articul": "string",
+			"url": "string",
+			"locking": "integer",
+			"supplier_item_id": "integer",
+			"alias": "string",
+			"state": "integer",
+			"created": "string",
+			"modified": "string",
+			"score": "integer"
+		}
+	}, {
+		"table": "role",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"role_id": "integer",
+			"name": "string",
+			"ename": "string",
+			"iname": "string",
+			"sort": "integer",
+			"state": "integer",
+			"score": "integer"
+		},
+		"relations": {
+			"user": {
+				"type": "hasMany",
+				"keys": {
+					"local": "role_id",
+					"foreign": "role_id"
+				}
+			}
+		}
+	}, {
+		"table": "user",
+		"action": "create",
+		"demo_data": "https://cdn.pllano.com/demo_data/db",
+		"schema": {
+			"id": "integer",
+			"user_id": "integer",
+			"role_id": "integer",
+			"login": "string",
+			"password": "string",
+			"email": "string",
+			"phone": "string",
+			"language": "string",
+			"ticketed": "integer",
+			"admin_access": "integer",
+			"iname": "string",
+			"fname": "string",
+			"oname": "string",
+			"cookie": "string",
+			"alias": "string",
+			"state": "integer",
+			"score": "integer",
+			"created": "string",
+			"authorized": "string"
+		}
+	}, {
+		"table": "contact",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"contact_id": "integer",
+			"site_id": "integer",
+			"table_name": "string",
+			"unit_id": "integer",
+			"type": "string",
+			"value": "string",
+			"value_plus": "string",
+			"sort": "integer",
+			"state": "integer",
+			"score": "integer"
+		}
+	}, {
+		"table": "address",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"contact_id": "integer",
+			"site_id": "integer",
+			"table_name": "string",
+			"unit_id": "integer",
+			"country_id": "integer",
+			"region_id": "integer",
+			"postal_code_id": "integer",
+			"city_id": "integer",
+			"district_id": "integer",
+			"street_id": "integer",
+			"number": "string",
+			"parade": "string",
+			"floor": "string",
+			"apartment": "string",
+			"additional": "string",
+			"note": "string",
+			"sort": "integer",
+			"state": "integer",
+			"score": "integer"
+		}
+	}, {
+		"table": "currency",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"currency_id": "integer",
+			"state": "integer",
+			"blank": "integer",
+			"name": "string",
+			"iso_code": "string",
+			"iso_code_num": "string",
+			"sign": "string",
+			"course": "double",
+			"course_br": "double",
+			"course_ar": "double",
+			"modified": "string",
+			"score": "integer"
+		}
+	}, {
+		"table": "order",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"order_id": "integer",
+			"site_id": "integer",
+			"order_type": "integer",
+			"user_id": "integer",
+			"status_id": "integer",
+			"delivery_id": "integer",
+			"adress_id": "integer",
+			"conditions_id": "integer",
+			"seller_id": "integer",
+			"state": "integer",
+			"alias": "string",
+			"score": "integer"
+		},
+		"relations": {
+			"user": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "user_id",
+					"foreign": "user_id"
+				}
+			}
+		}
+	}, {
+		"table": "cart",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"cart_id": "integer",
+			"site_id": "integer",
+			"product_id": "integer",
+			"order_id": "integer",
+			"status_id": "integer",
+			"num": "integer",
+			"price": "double",
+			"currency_id": "integer",
+			"supplier_id": "integer",
+			"price_list_id": "integer",
+			"seller_id": "integer",
+			"price_id": "integer",
+			"state": "integer",
+			"score": "integer"
+		},
+		"relations": {
+			"order": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "order_id",
+					"foreign": "order_id"
+				}
+			}
+		}
+	}, {
+		"table": "pay",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"pay_id": "integer",
+			"site_id": "integer",
+			"user_id": "integer",
+			"order_id": "integer",
+			"payment_type": "string",
+			"payment_system": "string",
+			"sign": "string",
+			"sum": "double",
+			"date": "string",
+			"created": "string",
+			"alias": "string",
+			"state": "integer",
+			"score": "integer"
+		},
+		"relations": {
+			"user": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "user_id",
+					"foreign": "user_id"
+				}
+			},
+			"order": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "order_id",
+					"foreign": "order_id"
+				}
+			}
+		}
+	}, {
+		"table": "category",
+		"action": "create",
+		"demo_data": "https://cdn.pllano.com/demo_data/db",
+		"schema": {
+			"category_id": "integer",
+			"parent_id": "integer",
+			"site_id": "integer",
+			"menu": "integer",
+			"product_category": "integer",
+			"product_type": "string",
+			"authorize": "integer",
+			"only_available": "integer",
+			"categories_template": "string",
+			"category_list": "string",
+			"products_limit": "integer",
+			"products_order": "string",
+			"products_sort": "string",
+			"products_template": "string",
+			"image_width": "integer",
+			"image_height": "integer",
+			"name": "string",
+			"title": "string",
+			"url": "string",
+			"alias": "string",
+			"alias_id": "string",
+			"title_ru": "string",
+			"title_ua": "string",
+			"title_de": "string",
+			"title_en": "string",
+			"image": "string",
+			"image_id": "integer",
+			"seo_id": "integer",
+			"seo_h1": "string",
+			"seo_title": "string",
+			"seo_description": "string",
+			"seo_keywords": "string",
+			"robots": "string",
+			"og_url": "string",
+			"og_locale": "string",
+			"og_type": "string",
+			"og_title": "string",
+			"og_description": "string",
+			"og_image": "string",
+			"sitemap_xml": "string",
+			"sitemap_html": "string",
+			"text": "string",
+			"text_ru": "string",
+			"text_ua": "string",
+			"text_de": "string",
+			"text_en": "string",
+			"created": "string",
+			"sort": "integer",
+			"state": "integer",
+			"score": "integer"
+		}
+	}, {
+		"table": "article",
+		"action": "create",
+		"demo_data": "https://cdn.pllano.com/demo_data/db",
+		"schema": {
+			"article_id": "integer",
+			"title": "string",
+			"alias": "string",
+			"alias_id": "string",
+			"category_id": "integer",
+			"title_ru": "string",
+			"title_ua": "string",
+			"title_de": "string",
+			"title_en": "string",
+			"image": "string",
+			"image_id": "integer",
+			"seo_id": "integer",
+			"seo_h1": "string",
+			"seo_title": "string",
+			"seo_description": "string",
+			"seo_keywords": "string",
+			"robots": "string",
+			"og_url": "string",
+			"og_locale": "string",
+			"og_type": "string",
+			"og_title": "string",
+			"og_description": "string",
+			"og_image": "string",
+			"sitemap_xml": "string",
+			"sitemap_html": "string",
+			"text": "string",
+			"text_ru": "string",
+			"text_ua": "string",
+			"text_de": "string",
+			"text_en": "string",
+			"created": "string",
+			"sort": "integer",
+			"state": "integer",
+			"score": "integer"
+		},
+		"relations": {
+			"article_category": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "article_category_id",
+					"foreign": "article_category_id"
+				}
+			}
+		}
+	}, {
+		"table": "article_category",
+		"action": "create",
+		"demo_data": "https://cdn.pllano.com/demo_data/db",
+		"schema": {
+			"article_category_id": "integer",
+			"parent_id": "integer",
+			"title": "string",
+			"alias": "string",
+			"alias_id": "string",
+			"title_ru": "string",
+			"title_ua": "string",
+			"title_de": "string",
+			"title_en": "string",
+			"image": "string",
+			"image_id": "integer",
+			"seo_id": "integer",
+			"seo_h1": "string",
+			"seo_title": "string",
+			"seo_description": "string",
+			"seo_keywords": "string",
+			"robots": "string",
+			"og_url": "string",
+			"og_locale": "string",
+			"og_type": "string",
+			"og_title": "string",
+			"og_description": "string",
+			"og_image": "string",
+			"sitemap_xml": "string",
+			"sitemap_html": "string",
+			"text": "string",
+			"text_ru": "string",
+			"text_ua": "string",
+			"text_de": "string",
+			"text_en": "string",
+			"created": "string",
+			"sort": "integer",
+			"state": "integer",
+			"score": "integer"
+		}
+	}, {
+		"table": "product",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"product_id": "integer",
+			"type_id": "integer",
+			"brand_id": "integer",
+			"serie_id": "integer",
+			"articul": "string",
+			"name": "string",
+			"code": "string",
+			"intro": "string",
+			"template": "string",
+			"mod_id": "integer",
+			"complect_id": "integer",
+			"priority": "integer",
+			"authorize": "integer",
+			"alias": "integer",
+			"state": "integer",
+			"publish_beg": "string",
+			"created": "string",
+			"score": "integer"
+		},
+		"relations": {
+			"type": {
+				"type": "hasMany",
+				"keys": {
+					"local": "type_id",
+					"foreign": "type_id"
+				}
+			},
+			"brand": {
+				"type": "hasMany",
+				"keys": {
+					"local": "brand_id",
+					"foreign": "brand_id"
+				}
+			},
+			"serie": {
+				"type": "hasMany",
+				"keys": {
+					"local": "serie_id",
+					"foreign": "serie_id"
+				}
+			}
+		}
+	}, {
+		"table": "site",
+		"action": "create",
+		"demo_data": null,
+		"schema": {
+			"state": "integer",
+			"site_id": "integer",
+			"authorize": "integer",
+			"cookie_consent": "string",
+			"http_protocol": "string",
+			"robots": "string",
+			"uri": "string",
+			"name": "string",
+			"title": "string",
+			"keywords": "string",
+			"description": "string",
+			"icon": "string",
+			"lang": "string",
+			"logo_url": "string",
+			"logo_title": "string",
+			"copyright": "string",
+			"template": "string",
+			"country_id": "integer",
+			"currency_id": "integer",
+			"prefix_invoice": "string",
+			"vat_tax": "double",
+			"alias": "string",
+			"score": "integer"
+		},
+		"relations": {
+			"product": {
+				"type": "hasMany",
+				"keys": {
+					"local": "site_id",
+					"foreign": "site_id"
+				}
+			},
+			"category": {
+				"type": "hasMany",
+				"keys": {
+					"local": "site_id",
+					"foreign": "site_id"
+				}
+			},
+			"order": {
+				"type": "hasMany",
+				"keys": {
+					"local": "site_id",
+					"foreign": "site_id"
+				}
+			}
+		}
+	}
+]

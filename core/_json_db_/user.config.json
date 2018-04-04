@@ -1,0 +1,25 @@
+{
+	"last_id": 2,
+	"schema": {
+		"id": "integer",
+		"user_id": "integer",
+		"role_id": "integer",
+		"login": "string",
+		"password": "string",
+		"email": "string",
+		"phone": "string",
+		"language": "string",
+		"ticketed": "integer",
+		"admin_access": "integer",
+		"iname": "string",
+		"fname": "string",
+		"oname": "string",
+		"cookie": "string",
+		"alias": "string",
+		"state": "integer",
+		"score": "integer",
+		"created": "string",
+		"authorized": "string"
+	},
+	"relations": {}
+}

@@ -18,16 +18,16 @@
 </tr>
 </thead>
 <tbody>
-{% for items in content %}
+{% for item in content %}
 <tr class="">
-<td>{{ items.item.id }}</td>
-<td><a href="{{ admin_uri }}{{ config.routers.admin.all.route }}resource/user/{{ items.item.id }}" class="">{{ items.item.iname }} {{ items.item.fname }}</a></td>
-<td>{{ items.item.email }}</td>
-<td>{{ items.item.phone }}</td>
-<td><a href="{{ admin_uri }}{{ config.routers.admin.all.route }}resource/user/{{ items.item.id }}" class="">{{ items.item.alias }}</a></td>
-<td class="text-center"><a href="{{ admin_uri }}{{ config.routers.admin.all.route }}resource/user/{{ items.item.id }}" class="text-grey"><i class="fa fa-cogs font_20" aria-hidden="true"></i></a></td>
+<td>{{ item.id }}</td>
+<td><a href="{{ admin_uri }}{{ config.routers.admin.all.route }}resource/user/{{ item.id }}" class="">{{ item.iname }} {{ item.fname }}</a></td>
+<td>{{ item.email }}</td>
+<td>{{ item.phone }}</td>
+<td><a href="{{ admin_uri }}{{ config.routers.admin.all.route }}resource/user/{{ item.id }}" class="">{{ item.alias }}</a></td>
+<td class="text-center"><a href="{{ admin_uri }}{{ config.routers.admin.all.route }}resource/user/{{ item.id }}" class="text-grey"><i class="fa fa-cogs font_20" aria-hidden="true"></i></a></td>
 <td class="text-center">
-<a href="#" onclick="resourceDelete('user', {{ items.item.id }});" class="text-red"><i class="fa fa-times font_20" aria-hidden="true"></i></a>
+<a href="#" onclick="resourceDelete('user', {{ item.id }});" class="text-red"><i class="fa fa-times font_20" aria-hidden="true"></i></a>
 </td>
 </tr>
 {% endfor %}

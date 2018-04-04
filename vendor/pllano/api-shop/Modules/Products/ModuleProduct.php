@@ -20,10 +20,8 @@ class ModuleProduct extends Module implements ModuleInterface
 
     public function __construct(Container $app, $route = null, $block = null, $modulKey = null, $modulVal = [])
     {
+		$this->_table = 'price';
 		parent::__construct($app, $route, $block, $modulKey, $modulVal);
-		//$this->connectContainer();
-		$this->connectDatabases();
-        $this->_table = 'price';
     }
 
     public function get(Request $request)
@@ -47,23 +45,15 @@ class ModuleProduct extends Module implements ModuleInterface
         $heads = [];
         $render = [];
         $return = [];
-		
-        $responseArr = [];
-        // Отдаем роутеру RouterDb конфигурацию
-        $this->routerDb->setConfig([], 'Pllano', 'Apis');
-        // Пингуем для ресурса указанную и доступную базу данных
-        $this->_database = $this->routerDb->ping($this->_table);
-        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-        $this->db = $this->routerDb->run($this->_database);
-        // Массив c запросом
+
         $query = [
             "alias" => $alias,
 			"state" => 1
         ];
-        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
-        $responseArr = $this->db->get($this->_table, $query);
+        $responseArr = $this->db->get($this->_table, $query) ?? [];
 
-        if (isset($responseArr['0']) {
+        if (isset($responseArr['0'])) {
+
 			$data = $responseArr['0'];
             if(is_object($data)) {
                 $data = (array)$data;

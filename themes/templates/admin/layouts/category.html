@@ -18,18 +18,18 @@
 </tr>
 </thead>
 <tbody>
-{% for items in content %}
+{% for item in content %}
 <tr class="">
-<td>{{ items.item.id }}</td>
-<td>{{ items.item.sort }}</td>
-<td><a href="{{ admin_uri }}{{ config.routers.admin.all.route }}resource/category/{{ items.item.id }}" class="">{{ items.item.title }}</a></td>
-<td>{{ items.item.alias }}</td>
-<td><a href="/{{ items.item.url }}" target="_blank">{{ items.item.url }}</a></td>
+<td>{{ item.id }}</td>
+<td>{{ item.sort }}</td>
+<td><a href="{{ admin_uri }}{{ config.routers.admin.all.route }}resource/category/{{ item.id }}" class="">{{ item.title }}</a></td>
+<td>{{ item.alias }}</td>
+<td><a href="/{{ item.url }}" target="_blank">{{ item.url }}</a></td>
 <td class="text-center">
-<a href="{{ admin_uri }}{{ config.routers.admin.all.route }}resource/category/{{ items.item.id }}" class="text-grey"><i class="fa fa-cogs font_20" aria-hidden="true"></i></a>
+<a href="{{ admin_uri }}{{ config.routers.admin.all.route }}resource/category/{{ item.id }}" class="text-grey"><i class="fa fa-cogs font_20" aria-hidden="true"></i></a>
 </td>
 <td class="text-center">
-<a href="#" onclick="resourceDelete('{{ resource }}', {{ items.item.id }});" class="text-red"><i class="fa fa-times font_20" aria-hidden="true"></i></a>
+<a href="#" onclick="resourceDelete('{{ resource }}', {{ item.id }});" class="text-red"><i class="fa fa-times font_20" aria-hidden="true"></i></a>
 </td>
 </tr>
 {% endfor %}

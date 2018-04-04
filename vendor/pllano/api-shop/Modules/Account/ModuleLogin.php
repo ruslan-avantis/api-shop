@@ -20,11 +20,10 @@ class ModuleLogin extends Module implements ModuleInterface
 
     public function __construct(Container $app, $route = null, $block = null, $modulKey = null, $modulVal = [])
     {
+		$this->_table = 'user';
+		$this->_idField = 'id';
 		parent::__construct($app, $route, $block, $modulKey, $modulVal);
 		$this->connectContainer();
-		$this->connectDatabases();
-        $this->_table = 'user';
-        //$this->_idField = 'id';
     }
 
     public function get(Request $request)
@@ -58,15 +57,7 @@ class ModuleLogin extends Module implements ModuleInterface
                     if($cookie == 1) {
 
                         $responseArr = [];
-                        // Отдаем роутеру RouterDb конфигурацию
-                        $this->routerDb->setConfig([], 'Pllano', 'Apis');
-                        // Пингуем для ресурса указанную и доступную базу данных
-                        $this->_database = $this->routerDb->ping($this->_table);
-                        // Подключаемся к БД через выбранный Adapter: Sql, Pdo или Apis (По умолчанию Pdo)
-                        $this->db = $this->routerDb->run($this->_database);
-                        // Отправляем запрос к БД в формате адаптера. В этом случае Apis
                         $responseArr = $this->db->get($this->_table, [], $user_id);
-
                         // Подключаем сессию
                         $session = $this->app->get('session');
 
