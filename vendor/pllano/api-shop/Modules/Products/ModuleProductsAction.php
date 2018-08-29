@@ -30,14 +30,19 @@ class ModuleProductsAction extends Module implements ModuleInterface, ModelInter
         $host = $request->getUri()->getHost();
 		$moduleArr = [];
         $moduleArr['config'] = $this->modulVal;
-
-        $query = [
-            "limit" => $moduleArr['config']['limit'],
-            "sort" => $moduleArr['config']['sort'],
-            "order" => $moduleArr['config']['order'],
-            "relations" => $moduleArr['config']['relations'],
-            "state_seller" => 1
-        ];
+		
+		$query["limit"] = $moduleArr['config']['limit'];
+		$query["sort"] = $moduleArr['config']['sort'];
+		$query["order"] = $moduleArr['config']['order'];
+		$query["relations"] = $moduleArr['config']['relations'];
+		$query["state_seller"] = 1;
+		
+		$query["name"] = $moduleArr['config']['name'] ?? null;
+		$query["type"] = $moduleArr['config']['type'] ?? null;
+		$query["brand"] = $moduleArr['config']['brand'] ?? null;
+		$query["serie"] = $moduleArr['config']['serie'] ?? null;
+		$query["articul"] = $moduleArr['config']['articul'] ?? null;
+		
 
 		// Database GET
         $responseArr = $this->db->get($this->_table, $query) ?? [];
@@ -59,11 +64,7 @@ class ModuleProductsAction extends Module implements ModuleInterface, ModelInter
                 $image_2 = (isset($data['image']['1']['image_path'])) ? clean($data['image']['1']['image_path']) : null;
                 if (isset($image_2)) {$product['image']['2'] = $image->get($data['product_id'], $image_2, $moduleArr['config']["image_width"], $moduleArr['config']["image_height"]);}
                 
-                $path_url = pathinfo($data['url']);
-                $basename = $path_url['basename']; // lib.inc.php
-                $baseurl = str_replace('-'.$data['product_id'].'.html', '', $basename);
-                
-                $product['url'] = '/product/'.$data['id'].'/'.$baseurl.'.html';
+                $product['url'] = '/product/'.$data['id'].'/'.$data['alias'].'.html';
                 $product['name'] = (isset($data['name'])) ? clean($data['name']) : '';
                 $product['type'] = (isset($data['type'])) ? clean($data['type']) : '';
                 $product['brand'] = (isset($data['brand'])) ? clean($data['brand']) : '';

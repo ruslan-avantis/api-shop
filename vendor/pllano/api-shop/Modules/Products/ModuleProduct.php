@@ -54,48 +54,43 @@ class ModuleProduct extends Module implements ModuleInterface
 
         if (isset($responseArr['0'])) {
 
-			$data = $responseArr['0'];
-            if(is_object($data)) {
-                $data = (array)$data;
+			$product = $responseArr['0'];
+            if(is_object($product)) {
+                $product = (array)$product;
             }
 
             // Если ответ не пустой
             // Обрабатываем картинки
             $images = [];
             $image = new Image($this->app);
-            foreach($data['image'] as $value)
+			$img = null;
+            foreach($product['image'] as $value)
             {
                 $img = $value['image_path'] ?? null;
                 if (isset($img)) {
-                    $images[] = $image->get($data['product_id'], $img, $moduleArr['config']["image_width"], $moduleArr['config']["image_height"]);
+                    $images[] = $image->get($product['product_id'], $img, $moduleArr['config']["image_width"], $moduleArr['config']["image_height"]);
                 } else {
-                    $data['images'] = $image->get(null, http_host().'/images/no_image.png', $moduleArr['config']["image_width"], $moduleArr['config']["image_height"]);
+                    $product['images'] = $image->get(null, http_host().'/images/no_image.png', $moduleArr['config']["image_width"], $moduleArr['config']["image_height"]);
                 }
             }
             $data['images'] = $images;
-			
-			
-
-            // Формируем URL страницы товара
-            $path_url = pathinfo($data['url']);
-            $basename = $path_url['basename'];
-            $baseurl = str_replace('-'.$data['product_id'].'.html', '', $basename);
-            //$data['url'] = $scheme.'/product/'.$data['id'].'/'.$baseurl.'.html';
-            $data['url'] = '/product/'.$data['id'].'/'.$baseurl.'.html';
-            $data['name'] = (isset($data['name'])) ? clean($data['name']) : '';
+			$data['url'] = '/product/'.$product['id'].'/'.$product['alias'].'.html';
+            $data['name'] = (isset($product['name'])) ? clean($product['name']) : '';
             $data_name = $data['name'];
-            $data['description'] = $data['description']['text'] ?? '';
-            $data['type'] = $data['type'] ?? '';
-            $data['brand'] = $data['brand'] ?? '';
-            $data['serie'] =  $data['serie'] ?? '';
-            $data['articul'] = $data['articul'] ?? '';
-            if ($data['serie'] && $data['articul']) {$data['name'] = $data['serie'].' '.$data['articul'];}
-            $data['oldprice'] = $data['oldprice'] ?? null;
-            $data['price'] = $data['price'] ?? '';
-            $data['available'] = $data['available'] ?? '';
-            $data['product_id'] = $data['product_id'] ?? '';
-            $date = $data['action_date'] ?? date_rand_min(1000, 5000);
+            $data['description'] = $product['description']['text'] ?? '';
+            $data['type'] = $product['type'] ?? '';
+            $data['brand'] = $product['brand'] ?? '';
+            $data['serie'] =  $product['serie'] ?? '';
+            $data['articul'] = $product['articul'] ?? '';
+            if ($product['serie'] && $product['articul']) {$data['name'] = $product['type'].' '.$product['brand'].' '.$product['serie'].' '.$product['articul'];}
+            $data['oldprice'] = $product['oldprice_out'] ?? null;
+            $data['price'] = $product['price_out'] ?? 0.00;
+            $data['available'] = $product['available'] ?? '';
+            $data['product_id'] = $product['product_id'] ?? '';
+            $date = $product['action_date'] ?? date_rand_min(1000, 5000);
             $contentArr['content'] = $data + date_arr($date);
+			
+			//print_r($contentArr);
 
             // Каждый товар может иметь свой уникальный шаблон
             // Если шаблон товара не установлен берем по умолчанию

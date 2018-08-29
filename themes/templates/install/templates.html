@@ -21,66 +21,66 @@ margin-bottom: 30px;
 {{ include ('language.html') }}
 <div class="container">
 <div class="row">
-{% for items in content %}
+{% for item in content %}
 <div class="col-lg-4 portfolio-item">
-<input type="hidden" name="uri" id="uri-{{ items.item.id }}" value="{{ items.item.uri }}">
-<input type="hidden" name="dir" id="dir-{{ items.item.id }}" value="{{ items.item.dir }}">
+<input type="hidden" name="uri" id="uri-{{ item.id }}" value="{{ item.uri }}">
+<input type="hidden" name="dir" id="dir-{{ item.id }}" value="{{ item.dir }}">
 <div class="card h-100">
-<a target="_blank" href="{{ items.item.demo }}"><img class="card-img-top" src="{{ items.item.image }}" alt=""></a>
+<a target="_blank" href="{{ item.demo }}"><img class="card-img-top" src="{{ item.image }}" alt=""></a>
 <div class="card-body text-center">
 <h4 class="card-title">
-<a target="_blank" href="{{ items.item.demo }}">
+<a target="_blank" href="{{ item.demo }}">
 {% if session.language == "ua" %}
-{{ items.item.title_ua }}
+{{ item.title_ua }}
 {% elseif session.language == "en" %}
-{{ items.item.title_en }}
+{{ item.title_en }}
 {% elseif session.language == "ru" %}
-{{ items.item.title_ru }}
+{{ item.title_ru }}
 {% elseif session.language == "de" %}
-{{ items.item.title_de }}
+{{ item.title_de }}
 {% else %}
-{{ items.item.title }}
+{{ item.title }}
 {% endif %}
 </a>
 </h4>
 <div class="margin_4">
-{% if items.item.price == "0" %}
+{% if item.price == "0" %}
 <div class="text-green-lg font_26 text_bold">{{ language.736 }}</div>
 {% else %}
-<div class="text-primary-lg font_26 text_bold">{{ items.item.price }} $</div>
+<div class="text-primary-lg font_26 text_bold">{{ item.price }} $</div>
 {% endif %}
 </div>
 <div class="margin_4">
-{% if items.item.price == "0" %}
+{% if item.price == "0" %}
 <span class="control-link-a-3 a-white a-hover-white">
 <span class="control-button btn-success-xl">
-<a href="#" onClick="installTemplate({{ items.item.id }});" class="btn btn-md btn-hover-effects">{{ language.759 }} <i class="fa fa-check" aria-hidden="true"></i></a>
+<a href="#" onClick="installTemplate({{ item.id }});" class="btn btn-md btn-hover-effects">{{ language.759 }} <i class="fa fa-check" aria-hidden="true"></i></a>
 </span>
 </span>
 {% else %}
 <span class="control-link-a-3 a-white a-hover-white">
 <span class="control-button btn-red-md">
-<a href="#" onClick="buyTemplate('{{ items.item.alias }}');" class="btn btn-md btn-hover-effects">{{ language.1 }} <i class="fa fa-cart-plus" aria-hidden="true"></i></a>
+<a href="#" onClick="buyTemplate('{{ item.alias }}');" class="btn btn-md btn-hover-effects">{{ language.1 }} <i class="fa fa-cart-plus" aria-hidden="true"></i></a>
 </span>
 </span>
 {% endif %}
 <span class="control-link-a-3 a-white a-hover-white">
 <span class="control-button btn-indigo-xxxl">
-<a href="{{ items.item.demo }}" target="_blank" class="btn btn-md btn-hover-effects"><i class="fa fa-desktop" aria-hidden="true"></i> {{ language.517 }}</a>
+<a href="{{ item.demo }}" target="_blank" class="btn btn-md btn-hover-effects"><i class="fa fa-desktop" aria-hidden="true"></i> {{ language.517 }}</a>
 </span>
 </span>
 </div>
 <p class="card-text">
 {% if session.language == "ua" %}
-{{ items.item.description_ua }}
+{{ item.description_ua }}
 {% elseif session.language == "en" %}
-{{ items.item.description_en }}
+{{ item.description_en }}
 {% elseif session.language == "ru" %}
-{{ items.item.description_ru }}
+{{ item.description_ru }}
 {% elseif session.language == "de" %}
-{{ items.item.description_de }}
+{{ item.description_de }}
 {% else %}
-{{ items.item.description }}
+{{ item.description }}
 {% endif %}
 </p>
 </div>

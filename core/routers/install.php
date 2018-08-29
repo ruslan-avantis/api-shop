@@ -89,7 +89,7 @@ $routing->post('/install-api-key', function (Request $request, Response $respons
  
             $api = null;
             $httpClient = new $config['vendor']['http_client']['client']();
-            $httpBody = $httpClient->request('GET', $config["db"]["pllanoapi"]["url"].'api?public_key='.$public_key);
+            $httpBody = $httpClient->request('GET', $config["db"]["pllano"]["url"].'api?public_key='.$public_key);
             $resp = $httpBody->getBody();
             $output = clean_json($resp);
             $records = json_decode($output, true);
@@ -110,7 +110,7 @@ $routing->post('/install-api-key', function (Request $request, Response $respons
             }
  
             $paramPost['seller']['public_key'] = $public_key;
-            $paramPost['db']['pllanoapi']['public_key'] = $public_key;
+            $paramPost['db']['pllano']['public_key'] = $public_key;
             $paramPost['db']['api']['public_key'] = $public_key;
  
             if (isset($session->template)) {
@@ -384,12 +384,22 @@ $routing->post('/install-template', function (Request $request, Response $respon
  
             } else {
  
+                /* $routerDb = new RouterDb($config);
+				$_table = $resource;
+				$_database = $routerDb->ping($_table);
+                $resourceConfig = $config['db']['resource'][$_database] ?? null;
+			    $_driver = $resourceConfig['driver'] ?? null;
+			    $_adapter = $resourceConfig['adapter'] ?? null;
+			    $_format = $resourceConfig['format'] ?? null;
+				$routerDb->setConfig([], $_driver, $_adapter, $_format);
+				$db = $routerDb->run($_database);
+		
                 // Обновляем название шаблона в базе
                 // Подключаемся к базе
                 $routerDb = new RouterDb($config, 'Apis');
                 $db = $routerDb->run("json");
                 // Обновляем название шаблона в базе
-                $db->put("db", ["template" => $dir], 1);
+                $db->put("db", ["template" => $dir], 1); */
  
                 $session->template = $dir;
  
@@ -781,7 +791,7 @@ $routing->post('/start-shop', function (Request $request, Response $response, ar
                     $arrJson = $settingsAdmin->get();
                     $paramPost = [];
                     $paramPost['seller']['public_key'] = $public_key;
-                    $paramPost['db']['pllanoapi']['public_key'] = $public_key;
+                    $paramPost['db']['pllano']['public_key'] = $public_key;
                     $paramPost['db']['api']['public_key'] = $public_key;
                     $paramPost['template']['front_end']['themes']['template'] = $template;
                     $paramPost['template']['front_end']['template_engine'] = $template_engine;

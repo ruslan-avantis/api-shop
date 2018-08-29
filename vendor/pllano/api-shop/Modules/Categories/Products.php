@@ -69,11 +69,7 @@ class Products
                 $image_2 = (isset($data['image']['1']['image_path'])) ? clean($data['image']['1']['image_path']) : null;
                 if (isset($image_2)) {$product['image']['2'] = $image->get($data['product_id'], $image_2, $moduleArr['config']["image_width"], $moduleArr['config']["image_height"]);}
 				
-                $path_url = pathinfo($data['url']);
-                $basename = $path_url['basename']; // lib.inc.php
-                $baseurl = str_replace('-'.$data['product_id'].'.html', '', $basename);
-
-                $product['url'] = '/product/'.$data['id'].'/'.$baseurl.'.html';
+				$product['url'] = '/product/'.$data['id'].'/'.$data['alias'].'.html';
                 $product['name'] = (isset($data['name'])) ? clean($data['name']) : '';
                 $product['type'] = (isset($data['type'])) ? clean($data['type']) : '';
                 $product['brand'] = (isset($data['brand'])) ? clean($data['brand']) : '';
